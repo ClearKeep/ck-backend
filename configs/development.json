@@ -1,0 +1,23 @@
+{
+    "port": 5000,
+    "db": {
+        "host": "localhost",
+        "port": "5432",
+        "name": "test",
+        "username": "postgres",
+        "password": "docker"
+    },
+    "keycloak_account": {
+        "server_url": "http://172.16.1.214:8080/auth/",
+        "client_id": "account",
+        "realm_name": "master",
+        "client_secret_key": "730b4571-0aa3-4173-91d8-15d15591ab70"
+    },
+    "keycloak_admin": {
+        "server_url": "http://172.16.1.214:8080/auth/",
+        "username": "admin",
+        "password": "admin",
+        "realm_name": "master",
+        "client_secret_key": "3d576f53-27ad-4d37-847c-4e818df6464e"
+    }
+}
