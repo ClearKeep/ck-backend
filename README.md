@@ -15,6 +15,9 @@ https://pypi.org/project/pipenv/
 
 ## Run project
 > pipenv install
+
+then
+
 > sh run.sh
 
 ## Generated protobuf file
