@@ -1,0 +1,36 @@
+syntax = "proto3";
+package auth;
+
+//Login message struct
+message AuthReq {
+    string username = 1;
+    string password = 2;
+    int64 auth_type = 3;   
+}
+
+message AuthRes {
+    string access_token = 1;
+    int64 expires_in = 2;
+    int64 refresh_expires_in = 3;
+    string refresh_token = 4;
+    string token_type = 5;
+    string session_state = 6;
+    string scope = 7;
+}
+
+//Register message struct
+message RegisterReq {
+    string email = 1;
+    string username = 2;
+    string password = 3;
+    int64 auth_type = 4;
+}
+
+message RegisterRes {
+    bool success = 1;
+}
+
+service Auth {
+    rpc Login(AuthReq) returns (AuthRes) {};
+    rpc Register(RegisterReq) returns (RegisterRes) {};
+}
