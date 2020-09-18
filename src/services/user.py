@@ -1,12 +1,21 @@
 from src.services.base import BaseService
-from src.daos.user import UserDAO
+from src.models.user import User
+
 
 class UserService(BaseService):
     def __init__(self):
-        super().__init__(UserDAO())
+        super().__init__(User())
 
-    def getListUser(self):
-        return self.dao.getListUser()
+    def create_new_user(self, id, email, username):
+        self.model = User(
+            id=id,
+            email=email,
+            username=username
+        )
+        return self.model.add()
 
-    def getUserByUsername(self, username):
-        return self.dao.getUserByUsername(username)
+    # def get_list_user(self):
+    #     return self.dao.get_list_user()
+
+    # def get_user_by_username(self, username):
+    #     return self.dao.get_user_by_username(username)

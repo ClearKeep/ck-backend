@@ -31,6 +31,6 @@ message RegisterRes {
 }
 
 service Auth {
-    rpc Login(AuthReq) returns (AuthRes) {};
-    rpc Register(RegisterReq) returns (RegisterRes) {};
+    rpc login(AuthReq) returns (AuthRes) {};
+    rpc register(RegisterReq) returns (RegisterRes) {};
 }

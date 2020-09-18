@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='proto/auth.proto',
   package='auth',
   syntax='proto3',
-  serialized_pb=_b('\n\x10proto/auth.proto\x12\x04\x61uth\"@\n\x07\x41uthReq\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x11\n\tauth_type\x18\x03 \x01(\x03\"\xa0\x01\n\x07\x41uthRes\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x01 \x01(\t\x12\x12\n\nexpires_in\x18\x02 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x03 \x01(\x03\x12\x15\n\rrefresh_token\x18\x04 \x01(\t\x12\x12\n\ntoken_type\x18\x05 \x01(\t\x12\x15\n\rsession_state\x18\x06 \x01(\t\x12\r\n\x05scope\x18\x07 \x01(\t\"S\n\x0bRegisterReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"\x1e\n\x0bRegisterRes\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\x63\n\x04\x41uth\x12\'\n\x05Login\x12\r.auth.AuthReq\x1a\r.auth.AuthRes\"\x00\x12\x32\n\x08Register\x12\x11.auth.RegisterReq\x1a\x11.auth.RegisterRes\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x10proto/auth.proto\x12\x04\x61uth\"@\n\x07\x41uthReq\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x11\n\tauth_type\x18\x03 \x01(\x03\"\xa0\x01\n\x07\x41uthRes\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x01 \x01(\t\x12\x12\n\nexpires_in\x18\x02 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x03 \x01(\x03\x12\x15\n\rrefresh_token\x18\x04 \x01(\t\x12\x12\n\ntoken_type\x18\x05 \x01(\t\x12\x15\n\rsession_state\x18\x06 \x01(\t\x12\r\n\x05scope\x18\x07 \x01(\t\"S\n\x0bRegisterReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"\x1e\n\x0bRegisterRes\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\x63\n\x04\x41uth\x12\'\n\x05login\x12\r.auth.AuthReq\x1a\r.auth.AuthRes\"\x00\x12\x32\n\x08register\x12\x11.auth.RegisterReq\x1a\x11.auth.RegisterRes\"\x00\x62\x06proto3')
 )
 
 
@@ -271,8 +271,8 @@ _AUTH = _descriptor.ServiceDescriptor(
   serialized_end=471,
   methods=[
   _descriptor.MethodDescriptor(
-    name='Login',
-    full_name='auth.Auth.Login',
+    name='login',
+    full_name='auth.Auth.login',
     index=0,
     containing_service=None,
     input_type=_AUTHREQ,
@@ -280,8 +280,8 @@ _AUTH = _descriptor.ServiceDescriptor(
     options=None,
   ),
   _descriptor.MethodDescriptor(
-    name='Register',
-    full_name='auth.Auth.Register',
+    name='register',
+    full_name='auth.Auth.register',
     index=1,
     containing_service=None,
     input_type=_REGISTERREQ,
@@ -313,13 +313,13 @@ try:
       Args:
         channel: A grpc.Channel.
       """
-      self.Login = channel.unary_unary(
-          '/auth.Auth/Login',
+      self.login = channel.unary_unary(
+          '/auth.Auth/login',
           request_serializer=AuthReq.SerializeToString,
           response_deserializer=AuthRes.FromString,
           )
-      self.Register = channel.unary_unary(
-          '/auth.Auth/Register',
+      self.register = channel.unary_unary(
+          '/auth.Auth/register',
           request_serializer=RegisterReq.SerializeToString,
           response_deserializer=RegisterRes.FromString,
           )
@@ -329,14 +329,14 @@ try:
     # missing associated documentation comment in .proto file
     pass
 
-    def Login(self, request, context):
+    def login(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.set_code(grpc.StatusCode.UNIMPLEMENTED)
       context.set_details('Method not implemented!')
       raise NotImplementedError('Method not implemented!')
 
-    def Register(self, request, context):
+    def register(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -346,13 +346,13 @@ try:
 
   def add_AuthServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        'Login': grpc.unary_unary_rpc_method_handler(
-            servicer.Login,
+        'login': grpc.unary_unary_rpc_method_handler(
+            servicer.login,
             request_deserializer=AuthReq.FromString,
             response_serializer=AuthRes.SerializeToString,
         ),
-        'Register': grpc.unary_unary_rpc_method_handler(
-            servicer.Register,
+        'register': grpc.unary_unary_rpc_method_handler(
+            servicer.register,
             request_deserializer=RegisterReq.FromString,
             response_serializer=RegisterRes.SerializeToString,
         ),
@@ -370,11 +370,11 @@ try:
     only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
     # missing associated documentation comment in .proto file
     pass
-    def Login(self, request, context):
+    def login(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def Register(self, request, context):
+    def register(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
@@ -388,16 +388,16 @@ try:
     only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
     # missing associated documentation comment in .proto file
     pass
-    def Login(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+    def login(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
       # missing associated documentation comment in .proto file
       pass
       raise NotImplementedError()
-    Login.future = None
-    def Register(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+    login.future = None
+    def register(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
       # missing associated documentation comment in .proto file
       pass
       raise NotImplementedError()
-    Register.future = None
+    register.future = None
 
 
   def beta_create_Auth_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
@@ -407,16 +407,16 @@ try:
     file not marked beta) for all further purposes. This function was
     generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
     request_deserializers = {
-      ('auth.Auth', 'Login'): AuthReq.FromString,
-      ('auth.Auth', 'Register'): RegisterReq.FromString,
+      ('auth.Auth', 'login'): AuthReq.FromString,
+      ('auth.Auth', 'register'): RegisterReq.FromString,
     }
     response_serializers = {
-      ('auth.Auth', 'Login'): AuthRes.SerializeToString,
-      ('auth.Auth', 'Register'): RegisterRes.SerializeToString,
+      ('auth.Auth', 'login'): AuthRes.SerializeToString,
+      ('auth.Auth', 'register'): RegisterRes.SerializeToString,
     }
     method_implementations = {
-      ('auth.Auth', 'Login'): face_utilities.unary_unary_inline(servicer.Login),
-      ('auth.Auth', 'Register'): face_utilities.unary_unary_inline(servicer.Register),
+      ('auth.Auth', 'login'): face_utilities.unary_unary_inline(servicer.login),
+      ('auth.Auth', 'register'): face_utilities.unary_unary_inline(servicer.register),
     }
     server_options = beta_implementations.server_options(request_deserializers=request_deserializers, response_serializers=response_serializers, thread_pool=pool, thread_pool_size=pool_size, default_timeout=default_timeout, maximum_timeout=maximum_timeout)
     return beta_implementations.server(method_implementations, options=server_options)
@@ -429,16 +429,16 @@ try:
     file not marked beta) for all further purposes. This function was
     generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
     request_serializers = {
-      ('auth.Auth', 'Login'): AuthReq.SerializeToString,
-      ('auth.Auth', 'Register'): RegisterReq.SerializeToString,
+      ('auth.Auth', 'login'): AuthReq.SerializeToString,
+      ('auth.Auth', 'register'): RegisterReq.SerializeToString,
     }
     response_deserializers = {
-      ('auth.Auth', 'Login'): AuthRes.FromString,
-      ('auth.Auth', 'Register'): RegisterRes.FromString,
+      ('auth.Auth', 'login'): AuthRes.FromString,
+      ('auth.Auth', 'register'): RegisterRes.FromString,
     }
     cardinalities = {
-      'Login': cardinality.Cardinality.UNARY_UNARY,
-      'Register': cardinality.Cardinality.UNARY_UNARY,
+      'login': cardinality.Cardinality.UNARY_UNARY,
+      'register': cardinality.Cardinality.UNARY_UNARY,
     }
     stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer, request_serializers=request_serializers, response_deserializers=response_deserializers, thread_pool=pool, thread_pool_size=pool_size)
     return beta_implementations.dynamic_stub(channel, 'auth.Auth', cardinalities, options=stub_options)

@@ -14,13 +14,13 @@ class UserStub(object):
     Args:
       channel: A grpc.Channel.
     """
-    self.GetUser = channel.unary_unary(
-        '/user.User/GetUser',
+    self.get_user = channel.unary_unary(
+        '/user.User/get_user',
         request_serializer=proto_dot_user__pb2.UsersRequest.SerializeToString,
         response_deserializer=proto_dot_user__pb2.UserResponse.FromString,
         )
-    self.GetUsers = channel.unary_unary(
-        '/user.User/GetUsers',
+    self.get_list_user = channel.unary_unary(
+        '/user.User/get_list_user',
         request_serializer=proto_dot_user__pb2.Empty.SerializeToString,
         response_deserializer=proto_dot_user__pb2.UsersResponseList.FromString,
         )
@@ -30,14 +30,14 @@ class UserServicer(object):
   # missing associated documentation comment in .proto file
   pass
 
-  def GetUser(self, request, context):
+  def get_user(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def GetUsers(self, request, context):
+  def get_list_user(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -47,13 +47,13 @@ class UserServicer(object):
 
 def add_UserServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      'GetUser': grpc.unary_unary_rpc_method_handler(
-          servicer.GetUser,
+      'get_user': grpc.unary_unary_rpc_method_handler(
+          servicer.get_user,
           request_deserializer=proto_dot_user__pb2.UsersRequest.FromString,
           response_serializer=proto_dot_user__pb2.UserResponse.SerializeToString,
       ),
-      'GetUsers': grpc.unary_unary_rpc_method_handler(
-          servicer.GetUsers,
+      'get_list_user': grpc.unary_unary_rpc_method_handler(
+          servicer.get_list_user,
           request_deserializer=proto_dot_user__pb2.Empty.FromString,
           response_serializer=proto_dot_user__pb2.UsersResponseList.SerializeToString,
       ),

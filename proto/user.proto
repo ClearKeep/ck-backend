@@ -19,6 +19,6 @@ message UsersResponseList {
 }
 
 service User {
-    rpc GetUser(UsersRequest) returns (UserResponse) {};
-    rpc GetUsers(Empty) returns (UsersResponseList) {};
+    rpc get_user(UsersRequest) returns (UserResponse) {};
+    rpc get_list_user(Empty) returns (UsersResponseList) {};
 }

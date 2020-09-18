@@ -14,13 +14,13 @@ class AuthStub(object):
     Args:
       channel: A grpc.Channel.
     """
-    self.Login = channel.unary_unary(
-        '/auth.Auth/Login',
+    self.login = channel.unary_unary(
+        '/auth.Auth/login',
         request_serializer=proto_dot_auth__pb2.AuthReq.SerializeToString,
         response_deserializer=proto_dot_auth__pb2.AuthRes.FromString,
         )
-    self.Register = channel.unary_unary(
-        '/auth.Auth/Register',
+    self.register = channel.unary_unary(
+        '/auth.Auth/register',
         request_serializer=proto_dot_auth__pb2.RegisterReq.SerializeToString,
         response_deserializer=proto_dot_auth__pb2.RegisterRes.FromString,
         )
@@ -30,14 +30,14 @@ class AuthServicer(object):
   # missing associated documentation comment in .proto file
   pass
 
-  def Login(self, request, context):
+  def login(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def Register(self, request, context):
+  def register(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -47,13 +47,13 @@ class AuthServicer(object):
 
 def add_AuthServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      'Login': grpc.unary_unary_rpc_method_handler(
-          servicer.Login,
+      'login': grpc.unary_unary_rpc_method_handler(
+          servicer.login,
           request_deserializer=proto_dot_auth__pb2.AuthReq.FromString,
           response_serializer=proto_dot_auth__pb2.AuthRes.SerializeToString,
       ),
-      'Register': grpc.unary_unary_rpc_method_handler(
-          servicer.Register,
+      'register': grpc.unary_unary_rpc_method_handler(
+          servicer.register,
           request_deserializer=proto_dot_auth__pb2.RegisterReq.FromString,
           response_serializer=proto_dot_auth__pb2.RegisterRes.SerializeToString,
       ),
