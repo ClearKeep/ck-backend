@@ -17,5 +17,3 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_connection
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-
-
