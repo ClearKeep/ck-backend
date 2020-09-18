@@ -6,11 +6,12 @@ class UserService(BaseService):
     def __init__(self):
         super().__init__(User())
 
-    def create_new_user(self, id, email, username):
+    def create_new_user(self, id, email, username, auth_source):
         self.model = User(
             id=id,
             email=email,
-            username=username
+            username=username,
+            auth_source=auth_source
         )
         return self.model.add()
 

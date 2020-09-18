@@ -54,9 +54,10 @@ class AuthController(BaseController):
         # register new user
         newUser = self.service.register_user(
             request.email, request.username, request.password)
+
         if newUser:
             # create new user in database
-            UserService().create_new_user(newUser, request.email, request.username)
+            UserService().create_new_user(newUser, request.email, request.username, 'account')
             return auth_messages.RegisterRes(success=True)
 
         # return error
