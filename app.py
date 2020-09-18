@@ -3,6 +3,10 @@ import time
 import grpc
 import logging
 
+from src.models.base import db
+# from flask import Flask
+# from flask_sqlalchemy import SQLAlchemy
+
 from utils.config import get_system_config
 
 import proto.user_pb2_grpc as user_service
@@ -17,9 +21,12 @@ def grpc_server(port):
     user_service.add_UserServicer_to_server(UserController(), server)
     auth_service.add_AuthServicer_to_server(AuthController(), server)
 
+    #create all table in database
+    db.create_all()
+
     server.add_insecure_port('[::]:{}'.format(port))
     server.start()
-
+    
     print("Listening on port {}..".format(port))
     server.wait_for_termination()
 

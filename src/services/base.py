@@ -1,4 +1,4 @@
 
 class BaseService:
-    def __init__(self, dao):
-        self.dao = dao
+    def __init__(self, model):
+        self.model = model

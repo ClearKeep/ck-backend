@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='proto/user.proto',
   package='user',
   syntax='proto3',
-  serialized_pb=_b('\n\x10proto/user.proto\x12\x04user\" \n\x0cUsersRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\";\n\x0cUserResponse\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"5\n\x11UsersResponseList\x12 \n\x04list\x18\x01 \x03(\x0b\x32\x12.user.UserResponse2o\n\x04User\x12\x33\n\x07GetUser\x12\x12.user.UsersRequest\x1a\x12.user.UserResponse\"\x00\x12\x32\n\x08GetUsers\x12\x0b.user.Empty\x1a\x17.user.UsersResponseList\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x10proto/user.proto\x12\x04user\" \n\x0cUsersRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\";\n\x0cUserResponse\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"5\n\x11UsersResponseList\x12 \n\x04list\x18\x01 \x03(\x0b\x32\x12.user.UserResponse2u\n\x04User\x12\x34\n\x08get_user\x12\x12.user.UsersRequest\x1a\x12.user.UserResponse\"\x00\x12\x37\n\rget_list_user\x12\x0b.user.Empty\x1a\x17.user.UsersResponseList\"\x00\x62\x06proto3')
 )
 
 
@@ -199,11 +199,11 @@ _USER = _descriptor.ServiceDescriptor(
   index=0,
   options=None,
   serialized_start=185,
-  serialized_end=296,
+  serialized_end=302,
   methods=[
   _descriptor.MethodDescriptor(
-    name='GetUser',
-    full_name='user.User.GetUser',
+    name='get_user',
+    full_name='user.User.get_user',
     index=0,
     containing_service=None,
     input_type=_USERSREQUEST,
@@ -211,8 +211,8 @@ _USER = _descriptor.ServiceDescriptor(
     options=None,
   ),
   _descriptor.MethodDescriptor(
-    name='GetUsers',
-    full_name='user.User.GetUsers',
+    name='get_list_user',
+    full_name='user.User.get_list_user',
     index=1,
     containing_service=None,
     input_type=_EMPTY,
@@ -244,13 +244,13 @@ try:
       Args:
         channel: A grpc.Channel.
       """
-      self.GetUser = channel.unary_unary(
-          '/user.User/GetUser',
+      self.get_user = channel.unary_unary(
+          '/user.User/get_user',
           request_serializer=UsersRequest.SerializeToString,
           response_deserializer=UserResponse.FromString,
           )
-      self.GetUsers = channel.unary_unary(
-          '/user.User/GetUsers',
+      self.get_list_user = channel.unary_unary(
+          '/user.User/get_list_user',
           request_serializer=Empty.SerializeToString,
           response_deserializer=UsersResponseList.FromString,
           )
@@ -260,14 +260,14 @@ try:
     # missing associated documentation comment in .proto file
     pass
 
-    def GetUser(self, request, context):
+    def get_user(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.set_code(grpc.StatusCode.UNIMPLEMENTED)
       context.set_details('Method not implemented!')
       raise NotImplementedError('Method not implemented!')
 
-    def GetUsers(self, request, context):
+    def get_list_user(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -277,13 +277,13 @@ try:
 
   def add_UserServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        'GetUser': grpc.unary_unary_rpc_method_handler(
-            servicer.GetUser,
+        'get_user': grpc.unary_unary_rpc_method_handler(
+            servicer.get_user,
             request_deserializer=UsersRequest.FromString,
             response_serializer=UserResponse.SerializeToString,
         ),
-        'GetUsers': grpc.unary_unary_rpc_method_handler(
-            servicer.GetUsers,
+        'get_list_user': grpc.unary_unary_rpc_method_handler(
+            servicer.get_list_user,
             request_deserializer=Empty.FromString,
             response_serializer=UsersResponseList.SerializeToString,
         ),
@@ -301,11 +301,11 @@ try:
     only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
     # missing associated documentation comment in .proto file
     pass
-    def GetUser(self, request, context):
+    def get_user(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def GetUsers(self, request, context):
+    def get_list_user(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
@@ -319,16 +319,16 @@ try:
     only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
     # missing associated documentation comment in .proto file
     pass
-    def GetUser(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+    def get_user(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
       # missing associated documentation comment in .proto file
       pass
       raise NotImplementedError()
-    GetUser.future = None
-    def GetUsers(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+    get_user.future = None
+    def get_list_user(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
       # missing associated documentation comment in .proto file
       pass
       raise NotImplementedError()
-    GetUsers.future = None
+    get_list_user.future = None
 
 
   def beta_create_User_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
@@ -338,16 +338,16 @@ try:
     file not marked beta) for all further purposes. This function was
     generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
     request_deserializers = {
-      ('user.User', 'GetUser'): UsersRequest.FromString,
-      ('user.User', 'GetUsers'): Empty.FromString,
+      ('user.User', 'get_list_user'): Empty.FromString,
+      ('user.User', 'get_user'): UsersRequest.FromString,
     }
     response_serializers = {
-      ('user.User', 'GetUser'): UserResponse.SerializeToString,
-      ('user.User', 'GetUsers'): UsersResponseList.SerializeToString,
+      ('user.User', 'get_list_user'): UsersResponseList.SerializeToString,
+      ('user.User', 'get_user'): UserResponse.SerializeToString,
     }
     method_implementations = {
-      ('user.User', 'GetUser'): face_utilities.unary_unary_inline(servicer.GetUser),
-      ('user.User', 'GetUsers'): face_utilities.unary_unary_inline(servicer.GetUsers),
+      ('user.User', 'get_list_user'): face_utilities.unary_unary_inline(servicer.get_list_user),
+      ('user.User', 'get_user'): face_utilities.unary_unary_inline(servicer.get_user),
     }
     server_options = beta_implementations.server_options(request_deserializers=request_deserializers, response_serializers=response_serializers, thread_pool=pool, thread_pool_size=pool_size, default_timeout=default_timeout, maximum_timeout=maximum_timeout)
     return beta_implementations.server(method_implementations, options=server_options)
@@ -360,16 +360,16 @@ try:
     file not marked beta) for all further purposes. This function was
     generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
     request_serializers = {
-      ('user.User', 'GetUser'): UsersRequest.SerializeToString,
-      ('user.User', 'GetUsers'): Empty.SerializeToString,
+      ('user.User', 'get_list_user'): Empty.SerializeToString,
+      ('user.User', 'get_user'): UsersRequest.SerializeToString,
     }
     response_deserializers = {
-      ('user.User', 'GetUser'): UserResponse.FromString,
-      ('user.User', 'GetUsers'): UsersResponseList.FromString,
+      ('user.User', 'get_list_user'): UsersResponseList.FromString,
+      ('user.User', 'get_user'): UserResponse.FromString,
     }
     cardinalities = {
-      'GetUser': cardinality.Cardinality.UNARY_UNARY,
-      'GetUsers': cardinality.Cardinality.UNARY_UNARY,
+      'get_list_user': cardinality.Cardinality.UNARY_UNARY,
+      'get_user': cardinality.Cardinality.UNARY_UNARY,
     }
     stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer, request_serializers=request_serializers, response_deserializers=response_deserializers, thread_pool=pool, thread_pool_size=pool_size)
     return beta_implementations.dynamic_stub(channel, 'user.User', cardinalities, options=stub_options)

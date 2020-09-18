@@ -14,6 +14,8 @@ psycopg2-binary = "*"
 google = "*"
 asyncio = "*"
 python-keycloak = "*"
+Flask = "*"
+Flask-SQLAlchemy = "*"
 
 [requires]
 python_version = "3.7"

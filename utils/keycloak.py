@@ -21,18 +21,21 @@ keycloak_admin = KeycloakAdmin(server_url=config_keycloak_admin['server_url'],
 
 class KeyCloakUtils:
     @staticmethod
-    def getWellKnow(self):
+    def get_well_know(self):
         return keycloak_openid.well_know()
 
     @staticmethod
-    def GetToken(user, password):
+    def get_token(user, password):
         return keycloak_openid.token(user, password)
 
     @staticmethod
-    def CreateUser(email, username, password):
+    def create_user(email, username, password):
         return keycloak_admin.create_user({"email": email,
                                            "username": username,
                                            "enabled": True,
                                            "firstName": "",
                                            "lastName": "",
                                            "credentials": [{"value": password, "type": "password", }]})
+    @staticmethod
+    def get_user_by_username(username):
+        return keycloak_admin.get_user(username)
