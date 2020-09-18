@@ -15,6 +15,8 @@ import proto.auth_pb2_grpc as auth_service
 from src.controllers.user import UserController
 from src.controllers.auth import AuthController
 
+from utils.logger import *
+
 def grpc_server(port):
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
@@ -23,11 +25,15 @@ def grpc_server(port):
 
     #create all table in database
     db.create_all()
+    #init log
+    create_timed_rotating_log('logs/logfile.log')
 
     server.add_insecure_port('[::]:{}'.format(port))
     server.start()
     
     print("Listening on port {}..".format(port))
+    logger.info("Listening on port {}..".format(port))
+
     server.wait_for_termination()
 
 if __name__ == '__main__':
