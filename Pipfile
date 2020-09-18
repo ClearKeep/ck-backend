@@ -16,6 +16,8 @@ asyncio = "*"
 python-keycloak = "*"
 Flask = "*"
 Flask-SQLAlchemy = "*"
+argon2 = "*"
+cryptography = "*"
 
 [requires]
 python_version = "3.7"

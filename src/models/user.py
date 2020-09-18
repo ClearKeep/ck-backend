@@ -13,10 +13,8 @@ class User(db.Model):
     auth_source = db.Column(db.String(50), unique=False, nullable=True)
     active = db.Column(db.Boolean, unique=False, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(
-        db.DateTime, default=datetime.now, onupdate=datetime.now)
-    deleted_at = db.Column(db.DateTime)
-
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    
     def add(self):
         db.session.add(self)
         db.session.commit()
