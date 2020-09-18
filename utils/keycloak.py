@@ -25,7 +25,7 @@ class KeyCloakUtils:
         return keycloak_openid.well_know()
 
     @staticmethod
-    def get_token(user, password):
+    def token(user, password):
         return keycloak_openid.token(user, password)
 
     @staticmethod
@@ -37,5 +37,5 @@ class KeyCloakUtils:
                                            "lastName": "",
                                            "credentials": [{"value": password, "type": "password", }]})
     @staticmethod
-    def get_user_by_username(username):
-        return keycloak_admin.get_user(username)
+    def get_user_id_by_username(username):
+        return keycloak_admin.get_user_id(username)
