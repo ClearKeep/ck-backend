@@ -1,9 +1,9 @@
 {
     "port": 5000,
     "db": {
-        "host": "localhost",
+        "host": "172.16.1.214",
         "port": "5432",
-        "name": "test",
+        "name": "ck-db",
         "username": "postgres",
         "password": "docker"
     },
@@ -19,5 +19,6 @@
         "password": "admin",
         "realm_name": "master",
         "client_secret_key": "3d576f53-27ad-4d37-847c-4e818df6464e"
-    }
+    },
+    "salt_data": "kjasdjaqwe98e9dsdjnahd"
 }

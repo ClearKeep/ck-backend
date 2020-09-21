@@ -4,19 +4,17 @@ from datetime import datetime
 
 class User(db.Model):
     id = db.Column(db.String(36), primary_key=True)
-    username = db.Column(db.String(100), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    first_name = db.Column(db.String(100), unique=False, nullable=True)
-    last_name = db.Column(db.String(100), unique=False, nullable=True)
+    username = db.Column(db.String(255), unique=True, nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    first_name = db.Column(db.String(255), unique=False, nullable=True)
+    last_name = db.Column(db.String(255), unique=False, nullable=True)
     status = db.Column(db.String(256), unique=False, nullable=True)
     avatar = db.Column(db.String(256), unique=False, nullable=True)
     auth_source = db.Column(db.String(50), unique=False, nullable=True)
     active = db.Column(db.Boolean, unique=False, nullable=True, default=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(
-        db.DateTime, default=datetime.now, onupdate=datetime.now)
-    deleted_at = db.Column(db.DateTime)
-
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    
     def add(self):
         db.session.add(self)
         db.session.commit()
