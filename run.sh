@@ -1,11 +1,6 @@
 #!/bin/bash
 
-# pipenv lock --clear
-# run with flask
-# export FLASK_APP=src/app.py
-# export FLASK_ENV=development
-# export PYTHONPATH=${PYTHONPATH}:src
-# pipenv run flask run
+export PYTHONPATH=./
 
 ARG=$1
 if [ ${#ARG} -gt 0 ]; then
