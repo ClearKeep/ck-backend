@@ -15,6 +15,7 @@ def create_timed_rotating_log(path):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
+#how to use
 # logger.debug('debug message')
 # logger.info('informational message')
 # logger.warning('warning')
