@@ -9,16 +9,20 @@ from utils.data import DataUtils
 from utils.keycloak import KeyCloakUtils
 from msg.message import Message
 from src.services.user import UserService
-
+from utils.encrypt import EncryptUtils
 
 class AuthController(BaseController):
     def __init__(self, *kwargs):
         self.service = AuthService()
+        self.user_service = UserService()
 
     def login(self, request, context):
         try:
             token = self.service.token(request.username, request.password)
-            print("token=", token)
+
+            introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+            user_info = self.user_service.find_by_id(introspect_token['sub'])
+
             if token:
                 return auth_messages.AuthRes(
                     access_token=token['access_token'],
@@ -27,7 +31,10 @@ class AuthController(BaseController):
                     refresh_token=token['refresh_token'],
                     token_type=token['token_type'],
                     session_state=token['session_state'],
-                    scope=token['scope'])
+                    scope=token['scope'],
+                    email=EncryptUtils.decrypt_data(user_info.email, request.password),
+                    username=EncryptUtils.decrypt_data(user_info.username, request.password)
+                    )
         except:
             # return error
             errors = []
@@ -57,7 +64,9 @@ class AuthController(BaseController):
 
         if newUser:
             # create new user in database
-            UserService().create_new_user(newUser, request.email, request.username, 'account')
+            email = EncryptUtils.encrypt_data(request.email, request.password)
+            username = EncryptUtils.encrypt_data(request.username, request.password)
+            UserService().create_new_user(newUser, email, username, 'account')
             return auth_messages.RegisterRes(success=True)
 
         # return error

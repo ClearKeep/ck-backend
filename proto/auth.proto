@@ -16,6 +16,8 @@ message AuthRes {
     string token_type = 5;
     string session_state = 6;
     string scope = 7;
+    string email = 8;
+    string username = 9;
 }
 
 //Register message struct

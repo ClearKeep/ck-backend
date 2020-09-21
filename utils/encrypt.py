@@ -7,16 +7,16 @@ class EncryptUtils:
     salt = get_system_config()['salt_data']
 
     @staticmethod
-    def encrypt_data(data_bytes, password):
+    def encrypt_data(data, password):
         encoded_hash = EncryptUtils.encoded_hash(password)
         encrypt = Fernet(encoded_hash)
-        return encrypt.encrypt(data_bytes)
+        return encrypt.encrypt(data.encode()).decode()
 
     @staticmethod
-    def decrypt_data(cipher_bytes, password):
+    def decrypt_data(cipher, password):
         encoded_hash = EncryptUtils.encoded_hash(password)
         decrypt = Fernet(encoded_hash)
-        return decrypt.decrypt(cipher_bytes)
+        return decrypt.decrypt(cipher.encode())
 
     @classmethod
     def encoded_hash(cls, password):

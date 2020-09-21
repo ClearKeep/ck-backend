@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='proto/auth.proto',
   package='auth',
   syntax='proto3',
-  serialized_pb=_b('\n\x10proto/auth.proto\x12\x04\x61uth\"@\n\x07\x41uthReq\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x11\n\tauth_type\x18\x03 \x01(\x03\"\xa0\x01\n\x07\x41uthRes\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x01 \x01(\t\x12\x12\n\nexpires_in\x18\x02 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x03 \x01(\x03\x12\x15\n\rrefresh_token\x18\x04 \x01(\t\x12\x12\n\ntoken_type\x18\x05 \x01(\t\x12\x15\n\rsession_state\x18\x06 \x01(\t\x12\r\n\x05scope\x18\x07 \x01(\t\"S\n\x0bRegisterReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"\x1e\n\x0bRegisterRes\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\x63\n\x04\x41uth\x12\'\n\x05login\x12\r.auth.AuthReq\x1a\r.auth.AuthRes\"\x00\x12\x32\n\x08register\x12\x11.auth.RegisterReq\x1a\x11.auth.RegisterRes\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x10proto/auth.proto\x12\x04\x61uth\"@\n\x07\x41uthReq\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x11\n\tauth_type\x18\x03 \x01(\x03\"\xc1\x01\n\x07\x41uthRes\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x01 \x01(\t\x12\x12\n\nexpires_in\x18\x02 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x03 \x01(\x03\x12\x15\n\rrefresh_token\x18\x04 \x01(\t\x12\x12\n\ntoken_type\x18\x05 \x01(\t\x12\x15\n\rsession_state\x18\x06 \x01(\t\x12\r\n\x05scope\x18\x07 \x01(\t\x12\r\n\x05\x65mail\x18\x08 \x01(\t\x12\x10\n\x08username\x18\t \x01(\t\"S\n\x0bRegisterReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"\x1e\n\x0bRegisterRes\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\x63\n\x04\x41uth\x12\'\n\x05login\x12\r.auth.AuthReq\x1a\r.auth.AuthRes\"\x00\x12\x32\n\x08register\x12\x11.auth.RegisterReq\x1a\x11.auth.RegisterRes\"\x00\x62\x06proto3')
 )
 
 
@@ -126,6 +126,20 @@ _AUTHRES = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='email', full_name='auth.AuthRes.email', index=7,
+      number=8, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='username', full_name='auth.AuthRes.username', index=8,
+      number=9, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -139,7 +153,7 @@ _AUTHRES = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=93,
-  serialized_end=253,
+  serialized_end=286,
 )
 
 
@@ -190,8 +204,8 @@ _REGISTERREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=255,
-  serialized_end=338,
+  serialized_start=288,
+  serialized_end=371,
 )
 
 
@@ -221,8 +235,8 @@ _REGISTERRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=340,
-  serialized_end=370,
+  serialized_start=373,
+  serialized_end=403,
 )
 
 DESCRIPTOR.message_types_by_name['AuthReq'] = _AUTHREQ
@@ -267,8 +281,8 @@ _AUTH = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=372,
-  serialized_end=471,
+  serialized_start=405,
+  serialized_end=504,
   methods=[
   _descriptor.MethodDescriptor(
     name='login',
