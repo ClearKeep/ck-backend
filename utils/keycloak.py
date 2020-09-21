@@ -25,6 +25,14 @@ class KeyCloakUtils:
         return keycloak_openid.well_know()
 
     @staticmethod
+    def introspect_token(access_token):
+        return keycloak_openid.introspect(access_token)
+
+    @staticmethod
+    def get_user_info(access_token):
+        return keycloak_openid.userinfo(access_token)
+
+    @staticmethod
     def token(user, password):
         return keycloak_openid.token(user, password)
 
