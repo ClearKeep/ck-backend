@@ -22,7 +22,6 @@ class AuthController(BaseController):
 
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             user_info = self.user_service.find_by_id(introspect_token['sub'])
-
             if token:
                 return auth_messages.AuthRes(
                     access_token=token['access_token'],
@@ -32,8 +31,7 @@ class AuthController(BaseController):
                     token_type=token['token_type'],
                     session_state=token['session_state'],
                     scope=token['scope'],
-                    email=EncryptUtils.decrypt_data(user_info.email, request.password),
-                    username=EncryptUtils.decrypt_data(user_info.username, request.password)
+                    hash_key=EncryptUtils.encoded_hash(request.password, introspect_token['sub']),
                     )
         except:
             # return error
@@ -64,9 +62,7 @@ class AuthController(BaseController):
 
         if newUser:
             # create new user in database
-            email = EncryptUtils.encrypt_data(request.email, request.password)
-            username = EncryptUtils.encrypt_data(request.username, request.password)
-            UserService().create_new_user(newUser, email, username, 'account')
+            UserService().create_new_user(newUser, request, 'account')
             return auth_messages.RegisterRes(success=True)
 
         # return error

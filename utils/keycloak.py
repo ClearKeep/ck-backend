@@ -47,3 +47,7 @@ class KeyCloakUtils:
     @staticmethod
     def get_user_id_by_username(username):
         return keycloak_admin.get_user_id(username)
+
+    @staticmethod
+    def set_user_password(user_id, password):
+        return keycloak_admin.set_user_password(user_id=user_id, password=password, temporary=True)

@@ -1,24 +1,32 @@
 from cryptography.fernet import Fernet
 import argon2
 import base64
-from utils.config import get_system_config
 
 class EncryptUtils:
-    salt = get_system_config()['salt_data']
 
     @staticmethod
-    def encrypt_data(data, password):
-        encoded_hash = EncryptUtils.encoded_hash(password)
-        encrypt = Fernet(encoded_hash)
+    def encrypt_with_hash(data, hash):
+        encrypt = Fernet(hash)
         return encrypt.encrypt(data.encode()).decode()
 
     @staticmethod
-    def decrypt_data(cipher, password):
-        encoded_hash = EncryptUtils.encoded_hash(password)
-        decrypt = Fernet(encoded_hash)
-        return decrypt.decrypt(cipher.encode())
+    def decrypt_with_hash(cipher, hash):
+        decrypt = Fernet(hash)
+        return decrypt.decrypt(cipher.encode()).decode()
 
+    @staticmethod
+    def encrypt_data(data, password, salt):
+        encoded_hash = EncryptUtils.encoded_hash(password, salt)
+        return EncryptUtils.encrypt_with_hash(data, encoded_hash)
+
+    @staticmethod
+    def decrypt_data(cipher, password, salt):
+        encoded_hash = EncryptUtils.encoded_hash(password, salt)
+        return EncryptUtils.decrypt_with_hash(cipher, encoded_hash)
+    
     @classmethod
-    def encoded_hash(cls, password):
-        password_hash = argon2.argon2_hash(password=password, salt=cls.salt)
+    def encoded_hash(cls, password, salt):
+        password_hash = argon2.argon2_hash(password=password, salt=salt)
         return base64.urlsafe_b64encode(password_hash[:32])
+
+    

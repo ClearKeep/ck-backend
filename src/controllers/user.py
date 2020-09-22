@@ -6,6 +6,7 @@ from src.controllers.base import *
 from src.services.user import UserService
 from utils.data import DataUtils
 from utils.keycloak import KeyCloakUtils
+from utils.encrypt import EncryptUtils
 
 class UserController(BaseController):
     def __init__(self, *kwargs):
@@ -31,3 +32,18 @@ class UserController(BaseController):
         data = list(map(lambda item: user_messages.UserResponse(**DataUtils.object_as_dict(item)), found))
         # data = list(map(lambda item: user_messages.UserResponse(id=item.id, username=item.username, email=item.email), found))
         return user_messages.UsersResponseList(list=data)
+
+    def change_password(self, request, context):
+        token = dict(context.invocation_metadata())
+        introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+        print('asdasdasd', introspect_token)
+        # self.service.change_password()
+        self.service.change_password(request, request.old_password, request.new_password, introspect_token['sub'])
+        # user_info = self.service.find_by_id(introspect_token['sub'])
+        # try:
+        #     email = EncryptUtils.decrypt_data(user_info.email, request.old_password, introspect_token['sub'])
+        # except Exception as e:
+        #     print(e)
+        # print(email)
+
+        # print(request)

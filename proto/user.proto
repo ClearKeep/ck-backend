@@ -18,7 +18,17 @@ message UsersResponseList {
     repeated UserResponse list = 1;
 }
 
+message ChangePassword {
+    string old_password = 1;
+    string new_password = 2;
+}
+
+message ChangePasswordRes {
+    bool success = 1;
+}
+
 service User {
     rpc get_user(UsersRequest) returns (UserResponse) {};
     rpc get_list_user(Empty) returns (UsersResponseList) {};
+    rpc change_password(ChangePassword) returns (ChangePasswordRes) {};
 }

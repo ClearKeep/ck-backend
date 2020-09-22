@@ -13,9 +13,9 @@ class AuthInterceptor(grpc.ServerInterceptor):
         #       method=u'/helloworld.Greeter/SayHello',
         #       invocation_metadata=...)
         method_name = handler_call_details.method.split('/')[-1]
-        print("MiddleWare Method Data=", method_name)
+        # print("MiddleWare Method Data=", method_name)
         invocation_metadata = handler_call_details.invocation_metadata
-        print("MiddleWare Header Data=", invocation_metadata)
+        # print("MiddleWare Header Data=", invocation_metadata)
        
         return continuation(handler_call_details)
         # expected_metadata = (_SIGNATURE_HEADER_KEY, method_name[::-1])
