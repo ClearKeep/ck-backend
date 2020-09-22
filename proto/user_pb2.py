@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='proto/user.proto',
   package='user',
   syntax='proto3',
-  serialized_pb=_b('\n\x10proto/user.proto\x12\x04user\" \n\x0cUsersRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\";\n\x0cUserResponse\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"5\n\x11UsersResponseList\x12 \n\x04list\x18\x01 \x03(\x0b\x32\x12.user.UserResponse2u\n\x04User\x12\x34\n\x08get_user\x12\x12.user.UsersRequest\x1a\x12.user.UserResponse\"\x00\x12\x37\n\rget_list_user\x12\x0b.user.Empty\x1a\x17.user.UsersResponseList\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x10proto/user.proto\x12\x04user\" \n\x0cUsersRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\";\n\x0cUserResponse\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"5\n\x11UsersResponseList\x12 \n\x04list\x18\x01 \x03(\x0b\x32\x12.user.UserResponse\"<\n\x0e\x43hangePassword\x12\x14\n\x0cold_password\x18\x01 \x01(\t\x12\x14\n\x0cnew_password\x18\x02 \x01(\t\"$\n\x11\x43hangePasswordRes\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\xb9\x01\n\x04User\x12\x34\n\x08get_user\x12\x12.user.UsersRequest\x1a\x12.user.UserResponse\"\x00\x12\x37\n\rget_list_user\x12\x0b.user.Empty\x1a\x17.user.UsersResponseList\"\x00\x12\x42\n\x0f\x63hange_password\x12\x14.user.ChangePassword\x1a\x17.user.ChangePasswordRes\"\x00\x62\x06proto3')
 )
 
 
@@ -155,11 +155,82 @@ _USERSRESPONSELIST = _descriptor.Descriptor(
   serialized_end=183,
 )
 
+
+_CHANGEPASSWORD = _descriptor.Descriptor(
+  name='ChangePassword',
+  full_name='user.ChangePassword',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='old_password', full_name='user.ChangePassword.old_password', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='new_password', full_name='user.ChangePassword.new_password', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=185,
+  serialized_end=245,
+)
+
+
+_CHANGEPASSWORDRES = _descriptor.Descriptor(
+  name='ChangePasswordRes',
+  full_name='user.ChangePasswordRes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='success', full_name='user.ChangePasswordRes.success', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=247,
+  serialized_end=283,
+)
+
 _USERSRESPONSELIST.fields_by_name['list'].message_type = _USERRESPONSE
 DESCRIPTOR.message_types_by_name['UsersRequest'] = _USERSREQUEST
 DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
 DESCRIPTOR.message_types_by_name['UserResponse'] = _USERRESPONSE
 DESCRIPTOR.message_types_by_name['UsersResponseList'] = _USERSRESPONSELIST
+DESCRIPTOR.message_types_by_name['ChangePassword'] = _CHANGEPASSWORD
+DESCRIPTOR.message_types_by_name['ChangePasswordRes'] = _CHANGEPASSWORDRES
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 UsersRequest = _reflection.GeneratedProtocolMessageType('UsersRequest', (_message.Message,), dict(
@@ -190,6 +261,20 @@ UsersResponseList = _reflection.GeneratedProtocolMessageType('UsersResponseList'
   ))
 _sym_db.RegisterMessage(UsersResponseList)
 
+ChangePassword = _reflection.GeneratedProtocolMessageType('ChangePassword', (_message.Message,), dict(
+  DESCRIPTOR = _CHANGEPASSWORD,
+  __module__ = 'proto.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.ChangePassword)
+  ))
+_sym_db.RegisterMessage(ChangePassword)
+
+ChangePasswordRes = _reflection.GeneratedProtocolMessageType('ChangePasswordRes', (_message.Message,), dict(
+  DESCRIPTOR = _CHANGEPASSWORDRES,
+  __module__ = 'proto.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.ChangePasswordRes)
+  ))
+_sym_db.RegisterMessage(ChangePasswordRes)
+
 
 
 _USER = _descriptor.ServiceDescriptor(
@@ -198,8 +283,8 @@ _USER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=185,
-  serialized_end=302,
+  serialized_start=286,
+  serialized_end=471,
   methods=[
   _descriptor.MethodDescriptor(
     name='get_user',
@@ -217,6 +302,15 @@ _USER = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_EMPTY,
     output_type=_USERSRESPONSELIST,
+    options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='change_password',
+    full_name='user.User.change_password',
+    index=2,
+    containing_service=None,
+    input_type=_CHANGEPASSWORD,
+    output_type=_CHANGEPASSWORDRES,
     options=None,
   ),
 ])
@@ -254,6 +348,11 @@ try:
           request_serializer=Empty.SerializeToString,
           response_deserializer=UsersResponseList.FromString,
           )
+      self.change_password = channel.unary_unary(
+          '/user.User/change_password',
+          request_serializer=ChangePassword.SerializeToString,
+          response_deserializer=ChangePasswordRes.FromString,
+          )
 
 
   class UserServicer(object):
@@ -274,6 +373,13 @@ try:
       context.set_details('Method not implemented!')
       raise NotImplementedError('Method not implemented!')
 
+    def change_password(self, request, context):
+      # missing associated documentation comment in .proto file
+      pass
+      context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+      context.set_details('Method not implemented!')
+      raise NotImplementedError('Method not implemented!')
+
 
   def add_UserServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -286,6 +392,11 @@ try:
             servicer.get_list_user,
             request_deserializer=Empty.FromString,
             response_serializer=UsersResponseList.SerializeToString,
+        ),
+        'change_password': grpc.unary_unary_rpc_method_handler(
+            servicer.change_password,
+            request_deserializer=ChangePassword.FromString,
+            response_serializer=ChangePasswordRes.SerializeToString,
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -309,6 +420,10 @@ try:
       # missing associated documentation comment in .proto file
       pass
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
+    def change_password(self, request, context):
+      # missing associated documentation comment in .proto file
+      pass
+      context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
 
 
   class BetaUserStub(object):
@@ -329,6 +444,11 @@ try:
       pass
       raise NotImplementedError()
     get_list_user.future = None
+    def change_password(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+      # missing associated documentation comment in .proto file
+      pass
+      raise NotImplementedError()
+    change_password.future = None
 
 
   def beta_create_User_server(servicer, pool=None, pool_size=None, default_timeout=None, maximum_timeout=None):
@@ -338,14 +458,17 @@ try:
     file not marked beta) for all further purposes. This function was
     generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
     request_deserializers = {
+      ('user.User', 'change_password'): ChangePassword.FromString,
       ('user.User', 'get_list_user'): Empty.FromString,
       ('user.User', 'get_user'): UsersRequest.FromString,
     }
     response_serializers = {
+      ('user.User', 'change_password'): ChangePasswordRes.SerializeToString,
       ('user.User', 'get_list_user'): UsersResponseList.SerializeToString,
       ('user.User', 'get_user'): UserResponse.SerializeToString,
     }
     method_implementations = {
+      ('user.User', 'change_password'): face_utilities.unary_unary_inline(servicer.change_password),
       ('user.User', 'get_list_user'): face_utilities.unary_unary_inline(servicer.get_list_user),
       ('user.User', 'get_user'): face_utilities.unary_unary_inline(servicer.get_user),
     }
@@ -360,14 +483,17 @@ try:
     file not marked beta) for all further purposes. This function was
     generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
     request_serializers = {
+      ('user.User', 'change_password'): ChangePassword.SerializeToString,
       ('user.User', 'get_list_user'): Empty.SerializeToString,
       ('user.User', 'get_user'): UsersRequest.SerializeToString,
     }
     response_deserializers = {
+      ('user.User', 'change_password'): ChangePasswordRes.FromString,
       ('user.User', 'get_list_user'): UsersResponseList.FromString,
       ('user.User', 'get_user'): UserResponse.FromString,
     }
     cardinalities = {
+      'change_password': cardinality.Cardinality.UNARY_UNARY,
       'get_list_user': cardinality.Cardinality.UNARY_UNARY,
       'get_user': cardinality.Cardinality.UNARY_UNARY,
     }

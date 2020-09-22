@@ -19,6 +19,5 @@
         "password": "admin",
         "realm_name": "master",
         "client_secret_key": "3d576f53-27ad-4d37-847c-4e818df6464e"
-    },
-    "salt_data": "kjasdjaqwe98e9dsdjnahd"
+    }
 }

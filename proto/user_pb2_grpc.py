@@ -24,6 +24,11 @@ class UserStub(object):
         request_serializer=proto_dot_user__pb2.Empty.SerializeToString,
         response_deserializer=proto_dot_user__pb2.UsersResponseList.FromString,
         )
+    self.change_password = channel.unary_unary(
+        '/user.User/change_password',
+        request_serializer=proto_dot_user__pb2.ChangePassword.SerializeToString,
+        response_deserializer=proto_dot_user__pb2.ChangePasswordRes.FromString,
+        )
 
 
 class UserServicer(object):
@@ -44,6 +49,13 @@ class UserServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def change_password(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_UserServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -56,6 +68,11 @@ def add_UserServicer_to_server(servicer, server):
           servicer.get_list_user,
           request_deserializer=proto_dot_user__pb2.Empty.FromString,
           response_serializer=proto_dot_user__pb2.UsersResponseList.SerializeToString,
+      ),
+      'change_password': grpc.unary_unary_rpc_method_handler(
+          servicer.change_password,
+          request_deserializer=proto_dot_user__pb2.ChangePassword.FromString,
+          response_serializer=proto_dot_user__pb2.ChangePasswordRes.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
