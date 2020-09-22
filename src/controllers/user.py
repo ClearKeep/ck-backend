@@ -36,14 +36,5 @@ class UserController(BaseController):
     def change_password(self, request, context):
         token = dict(context.invocation_metadata())
         introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-        print('asdasdasd', introspect_token)
-        # self.service.change_password()
         self.service.change_password(request, request.old_password, request.new_password, introspect_token['sub'])
-        # user_info = self.service.find_by_id(introspect_token['sub'])
-        # try:
-        #     email = EncryptUtils.decrypt_data(user_info.email, request.old_password, introspect_token['sub'])
-        # except Exception as e:
-        #     print(e)
-        # print(email)
-
-        # print(request)
+        return user_messages.ChangePasswordRes(success=True)
