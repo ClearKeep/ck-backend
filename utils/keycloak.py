@@ -50,4 +50,4 @@ class KeyCloakUtils:
 
     @staticmethod
     def set_user_password(user_id, password):
-        return keycloak_admin.set_user_password(user_id=user_id, password=password, temporary=True)
+        return keycloak_admin.set_user_password(user_id=user_id, password=password, temporary=False)
