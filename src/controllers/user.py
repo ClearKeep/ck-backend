@@ -41,6 +41,7 @@ class UserController(BaseController):
         self.service.change_password(request, request.old_password, request.new_password, introspect_token['sub'])
         return user_messages.SuccessResponse(success=True)
 
+    @auth_required
     def get_user_info(self, request, context):
         header_data = dict(context.invocation_metadata())
         introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
