@@ -14,20 +14,20 @@ class UserStub(object):
     Args:
       channel: A grpc.Channel.
     """
-    self.get_user = channel.unary_unary(
-        '/user.User/get_user',
-        request_serializer=proto_dot_user__pb2.UsersRequest.SerializeToString,
-        response_deserializer=proto_dot_user__pb2.UserResponse.FromString,
-        )
-    self.get_list_user = channel.unary_unary(
-        '/user.User/get_list_user',
+    self.get_user_info = channel.unary_unary(
+        '/user.User/get_user_info',
         request_serializer=proto_dot_user__pb2.Empty.SerializeToString,
-        response_deserializer=proto_dot_user__pb2.UsersResponseList.FromString,
+        response_deserializer=proto_dot_user__pb2.UserInfoResponse.FromString,
+        )
+    self.update_user_info = channel.unary_unary(
+        '/user.User/update_user_info',
+        request_serializer=proto_dot_user__pb2.UpdateUserInfoRequeset.SerializeToString,
+        response_deserializer=proto_dot_user__pb2.SuccessResponse.FromString,
         )
     self.change_password = channel.unary_unary(
         '/user.User/change_password',
         request_serializer=proto_dot_user__pb2.ChangePassword.SerializeToString,
-        response_deserializer=proto_dot_user__pb2.ChangePasswordRes.FromString,
+        response_deserializer=proto_dot_user__pb2.SuccessResponse.FromString,
         )
 
 
@@ -35,14 +35,15 @@ class UserServicer(object):
   # missing associated documentation comment in .proto file
   pass
 
-  def get_user(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+  def get_user_info(self, request, context):
+    """rpc get_user(UsersRequest) returns (UserResponse) {};
+    rpc get_list_user(Empty) returns (UsersResponseList) {};
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def get_list_user(self, request, context):
+  def update_user_info(self, request, context):
     # missing associated documentation comment in .proto file
     pass
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -59,20 +60,20 @@ class UserServicer(object):
 
 def add_UserServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      'get_user': grpc.unary_unary_rpc_method_handler(
-          servicer.get_user,
-          request_deserializer=proto_dot_user__pb2.UsersRequest.FromString,
-          response_serializer=proto_dot_user__pb2.UserResponse.SerializeToString,
-      ),
-      'get_list_user': grpc.unary_unary_rpc_method_handler(
-          servicer.get_list_user,
+      'get_user_info': grpc.unary_unary_rpc_method_handler(
+          servicer.get_user_info,
           request_deserializer=proto_dot_user__pb2.Empty.FromString,
-          response_serializer=proto_dot_user__pb2.UsersResponseList.SerializeToString,
+          response_serializer=proto_dot_user__pb2.UserInfoResponse.SerializeToString,
+      ),
+      'update_user_info': grpc.unary_unary_rpc_method_handler(
+          servicer.update_user_info,
+          request_deserializer=proto_dot_user__pb2.UpdateUserInfoRequeset.FromString,
+          response_serializer=proto_dot_user__pb2.SuccessResponse.SerializeToString,
       ),
       'change_password': grpc.unary_unary_rpc_method_handler(
           servicer.change_password,
           request_deserializer=proto_dot_user__pb2.ChangePassword.FromString,
-          response_serializer=proto_dot_user__pb2.ChangePasswordRes.SerializeToString,
+          response_serializer=proto_dot_user__pb2.SuccessResponse.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
