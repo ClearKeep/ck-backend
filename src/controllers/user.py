@@ -8,6 +8,8 @@ from utils.data import DataUtils
 from utils.keycloak import KeyCloakUtils
 from utils.encrypt import EncryptUtils
 
+from middlewares.permission import *
+
 class UserController(BaseController):
     def __init__(self, *kwargs):
         self.service = UserService()

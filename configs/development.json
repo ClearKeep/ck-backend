@@ -19,5 +19,15 @@
         "password": "admin",
         "realm_name": "master",
         "client_secret_key": "3d576f53-27ad-4d37-847c-4e818df6464e"
-    }
+    },
+    "fd_server": [
+        {
+            "domain": "localhost",
+            "ip_address": "0.0.0.0"    
+        },
+        {
+            "domain": "localhost",
+            "ip_address": "0.0.0.0"    
+        }
+    ]
 }

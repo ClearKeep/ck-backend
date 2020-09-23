@@ -21,7 +21,8 @@ from middlewares.auth_interceptor import AuthInterceptor
 
 def grpc_server(port):
 
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), interceptors=(AuthInterceptor(),))
+    #server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), interceptors=(AuthInterceptor(),))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     user_service.add_UserServicer_to_server(UserController(), server)
     auth_service.add_AuthServicer_to_server(AuthController(), server)
 
