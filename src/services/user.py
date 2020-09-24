@@ -60,8 +60,3 @@ class UserService(BaseService):
     def update_user_info(self,request, user_id, hash_key):
         print("update_user_info service")
 
-    # def get_list_user(self):
-    #     return self.dao.get_list_user()
-
-    # def get_user_by_username(self, username):
-    #     return self.dao.get_user_by_username(username)

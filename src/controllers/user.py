@@ -13,28 +13,8 @@ from middlewares.permission import *
 class UserController(BaseController):
     def __init__(self, *kwargs):
         self.service = UserService()
-
-    def get_user(self, request, context):
-        username = request.username
-        found = self.service.get_user_by_username(username)
-        # token = KeyCloakUtils.getToken('tulp', '123456')
-        # print(token)
-        if found:
-            return user_messages.UserResponse(**DataUtils.object_as_dict(found))
-
-        context.set_details('user is not found')
-        context.set_code(grpc.StatusCode.NOT_FOUND)
-
-        return user_messages.UserResponse()
-
+    
     @auth_required
-    def get_list_user(self, request, context):
-
-        found = self.service.get_list_user()
-        data = list(map(lambda item: user_messages.UserResponse(**DataUtils.object_as_dict(item)), found))
-        # data = list(map(lambda item: user_messages.UserResponse(id=item.id, username=item.username, email=item.email), found))
-        return user_messages.UsersResponseList(list=data)
-
     def change_password(self, request, context):
         header_data = dict(context.invocation_metadata())
         introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])

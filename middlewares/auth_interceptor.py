@@ -50,7 +50,3 @@ class AuthInterceptor(grpc.ServerInterceptor):
                 return False
         except Exception as e:
             return False
-
-# config = get_system_config()
-# for item in config['fd_server']:
-# print(item['ip_address'])
