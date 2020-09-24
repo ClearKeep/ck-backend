@@ -34,8 +34,9 @@ class UserController(BaseController):
             last_name = user_info.last_name
         )
 
+    @auth_required
     def update_user_info(self, request, context):
-        print('update_user_info', request)
+        header_data = dict(context.invocation_metadata())
+        introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+        self.service.update_user_info(request, introspect_token['sub'], header_data['hash_key'])
         return user_messages.SuccessResponse(success=True)
-
-    
