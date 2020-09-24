@@ -57,6 +57,22 @@ class UserService(BaseService):
             print(e)
             raise SimpleException('get user info error')
 
-    def update_user_info(self,request, user_id, hash_key):
-        print("update_user_info service")
+    def update_user_info(self, request, user_id, hash_key):
+        try:
+            user_info = self.find_by_id(user_id)
+            if request.username:
+                user_info.username = request.username
 
+            if request.email:
+                user_info.email = EncryptUtils.encrypt_with_hash(request.email, hash_key)
+
+            if request.first_name:
+                user_info.first_name = EncryptUtils.encrypt_with_hash(request.first_name, hash_key)
+
+            if request.last_name:
+                user_info.last_name = EncryptUtils.encrypt_with_hash(request.last_name, hash_key)
+
+            return user_info.update()
+        except Exception as e:
+            print(e)
+            raise SimpleException('update user profile error')
