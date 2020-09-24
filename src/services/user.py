@@ -41,6 +41,25 @@ class UserService(BaseService):
             print(e)
             raise SimpleException('change password error')
 
+    def get_user_info(self, user_id, hash_key):
+        try:
+            user_info = self.find_by_id(user_id)
+            email = EncryptUtils.decrypt_with_hash(user_info.email, hash_key)
+            first_name = EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key)
+            last_name = EncryptUtils.decrypt_with_hash(user_info.last_name, hash_key)
+
+            user_info.email = email
+            user_info.first_name = first_name
+            user_info.last_name = last_name
+            return user_info
+
+        except Exception as e:
+            print(e)
+            raise SimpleException('get user info error')
+
+    def update_user_info(self,request, user_id, hash_key):
+        print("update_user_info service")
+
     # def get_list_user(self):
     #     return self.dao.get_list_user()
 

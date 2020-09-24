@@ -16,11 +16,15 @@ class EncryptUtils:
 
     @staticmethod
     def encrypt_data(data, password, salt):
+        if len(data) == 0:
+            return ''
         encoded_hash = EncryptUtils.encoded_hash(password, salt)
         return EncryptUtils.encrypt_with_hash(data, encoded_hash)
 
     @staticmethod
     def decrypt_data(cipher, password, salt):
+        if len(cipher) == 0:
+            return ''
         encoded_hash = EncryptUtils.encoded_hash(password, salt)
         return EncryptUtils.decrypt_with_hash(cipher, encoded_hash)
     
