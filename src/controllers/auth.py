@@ -21,7 +21,7 @@ class AuthController(BaseController):
             token = self.service.token(request.username, request.password)
 
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            user_info = self.user_service.find_by_id(introspect_token['sub'])
+
             if token:
                 return auth_messages.AuthRes(
                     access_token=token['access_token'],
