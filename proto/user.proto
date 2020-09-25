@@ -29,7 +29,7 @@ message SuccessResponse {
     bool success = 1;
 }
 
-message UpdateUserInfoRequeset {
+message UpdateUserInfoRequest {
     string username = 1;
     string email = 2;
     string first_name = 3;
@@ -40,6 +40,6 @@ service User {
     // rpc get_user(UsersRequest) returns (UserResponse) {};
     // rpc get_list_user(Empty) returns (UsersResponseList) {};
     rpc get_user_info(Empty) returns (UserInfoResponse) {};
-    rpc update_user_info(UpdateUserInfoRequeset) returns (SuccessResponse) {};
+    rpc update_user_info(UpdateUserInfoRequest) returns (SuccessResponse) {};
     rpc change_password(ChangePassword) returns (SuccessResponse) {};
 }
