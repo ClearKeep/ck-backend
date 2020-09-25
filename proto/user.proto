@@ -8,14 +8,16 @@ message UsersRequest {
 
 message Empty {}
 
-message UserResponse {
-    int64 id = 1;
+message UserInfoResponse {
+    string id = 1;
     string username = 2;
     string email = 3;
+    string first_name = 5;
+    string last_name = 6;
 }
 
 message UsersResponseList {
-    repeated UserResponse list = 1;
+    repeated UserInfoResponse list = 1;
 }
 
 message ChangePassword {
@@ -23,12 +25,21 @@ message ChangePassword {
     string new_password = 2;
 }
 
-message ChangePasswordRes {
+message SuccessResponse {
     bool success = 1;
 }
 
+message UpdateUserInfoRequest {
+    string username = 1;
+    string email = 2;
+    string first_name = 3;
+    string last_name = 4;
+}
+
 service User {
-    rpc get_user(UsersRequest) returns (UserResponse) {};
-    rpc get_list_user(Empty) returns (UsersResponseList) {};
-    rpc change_password(ChangePassword) returns (ChangePasswordRes) {};
+    // rpc get_user(UsersRequest) returns (UserResponse) {};
+    // rpc get_list_user(Empty) returns (UsersResponseList) {};
+    rpc get_user_info(Empty) returns (UserInfoResponse) {};
+    rpc update_user_info(UpdateUserInfoRequest) returns (SuccessResponse) {};
+    rpc change_password(ChangePassword) returns (SuccessResponse) {};
 }

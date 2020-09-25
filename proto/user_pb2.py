@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='proto/user.proto',
   package='user',
   syntax='proto3',
-  serialized_pb=_b('\n\x10proto/user.proto\x12\x04user\" \n\x0cUsersRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\";\n\x0cUserResponse\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"5\n\x11UsersResponseList\x12 \n\x04list\x18\x01 \x03(\x0b\x32\x12.user.UserResponse\"<\n\x0e\x43hangePassword\x12\x14\n\x0cold_password\x18\x01 \x01(\t\x12\x14\n\x0cnew_password\x18\x02 \x01(\t\"$\n\x11\x43hangePasswordRes\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\xb9\x01\n\x04User\x12\x34\n\x08get_user\x12\x12.user.UsersRequest\x1a\x12.user.UserResponse\"\x00\x12\x37\n\rget_list_user\x12\x0b.user.Empty\x1a\x17.user.UsersResponseList\"\x00\x12\x42\n\x0f\x63hange_password\x12\x14.user.ChangePassword\x1a\x17.user.ChangePasswordRes\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x10proto/user.proto\x12\x04user\" \n\x0cUsersRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\"f\n\x10UserInfoResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x12\n\nfirst_name\x18\x05 \x01(\t\x12\x11\n\tlast_name\x18\x06 \x01(\t\"9\n\x11UsersResponseList\x12$\n\x04list\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"<\n\x0e\x43hangePassword\x12\x14\n\x0cold_password\x18\x01 \x01(\t\x12\x14\n\x0cnew_password\x18\x02 \x01(\t\"\"\n\x0fSuccessResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"`\n\x16UpdateUserInfoRequeset\x12\x10\n\x08username\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x12\n\nfirst_name\x18\x03 \x01(\t\x12\x11\n\tlast_name\x18\x04 \x01(\t2\xcb\x01\n\x04User\x12\x36\n\rget_user_info\x12\x0b.user.Empty\x1a\x16.user.UserInfoResponse\"\x00\x12I\n\x10update_user_info\x12\x1c.user.UpdateUserInfoRequeset\x1a\x15.user.SuccessResponse\"\x00\x12@\n\x0f\x63hange_password\x12\x14.user.ChangePassword\x1a\x15.user.SuccessResponse\"\x00\x62\x06proto3')
 )
 
 
@@ -80,30 +80,44 @@ _EMPTY = _descriptor.Descriptor(
 )
 
 
-_USERRESPONSE = _descriptor.Descriptor(
-  name='UserResponse',
-  full_name='user.UserResponse',
+_USERINFORESPONSE = _descriptor.Descriptor(
+  name='UserInfoResponse',
+  full_name='user.UserInfoResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='id', full_name='user.UserResponse.id', index=0,
-      number=1, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
+      name='id', full_name='user.UserInfoResponse.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='username', full_name='user.UserResponse.username', index=1,
+      name='username', full_name='user.UserInfoResponse.username', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='email', full_name='user.UserResponse.email', index=2,
+      name='email', full_name='user.UserInfoResponse.email', index=2,
       number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='first_name', full_name='user.UserInfoResponse.first_name', index=3,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='last_name', full_name='user.UserInfoResponse.last_name', index=4,
+      number=6, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -121,7 +135,7 @@ _USERRESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=69,
-  serialized_end=128,
+  serialized_end=171,
 )
 
 
@@ -151,8 +165,8 @@ _USERSRESPONSELIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=130,
-  serialized_end=183,
+  serialized_start=173,
+  serialized_end=230,
 )
 
 
@@ -189,20 +203,20 @@ _CHANGEPASSWORD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=185,
-  serialized_end=245,
+  serialized_start=232,
+  serialized_end=292,
 )
 
 
-_CHANGEPASSWORDRES = _descriptor.Descriptor(
-  name='ChangePasswordRes',
-  full_name='user.ChangePasswordRes',
+_SUCCESSRESPONSE = _descriptor.Descriptor(
+  name='SuccessResponse',
+  full_name='user.SuccessResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='success', full_name='user.ChangePasswordRes.success', index=0,
+      name='success', full_name='user.SuccessResponse.success', index=0,
       number=1, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
@@ -220,17 +234,70 @@ _CHANGEPASSWORDRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=247,
-  serialized_end=283,
+  serialized_start=294,
+  serialized_end=328,
 )
 
-_USERSRESPONSELIST.fields_by_name['list'].message_type = _USERRESPONSE
+
+_UPDATEUSERINFOREQUESET = _descriptor.Descriptor(
+  name='UpdateUserInfoRequeset',
+  full_name='user.UpdateUserInfoRequeset',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='username', full_name='user.UpdateUserInfoRequeset.username', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='email', full_name='user.UpdateUserInfoRequeset.email', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='first_name', full_name='user.UpdateUserInfoRequeset.first_name', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='last_name', full_name='user.UpdateUserInfoRequeset.last_name', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=330,
+  serialized_end=426,
+)
+
+_USERSRESPONSELIST.fields_by_name['list'].message_type = _USERINFORESPONSE
 DESCRIPTOR.message_types_by_name['UsersRequest'] = _USERSREQUEST
 DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
-DESCRIPTOR.message_types_by_name['UserResponse'] = _USERRESPONSE
+DESCRIPTOR.message_types_by_name['UserInfoResponse'] = _USERINFORESPONSE
 DESCRIPTOR.message_types_by_name['UsersResponseList'] = _USERSRESPONSELIST
 DESCRIPTOR.message_types_by_name['ChangePassword'] = _CHANGEPASSWORD
-DESCRIPTOR.message_types_by_name['ChangePasswordRes'] = _CHANGEPASSWORDRES
+DESCRIPTOR.message_types_by_name['SuccessResponse'] = _SUCCESSRESPONSE
+DESCRIPTOR.message_types_by_name['UpdateUserInfoRequeset'] = _UPDATEUSERINFOREQUESET
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 UsersRequest = _reflection.GeneratedProtocolMessageType('UsersRequest', (_message.Message,), dict(
@@ -247,12 +314,12 @@ Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), d
   ))
 _sym_db.RegisterMessage(Empty)
 
-UserResponse = _reflection.GeneratedProtocolMessageType('UserResponse', (_message.Message,), dict(
-  DESCRIPTOR = _USERRESPONSE,
+UserInfoResponse = _reflection.GeneratedProtocolMessageType('UserInfoResponse', (_message.Message,), dict(
+  DESCRIPTOR = _USERINFORESPONSE,
   __module__ = 'proto.user_pb2'
-  # @@protoc_insertion_point(class_scope:user.UserResponse)
+  # @@protoc_insertion_point(class_scope:user.UserInfoResponse)
   ))
-_sym_db.RegisterMessage(UserResponse)
+_sym_db.RegisterMessage(UserInfoResponse)
 
 UsersResponseList = _reflection.GeneratedProtocolMessageType('UsersResponseList', (_message.Message,), dict(
   DESCRIPTOR = _USERSRESPONSELIST,
@@ -268,12 +335,19 @@ ChangePassword = _reflection.GeneratedProtocolMessageType('ChangePassword', (_me
   ))
 _sym_db.RegisterMessage(ChangePassword)
 
-ChangePasswordRes = _reflection.GeneratedProtocolMessageType('ChangePasswordRes', (_message.Message,), dict(
-  DESCRIPTOR = _CHANGEPASSWORDRES,
+SuccessResponse = _reflection.GeneratedProtocolMessageType('SuccessResponse', (_message.Message,), dict(
+  DESCRIPTOR = _SUCCESSRESPONSE,
   __module__ = 'proto.user_pb2'
-  # @@protoc_insertion_point(class_scope:user.ChangePasswordRes)
+  # @@protoc_insertion_point(class_scope:user.SuccessResponse)
   ))
-_sym_db.RegisterMessage(ChangePasswordRes)
+_sym_db.RegisterMessage(SuccessResponse)
+
+UpdateUserInfoRequeset = _reflection.GeneratedProtocolMessageType('UpdateUserInfoRequeset', (_message.Message,), dict(
+  DESCRIPTOR = _UPDATEUSERINFOREQUESET,
+  __module__ = 'proto.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.UpdateUserInfoRequeset)
+  ))
+_sym_db.RegisterMessage(UpdateUserInfoRequeset)
 
 
 
@@ -283,25 +357,25 @@ _USER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=286,
-  serialized_end=471,
+  serialized_start=429,
+  serialized_end=632,
   methods=[
   _descriptor.MethodDescriptor(
-    name='get_user',
-    full_name='user.User.get_user',
+    name='get_user_info',
+    full_name='user.User.get_user_info',
     index=0,
     containing_service=None,
-    input_type=_USERSREQUEST,
-    output_type=_USERRESPONSE,
+    input_type=_EMPTY,
+    output_type=_USERINFORESPONSE,
     options=None,
   ),
   _descriptor.MethodDescriptor(
-    name='get_list_user',
-    full_name='user.User.get_list_user',
+    name='update_user_info',
+    full_name='user.User.update_user_info',
     index=1,
     containing_service=None,
-    input_type=_EMPTY,
-    output_type=_USERSRESPONSELIST,
+    input_type=_UPDATEUSERINFOREQUESET,
+    output_type=_SUCCESSRESPONSE,
     options=None,
   ),
   _descriptor.MethodDescriptor(
@@ -310,7 +384,7 @@ _USER = _descriptor.ServiceDescriptor(
     index=2,
     containing_service=None,
     input_type=_CHANGEPASSWORD,
-    output_type=_CHANGEPASSWORDRES,
+    output_type=_SUCCESSRESPONSE,
     options=None,
   ),
 ])
@@ -338,20 +412,20 @@ try:
       Args:
         channel: A grpc.Channel.
       """
-      self.get_user = channel.unary_unary(
-          '/user.User/get_user',
-          request_serializer=UsersRequest.SerializeToString,
-          response_deserializer=UserResponse.FromString,
-          )
-      self.get_list_user = channel.unary_unary(
-          '/user.User/get_list_user',
+      self.get_user_info = channel.unary_unary(
+          '/user.User/get_user_info',
           request_serializer=Empty.SerializeToString,
-          response_deserializer=UsersResponseList.FromString,
+          response_deserializer=UserInfoResponse.FromString,
+          )
+      self.update_user_info = channel.unary_unary(
+          '/user.User/update_user_info',
+          request_serializer=UpdateUserInfoRequeset.SerializeToString,
+          response_deserializer=SuccessResponse.FromString,
           )
       self.change_password = channel.unary_unary(
           '/user.User/change_password',
           request_serializer=ChangePassword.SerializeToString,
-          response_deserializer=ChangePasswordRes.FromString,
+          response_deserializer=SuccessResponse.FromString,
           )
 
 
@@ -359,14 +433,15 @@ try:
     # missing associated documentation comment in .proto file
     pass
 
-    def get_user(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
+    def get_user_info(self, request, context):
+      """rpc get_user(UsersRequest) returns (UserResponse) {};
+      rpc get_list_user(Empty) returns (UsersResponseList) {};
+      """
       context.set_code(grpc.StatusCode.UNIMPLEMENTED)
       context.set_details('Method not implemented!')
       raise NotImplementedError('Method not implemented!')
 
-    def get_list_user(self, request, context):
+    def update_user_info(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -383,20 +458,20 @@ try:
 
   def add_UserServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        'get_user': grpc.unary_unary_rpc_method_handler(
-            servicer.get_user,
-            request_deserializer=UsersRequest.FromString,
-            response_serializer=UserResponse.SerializeToString,
-        ),
-        'get_list_user': grpc.unary_unary_rpc_method_handler(
-            servicer.get_list_user,
+        'get_user_info': grpc.unary_unary_rpc_method_handler(
+            servicer.get_user_info,
             request_deserializer=Empty.FromString,
-            response_serializer=UsersResponseList.SerializeToString,
+            response_serializer=UserInfoResponse.SerializeToString,
+        ),
+        'update_user_info': grpc.unary_unary_rpc_method_handler(
+            servicer.update_user_info,
+            request_deserializer=UpdateUserInfoRequeset.FromString,
+            response_serializer=SuccessResponse.SerializeToString,
         ),
         'change_password': grpc.unary_unary_rpc_method_handler(
             servicer.change_password,
             request_deserializer=ChangePassword.FromString,
-            response_serializer=ChangePasswordRes.SerializeToString,
+            response_serializer=SuccessResponse.SerializeToString,
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -412,11 +487,12 @@ try:
     only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
     # missing associated documentation comment in .proto file
     pass
-    def get_user(self, request, context):
-      # missing associated documentation comment in .proto file
-      pass
+    def get_user_info(self, request, context):
+      """rpc get_user(UsersRequest) returns (UserResponse) {};
+      rpc get_list_user(Empty) returns (UsersResponseList) {};
+      """
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
-    def get_list_user(self, request, context):
+    def update_user_info(self, request, context):
       # missing associated documentation comment in .proto file
       pass
       context.code(beta_interfaces.StatusCode.UNIMPLEMENTED)
@@ -434,16 +510,17 @@ try:
     only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0."""
     # missing associated documentation comment in .proto file
     pass
-    def get_user(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+    def get_user_info(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
+      """rpc get_user(UsersRequest) returns (UserResponse) {};
+      rpc get_list_user(Empty) returns (UsersResponseList) {};
+      """
+      raise NotImplementedError()
+    get_user_info.future = None
+    def update_user_info(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
       # missing associated documentation comment in .proto file
       pass
       raise NotImplementedError()
-    get_user.future = None
-    def get_list_user(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
-      # missing associated documentation comment in .proto file
-      pass
-      raise NotImplementedError()
-    get_list_user.future = None
+    update_user_info.future = None
     def change_password(self, request, timeout, metadata=None, with_call=False, protocol_options=None):
       # missing associated documentation comment in .proto file
       pass
@@ -459,18 +536,18 @@ try:
     generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
     request_deserializers = {
       ('user.User', 'change_password'): ChangePassword.FromString,
-      ('user.User', 'get_list_user'): Empty.FromString,
-      ('user.User', 'get_user'): UsersRequest.FromString,
+      ('user.User', 'get_user_info'): Empty.FromString,
+      ('user.User', 'update_user_info'): UpdateUserInfoRequeset.FromString,
     }
     response_serializers = {
-      ('user.User', 'change_password'): ChangePasswordRes.SerializeToString,
-      ('user.User', 'get_list_user'): UsersResponseList.SerializeToString,
-      ('user.User', 'get_user'): UserResponse.SerializeToString,
+      ('user.User', 'change_password'): SuccessResponse.SerializeToString,
+      ('user.User', 'get_user_info'): UserInfoResponse.SerializeToString,
+      ('user.User', 'update_user_info'): SuccessResponse.SerializeToString,
     }
     method_implementations = {
       ('user.User', 'change_password'): face_utilities.unary_unary_inline(servicer.change_password),
-      ('user.User', 'get_list_user'): face_utilities.unary_unary_inline(servicer.get_list_user),
-      ('user.User', 'get_user'): face_utilities.unary_unary_inline(servicer.get_user),
+      ('user.User', 'get_user_info'): face_utilities.unary_unary_inline(servicer.get_user_info),
+      ('user.User', 'update_user_info'): face_utilities.unary_unary_inline(servicer.update_user_info),
     }
     server_options = beta_implementations.server_options(request_deserializers=request_deserializers, response_serializers=response_serializers, thread_pool=pool, thread_pool_size=pool_size, default_timeout=default_timeout, maximum_timeout=maximum_timeout)
     return beta_implementations.server(method_implementations, options=server_options)
@@ -484,18 +561,18 @@ try:
     generated only to ease transition from grpcio<0.15.0 to grpcio>=0.15.0"""
     request_serializers = {
       ('user.User', 'change_password'): ChangePassword.SerializeToString,
-      ('user.User', 'get_list_user'): Empty.SerializeToString,
-      ('user.User', 'get_user'): UsersRequest.SerializeToString,
+      ('user.User', 'get_user_info'): Empty.SerializeToString,
+      ('user.User', 'update_user_info'): UpdateUserInfoRequeset.SerializeToString,
     }
     response_deserializers = {
-      ('user.User', 'change_password'): ChangePasswordRes.FromString,
-      ('user.User', 'get_list_user'): UsersResponseList.FromString,
-      ('user.User', 'get_user'): UserResponse.FromString,
+      ('user.User', 'change_password'): SuccessResponse.FromString,
+      ('user.User', 'get_user_info'): UserInfoResponse.FromString,
+      ('user.User', 'update_user_info'): SuccessResponse.FromString,
     }
     cardinalities = {
       'change_password': cardinality.Cardinality.UNARY_UNARY,
-      'get_list_user': cardinality.Cardinality.UNARY_UNARY,
-      'get_user': cardinality.Cardinality.UNARY_UNARY,
+      'get_user_info': cardinality.Cardinality.UNARY_UNARY,
+      'update_user_info': cardinality.Cardinality.UNARY_UNARY,
     }
     stub_options = beta_implementations.stub_options(host=host, metadata_transformer=metadata_transformer, request_serializers=request_serializers, response_deserializers=response_deserializers, thread_pool=pool, thread_pool_size=pool_size)
     return beta_implementations.dynamic_stub(channel, 'user.User', cardinalities, options=stub_options)

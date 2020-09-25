@@ -16,7 +16,8 @@ keycloak_admin = KeycloakAdmin(server_url=config_keycloak_admin['server_url'],
                                password=config_keycloak_admin['password'],
                                realm_name=config_keycloak_admin['realm_name'],
                                client_secret_key=config_keycloak_admin['client_secret_key'],
-                               verify=True)
+                               verify=True,
+                               auto_refresh_token=['get', 'put', 'post', 'delete'])
 
 
 class KeyCloakUtils:
