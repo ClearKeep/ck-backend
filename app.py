@@ -18,7 +18,6 @@ from src.controllers.auth import AuthController
 from utils.logger import *
 from middlewares.auth_interceptor import AuthInterceptor
 
-
 def grpc_server(port):
 
     #server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), interceptors=(AuthInterceptor(),))

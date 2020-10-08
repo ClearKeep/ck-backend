@@ -21,7 +21,7 @@ class UserStub(object):
         )
     self.update_user_info = channel.unary_unary(
         '/user.User/update_user_info',
-        request_serializer=proto_dot_user__pb2.UpdateUserInfoRequeset.SerializeToString,
+        request_serializer=proto_dot_user__pb2.UpdateUserInfoRequest.SerializeToString,
         response_deserializer=proto_dot_user__pb2.SuccessResponse.FromString,
         )
     self.change_password = channel.unary_unary(
@@ -67,7 +67,7 @@ def add_UserServicer_to_server(servicer, server):
       ),
       'update_user_info': grpc.unary_unary_rpc_method_handler(
           servicer.update_user_info,
-          request_deserializer=proto_dot_user__pb2.UpdateUserInfoRequeset.FromString,
+          request_deserializer=proto_dot_user__pb2.UpdateUserInfoRequest.FromString,
           response_serializer=proto_dot_user__pb2.SuccessResponse.SerializeToString,
       ),
       'change_password': grpc.unary_unary_rpc_method_handler(

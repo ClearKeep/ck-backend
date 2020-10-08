@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='proto/user.proto',
   package='user',
   syntax='proto3',
-  serialized_pb=_b('\n\x10proto/user.proto\x12\x04user\" \n\x0cUsersRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\"f\n\x10UserInfoResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x12\n\nfirst_name\x18\x05 \x01(\t\x12\x11\n\tlast_name\x18\x06 \x01(\t\"9\n\x11UsersResponseList\x12$\n\x04list\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"<\n\x0e\x43hangePassword\x12\x14\n\x0cold_password\x18\x01 \x01(\t\x12\x14\n\x0cnew_password\x18\x02 \x01(\t\"\"\n\x0fSuccessResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"`\n\x16UpdateUserInfoRequeset\x12\x10\n\x08username\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x12\n\nfirst_name\x18\x03 \x01(\t\x12\x11\n\tlast_name\x18\x04 \x01(\t2\xcb\x01\n\x04User\x12\x36\n\rget_user_info\x12\x0b.user.Empty\x1a\x16.user.UserInfoResponse\"\x00\x12I\n\x10update_user_info\x12\x1c.user.UpdateUserInfoRequeset\x1a\x15.user.SuccessResponse\"\x00\x12@\n\x0f\x63hange_password\x12\x14.user.ChangePassword\x1a\x15.user.SuccessResponse\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x10proto/user.proto\x12\x04user\" \n\x0cUsersRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\"f\n\x10UserInfoResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x12\n\nfirst_name\x18\x05 \x01(\t\x12\x11\n\tlast_name\x18\x06 \x01(\t\"9\n\x11UsersResponseList\x12$\n\x04list\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"<\n\x0e\x43hangePassword\x12\x14\n\x0cold_password\x18\x01 \x01(\t\x12\x14\n\x0cnew_password\x18\x02 \x01(\t\"\"\n\x0fSuccessResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"_\n\x15UpdateUserInfoRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x12\n\nfirst_name\x18\x03 \x01(\t\x12\x11\n\tlast_name\x18\x04 \x01(\t2\xca\x01\n\x04User\x12\x36\n\rget_user_info\x12\x0b.user.Empty\x1a\x16.user.UserInfoResponse\"\x00\x12H\n\x10update_user_info\x12\x1b.user.UpdateUserInfoRequest\x1a\x15.user.SuccessResponse\"\x00\x12@\n\x0f\x63hange_password\x12\x14.user.ChangePassword\x1a\x15.user.SuccessResponse\"\x00\x62\x06proto3')
 )
 
 
@@ -239,36 +239,36 @@ _SUCCESSRESPONSE = _descriptor.Descriptor(
 )
 
 
-_UPDATEUSERINFOREQUESET = _descriptor.Descriptor(
-  name='UpdateUserInfoRequeset',
-  full_name='user.UpdateUserInfoRequeset',
+_UPDATEUSERINFOREQUEST = _descriptor.Descriptor(
+  name='UpdateUserInfoRequest',
+  full_name='user.UpdateUserInfoRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='username', full_name='user.UpdateUserInfoRequeset.username', index=0,
+      name='username', full_name='user.UpdateUserInfoRequest.username', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='email', full_name='user.UpdateUserInfoRequeset.email', index=1,
+      name='email', full_name='user.UpdateUserInfoRequest.email', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='first_name', full_name='user.UpdateUserInfoRequeset.first_name', index=2,
+      name='first_name', full_name='user.UpdateUserInfoRequest.first_name', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='last_name', full_name='user.UpdateUserInfoRequeset.last_name', index=3,
+      name='last_name', full_name='user.UpdateUserInfoRequest.last_name', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -287,7 +287,7 @@ _UPDATEUSERINFOREQUESET = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=330,
-  serialized_end=426,
+  serialized_end=425,
 )
 
 _USERSRESPONSELIST.fields_by_name['list'].message_type = _USERINFORESPONSE
@@ -297,7 +297,7 @@ DESCRIPTOR.message_types_by_name['UserInfoResponse'] = _USERINFORESPONSE
 DESCRIPTOR.message_types_by_name['UsersResponseList'] = _USERSRESPONSELIST
 DESCRIPTOR.message_types_by_name['ChangePassword'] = _CHANGEPASSWORD
 DESCRIPTOR.message_types_by_name['SuccessResponse'] = _SUCCESSRESPONSE
-DESCRIPTOR.message_types_by_name['UpdateUserInfoRequeset'] = _UPDATEUSERINFOREQUESET
+DESCRIPTOR.message_types_by_name['UpdateUserInfoRequest'] = _UPDATEUSERINFOREQUEST
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 UsersRequest = _reflection.GeneratedProtocolMessageType('UsersRequest', (_message.Message,), dict(
@@ -342,12 +342,12 @@ SuccessResponse = _reflection.GeneratedProtocolMessageType('SuccessResponse', (_
   ))
 _sym_db.RegisterMessage(SuccessResponse)
 
-UpdateUserInfoRequeset = _reflection.GeneratedProtocolMessageType('UpdateUserInfoRequeset', (_message.Message,), dict(
-  DESCRIPTOR = _UPDATEUSERINFOREQUESET,
+UpdateUserInfoRequest = _reflection.GeneratedProtocolMessageType('UpdateUserInfoRequest', (_message.Message,), dict(
+  DESCRIPTOR = _UPDATEUSERINFOREQUEST,
   __module__ = 'proto.user_pb2'
-  # @@protoc_insertion_point(class_scope:user.UpdateUserInfoRequeset)
+  # @@protoc_insertion_point(class_scope:user.UpdateUserInfoRequest)
   ))
-_sym_db.RegisterMessage(UpdateUserInfoRequeset)
+_sym_db.RegisterMessage(UpdateUserInfoRequest)
 
 
 
@@ -357,8 +357,8 @@ _USER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=429,
-  serialized_end=632,
+  serialized_start=428,
+  serialized_end=630,
   methods=[
   _descriptor.MethodDescriptor(
     name='get_user_info',
@@ -374,7 +374,7 @@ _USER = _descriptor.ServiceDescriptor(
     full_name='user.User.update_user_info',
     index=1,
     containing_service=None,
-    input_type=_UPDATEUSERINFOREQUESET,
+    input_type=_UPDATEUSERINFOREQUEST,
     output_type=_SUCCESSRESPONSE,
     options=None,
   ),
@@ -419,7 +419,7 @@ try:
           )
       self.update_user_info = channel.unary_unary(
           '/user.User/update_user_info',
-          request_serializer=UpdateUserInfoRequeset.SerializeToString,
+          request_serializer=UpdateUserInfoRequest.SerializeToString,
           response_deserializer=SuccessResponse.FromString,
           )
       self.change_password = channel.unary_unary(
@@ -465,7 +465,7 @@ try:
         ),
         'update_user_info': grpc.unary_unary_rpc_method_handler(
             servicer.update_user_info,
-            request_deserializer=UpdateUserInfoRequeset.FromString,
+            request_deserializer=UpdateUserInfoRequest.FromString,
             response_serializer=SuccessResponse.SerializeToString,
         ),
         'change_password': grpc.unary_unary_rpc_method_handler(
@@ -537,7 +537,7 @@ try:
     request_deserializers = {
       ('user.User', 'change_password'): ChangePassword.FromString,
       ('user.User', 'get_user_info'): Empty.FromString,
-      ('user.User', 'update_user_info'): UpdateUserInfoRequeset.FromString,
+      ('user.User', 'update_user_info'): UpdateUserInfoRequest.FromString,
     }
     response_serializers = {
       ('user.User', 'change_password'): SuccessResponse.SerializeToString,
@@ -562,7 +562,7 @@ try:
     request_serializers = {
       ('user.User', 'change_password'): ChangePassword.SerializeToString,
       ('user.User', 'get_user_info'): Empty.SerializeToString,
-      ('user.User', 'update_user_info'): UpdateUserInfoRequeset.SerializeToString,
+      ('user.User', 'update_user_info'): UpdateUserInfoRequest.SerializeToString,
     }
     response_deserializers = {
       ('user.User', 'change_password'): SuccessResponse.FromString,

@@ -23,4 +23,4 @@ then
 ## Generated protobuf file
 From root project
 
-> docker run --rm -v $(pwd):$(pwd) -w $(pwd) znly/protoc --plugin=protoc-gen-grpc=/usr/bin/grpc_python_plugin --python_out=. --grpc_out=. --proto_path=. ./proto/*.proto
+> sh run.sh -p
