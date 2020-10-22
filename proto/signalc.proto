@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package signalc;
+
+message BaseResponse {
+    string message = 1;
+}
+
+message SignalRegisterKeysRequest {
+    string clientId = 1;
+    int32 registrationId = 2;
+    int32 deviceId = 3;
+
+    bytes identityKeyPublic = 4;
+
+    int32 preKeyId = 5;
+    bytes preKey = 6;
+
+    int32 signedPreKeyId = 7;
+    bytes signedPreKey = 8;
+
+    bytes signedPreKeySignature = 9;
+}
+
+message SignalKeysUserRequest {
+  string clientId = 1;
+}
+
+message SignalKeysUserResponse {
+    string clientId = 1;
+    int32 registrationId = 2;
+    int32 deviceId = 3;
+
+    bytes identityKeyPublic = 4;
+
+    int32 preKeyId = 5;
+    bytes preKey = 6;
+
+    int32 signedPreKeyId = 7;
+    bytes signedPreKey = 8;
+
+    bytes signedPreKeySignature = 9;
+}
+
+message PublishRequest {
+  string senderId = 1;
+  string receiveId = 2;
+  bytes message = 3;
+}
+
+message SubscribeAndListenRequest {
+  string clientId = 1;
+}
+
+message Publication {
+  string senderId = 1;
+  bytes message = 2;
+}
+
+service SignalKeyDistribution {
+      rpc RegisterBundleKey (SignalRegisterKeysRequest) returns (BaseResponse);
+      rpc GetKeyBundleByUserId (SignalKeysUserRequest) returns (SignalKeysUserResponse);
+
+      rpc Subscribe (SubscribeAndListenRequest) returns (BaseResponse);
+      rpc Listen (SubscribeAndListenRequest) returns (stream Publication);
+      rpc Publish (PublishRequest) returns (BaseResponse);
+}

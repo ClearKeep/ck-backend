@@ -7,6 +7,11 @@ class Message:
     CHANGE_PASSWORD_FAILED = 1004
     USER_NOT_FOUND = 1005
     UPDATE_USER_INFO_FAILED = 1006
+    REGISTER_CLIENT_SIGNAL_KEY_FAILED = 1010
+    GET_CLIENT_SIGNAL_KEY_FAILED = 1011
+    CLIENT_SIGNAL_KEY_NOT_FOUND = 1012
+    CLIENT_PUBLISH_MESSAGE_FAILED = 1013
+    CLIENT_SUBCRIBE_FAILED = 1014
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -16,6 +21,11 @@ class Message:
         CHANGE_PASSWORD_FAILED: "Change password failed. please try again",
         USER_NOT_FOUND: "User information is not correct. Please try again",
         UPDATE_USER_INFO_FAILED: "Change user profile failed. please try again",
+        REGISTER_CLIENT_SIGNAL_KEY_FAILED: "Register client key failed. Please try again",
+        GET_CLIENT_SIGNAL_KEY_FAILED: "Get client key failed. Please try again",
+        CLIENT_SIGNAL_KEY_NOT_FOUND: "Client key not found.",
+        CLIENT_PUBLISH_MESSAGE_FAILED: "Publish message failed. Please try again",
+        CLIENT_SUBCRIBE_FAILED: "Subcribe failed. Please try again"
     }
 
     @staticmethod

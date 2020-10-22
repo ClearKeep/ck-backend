@@ -10,6 +10,7 @@ Flask==1.1.2
 Flask-SQLAlchemy==2.4.4
 google==3.0.0
 grpcio==1.32.0
+grpcio-tools==1.32.0
 idna==2.10
 itsdangerous==1.1.0
 Jinja2==2.11.2

@@ -1,1 +1,1 @@
-PYTHONPATH=../clearkeep-backend pipenv run python client-test/auth.py
+python -m client-test.auth
