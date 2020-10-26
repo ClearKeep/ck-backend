@@ -1,5 +1,3 @@
-import grpc
-import proto.user_pb2 as user_messages
 from proto import signalc_pb2
 from src.controllers.base import *
 from src.services.signal import SignalService, client_queue
@@ -23,7 +21,7 @@ class SignalController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-            return signalc_pb2.BaseResponse()
+            # return signalc_pb2.BaseResponse()
 
     def GetKeyBundleByUserId(self, request, context):
         client_id = request.clientId
@@ -46,7 +44,7 @@ class SignalController(BaseController):
         context.set_details(json.dumps(
             errors, default=lambda x: x.__dict__))
         context.set_code(grpc.StatusCode.NOT_FOUND)
-        return signalc_pb2.SignalKeysUserResponse()
+        # return signalc_pb2.SignalKeysUserResponse()
 
     def Publish(self, request, context):
         try:
@@ -59,7 +57,7 @@ class SignalController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-            return signalc_pb2.BaseResponse()
+            # return signalc_pb2.BaseResponse()
 
     def Listen(self, request, context):
         if request.clientId in client_queue:
@@ -79,4 +77,4 @@ class SignalController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-            return signalc_pb2.BaseResponse()
+            # return signalc_pb2.BaseResponse()

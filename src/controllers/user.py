@@ -1,14 +1,8 @@
-import grpc
-import proto.user_pb2_grpc as user_service
 import proto.user_pb2 as user_messages
-
 from src.controllers.base import *
 from src.services.user import UserService
-from utils.data import DataUtils
-from utils.keycloak import KeyCloakUtils
-from utils.encrypt import EncryptUtils
-
 from middlewares.permission import *
+from utils.logger import *
 
 class UserController(BaseController):
     def __init__(self, *kwargs):
@@ -21,15 +15,14 @@ class UserController(BaseController):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             self.service.change_password(request, request.old_password, request.new_password, introspect_token['sub'])
             return user_messages.SuccessResponse(success=True)
-        except:
-            # return error
-            errors = []
-            errors.append(Message.get_error_object(Message.CHANGE_PASSWORD_FAILED))
+
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.CHANGE_PASSWORD_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-
-            return user_messages.SuccessResponse()
+            # return user_messages.SuccessResponse()
 
     @auth_required
     def get_user_info(self, request, context):
@@ -39,21 +32,20 @@ class UserController(BaseController):
             user_info = self.service.get_user_info(introspect_token['sub'], header_data['hash_key'])
             if user_info:
                 return user_messages.UserInfoResponse(
-                    id = user_info.id,
-                    username = user_info.username,
-                    email = user_info.email,
-                    first_name = user_info.first_name,
-                    last_name = user_info.last_name
+                    id=user_info.id,
+                    username=user_info.username,
+                    email=user_info.email,
+                    first_name=user_info.first_name,
+                    last_name=user_info.last_name
                 )
-        except:
-            # return error
-            errors = []
-            errors.append(Message.get_error_object(Message.USER_NOT_FOUND))
+
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.USER_NOT_FOUND)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.NOT_FOUND)
-
-            return user_messages.UserInfoResponse()
+            # return user_messages.UserInfoResponse()
 
     @auth_required
     def update_user_info(self, request, context):
@@ -62,12 +54,11 @@ class UserController(BaseController):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             self.service.update_user_info(request, introspect_token['sub'], header_data['hash_key'])
             return user_messages.SuccessResponse(success=True)
-        except:
-            # return error
-            errors = []
-            errors.append(Message.get_error_object(Message.UPDATE_USER_INFO_FAILED))
+
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.UPDATE_USER_INFO_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-
-            return user_messages.UserInfoResponse()
+            # return user_messages.UserInfoResponse()
