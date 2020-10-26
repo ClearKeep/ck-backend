@@ -14,11 +14,13 @@ grpcio-tools==1.32.0
 idna==2.10
 itsdangerous==1.1.0
 Jinja2==2.11.2
+libsignal==0.0.4
 MarkupSafe==1.1.1
 protobuf==3.13.0
 psycopg2 @ file:///opt/concourse/worker/volumes/live/c8a4b965-959f-4e6c-7792-4aa881d63c8d/volume/psycopg2_1594305121341/work
 pyasn1==0.4.8
 pycparser==2.20
+python-axolotl-curve25519==0.4.1.post2
 python-jose==3.2.0
 python-keycloak==0.22.0
 requests==2.24.0

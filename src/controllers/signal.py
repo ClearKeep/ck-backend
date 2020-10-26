@@ -4,6 +4,7 @@ from proto import signalc_pb2
 from src.controllers.base import *
 from src.services.signal import SignalService, client_queue
 from middlewares.permission import *
+from utils.logger import *
 
 
 class SignalController(BaseController):
@@ -16,7 +17,8 @@ class SignalController(BaseController):
         try:
             self.service.register_bundle_key(request)
             return signalc_pb2.BaseResponse(message='success')
-        except:
+        except Exception as e:
+            logger.error(e)
             errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
@@ -51,7 +53,8 @@ class SignalController(BaseController):
             # if request.receiveId in  client_queue
             client_queue[request.receiveId].put(request)
             return signalc_pb2.BaseResponse(message='success')
-        except:
+        except Exception as e:
+            logger.error(e)
             errors = [Message.get_error_object(Message.CLIENT_PUBLISH_MESSAGE_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
@@ -70,7 +73,8 @@ class SignalController(BaseController):
         try:
             self.service.subscribe(request.clientId)
             return signalc_pb2.BaseResponse(message='success')
-        except:
+        except Exception as e:
+            logger.error(e)
             errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
