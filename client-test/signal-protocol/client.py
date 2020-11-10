@@ -1,8 +1,8 @@
 from __future__ import print_function
 import grpc
 import threading
-from proto import signalc_pb2
-from proto import signalc_pb2_grpc
+from proto import signal_pb2
+from proto import signal_pb2_grpc
 from libsignal.util.keyhelper import KeyHelper
 from .store.mystore import MyStore
 from libsignal.sessionbuilder import SessionBuilder
@@ -22,11 +22,11 @@ class ClientTest:
         self.device_id = device_id
         self.stub = self.grpc_stub(host, port)
         self.my_store = MyStore()
-        self.listen()
+
 
     def grpc_stub(self, host, port):
         channel = grpc.insecure_channel(host + ':' + str(port))
-        return signalc_pb2_grpc.SignalKeyDistributionStub(channel)
+        return signal_pb2_grpc.SignalKeyDistributionStub(channel)
 
     def register_keys(self, device_id, signed_prekey_id):
         # generate client pre key and store it
@@ -39,7 +39,7 @@ class ClientTest:
         client_signed_prekey_signature = client_signed_prekey_pair.getSignature()
         self.my_store.storeSignedPreKey(signed_prekey_id, client_signed_prekey_pair)
 
-        response = self.stub.RegisterBundleKey(signalc_pb2.SignalRegisterKeysRequest(
+        response = self.stub.PeerRegisterClientKey(signal_pb2.PeerRegisterClientKeyRequest(
             clientId=self.client_id,
             registrationId=self.my_store.getLocalRegistrationId(),
             deviceId=device_id,
@@ -57,29 +57,29 @@ class ClientTest:
         threading.Thread(target=self.heard, daemon=True).start()
 
     def heard(self):
-        request = signalc_pb2.SubscribeAndListenRequest(clientId=self.client_id)
+        request = signal_pb2.SubscribeAndListenRequest(clientId=self.client_id)
         for publication in self.stub.Listen(request):  # this line will wait for new messages from the server
-            message_plain_text = self.decrypt_message(publication.message, publication.senderId)
-            print("From {}: {}".format(publication.senderId, message_plain_text))
+            message_plain_text = self.decrypt_message(publication.message, publication.fromClientId)
+            print("From {}: {}".format(publication.fromClientId, message_plain_text))
 
     def subscribe(self):
-        request = signalc_pb2.SubscribeAndListenRequest(clientId=self.client_id)
+        request = signal_pb2.SubscribeAndListenRequest(clientId=self.client_id)
         response = self.stub.Subscribe(request)
+        self.listen()
 
     def publish(self, message, receiver_id):
         # encrypt message first
         out_goging_message = self.encrypt_message(message, receiver_id)
 
         # send message
-        request = signalc_pb2.PublishRequest(receiveId=receiver_id, message=out_goging_message,
-                                             senderId=self.client_id)
+        request = signal_pb2.PublishRequest(clientId=receiver_id, message=out_goging_message, fromClientId=self.client_id)
         response = self.stub.Publish(request)
 
     def encrypt_message(self, message, receiver_id):
         # get sender client key first (need to store in second time)
-        request_receiver_key = signalc_pb2.SignalKeysUserRequest(clientId=receiver_id)
-        response_receiver_key = self.stub.GetKeyBundleByUserId(request_receiver_key)
-        # print("Encrypt Message - get receiver key from server =", response_receiver_key)
+        request_receiver_key = signal_pb2.PeerGetClientKeyRequest(clientId=receiver_id)
+        response_receiver_key = self.stub.PeerGetClientKey(request_receiver_key)
+        print("Encrypt Message - get receiver key from server =", response_receiver_key)
 
         # build session
         my_session_builder = SessionBuilder(self.my_store, self.my_store, self.my_store, self.my_store, receiver_id, 1)

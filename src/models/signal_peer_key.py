@@ -2,7 +2,7 @@ from src.models.base import db
 from datetime import datetime
 
 
-class SignalKey(db.Model):
+class PeerClientKey(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.String(36), unique=False, nullable=False)
     device_id = db.Column(db.Integer, unique=False, nullable=False)
@@ -16,7 +16,7 @@ class SignalKey(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
-    def set_keys(self, client_id, registration_id, device_id, identity_key_public, prekey_id, prekey, signed_prekey_id, signed_prekey, signed_prekey_signature):
+    def set_key(self, client_id, registration_id, device_id, identity_key_public, prekey_id, prekey, signed_prekey_id, signed_prekey, signed_prekey_signature):
         self.client_id = client_id
         self.registration_id = registration_id
         self.device_id = device_id

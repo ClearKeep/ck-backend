@@ -1,16 +1,10 @@
 from concurrent import futures
-import time
 import grpc
-import logging
-
 from src.models.base import db
-
 from utils.config import get_system_config
-
 import proto.user_pb2_grpc as user_service
 import proto.auth_pb2_grpc as auth_service
-import proto.signalc_pb2_grpc as signal_service
-
+import proto.signal_pb2_grpc as signal_service
 from src.controllers.user import UserController
 from src.controllers.auth import AuthController
 from src.controllers.signal import SignalController
@@ -31,7 +25,7 @@ def grpc_server(port):
     # init log
     create_timed_rotating_log('logs/logfile.log')
 
-    server.add_insecure_port('[::]:{}'.format(port))
+    server.add_insecure_port('0.0.0.0:5000')
     server.start()
 
     print("Listening on port {}..".format(port))

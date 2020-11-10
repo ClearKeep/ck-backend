@@ -12,6 +12,7 @@ class Message:
     CLIENT_SIGNAL_KEY_NOT_FOUND = 1012
     CLIENT_PUBLISH_MESSAGE_FAILED = 1013
     CLIENT_SUBCRIBE_FAILED = 1014
+    REGISTER_CLIENT_GROUP_KEY_FAILED = 1015
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -25,7 +26,8 @@ class Message:
         GET_CLIENT_SIGNAL_KEY_FAILED: "Get client key failed. Please try again",
         CLIENT_SIGNAL_KEY_NOT_FOUND: "Client key not found.",
         CLIENT_PUBLISH_MESSAGE_FAILED: "Publish message failed. Please try again",
-        CLIENT_SUBCRIBE_FAILED: "Subcribe failed. Please try again"
+        CLIENT_SUBCRIBE_FAILED: "Subcribe failed. Please try again",
+        REGISTER_CLIENT_GROUP_KEY_FAILED: "Register group key failed. Please try again"
     }
 
     @staticmethod

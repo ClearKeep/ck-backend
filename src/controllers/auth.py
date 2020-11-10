@@ -28,7 +28,7 @@ class AuthController(BaseController):
                     session_state=token['session_state'],
                     scope=token['scope'],
                     hash_key=EncryptUtils.encoded_hash(request.password, introspect_token['sub']),
-                    )
+                )
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
@@ -40,8 +40,8 @@ class AuthController(BaseController):
 
     def register(self, request, context):
         # check exist user
-        existsUser = self.service.get_user_id_by_username(request.username)
-        if existsUser:
+        exists_user = self.service.get_user_id_by_username(request.username)
+        if exists_user:
             errors = [Message.get_error_object(
                 Message.REGISTER_USER_ALREADY_EXISTS)]
             context.set_details(json.dumps(
@@ -50,12 +50,12 @@ class AuthController(BaseController):
             return auth_messages.AuthRes()
 
         # register new user
-        newUser = self.service.register_user(
+        new_user = self.service.register_user(
             request.email, request.username, request.password)
 
-        if newUser:
+        if new_user:
             # create new user in database
-            UserService().create_new_user(newUser, request, 'account')
+            UserService().create_new_user(new_user, request, 'account')
             return auth_messages.RegisterRes(success=True)
 
         # return error

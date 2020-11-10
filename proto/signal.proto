@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+package signal;
+
+message BaseResponse {
+    string message = 1;
+}
+
+// ----- SIGNAL PEER TO PEER KEY -----
+// Request: register client key
+message PeerRegisterClientKeyRequest {
+    string clientId = 1;
+    int32 registrationId = 2;
+    int32 deviceId = 3;
+
+    bytes identityKeyPublic = 4;
+
+    int32 preKeyId = 5;
+    bytes preKey = 6;
+
+    int32 signedPreKeyId = 7;
+    bytes signedPreKey = 8;
+
+    bytes signedPreKeySignature = 9;
+}
+// Response: BaseResponse
+
+
+// Request: Get client key via clientId
+message PeerGetClientKeyRequest {
+  string clientId = 1;
+}
+// Response
+message PeerGetClientKeyResponse {
+    string clientId = 1;
+    int32 registrationId = 2;
+    int32 deviceId = 3;
+
+    bytes identityKeyPublic = 4;
+
+    int32 preKeyId = 5;
+    bytes preKey = 6;
+
+    int32 signedPreKeyId = 7;
+    bytes signedPreKey = 8;
+
+    bytes signedPreKeySignature = 9;
+}
+
+// ----- SIGNAL GROUP KEY -----
+// Request: register key of client when join to group
+message GroupRegisterClientKeyRequest {
+    string groupId = 1;
+    string clientId = 2;
+    int32 deviceId = 3;
+    bytes clientKeyDistribution = 4;
+}
+//response: BaseResponse
+
+
+//object
+message GroupClientKeyObject {
+    string clientId = 2;
+    int32 deviceId = 3;
+    bytes clientKeyDistribution = 4;
+}
+
+
+//Request: Get client key via clientId and groupId
+message GroupGetClientKeyRequest {
+  string groupId = 1;
+  string clientId = 2;
+}
+//Response
+message GroupGetClientKeyResponse {
+  string groupId = 1;
+  GroupClientKeyObject clientKey = 2;
+}
+
+
+// Request: Get all client key via groupId
+message GroupGetAllClientKeyRequest {
+  string groupId = 1;
+}
+// Response
+message GroupGetAllClientKeyResponse {
+    string groupId = 1;
+    repeated GroupClientKeyObject lstClientKey = 2;
+}
+
+
+// ----- PUBLISH AND SUBCRIBE MESSAGE -----
+// Request: publish a message
+message PublishRequest {
+  string fromClientId = 1;
+  string clientId = 2;
+  string groupId = 3;
+  bytes message = 4;
+}
+//response: BaseResponse
+
+
+// Request: subcribe or listen
+message SubscribeAndListenRequest {
+  string clientId = 1;
+}
+//response: BaseResponse or Publication stream
+
+message Publication {
+  string fromClientId = 1;
+  string groupId = 2;
+  bytes message = 3;
+}
+
+service SignalKeyDistribution {
+      //peer
+      rpc PeerRegisterClientKey (PeerRegisterClientKeyRequest) returns (BaseResponse);
+      rpc PeerGetClientKey (PeerGetClientKeyRequest) returns (PeerGetClientKeyResponse);
+      //group
+      rpc GroupRegisterClientKey (GroupRegisterClientKeyRequest) returns (BaseResponse);
+      rpc GroupGetClientKey (GroupGetClientKeyRequest) returns (GroupGetClientKeyResponse);
+      rpc GroupGetAllClientKey (GroupGetAllClientKeyRequest) returns (GroupGetAllClientKeyResponse);
+      //action
+      rpc Subscribe (SubscribeAndListenRequest) returns (BaseResponse);
+      rpc Listen (SubscribeAndListenRequest) returns (stream Publication);
+      rpc Publish (PublishRequest) returns (BaseResponse);
+}
