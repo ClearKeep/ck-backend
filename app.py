@@ -5,9 +5,11 @@ from utils.config import get_system_config
 import proto.user_pb2_grpc as user_service
 import proto.auth_pb2_grpc as auth_service
 import proto.signal_pb2_grpc as signal_service
+import proto.group_pb2_grpc as group_service
 from src.controllers.user import UserController
 from src.controllers.auth import AuthController
 from src.controllers.signal import SignalController
+from src.controllers.group import GroupController
 
 from utils.logger import *
 #from middlewares.auth_interceptor import AuthInterceptor
@@ -19,7 +21,7 @@ def grpc_server(port):
     user_service.add_UserServicer_to_server(UserController(), server)
     auth_service.add_AuthServicer_to_server(AuthController(), server)
     signal_service.add_SignalKeyDistributionServicer_to_server(SignalController(), server)
-
+    group_service.add_GroupServicer_to_server(GroupController(), server)
     # create all table in database
     db.create_all()
     # init log

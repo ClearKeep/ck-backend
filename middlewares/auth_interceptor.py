@@ -12,6 +12,7 @@ class AuthInterceptor(grpc.ServerInterceptor):
         self._abortion = grpc.unary_unary_rpc_method_handler(abort)
 
     def intercept_service(self, continuation, handler_call_details):
+
         # Example HandlerCallDetails object:
         #     _HandlerCallDetails(
         #       method=u'/helloworld.Greeter/SayHello',

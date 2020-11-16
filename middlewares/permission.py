@@ -29,7 +29,7 @@ def auth_required(f):
 def _token_check(access_token):
     try:
         token_info = KeyCloakUtils.introspect_token(access_token)
-        print("auth_interceptor.py => token info here=", token_info)
+        print("permission.py => token info here=", token_info)
         if token_info['active']:
             return True
         else:

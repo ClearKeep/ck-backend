@@ -3,15 +3,15 @@ from src.controllers.base import *
 from src.services.signal import SignalService, client_queue
 from middlewares.permission import *
 from utils.logger import *
+from middlewares.request_logged import *
 
 
 class SignalController(BaseController):
     def __init__(self, *kwargs):
         self.service = SignalService()
 
+    @request_logged
     def PeerRegisterClientKey(self, request, context):
-        print('***** CLIENT REGISTER KEYS *****')
-        print(request)
         try:
             self.service.peer_register_client_key(request)
             return signal_pb2.BaseResponse(message='success')
@@ -45,7 +45,7 @@ class SignalController(BaseController):
             errors, default=lambda x: x.__dict__))
         context.set_code(grpc.StatusCode.NOT_FOUND)
 
-
+    @request_logged
     def GroupRegisterClientKey(self, request, context):
         print('***** CLIENT REGISTER KEY GROUP *****')
         print(request)
@@ -89,7 +89,7 @@ class SignalController(BaseController):
                 deviceId=client.device_id,
                 clientKeyDistribution=client.client_key
             )
-            lst_client.append(client_key)
+            lst_client_key.append(client_key)
 
         response = signal_pb2.GroupGetAllClientKeyResponse(
             groupId=group_id,
@@ -97,7 +97,7 @@ class SignalController(BaseController):
         )
         return response
 
-
+    @request_logged
     def Publish(self, request, context):
         try:
             group_id = request.groupId

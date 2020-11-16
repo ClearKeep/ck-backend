@@ -4,7 +4,7 @@ import logging
 
 def run():
         # init bob client
-        bob = ClientTest('bob', '54321', 'localhost', 5000)
+        bob = ClientTest('bob', '54321', '172.16.0.216', 5000)
         bob.subscribe()
         bob.register_keys(1, 1)
         message = input("Start message to alice: \n")

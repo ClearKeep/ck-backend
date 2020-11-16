@@ -2,6 +2,8 @@ from src.services.base import BaseService
 from src.models.user import User
 from utils.encrypt import EncryptUtils
 from utils.keycloak import KeyCloakUtils
+from proto import user_pb2
+
 
 class UserService(BaseService):
     def __init__(self):
@@ -33,20 +35,21 @@ class UserService(BaseService):
 
         return user_info.update()
 
-
-    def get_user_info(self, user_id, hash_key):
+    def get_profile(self, user_id, hash_key):
         user_info = self.find_by_id(user_id)
-        email = EncryptUtils.decrypt_with_hash(user_info.email, hash_key)
-        first_name = EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key)
-        last_name = EncryptUtils.decrypt_with_hash(user_info.last_name, hash_key)
+        if user_info is not None:
+            obj_res = user_pb2.UserProfileResponse(
+                id=user_info.id,
+                username=user_info.username,
+                email=EncryptUtils.decrypt_with_hash(user_info.email, hash_key),
+                # first_name=EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key),
+                # last_name=EncryptUtils.decrypt_with_hash(user_info.last_name, hash_key)
+            )
+            return obj_res
+        else:
+            return None
 
-        user_info.email = email
-        user_info.first_name = first_name
-        user_info.last_name = last_name
-        return user_info
-
-
-    def update_user_info(self, request, user_id, hash_key):
+    def update_profile(self, request, user_id, hash_key):
         user_info = self.find_by_id(user_id)
         if request.username:
             user_info.username = request.username
@@ -61,3 +64,43 @@ class UserService(BaseService):
             user_info.last_name = EncryptUtils.encrypt_with_hash(request.last_name, hash_key)
 
         return user_info.update()
+
+    def get_user_info(self, client_id):
+        user_info = self.find_by_id(client_id)
+        if user_info is not None:
+            return user_pb2.UserInfoResponse(
+                id=user_info.id,
+                username=user_info.username
+            )
+        else:
+            return None
+
+    def search_user(self, keyword):
+        lst_user = self.model.search(keyword)
+        lst_obj_res = []
+        for obj in lst_user:
+            obj_res = user_pb2.UserInfoResponse(
+                id=obj.id,
+                username=obj.username,
+            )
+            lst_obj_res.append(obj_res)
+
+        response = user_pb2.SearchUserResponse(
+            lst_user=lst_obj_res
+        )
+        return response
+
+    def get_users(self, client_id):
+        lst_user = self.model.get_users(client_id)
+        lst_obj_res = []
+        for obj in lst_user:
+            obj_res = user_pb2.UserInfoResponse(
+                id=obj.id,
+                username=obj.username,
+            )
+            lst_obj_res.append(obj_res)
+
+        response = user_pb2.GetUsersResponse(
+            lst_user=lst_obj_res
+        )
+        return response

@@ -3,22 +3,22 @@
     "db": {
         "host": "172.16.1.214",
         "port": "5432",
-        "name": "ck-db",
-        "username": "postgres",
-        "password": "docker"
+        "name": "postgres",
+        "username": "keycloak",
+        "password": "password"
     },
     "keycloak_account": {
         "server_url": "http://172.16.1.214:8080/auth/",
         "client_id": "account",
         "realm_name": "master",
-        "client_secret_key": "965e9aff-52d7-4cfc-b88e-cc6384d3fa8a"
+        "client_secret_key": "7127012b-561f-4054-80c5-6172125cffdd"
     },
     "keycloak_admin": {
         "server_url": "http://172.16.1.214:8080/auth/",
         "username": "admin",
         "password": "admin",
         "realm_name": "master",
-        "client_secret_key": "97f7bcf2-3579-4817-9aca-61ad0e457dea"
+        "client_secret_key": "7a2a7404-9163-4414-a083-75b077c4854b"
     },
     "fd_server": [
         {

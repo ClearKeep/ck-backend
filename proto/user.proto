@@ -2,44 +2,77 @@ syntax = "proto3";
 
 package user;
 
-message UsersRequest {
-    string username = 1;
-}
-
-message Empty {}
-
-message UserInfoResponse {
-    string id = 1;
-    string username = 2;
-    string email = 3;
-    string first_name = 5;
-    string last_name = 6;
-}
-
-message UsersResponseList {
-    repeated UserInfoResponse list = 1;
-}
-
-message ChangePassword {
-    string old_password = 1;
-    string new_password = 2;
-}
-
-message SuccessResponse {
+message BaseResponse {
     bool success = 1;
 }
 
-message UpdateUserInfoRequest {
-    string username = 1;
-    string email = 2;
-    string first_name = 3;
-    string last_name = 4;
+//----- FROM MY ACCOUNT -----
+message UserProfileResponse {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    string first_name = 4;
+    string last_name = 5;
 }
 
+// Request: get my info
+message Empty {}
+// Response: UserObjectResponse
+
+
+// Request: update my info
+message UpdateProfileRequest {
+    string first_name = 1;
+    string last_name = 2;
+    string avatar = 3;
+}
+// Response: UserObjectResponse
+
+// Request: change password
+message ChangePasswordRequest {
+    string old_password = 1;
+    string new_password = 2;
+}
+// Response: BaseResponse
+
+
+//----- FROM ANOTHER ACCOUNT -----
+message UserInfoResponse {
+    string id = 1;
+    string username = 2;
+}
+
+//Request: get other user info
+message GetUserRequest {
+    string client_id = 1;
+}
+// Response: UserObjectResponse
+
+
+// Request: Search User
+message SearchUserRequest {
+    string keyword = 1;
+}
+// Response
+message SearchUserResponse {
+    repeated UserInfoResponse lst_user = 1;
+}
+
+// Request: Get Users
+// Response
+message GetUsersResponse {
+    repeated UserInfoResponse lst_user = 1;
+}
+
+
 service User {
-    // rpc get_user(UsersRequest) returns (UserResponse) {};
-    // rpc get_list_user(Empty) returns (UsersResponseList) {};
-    rpc get_user_info(Empty) returns (UserInfoResponse) {};
-    rpc update_user_info(UpdateUserInfoRequest) returns (SuccessResponse) {};
-    rpc change_password(ChangePassword) returns (SuccessResponse) {};
+    //----- FROM MY ACCOUNT -----
+    rpc get_profile(Empty) returns (UserProfileResponse) {};
+    rpc update_profile(UpdateProfileRequest) returns (BaseResponse) {};
+    rpc change_password(ChangePasswordRequest) returns (BaseResponse) {};
+
+    //----- FROM OTHER ACCOUNT -----
+    rpc get_user_info(GetUserRequest) returns (UserInfoResponse) {};
+    rpc search_user(SearchUserRequest) returns (SearchUserResponse) {};
+    rpc get_users(Empty) returns (GetUsersResponse) {};
 }

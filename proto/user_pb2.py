@@ -19,24 +19,24 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x10proto/user.proto\x12\x04user\" \n\x0cUsersRequest\x12\x10\n\x08username\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\"f\n\x10UserInfoResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x12\n\nfirst_name\x18\x05 \x01(\t\x12\x11\n\tlast_name\x18\x06 \x01(\t\"9\n\x11UsersResponseList\x12$\n\x04list\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"<\n\x0e\x43hangePassword\x12\x14\n\x0cold_password\x18\x01 \x01(\t\x12\x14\n\x0cnew_password\x18\x02 \x01(\t\"\"\n\x0fSuccessResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"_\n\x15UpdateUserInfoRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x12\n\nfirst_name\x18\x03 \x01(\t\x12\x11\n\tlast_name\x18\x04 \x01(\t2\xca\x01\n\x04User\x12\x36\n\rget_user_info\x12\x0b.user.Empty\x1a\x16.user.UserInfoResponse\"\x00\x12H\n\x10update_user_info\x12\x1b.user.UpdateUserInfoRequest\x1a\x15.user.SuccessResponse\"\x00\x12@\n\x0f\x63hange_password\x12\x14.user.ChangePassword\x1a\x15.user.SuccessResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x10proto/user.proto\x12\x04user\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"i\n\x13UserProfileResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x12\n\nfirst_name\x18\x04 \x01(\t\x12\x11\n\tlast_name\x18\x05 \x01(\t\"\x07\n\x05\x45mpty\"M\n\x14UpdateProfileRequest\x12\x12\n\nfirst_name\x18\x01 \x01(\t\x12\x11\n\tlast_name\x18\x02 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x03 \x01(\t\"C\n\x15\x43hangePasswordRequest\x12\x14\n\x0cold_password\x18\x01 \x01(\t\x12\x14\n\x0cnew_password\x18\x02 \x01(\t\"0\n\x10UserInfoResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\"#\n\x0eGetUserRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\"$\n\x11SearchUserRequest\x12\x0f\n\x07keyword\x18\x01 \x01(\t\">\n\x12SearchUserResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"<\n\x10GetUsersResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse2\x82\x03\n\x04User\x12\x37\n\x0bget_profile\x12\x0b.user.Empty\x1a\x19.user.UserProfileResponse\"\x00\x12\x42\n\x0eupdate_profile\x12\x1a.user.UpdateProfileRequest\x1a\x12.user.BaseResponse\"\x00\x12\x44\n\x0f\x63hange_password\x12\x1b.user.ChangePasswordRequest\x1a\x12.user.BaseResponse\"\x00\x12?\n\rget_user_info\x12\x14.user.GetUserRequest\x1a\x16.user.UserInfoResponse\"\x00\x12\x42\n\x0bsearch_user\x12\x17.user.SearchUserRequest\x1a\x18.user.SearchUserResponse\"\x00\x12\x32\n\tget_users\x12\x0b.user.Empty\x1a\x16.user.GetUsersResponse\"\x00\x62\x06proto3'
 )
 
 
 
 
-_USERSREQUEST = _descriptor.Descriptor(
-  name='UsersRequest',
-  full_name='user.UsersRequest',
+_BASERESPONSE = _descriptor.Descriptor(
+  name='BaseResponse',
+  full_name='user.BaseResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='username', full_name='user.UsersRequest.username', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
+      name='success', full_name='user.BaseResponse.success', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -53,7 +53,67 @@ _USERSREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=26,
-  serialized_end=58,
+  serialized_end=57,
+)
+
+
+_USERPROFILERESPONSE = _descriptor.Descriptor(
+  name='UserProfileResponse',
+  full_name='user.UserProfileResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='user.UserProfileResponse.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='username', full_name='user.UserProfileResponse.username', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='email', full_name='user.UserProfileResponse.email', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='first_name', full_name='user.UserProfileResponse.first_name', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='last_name', full_name='user.UserProfileResponse.last_name', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=59,
+  serialized_end=164,
 )
 
 
@@ -77,8 +137,93 @@ _EMPTY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=60,
-  serialized_end=67,
+  serialized_start=166,
+  serialized_end=173,
+)
+
+
+_UPDATEPROFILEREQUEST = _descriptor.Descriptor(
+  name='UpdateProfileRequest',
+  full_name='user.UpdateProfileRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='first_name', full_name='user.UpdateProfileRequest.first_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='last_name', full_name='user.UpdateProfileRequest.last_name', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='avatar', full_name='user.UpdateProfileRequest.avatar', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=175,
+  serialized_end=252,
+)
+
+
+_CHANGEPASSWORDREQUEST = _descriptor.Descriptor(
+  name='ChangePasswordRequest',
+  full_name='user.ChangePasswordRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='old_password', full_name='user.ChangePasswordRequest.old_password', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='new_password', full_name='user.ChangePasswordRequest.new_password', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=254,
+  serialized_end=321,
 )
 
 
@@ -104,23 +249,34 @@ _USERINFORESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=323,
+  serialized_end=371,
+)
+
+
+_GETUSERREQUEST = _descriptor.Descriptor(
+  name='GetUserRequest',
+  full_name='user.GetUserRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
     _descriptor.FieldDescriptor(
-      name='email', full_name='user.UserInfoResponse.email', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='first_name', full_name='user.UserInfoResponse.first_name', index=3,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='last_name', full_name='user.UserInfoResponse.last_name', index=4,
-      number=6, type=9, cpp_type=9, label=1,
+      name='client_id', full_name='user.GetUserRequest.client_id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -137,21 +293,53 @@ _USERINFORESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=69,
-  serialized_end=171,
+  serialized_start=373,
+  serialized_end=408,
 )
 
 
-_USERSRESPONSELIST = _descriptor.Descriptor(
-  name='UsersResponseList',
-  full_name='user.UsersResponseList',
+_SEARCHUSERREQUEST = _descriptor.Descriptor(
+  name='SearchUserRequest',
+  full_name='user.SearchUserRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='list', full_name='user.UsersResponseList.list', index=0,
+      name='keyword', full_name='user.SearchUserRequest.keyword', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=410,
+  serialized_end=446,
+)
+
+
+_SEARCHUSERRESPONSE = _descriptor.Descriptor(
+  name='SearchUserResponse',
+  full_name='user.SearchUserResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='lst_user', full_name='user.SearchUserResponse.lst_user', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -169,30 +357,23 @@ _USERSRESPONSELIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=173,
-  serialized_end=230,
+  serialized_start=448,
+  serialized_end=510,
 )
 
 
-_CHANGEPASSWORD = _descriptor.Descriptor(
-  name='ChangePassword',
-  full_name='user.ChangePassword',
+_GETUSERSRESPONSE = _descriptor.Descriptor(
+  name='GetUsersResponse',
+  full_name='user.GetUsersResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='old_password', full_name='user.ChangePassword.old_password', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='new_password', full_name='user.ChangePassword.new_password', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
+      name='lst_user', full_name='user.GetUsersResponse.lst_user', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -208,111 +389,37 @@ _CHANGEPASSWORD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=232,
-  serialized_end=292,
+  serialized_start=512,
+  serialized_end=572,
 )
 
-
-_SUCCESSRESPONSE = _descriptor.Descriptor(
-  name='SuccessResponse',
-  full_name='user.SuccessResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='success', full_name='user.SuccessResponse.success', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=294,
-  serialized_end=328,
-)
-
-
-_UPDATEUSERINFOREQUEST = _descriptor.Descriptor(
-  name='UpdateUserInfoRequest',
-  full_name='user.UpdateUserInfoRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='username', full_name='user.UpdateUserInfoRequest.username', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='email', full_name='user.UpdateUserInfoRequest.email', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='first_name', full_name='user.UpdateUserInfoRequest.first_name', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='last_name', full_name='user.UpdateUserInfoRequest.last_name', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=330,
-  serialized_end=425,
-)
-
-_USERSRESPONSELIST.fields_by_name['list'].message_type = _USERINFORESPONSE
-DESCRIPTOR.message_types_by_name['UsersRequest'] = _USERSREQUEST
+_SEARCHUSERRESPONSE.fields_by_name['lst_user'].message_type = _USERINFORESPONSE
+_GETUSERSRESPONSE.fields_by_name['lst_user'].message_type = _USERINFORESPONSE
+DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
+DESCRIPTOR.message_types_by_name['UserProfileResponse'] = _USERPROFILERESPONSE
 DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
+DESCRIPTOR.message_types_by_name['UpdateProfileRequest'] = _UPDATEPROFILEREQUEST
+DESCRIPTOR.message_types_by_name['ChangePasswordRequest'] = _CHANGEPASSWORDREQUEST
 DESCRIPTOR.message_types_by_name['UserInfoResponse'] = _USERINFORESPONSE
-DESCRIPTOR.message_types_by_name['UsersResponseList'] = _USERSRESPONSELIST
-DESCRIPTOR.message_types_by_name['ChangePassword'] = _CHANGEPASSWORD
-DESCRIPTOR.message_types_by_name['SuccessResponse'] = _SUCCESSRESPONSE
-DESCRIPTOR.message_types_by_name['UpdateUserInfoRequest'] = _UPDATEUSERINFOREQUEST
+DESCRIPTOR.message_types_by_name['GetUserRequest'] = _GETUSERREQUEST
+DESCRIPTOR.message_types_by_name['SearchUserRequest'] = _SEARCHUSERREQUEST
+DESCRIPTOR.message_types_by_name['SearchUserResponse'] = _SEARCHUSERRESPONSE
+DESCRIPTOR.message_types_by_name['GetUsersResponse'] = _GETUSERSRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-UsersRequest = _reflection.GeneratedProtocolMessageType('UsersRequest', (_message.Message,), {
-  'DESCRIPTOR' : _USERSREQUEST,
+BaseResponse = _reflection.GeneratedProtocolMessageType('BaseResponse', (_message.Message,), {
+  'DESCRIPTOR' : _BASERESPONSE,
   '__module__' : 'proto.user_pb2'
-  # @@protoc_insertion_point(class_scope:user.UsersRequest)
+  # @@protoc_insertion_point(class_scope:user.BaseResponse)
   })
-_sym_db.RegisterMessage(UsersRequest)
+_sym_db.RegisterMessage(BaseResponse)
+
+UserProfileResponse = _reflection.GeneratedProtocolMessageType('UserProfileResponse', (_message.Message,), {
+  'DESCRIPTOR' : _USERPROFILERESPONSE,
+  '__module__' : 'proto.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.UserProfileResponse)
+  })
+_sym_db.RegisterMessage(UserProfileResponse)
 
 Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), {
   'DESCRIPTOR' : _EMPTY,
@@ -321,6 +428,20 @@ Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), {
   })
 _sym_db.RegisterMessage(Empty)
 
+UpdateProfileRequest = _reflection.GeneratedProtocolMessageType('UpdateProfileRequest', (_message.Message,), {
+  'DESCRIPTOR' : _UPDATEPROFILEREQUEST,
+  '__module__' : 'proto.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.UpdateProfileRequest)
+  })
+_sym_db.RegisterMessage(UpdateProfileRequest)
+
+ChangePasswordRequest = _reflection.GeneratedProtocolMessageType('ChangePasswordRequest', (_message.Message,), {
+  'DESCRIPTOR' : _CHANGEPASSWORDREQUEST,
+  '__module__' : 'proto.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.ChangePasswordRequest)
+  })
+_sym_db.RegisterMessage(ChangePasswordRequest)
+
 UserInfoResponse = _reflection.GeneratedProtocolMessageType('UserInfoResponse', (_message.Message,), {
   'DESCRIPTOR' : _USERINFORESPONSE,
   '__module__' : 'proto.user_pb2'
@@ -328,33 +449,33 @@ UserInfoResponse = _reflection.GeneratedProtocolMessageType('UserInfoResponse', 
   })
 _sym_db.RegisterMessage(UserInfoResponse)
 
-UsersResponseList = _reflection.GeneratedProtocolMessageType('UsersResponseList', (_message.Message,), {
-  'DESCRIPTOR' : _USERSRESPONSELIST,
+GetUserRequest = _reflection.GeneratedProtocolMessageType('GetUserRequest', (_message.Message,), {
+  'DESCRIPTOR' : _GETUSERREQUEST,
   '__module__' : 'proto.user_pb2'
-  # @@protoc_insertion_point(class_scope:user.UsersResponseList)
+  # @@protoc_insertion_point(class_scope:user.GetUserRequest)
   })
-_sym_db.RegisterMessage(UsersResponseList)
+_sym_db.RegisterMessage(GetUserRequest)
 
-ChangePassword = _reflection.GeneratedProtocolMessageType('ChangePassword', (_message.Message,), {
-  'DESCRIPTOR' : _CHANGEPASSWORD,
+SearchUserRequest = _reflection.GeneratedProtocolMessageType('SearchUserRequest', (_message.Message,), {
+  'DESCRIPTOR' : _SEARCHUSERREQUEST,
   '__module__' : 'proto.user_pb2'
-  # @@protoc_insertion_point(class_scope:user.ChangePassword)
+  # @@protoc_insertion_point(class_scope:user.SearchUserRequest)
   })
-_sym_db.RegisterMessage(ChangePassword)
+_sym_db.RegisterMessage(SearchUserRequest)
 
-SuccessResponse = _reflection.GeneratedProtocolMessageType('SuccessResponse', (_message.Message,), {
-  'DESCRIPTOR' : _SUCCESSRESPONSE,
+SearchUserResponse = _reflection.GeneratedProtocolMessageType('SearchUserResponse', (_message.Message,), {
+  'DESCRIPTOR' : _SEARCHUSERRESPONSE,
   '__module__' : 'proto.user_pb2'
-  # @@protoc_insertion_point(class_scope:user.SuccessResponse)
+  # @@protoc_insertion_point(class_scope:user.SearchUserResponse)
   })
-_sym_db.RegisterMessage(SuccessResponse)
+_sym_db.RegisterMessage(SearchUserResponse)
 
-UpdateUserInfoRequest = _reflection.GeneratedProtocolMessageType('UpdateUserInfoRequest', (_message.Message,), {
-  'DESCRIPTOR' : _UPDATEUSERINFOREQUEST,
+GetUsersResponse = _reflection.GeneratedProtocolMessageType('GetUsersResponse', (_message.Message,), {
+  'DESCRIPTOR' : _GETUSERSRESPONSE,
   '__module__' : 'proto.user_pb2'
-  # @@protoc_insertion_point(class_scope:user.UpdateUserInfoRequest)
+  # @@protoc_insertion_point(class_scope:user.GetUsersResponse)
   })
-_sym_db.RegisterMessage(UpdateUserInfoRequest)
+_sym_db.RegisterMessage(GetUsersResponse)
 
 
 
@@ -365,26 +486,26 @@ _USER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=428,
-  serialized_end=630,
+  serialized_start=575,
+  serialized_end=961,
   methods=[
   _descriptor.MethodDescriptor(
-    name='get_user_info',
-    full_name='user.User.get_user_info',
+    name='get_profile',
+    full_name='user.User.get_profile',
     index=0,
     containing_service=None,
     input_type=_EMPTY,
-    output_type=_USERINFORESPONSE,
+    output_type=_USERPROFILERESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
-    name='update_user_info',
-    full_name='user.User.update_user_info',
+    name='update_profile',
+    full_name='user.User.update_profile',
     index=1,
     containing_service=None,
-    input_type=_UPDATEUSERINFOREQUEST,
-    output_type=_SUCCESSRESPONSE,
+    input_type=_UPDATEPROFILEREQUEST,
+    output_type=_BASERESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
@@ -393,8 +514,38 @@ _USER = _descriptor.ServiceDescriptor(
     full_name='user.User.change_password',
     index=2,
     containing_service=None,
-    input_type=_CHANGEPASSWORD,
-    output_type=_SUCCESSRESPONSE,
+    input_type=_CHANGEPASSWORDREQUEST,
+    output_type=_BASERESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='get_user_info',
+    full_name='user.User.get_user_info',
+    index=3,
+    containing_service=None,
+    input_type=_GETUSERREQUEST,
+    output_type=_USERINFORESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='search_user',
+    full_name='user.User.search_user',
+    index=4,
+    containing_service=None,
+    input_type=_SEARCHUSERREQUEST,
+    output_type=_SEARCHUSERRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='get_users',
+    full_name='user.User.get_users',
+    index=5,
+    containing_service=None,
+    input_type=_EMPTY,
+    output_type=_GETUSERSRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
