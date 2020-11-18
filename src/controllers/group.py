@@ -18,7 +18,10 @@ class GroupController(BaseController):
             # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             # created_by_client_id = introspect_token['sub']
             group_name = request.group_name
-            obj_res = self.service.add_group(group_name, request.created_by_client_id)
+            group_type = request.group_type
+            lst_client_id = request.lst_client_id
+            obj_res = self.service.add_group(group_name, group_type, lst_client_id, request.created_by_client_id)
+
             return obj_res
         except Exception as e:
             logger.error(e)
@@ -30,7 +33,7 @@ class GroupController(BaseController):
     @request_logged
     def get_group(self, request, context):
         try:
-            group_id= request.group_id
+            group_id = request.group_id
             obj_res = self.service.get_group(group_id)
             if obj_res is not None:
                 return obj_res
@@ -95,10 +98,3 @@ class GroupController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-
- # rpc create_group(CreateGroupRequest) returns (GroupObjectResponse) {};
- #    rpc get_group(GetGroupRequest) returns (GroupObjectResponse) {};
- #    rpc search_groups(SearchGroupsResponse) returns (SearchGroupsResponse) {};
- #    rpc get_joined_groups(GetJoinedGroupsRequest) returns (GetJoinedGroupsResponse) {};
- #    rpc invite_to_group(InviteToGroupRequest) returns (BaseResponse) {};
- #    rpc join_group(JoinGroupRequest) returns (BaseResponse) {};

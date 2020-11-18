@@ -95,7 +95,8 @@ message PublishRequest {
   string fromClientId = 1;
   string clientId = 2;
   string groupId = 3;
-  bytes message = 4;
+  string groupType = 4;
+  bytes message = 5;
 }
 //response: BaseResponse
 
@@ -109,7 +110,8 @@ message SubscribeAndListenRequest {
 message Publication {
   string fromClientId = 1;
   string groupId = 2;
-  bytes message = 3;
+  string groupType = 3;
+  bytes message = 4;
 }
 
 service SignalKeyDistribution {

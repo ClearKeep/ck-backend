@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x11proto/group.proto\x12\x05group\"\xb5\x01\n\x13GroupObjectResponse\x12\x10\n\x08group_id\x18\x01 \x01(\t\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x12\x14\n\x0cgroup_avatar\x18\x03 \x01(\t\x12\x1c\n\x14\x63reated_by_client_id\x18\x04 \x01(\t\x12\x12\n\ncreated_at\x18\x05 \x01(\x03\x12\x1c\n\x14updated_by_client_id\x18\x06 \x01(\t\x12\x12\n\nupdated_at\x18\x07 \x01(\x03\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"F\n\x12\x43reateGroupRequest\x12\x12\n\ngroup_name\x18\x01 \x01(\t\x12\x1c\n\x14\x63reated_by_client_id\x18\x03 \x01(\t\"n\n\x12UpdateGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\t\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x12\x14\n\x0cgroup_avatar\x18\x03 \x01(\t\x12\x1c\n\x14updated_by_client_id\x18\x04 \x01(\t\"#\n\x0fGetGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\t\"+\n\x16GetJoinedGroupsRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\"H\n\x17GetJoinedGroupsResponse\x12-\n\tlst_group\x18\x01 \x03(\x0b\x32\x1a.group.GroupObjectResponse\"&\n\x13SearchGroupsRequest\x12\x0f\n\x07keyword\x18\x01 \x01(\t\"E\n\x14SearchGroupsResponse\x12-\n\tlst_group\x18\x01 \x03(\x0b\x32\x1a.group.GroupObjectResponse\"S\n\x14InviteToGroupRequest\x12\x16\n\x0e\x66rom_client_id\x18\x01 \x01(\t\x12\x11\n\tclient_id\x18\x02 \x01(\t\x12\x10\n\x08group_id\x18\x03 \x01(\t\"7\n\x10JoinGroupRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\t2\xba\x03\n\x05Group\x12G\n\x0c\x63reate_group\x12\x19.group.CreateGroupRequest\x1a\x1a.group.GroupObjectResponse\"\x00\x12\x41\n\tget_group\x12\x16.group.GetGroupRequest\x1a\x1a.group.GroupObjectResponse\"\x00\x12J\n\rsearch_groups\x12\x1a.group.SearchGroupsRequest\x1a\x1b.group.SearchGroupsResponse\"\x00\x12T\n\x11get_joined_groups\x12\x1d.group.GetJoinedGroupsRequest\x1a\x1e.group.GetJoinedGroupsResponse\"\x00\x12\x45\n\x0finvite_to_group\x12\x1b.group.InviteToGroupRequest\x1a\x13.group.BaseResponse\"\x00\x12<\n\njoin_group\x12\x17.group.JoinGroupRequest\x1a\x13.group.BaseResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x11proto/group.proto\x12\x05group\"\xe0\x01\n\x13GroupObjectResponse\x12\x10\n\x08group_id\x18\x01 \x01(\t\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x12\x14\n\x0cgroup_avatar\x18\x03 \x01(\t\x12\x12\n\ngroup_type\x18\x04 \x01(\t\x12\x1c\n\x14\x63reated_by_client_id\x18\x05 \x01(\t\x12\x12\n\ncreated_at\x18\x06 \x01(\x03\x12\x1c\n\x14updated_by_client_id\x18\x07 \x01(\t\x12\x15\n\rlst_client_id\x18\x08 \x03(\t\x12\x12\n\nupdated_at\x18\t \x01(\x03\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"q\n\x12\x43reateGroupRequest\x12\x12\n\ngroup_name\x18\x01 \x01(\t\x12\x12\n\ngroup_type\x18\x02 \x01(\t\x12\x1c\n\x14\x63reated_by_client_id\x18\x03 \x01(\t\x12\x15\n\rlst_client_id\x18\x04 \x03(\t\"n\n\x12UpdateGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\t\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x12\x14\n\x0cgroup_avatar\x18\x03 \x01(\t\x12\x1c\n\x14updated_by_client_id\x18\x04 \x01(\t\"#\n\x0fGetGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\t\"+\n\x16GetJoinedGroupsRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\"H\n\x17GetJoinedGroupsResponse\x12-\n\tlst_group\x18\x01 \x03(\x0b\x32\x1a.group.GroupObjectResponse\"&\n\x13SearchGroupsRequest\x12\x0f\n\x07keyword\x18\x01 \x01(\t\"E\n\x14SearchGroupsResponse\x12-\n\tlst_group\x18\x01 \x03(\x0b\x32\x1a.group.GroupObjectResponse\"S\n\x14InviteToGroupRequest\x12\x16\n\x0e\x66rom_client_id\x18\x01 \x01(\t\x12\x11\n\tclient_id\x18\x02 \x01(\t\x12\x10\n\x08group_id\x18\x03 \x01(\t\"7\n\x10JoinGroupRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\t2\xba\x03\n\x05Group\x12G\n\x0c\x63reate_group\x12\x19.group.CreateGroupRequest\x1a\x1a.group.GroupObjectResponse\"\x00\x12\x41\n\tget_group\x12\x16.group.GetGroupRequest\x1a\x1a.group.GroupObjectResponse\"\x00\x12J\n\rsearch_groups\x12\x1a.group.SearchGroupsRequest\x1a\x1b.group.SearchGroupsResponse\"\x00\x12T\n\x11get_joined_groups\x12\x1d.group.GetJoinedGroupsRequest\x1a\x1e.group.GetJoinedGroupsResponse\"\x00\x12\x45\n\x0finvite_to_group\x12\x1b.group.InviteToGroupRequest\x1a\x13.group.BaseResponse\"\x00\x12<\n\njoin_group\x12\x17.group.JoinGroupRequest\x1a\x13.group.BaseResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -55,29 +55,43 @@ _GROUPOBJECTRESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='created_by_client_id', full_name='group.GroupObjectResponse.created_by_client_id', index=3,
+      name='group_type', full_name='group.GroupObjectResponse.group_type', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='created_at', full_name='group.GroupObjectResponse.created_at', index=4,
-      number=5, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='updated_by_client_id', full_name='group.GroupObjectResponse.updated_by_client_id', index=5,
-      number=6, type=9, cpp_type=9, label=1,
+      name='created_by_client_id', full_name='group.GroupObjectResponse.created_by_client_id', index=4,
+      number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='updated_at', full_name='group.GroupObjectResponse.updated_at', index=6,
-      number=7, type=3, cpp_type=2, label=1,
+      name='created_at', full_name='group.GroupObjectResponse.created_at', index=5,
+      number=6, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='updated_by_client_id', full_name='group.GroupObjectResponse.updated_by_client_id', index=6,
+      number=7, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='lst_client_id', full_name='group.GroupObjectResponse.lst_client_id', index=7,
+      number=8, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='updated_at', full_name='group.GroupObjectResponse.updated_at', index=8,
+      number=9, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -95,7 +109,7 @@ _GROUPOBJECTRESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=29,
-  serialized_end=210,
+  serialized_end=253,
 )
 
 
@@ -126,8 +140,8 @@ _BASERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=212,
-  serialized_end=243,
+  serialized_start=255,
+  serialized_end=286,
 )
 
 
@@ -147,9 +161,23 @@ _CREATEGROUPREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='created_by_client_id', full_name='group.CreateGroupRequest.created_by_client_id', index=1,
+      name='group_type', full_name='group.CreateGroupRequest.group_type', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='created_by_client_id', full_name='group.CreateGroupRequest.created_by_client_id', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='lst_client_id', full_name='group.CreateGroupRequest.lst_client_id', index=3,
+      number=4, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -165,8 +193,8 @@ _CREATEGROUPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=245,
-  serialized_end=315,
+  serialized_start=288,
+  serialized_end=401,
 )
 
 
@@ -218,8 +246,8 @@ _UPDATEGROUPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=317,
-  serialized_end=427,
+  serialized_start=403,
+  serialized_end=513,
 )
 
 
@@ -250,8 +278,8 @@ _GETGROUPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=429,
-  serialized_end=464,
+  serialized_start=515,
+  serialized_end=550,
 )
 
 
@@ -282,8 +310,8 @@ _GETJOINEDGROUPSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=466,
-  serialized_end=509,
+  serialized_start=552,
+  serialized_end=595,
 )
 
 
@@ -314,8 +342,8 @@ _GETJOINEDGROUPSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=511,
-  serialized_end=583,
+  serialized_start=597,
+  serialized_end=669,
 )
 
 
@@ -346,8 +374,8 @@ _SEARCHGROUPSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=585,
-  serialized_end=623,
+  serialized_start=671,
+  serialized_end=709,
 )
 
 
@@ -378,8 +406,8 @@ _SEARCHGROUPSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=625,
-  serialized_end=694,
+  serialized_start=711,
+  serialized_end=780,
 )
 
 
@@ -424,8 +452,8 @@ _INVITETOGROUPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=696,
-  serialized_end=779,
+  serialized_start=782,
+  serialized_end=865,
 )
 
 
@@ -463,8 +491,8 @@ _JOINGROUPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=781,
-  serialized_end=836,
+  serialized_start=867,
+  serialized_end=922,
 )
 
 _GETJOINEDGROUPSRESPONSE.fields_by_name['lst_group'].message_type = _GROUPOBJECTRESPONSE
@@ -568,8 +596,8 @@ _GROUP = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=839,
-  serialized_end=1281,
+  serialized_start=925,
+  serialized_end=1367,
   methods=[
   _descriptor.MethodDescriptor(
     name='create_group',

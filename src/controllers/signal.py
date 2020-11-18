@@ -4,6 +4,7 @@ from src.services.signal import SignalService, client_queue
 from middlewares.permission import *
 from utils.logger import *
 from middlewares.request_logged import *
+from src.models.message import Message
 
 
 class SignalController(BaseController):
@@ -101,13 +102,26 @@ class SignalController(BaseController):
     def Publish(self, request, context):
         try:
             group_id = request.groupId
-            if group_id:
+            client_id = request.clientId
+
+            if client_id:
+                request.groupType = "peer"
+                client_queue[client_id].put(request)
+            else:
+                request.groupType = "group"
                 lst_client = self.service.group_get_all_client_key(group_id)
                 for client in lst_client:
                     if client.client_id != request.fromClientId:
                         client_queue[client.client_id].put(request)
-            else:
-                client_queue[request.clientId].put(request)
+
+            #store message here
+            Message(
+                group_id=group_id,
+                from_client_id=request.fromClientId,
+                client_id=client_id,
+                message=request.message
+            ).add()
+
             return signal_pb2.BaseResponse(message='success')
         except Exception as e:
             logger.error(e)
@@ -121,7 +135,7 @@ class SignalController(BaseController):
         if request.clientId in client_queue:
             while True:
                 publication = client_queue[request.clientId].get()  # blocking until the next .put for this queue
-                publication_response = signal_pb2.Publication(fromClientId=publication.fromClientId, groupId=publication.groupId,
+                publication_response = signal_pb2.Publication(fromClientId=publication.fromClientId, groupId=publication.groupId, groupType=publication.groupType,
                                                                message=publication.message)
                 yield publication_response
 

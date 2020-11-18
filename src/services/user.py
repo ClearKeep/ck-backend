@@ -12,12 +12,16 @@ class UserService(BaseService):
     def create_new_user(self, id, record, auth_source):
         self.model = User(
             id=id,
-            email=EncryptUtils.encrypt_data(record.email, record.password, id),
             username=record.username,
-            first_name=EncryptUtils.encrypt_data(record.first_name, record.password, id),
-            last_name=EncryptUtils.encrypt_data(record.last_name, record.password, id),
             auth_source=auth_source
         )
+        if record.email:
+            self.model.email = EncryptUtils.encrypt_data(record.email, record.password, id)
+        if record.first_name:
+            self.model.first_name = EncryptUtils.encrypt_data(record.first_name, record.password, id)
+        if record.last_name:
+            self.model.last_name = EncryptUtils.encrypt_data(record.last_name, record.password, id)
+
         return self.model.add()
 
     def change_password(self, request, old_pass, new_pass, user_id):
@@ -25,13 +29,15 @@ class UserService(BaseService):
 
         response = KeyCloakUtils.set_user_password(user_id, new_pass)
 
-        email = EncryptUtils.decrypt_data(user_info.email, old_pass, user_id)
-        first_name = EncryptUtils.decrypt_data(user_info.first_name, old_pass, user_id)
-        last_name = EncryptUtils.decrypt_data(user_info.last_name, old_pass, user_id)
-
-        user_info.email = EncryptUtils.encrypt_data(email, new_pass, user_id)
-        user_info.first_name = EncryptUtils.encrypt_data(first_name, new_pass, user_id)
-        user_info.last_name = EncryptUtils.encrypt_data(last_name, new_pass, user_id)
+        if user_info.email:
+            email = EncryptUtils.decrypt_data(user_info.email, old_pass, user_id)
+            user_info.email = EncryptUtils.encrypt_data(email, new_pass, user_id)
+        if user_info.first_name:
+            first_name = EncryptUtils.decrypt_data(user_info.first_name, old_pass, user_id)
+            user_info.first_name = EncryptUtils.encrypt_data(first_name, new_pass, user_id)
+        if user_info.last_name:
+            last_name = EncryptUtils.decrypt_data(user_info.last_name, old_pass, user_id)
+            user_info.last_name = EncryptUtils.encrypt_data(last_name, new_pass, user_id)
 
         return user_info.update()
 
@@ -41,10 +47,17 @@ class UserService(BaseService):
             obj_res = user_pb2.UserProfileResponse(
                 id=user_info.id,
                 username=user_info.username,
-                email=EncryptUtils.decrypt_with_hash(user_info.email, hash_key),
+                # email=EncryptUtils.decrypt_with_hash(user_info.email, hash_key),
                 # first_name=EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key),
                 # last_name=EncryptUtils.decrypt_with_hash(user_info.last_name, hash_key)
             )
+            if user_info.email:
+                obj_res.email = EncryptUtils.decrypt_with_hash(user_info.email, hash_key)
+            if user_info.first_name:
+                obj_res.first_name = EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key),
+            if user_info.last_name:
+                obj_res.last_name = EncryptUtils.decrypt_with_hash(user_info.last_name, hash_key),
+
             return obj_res
         else:
             return None

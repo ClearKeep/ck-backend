@@ -1,0 +1,65 @@
+2020-11-16 14:03:02,688 root INFO Listening on port 5000..
+2020-11-16 14:06:30,662 root INFO Listening on port 5000..
+2020-11-16 14:08:38,959 root INFO Listening on port 5000..
+2020-11-16 14:21:05,416 root INFO Listening on port 5000..
+2020-11-16 14:21:23,377 root ERROR 'UserService' object has no attribute 'search_user'
+2020-11-16 14:21:23,377 grpc._common ERROR Exception serializing message!
+Traceback (most recent call last):
+  File "/Users/phuongnguyen/opt/miniconda3/envs/clearkeep-backend/lib/python3.8/site-packages/grpc/_common.py", line 86, in _transform
+    return transformer(message)
+TypeError: descriptor 'SerializeToString' for 'google.protobuf.pyext._message.CMessage' objects doesn't apply to a 'NoneType' object
+2020-11-16 14:21:25,957 root ERROR 'UserService' object has no attribute 'search_user'
+2020-11-16 14:21:25,958 grpc._common ERROR Exception serializing message!
+Traceback (most recent call last):
+  File "/Users/phuongnguyen/opt/miniconda3/envs/clearkeep-backend/lib/python3.8/site-packages/grpc/_common.py", line 86, in _transform
+    return transformer(message)
+TypeError: descriptor 'SerializeToString' for 'google.protobuf.pyext._message.CMessage' objects doesn't apply to a 'NoneType' object
+2020-11-16 14:24:40,429 root INFO Listening on port 5000..
+2020-11-16 16:56:33,145 root INFO Listening on port 5000..
+2020-11-16 17:34:55,196 root INFO Listening on port 5000..
+2020-11-16 17:36:00,701 root INFO Listening on port 5000..
+2020-11-16 17:36:05,115 root ERROR (psycopg2.errors.NotNullViolation) null value in column "device_id" of relation "group_client_key" violates not-null constraint
+DETAIL:  Failing row contains (1, d8683483-6523-4fdb-bf7b-be7def08c84a, f7d4adde-d959-48ce-96df-1a969ec5c4b5, null, null, 2020-11-16 17:36:05.108657, 2020-11-16 17:36:05.108688).
+
+[SQL: INSERT INTO group_client_key (group_id, client_id, device_id, client_key, created_at, updated_at) VALUES (%(group_id)s, %(client_id)s, %(device_id)s, %(client_key)s, %(created_at)s, %(updated_at)s) RETURNING group_client_key.id]
+[parameters: {'group_id': 'd8683483-6523-4fdb-bf7b-be7def08c84a', 'client_id': 'f7d4adde-d959-48ce-96df-1a969ec5c4b5', 'device_id': None, 'client_key': None, 'created_at': datetime.datetime(2020, 11, 16, 17, 36, 5, 108657), 'updated_at': datetime.datetime(2020, 11, 16, 17, 36, 5, 108688)}]
+(Background on this error at: http://sqlalche.me/e/13/gkpj)
+2020-11-16 17:36:05,115 grpc._common ERROR Exception serializing message!
+Traceback (most recent call last):
+  File "/Users/phuongnguyen/opt/miniconda3/envs/clearkeep-backend/lib/python3.8/site-packages/grpc/_common.py", line 86, in _transform
+    return transformer(message)
+TypeError: descriptor 'SerializeToString' for 'google.protobuf.pyext._message.CMessage' objects doesn't apply to a 'NoneType' object
+2020-11-16 17:36:51,800 root ERROR This Session's transaction has been rolled back due to a previous exception during flush. To begin a new transaction with this Session, first issue Session.rollback(). Original exception was: (psycopg2.errors.NotNullViolation) null value in column "device_id" of relation "group_client_key" violates not-null constraint
+DETAIL:  Failing row contains (1, d8683483-6523-4fdb-bf7b-be7def08c84a, f7d4adde-d959-48ce-96df-1a969ec5c4b5, null, null, 2020-11-16 17:36:05.108657, 2020-11-16 17:36:05.108688).
+
+[SQL: INSERT INTO group_client_key (group_id, client_id, device_id, client_key, created_at, updated_at) VALUES (%(group_id)s, %(client_id)s, %(device_id)s, %(client_key)s, %(created_at)s, %(updated_at)s) RETURNING group_client_key.id]
+[parameters: {'group_id': 'd8683483-6523-4fdb-bf7b-be7def08c84a', 'client_id': 'f7d4adde-d959-48ce-96df-1a969ec5c4b5', 'device_id': None, 'client_key': None, 'created_at': datetime.datetime(2020, 11, 16, 17, 36, 5, 108657), 'updated_at': datetime.datetime(2020, 11, 16, 17, 36, 5, 108688)}]
+(Background on this error at: http://sqlalche.me/e/13/gkpj) (Background on this error at: http://sqlalche.me/e/13/7s2a)
+2020-11-16 17:36:51,801 grpc._common ERROR Exception serializing message!
+Traceback (most recent call last):
+  File "/Users/phuongnguyen/opt/miniconda3/envs/clearkeep-backend/lib/python3.8/site-packages/grpc/_common.py", line 86, in _transform
+    return transformer(message)
+TypeError: descriptor 'SerializeToString' for 'google.protobuf.pyext._message.CMessage' objects doesn't apply to a 'NoneType' object
+2020-11-16 17:39:31,734 root ERROR This Session's transaction has been rolled back due to a previous exception during flush. To begin a new transaction with this Session, first issue Session.rollback(). Original exception was: (psycopg2.errors.NotNullViolation) null value in column "device_id" of relation "group_client_key" violates not-null constraint
+DETAIL:  Failing row contains (1, d8683483-6523-4fdb-bf7b-be7def08c84a, f7d4adde-d959-48ce-96df-1a969ec5c4b5, null, null, 2020-11-16 17:36:05.108657, 2020-11-16 17:36:05.108688).
+
+[SQL: INSERT INTO group_client_key (group_id, client_id, device_id, client_key, created_at, updated_at) VALUES (%(group_id)s, %(client_id)s, %(device_id)s, %(client_key)s, %(created_at)s, %(updated_at)s) RETURNING group_client_key.id]
+[parameters: {'group_id': 'd8683483-6523-4fdb-bf7b-be7def08c84a', 'client_id': 'f7d4adde-d959-48ce-96df-1a969ec5c4b5', 'device_id': None, 'client_key': None, 'created_at': datetime.datetime(2020, 11, 16, 17, 36, 5, 108657), 'updated_at': datetime.datetime(2020, 11, 16, 17, 36, 5, 108688)}]
+(Background on this error at: http://sqlalche.me/e/13/gkpj) (Background on this error at: http://sqlalche.me/e/13/7s2a)
+2020-11-16 17:39:31,735 grpc._common ERROR Exception serializing message!
+Traceback (most recent call last):
+  File "/Users/phuongnguyen/opt/miniconda3/envs/clearkeep-backend/lib/python3.8/site-packages/grpc/_common.py", line 86, in _transform
+    return transformer(message)
+TypeError: descriptor 'SerializeToString' for 'google.protobuf.pyext._message.CMessage' objects doesn't apply to a 'NoneType' object
+2020-11-16 17:40:33,469 root ERROR This Session's transaction has been rolled back due to a previous exception during flush. To begin a new transaction with this Session, first issue Session.rollback(). Original exception was: (psycopg2.errors.NotNullViolation) null value in column "device_id" of relation "group_client_key" violates not-null constraint
+DETAIL:  Failing row contains (1, d8683483-6523-4fdb-bf7b-be7def08c84a, f7d4adde-d959-48ce-96df-1a969ec5c4b5, null, null, 2020-11-16 17:36:05.108657, 2020-11-16 17:36:05.108688).
+
+[SQL: INSERT INTO group_client_key (group_id, client_id, device_id, client_key, created_at, updated_at) VALUES (%(group_id)s, %(client_id)s, %(device_id)s, %(client_key)s, %(created_at)s, %(updated_at)s) RETURNING group_client_key.id]
+[parameters: {'group_id': 'd8683483-6523-4fdb-bf7b-be7def08c84a', 'client_id': 'f7d4adde-d959-48ce-96df-1a969ec5c4b5', 'device_id': None, 'client_key': None, 'created_at': datetime.datetime(2020, 11, 16, 17, 36, 5, 108657), 'updated_at': datetime.datetime(2020, 11, 16, 17, 36, 5, 108688)}]
+(Background on this error at: http://sqlalche.me/e/13/gkpj) (Background on this error at: http://sqlalche.me/e/13/7s2a)
+2020-11-16 17:40:33,470 grpc._common ERROR Exception serializing message!
+Traceback (most recent call last):
+  File "/Users/phuongnguyen/opt/miniconda3/envs/clearkeep-backend/lib/python3.8/site-packages/grpc/_common.py", line 86, in _transform
+    return transformer(message)
+TypeError: descriptor 'SerializeToString' for 'google.protobuf.pyext._message.CMessage' objects doesn't apply to a 'NoneType' object
+2020-11-16 17:42:29,150 root INFO Listening on port 5000..
