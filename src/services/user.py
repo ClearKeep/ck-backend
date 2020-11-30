@@ -88,8 +88,8 @@ class UserService(BaseService):
         else:
             return None
 
-    def search_user(self, keyword):
-        lst_user = self.model.search(keyword)
+    def search_user(self, keyword, client_id):
+        lst_user = self.model.search(keyword, client_id)
         lst_obj_res = []
         for obj in lst_user:
             obj_res = user_pb2.UserInfoResponse(

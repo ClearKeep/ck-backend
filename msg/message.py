@@ -20,6 +20,10 @@ class Message:
     GROUP_CHAT_NOT_FOUND = 1017
     GET_GROUP_CHAT_FAILED = 1018
     SEARCH_GROUP_CHAT_FAILED = 1019
+    CLIENT_QUEUE_NOT_FOUND = 1020
+    #notify
+    GET_CLIENT_NOTIFIES_FAILED = 1021
+    CLIENT_READ_NOTIFY_FAILED = 1022
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -41,7 +45,11 @@ class Message:
         CREATE_GROUP_CHAT_FAILED: "Create new group failed. Please try again",
         GROUP_CHAT_NOT_FOUND: "Group not found.",
         GET_GROUP_CHAT_FAILED: "Get group failed. Please try again",
-        SEARCH_GROUP_CHAT_FAILED: "Search group failed. Please try again"
+        SEARCH_GROUP_CHAT_FAILED: "Search group failed. Please try again",
+        CLIENT_QUEUE_NOT_FOUND: "Client queue not found",
+
+        GET_CLIENT_NOTIFIES_FAILED: "Get client notify failed. Please try again",
+        CLIENT_READ_NOTIFY_FAILED: "Client read notify failed. Please try again"
     }
 
     @staticmethod

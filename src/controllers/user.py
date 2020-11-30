@@ -31,7 +31,9 @@ class UserController(BaseController):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            user_info = self.service.get_profile(introspect_token['sub'], header_data['hash_key'])
+            client_id = introspect_token['sub']
+
+            user_info = self.service.get_profile(client_id, header_data['hash_key'])
             if user_info is not None:
                 return user_info
             else:
@@ -51,7 +53,9 @@ class UserController(BaseController):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            self.service.update_profile(request, introspect_token['sub'], header_data['hash_key'])
+            client_id = introspect_token['sub']
+
+            self.service.update_profile(request, client_id, header_data['hash_key'])
             return user_messages.BaseResponse(success=True)
         except Exception as e:
             logger.error(e)
@@ -83,7 +87,11 @@ class UserController(BaseController):
     def search_user(self, request, context):
         try:
             keyword = request.keyword
-            obj_res = self.service.search_user(keyword)
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+
+            obj_res = self.service.search_user(keyword, client_id)
             return obj_res
         except Exception as e:
             logger.error(e)
@@ -95,7 +103,11 @@ class UserController(BaseController):
     @request_logged
     def get_users(self, request, context):
         try:
-            obj_res = self.service.get_users("1")
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+
+            obj_res = self.service.get_users(client_id)
             return obj_res
         except Exception as e:
             logger.error(e)

@@ -3,7 +3,7 @@ syntax = "proto3";
 package signal;
 
 message BaseResponse {
-    string message = 1;
+    bool success = 1;
 }
 
 // ----- SIGNAL PEER TO PEER KEY -----
@@ -88,32 +88,6 @@ message GroupGetAllClientKeyResponse {
     repeated GroupClientKeyObject lstClientKey = 2;
 }
 
-
-// ----- PUBLISH AND SUBCRIBE MESSAGE -----
-// Request: publish a message
-message PublishRequest {
-  string fromClientId = 1;
-  string clientId = 2;
-  string groupId = 3;
-  string groupType = 4;
-  bytes message = 5;
-}
-//response: BaseResponse
-
-
-// Request: subcribe or listen
-message SubscribeAndListenRequest {
-  string clientId = 1;
-}
-//response: BaseResponse or Publication stream
-
-message Publication {
-  string fromClientId = 1;
-  string groupId = 2;
-  string groupType = 3;
-  bytes message = 4;
-}
-
 service SignalKeyDistribution {
       //peer
       rpc PeerRegisterClientKey (PeerRegisterClientKeyRequest) returns (BaseResponse);
@@ -122,8 +96,4 @@ service SignalKeyDistribution {
       rpc GroupRegisterClientKey (GroupRegisterClientKeyRequest) returns (BaseResponse);
       rpc GroupGetClientKey (GroupGetClientKeyRequest) returns (GroupGetClientKeyResponse);
       rpc GroupGetAllClientKey (GroupGetAllClientKeyRequest) returns (GroupGetAllClientKeyResponse);
-      //action
-      rpc Subscribe (SubscribeAndListenRequest) returns (BaseResponse);
-      rpc Listen (SubscribeAndListenRequest) returns (stream Publication);
-      rpc Publish (PublishRequest) returns (BaseResponse);
 }

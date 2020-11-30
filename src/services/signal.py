@@ -24,16 +24,15 @@ class SignalService(BaseService):
         #     return client_store[client_id]
         return self.peer_model.get_by_client_id(client_id)
 
-
     def group_register_client_key(self, request):
         client_group_key = GroupClientKey().set_key(request.groupId, request.clientId, request.deviceId, request.clientKeyDistribution)
         client_group_key.add()
 
     def group_get_client_key(self, group_id, client_id):
-        return self.group_model.get(group_id, client_id)
+        client_key = self.group_model.get(group_id, client_id)
+        if client_key and client_key.client_key:
+            return client_key
+        return None
 
     def group_get_all_client_key(self, group_id):
         return self.group_model.get_all_in_group(group_id)
-
-    def subscribe(self, client_id):
-        client_queue[client_id] = Queue()

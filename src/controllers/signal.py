@@ -4,7 +4,7 @@ from src.services.signal import SignalService, client_queue
 from middlewares.permission import *
 from utils.logger import *
 from middlewares.request_logged import *
-from src.models.message import Message
+from src.services.message import MessageService
 
 
 class SignalController(BaseController):
@@ -15,14 +15,13 @@ class SignalController(BaseController):
     def PeerRegisterClientKey(self, request, context):
         try:
             self.service.peer_register_client_key(request)
-            return signal_pb2.BaseResponse(message='success')
+            return signal_pb2.BaseResponse(success=True)
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-
 
     def PeerGetClientKey(self, request, context):
         client_id = request.clientId
@@ -52,7 +51,7 @@ class SignalController(BaseController):
         print(request)
         try:
             self.service.group_register_client_key(request)
-            return signal_pb2.BaseResponse(message='success')
+            return signal_pb2.BaseResponse(success=True)
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(Message.REGISTER_CLIENT_GROUP_KEY_FAILED)]
@@ -60,6 +59,7 @@ class SignalController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
     def GroupGetClientKey(self, request, context):
         group_id = request.groupId
         client_id = request.clientId
@@ -80,6 +80,7 @@ class SignalController(BaseController):
             errors, default=lambda x: x.__dict__))
         context.set_code(grpc.StatusCode.NOT_FOUND)
 
+    @request_logged
     def GroupGetAllClientKey(self, request, context):
         group_id = request.groupId
         lst_client = self.service.group_get_all_client_key(group_id)
@@ -97,56 +98,3 @@ class SignalController(BaseController):
             lstClientKey=lst_client_key
         )
         return response
-
-    @request_logged
-    def Publish(self, request, context):
-        try:
-            group_id = request.groupId
-            client_id = request.clientId
-
-            if client_id:
-                request.groupType = "peer"
-                client_queue[client_id].put(request)
-            else:
-                request.groupType = "group"
-                lst_client = self.service.group_get_all_client_key(group_id)
-                for client in lst_client:
-                    if client.client_id != request.fromClientId:
-                        client_queue[client.client_id].put(request)
-
-            #store message here
-            Message(
-                group_id=group_id,
-                from_client_id=request.fromClientId,
-                client_id=client_id,
-                message=request.message
-            ).add()
-
-            return signal_pb2.BaseResponse(message='success')
-        except Exception as e:
-            logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_PUBLISH_MESSAGE_FAILED)]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
-
-
-    def Listen(self, request, context):
-        if request.clientId in client_queue:
-            while True:
-                publication = client_queue[request.clientId].get()  # blocking until the next .put for this queue
-                publication_response = signal_pb2.Publication(fromClientId=publication.fromClientId, groupId=publication.groupId, groupType=publication.groupType,
-                                                               message=publication.message)
-                yield publication_response
-
-
-    def Subscribe(self, request, context):
-        try:
-            self.service.subscribe(request.clientId)
-            return signal_pb2.BaseResponse(message='success')
-        except Exception as e:
-            logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)

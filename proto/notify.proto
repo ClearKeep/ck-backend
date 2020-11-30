@@ -1,0 +1,45 @@
+syntax = "proto3";
+package notification;
+
+message NotifyObjectResponse {
+  int64 id = 1;
+  string client_id = 2;
+  string ref_client_id = 4;
+  string ref_group_id = 5;
+  string notify_type = 6;
+  string notify_image = 7;
+  string notify_title = 8;
+  string notify_content = 9;
+  bool read_flg = 11;
+  int64 created_at = 12;
+}
+
+message BaseResponse {
+    bool success = 1;
+}
+
+// Request: get list notify
+message Empty {
+}
+// Response: GetNotifiesResponse
+message GetNotifiesResponse {
+  repeated NotifyObjectResponse lst_notify = 1;
+}
+
+
+// Request: subcribe or listen
+message SubscribeAndListenRequest {
+  string client_id = 1;
+}
+//response: BaseResponse or NotifyObjectResponse stream
+message ReadNotifyRequest {
+  string notify_id = 1;
+}
+
+// Method
+service Notify {
+    rpc read_notify (ReadNotifyRequest) returns (BaseResponse);
+    rpc get_unread_notifies (Empty) returns (GetNotifiesResponse);
+    rpc subscribe (SubscribeAndListenRequest) returns (BaseResponse);
+    rpc listen (SubscribeAndListenRequest) returns (stream NotifyObjectResponse);
+}

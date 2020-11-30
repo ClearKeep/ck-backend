@@ -39,21 +39,6 @@ class SignalKeyDistributionStub(object):
                 request_serializer=proto_dot_signal__pb2.GroupGetAllClientKeyRequest.SerializeToString,
                 response_deserializer=proto_dot_signal__pb2.GroupGetAllClientKeyResponse.FromString,
                 )
-        self.Subscribe = channel.unary_unary(
-                '/signal.SignalKeyDistribution/Subscribe',
-                request_serializer=proto_dot_signal__pb2.SubscribeAndListenRequest.SerializeToString,
-                response_deserializer=proto_dot_signal__pb2.BaseResponse.FromString,
-                )
-        self.Listen = channel.unary_stream(
-                '/signal.SignalKeyDistribution/Listen',
-                request_serializer=proto_dot_signal__pb2.SubscribeAndListenRequest.SerializeToString,
-                response_deserializer=proto_dot_signal__pb2.Publication.FromString,
-                )
-        self.Publish = channel.unary_unary(
-                '/signal.SignalKeyDistribution/Publish',
-                request_serializer=proto_dot_signal__pb2.PublishRequest.SerializeToString,
-                response_deserializer=proto_dot_signal__pb2.BaseResponse.FromString,
-                )
 
 
 class SignalKeyDistributionServicer(object):
@@ -91,25 +76,6 @@ class SignalKeyDistributionServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def Subscribe(self, request, context):
-        """action
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def Listen(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def Publish(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
 
 def add_SignalKeyDistributionServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -137,21 +103,6 @@ def add_SignalKeyDistributionServicer_to_server(servicer, server):
                     servicer.GroupGetAllClientKey,
                     request_deserializer=proto_dot_signal__pb2.GroupGetAllClientKeyRequest.FromString,
                     response_serializer=proto_dot_signal__pb2.GroupGetAllClientKeyResponse.SerializeToString,
-            ),
-            'Subscribe': grpc.unary_unary_rpc_method_handler(
-                    servicer.Subscribe,
-                    request_deserializer=proto_dot_signal__pb2.SubscribeAndListenRequest.FromString,
-                    response_serializer=proto_dot_signal__pb2.BaseResponse.SerializeToString,
-            ),
-            'Listen': grpc.unary_stream_rpc_method_handler(
-                    servicer.Listen,
-                    request_deserializer=proto_dot_signal__pb2.SubscribeAndListenRequest.FromString,
-                    response_serializer=proto_dot_signal__pb2.Publication.SerializeToString,
-            ),
-            'Publish': grpc.unary_unary_rpc_method_handler(
-                    servicer.Publish,
-                    request_deserializer=proto_dot_signal__pb2.PublishRequest.FromString,
-                    response_serializer=proto_dot_signal__pb2.BaseResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -245,56 +196,5 @@ class SignalKeyDistribution(object):
         return grpc.experimental.unary_unary(request, target, '/signal.SignalKeyDistribution/GroupGetAllClientKey',
             proto_dot_signal__pb2.GroupGetAllClientKeyRequest.SerializeToString,
             proto_dot_signal__pb2.GroupGetAllClientKeyResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def Subscribe(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/signal.SignalKeyDistribution/Subscribe',
-            proto_dot_signal__pb2.SubscribeAndListenRequest.SerializeToString,
-            proto_dot_signal__pb2.BaseResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def Listen(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_stream(request, target, '/signal.SignalKeyDistribution/Listen',
-            proto_dot_signal__pb2.SubscribeAndListenRequest.SerializeToString,
-            proto_dot_signal__pb2.Publication.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def Publish(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/signal.SignalKeyDistribution/Publish',
-            proto_dot_signal__pb2.PublishRequest.SerializeToString,
-            proto_dot_signal__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -1,16 +1,30 @@
 syntax = "proto3";
 package group;
 
+
+message MessageObjectResponse {
+  string id = 1;
+  string group_id = 2;
+  string group_type = 3;
+  string from_client_id = 4;
+  string client_id = 5;
+  bytes message = 6;
+  int64 created_at = 7;
+  int64 updated_at = 8;
+}
+
 message GroupObjectResponse {
   string group_id = 1;
   string group_name = 2;
   string group_avatar = 3;
   string group_type = 4;
-  string created_by_client_id = 5;
-  int64 created_at = 6;
-  string updated_by_client_id = 7;
-  repeated string lst_client_id = 8;
-  int64 updated_at = 9;
+  repeated string lst_client_id = 5;
+  int64 last_message_at = 6;
+  MessageObjectResponse last_message = 7;
+  string created_by_client_id = 8;
+  int64 created_at = 9;
+  string updated_by_client_id = 10;
+  int64 updated_at = 11;
 }
 
 message BaseResponse {

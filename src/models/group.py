@@ -1,6 +1,7 @@
 from src.models.base import db
 from datetime import datetime
 from src.models.signal_group_key import GroupClientKey
+from src.models.message import Message
 import uuid
 
 
@@ -15,6 +16,7 @@ class GroupChat(db.Model):
     updated_by = db.Column(db.String(36), unique=False, nullable=True)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now, nullable=True)
     last_message_at = db.Column(db.DateTime, nullable=True)
+    last_message_id = db.Column(db.String(36), unique=False, nullable=True)
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def add(self):
@@ -24,53 +26,32 @@ class GroupChat(db.Model):
         return self
 
     def get(self, group_id):
-        group = self.query.filter_by(id=group_id).one_or_none()
+        group = db.session.query(GroupChat, Message) \
+            .join(Message, GroupChat.last_message_id == Message.id, isouter=True) \
+            .filter(GroupChat.id == group_id) \
+            .one_or_none()
         return group
 
     def search(self, keyword):
         search = "%{}%".format(keyword)
-        group = self.query.filter(GroupChat.group_name.like(search)).all()
+        group = db.session.query(GroupChat, Message) \
+            .join(Message, GroupChat.last_message_id == Message.id, isouter=True) \
+            .filter(GroupChat.group_name.like(search)).all()
         return group
 
     def get_joined(self, client_id):
-        result = self.query \
+        result = db.session.query(GroupChat, Message) \
             .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \
-            .add_columns(GroupChat.id, GroupChat.group_name, GroupChat.group_type, GroupChat.group_avatar,
-                         GroupChat.created_by,
-                         GroupChat.created_at, GroupChat.updated_by, GroupChat.updated_at) \
+            .join(Message, GroupChat.last_message_id == Message.id, isouter=True) \
             .filter(GroupClientKey.client_id == client_id) \
             .all()
         return result
 
-    # def get_group_clients(self, group_ids):
-    #         result = GroupClientKey.query \
-    #             .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \
-    #             .add_columns(GroupChat.id, GroupChat.group_name, GroupChat.group_type, GroupChat.group_avatar,
-    #                          GroupChat.created_by,
-    #                          GroupChat.created_at, GroupChat.updated_by, GroupChat.updated_at) \
-    #             .filter(GroupClientKey.client_id == client_id) \
-    #             .all()
-    #         return result
-
-    # result = db.session.query(GroupChat.id) \
-    #      .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \
-    #      .filter(GroupClientKey.client_id == client_id) \
-    #      .all()
-    #
-    # result1 = self.query \
-    #     .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \
-    #     .add_columns(GroupClientKey.client_id) \
-    #     .filter(GroupChat.id.in_("1,2")) \
-    #     .group_by(GroupChat) \
-    #     .all()
-    #
-    # return result1
-    #     .filter(friendships.user_id == userID) \
-    #     .paginate(page, 1, False)
 
     def update(self):
         db.session.merge(self)
         db.session.commit()
+        return True
 
     def __repr__(self):
         return '<Item(id=%s, username=%s, email=%s)>' % (self.id, self.username, self.email)

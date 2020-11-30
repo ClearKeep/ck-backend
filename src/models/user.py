@@ -23,13 +23,18 @@ class User(db.Model):
         db.session.merge(self)
         db.session.commit()
 
-    def search(self, keyword):
+    def search(self, keyword, client_id):
         search = "%{}%".format(keyword)
-        user = self.query.filter(User.username.like(search)).all()
+        user = self.query \
+            .filter(User.id != client_id) \
+            .filter(User.username.like(search)) \
+            .all()
         return user
 
     def get_users(self, client_id):
-        user = self.query.all()
+        user = self.query \
+            .filter(User.id != client_id) \
+            .all()
         return user
 
 
