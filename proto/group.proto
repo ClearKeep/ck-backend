@@ -13,12 +13,17 @@ message MessageObjectResponse {
   int64 updated_at = 8;
 }
 
+message ClientInGroupResponse {
+  string id = 1;
+  string username = 2;
+}
+
 message GroupObjectResponse {
   string group_id = 1;
   string group_name = 2;
   string group_avatar = 3;
   string group_type = 4;
-  repeated string lst_client_id = 5;
+  repeated ClientInGroupResponse lst_client = 5;
   int64 last_message_at = 6;
   MessageObjectResponse last_message = 7;
   string created_by_client_id = 8;

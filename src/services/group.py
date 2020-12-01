@@ -40,10 +40,13 @@ class GroupService(BaseService):
                 self.notify_service.notify_invite_group(obj, created_by, new_group.id)
 
         # list client in group
-        lst_client_in_group = GroupClientKey().get_all_in_group(new_group.id)
-
+        lst_client_in_group = GroupClientKey().get_clients_in_group(new_group.id)
         for client in lst_client_in_group:
-            res_obj.lst_client_id.append(client.client_id)
+            client_in = group_pb2.ClientInGroupResponse(
+                id=client.client_id,
+                username=client.username
+            )
+            res_obj.lst_client.append(client_in)
 
         return res_obj
 
@@ -64,9 +67,13 @@ class GroupService(BaseService):
                 res_obj.updated_at = int(obj.updated_at.timestamp())
 
             # list client in group
-            lst_client_in_group = GroupClientKey().get_all_in_group(group_id)
+            lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
             for client in lst_client_in_group:
-                res_obj.lst_client_id.append(client.client_id)
+                client_in = group_pb2.ClientInGroupResponse(
+                    id=client.client_id,
+                    username=client.username
+                )
+                res_obj.lst_client.append(client_in)
 
             if obj.last_message_at:
                 res_obj.last_message_at = int(obj.last_message_at.timestamp())
@@ -96,6 +103,9 @@ class GroupService(BaseService):
     def search_group(self, keyword):
         lst_group = self.model.search(keyword)
         lst_obj_res = []
+        group_ids = (group.GroupChat.id for group in lst_group)
+        lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
+
         for item in lst_group:
             obj = item.GroupChat
             obj_res = group_pb2.GroupObjectResponse(
@@ -112,6 +122,14 @@ class GroupService(BaseService):
 
             if obj.last_message_at:
                 obj_res.last_message_at = int(obj.last_message_at.timestamp())
+
+            for client in lst_client_in_groups:
+                if client.group_id == obj.id:
+                    client_in = group_pb2.ClientInGroupResponse(
+                        id=client.client_id,
+                        username=client.username
+                    )
+                    obj_res.lst_client.append(client_in)
 
             # get last message
             if item.Message:
@@ -163,8 +181,12 @@ class GroupService(BaseService):
                 obj_res.updated_at = int(obj.updated_at.timestamp())
 
             for client in lst_client_in_groups:
-                if client.group_id == obj.id :
-                    obj_res.lst_client_id.append(client.client_id)
+                if client.group_id == obj.id:
+                    client_in = group_pb2.ClientInGroupResponse(
+                        id=client.client_id,
+                        username=client.username
+                    )
+                    obj_res.lst_client.append(client_in)
 
             if obj.last_message_at:
                 obj_res.last_message_at = int(obj.last_message_at.timestamp())

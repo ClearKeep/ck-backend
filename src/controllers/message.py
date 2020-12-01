@@ -45,12 +45,12 @@ class MessageController(BaseController):
                 message_channel = "{}/message".format(client_id)
                 if message_channel in client_message_queue:
                     client_message_queue[message_channel].put(new_message)
-                else:
-                    logger.error("client queue not found")
-                    errors = [Message.get_error_object(Message.CLIENT_QUEUE_NOT_FOUND)]
-                    context.set_details(json.dumps(
-                        errors, default=lambda x: x.__dict__))
-                    context.set_code(grpc.StatusCode.INTERNAL)
+                # else:
+                #     logger.error("client queue not found")
+                #     errors = [Message.get_error_object(Message.CLIENT_QUEUE_NOT_FOUND)]
+                #     context.set_details(json.dumps(
+                #         errors, default=lambda x: x.__dict__))
+                #     context.set_code(grpc.StatusCode.INTERNAL)
             else:
                 lst_client = SignalService().group_get_all_client_key(group_id)
                 for client in lst_client:
@@ -71,10 +71,21 @@ class MessageController(BaseController):
     def Listen(self, request, context):
         client_id = request.clientId
         message_channel = "{}/message".format(client_id)
-        if message_channel in client_message_queue:
-            while True:
-                message_response = client_message_queue[message_channel].get()  # blocking until the next .put for this queue
-                yield message_response
+        # if message_channel in client_message_queue:
+        #     while True:
+        #         message_response = client_message_queue[message_channel].get()  # blocking until the next .put for this queue
+        #         yield message_response
+        while context.is_active():
+            try:
+                if message_channel in client_message_queue:
+                    message_response = client_message_queue[message_channel].get()
+                    if not context.is_active():
+                        break
+                    yield message_response #print(message_response)
+            except Exception as e:
+                logger.error(e) # print(ex)
+                context.cancel()
+                client_message_queue[message_channel] = None
 
     @request_logged
     def Subscribe(self, request, context):

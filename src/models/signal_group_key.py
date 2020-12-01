@@ -1,5 +1,6 @@
 from src.models.base import db
 from datetime import datetime
+from src.models.user import User
 
 
 class GroupClientKey(db.Model):
@@ -38,8 +39,17 @@ class GroupClientKey(db.Model):
         return client
 
     def get_clients_in_groups(self, group_ids):
-        result = self.query \
+        result = db.session.query(GroupClientKey.group_id, GroupClientKey.client_id, User.username) \
+            .join(User, GroupClientKey.client_id == User.id) \
             .filter(GroupClientKey.group_id.in_(group_ids)) \
+            .order_by(GroupClientKey.client_id.asc()) \
+            .all()
+        return result
+
+    def get_clients_in_group(self, group_id):
+        result = db.session.query(GroupClientKey.group_id, GroupClientKey.client_id, User.username) \
+            .join(User, GroupClientKey.client_id == User.id) \
+            .filter(GroupClientKey.group_id == group_id) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
         return result

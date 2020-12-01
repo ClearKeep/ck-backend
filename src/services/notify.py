@@ -2,6 +2,7 @@ from src.services.base import BaseService
 from src.models.notify import Notify
 from proto import notify_pb2
 from queue import Queue
+from middlewares.request_logged import *
 
 # notify type
 NEW_PEER = "new-peer"
@@ -70,7 +71,10 @@ class NotifyService(BaseService):
         # check queue and push
         notify_channel = "{}/notify".format(client_id)
         if notify_channel in client_notify_queue:
-            client_notify_queue[notify_channel].put(new_group)
+            try:
+                client_notify_queue[notify_channel].put(new_group)
+            except Exception as e:
+                logger.error(e)
 
     def notify_invite_group(self, client_id, ref_client_id, ref_group_id):
         self.model = Notify(
@@ -87,6 +91,9 @@ class NotifyService(BaseService):
         # check queue and push
         notify_channel = "{}/notify".format(client_id)
         if notify_channel in client_notify_queue:
-            client_notify_queue[notify_channel].put(new_group)
+            try:
+                client_notify_queue[notify_channel].put(new_group)
+            except Exception as e:
+                logger.error(e)
 
 

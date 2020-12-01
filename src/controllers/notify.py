@@ -30,22 +30,32 @@ class NotifyController(BaseController):
     def listen(self, request, context):
         client_id = request.client_id
         notify_channel = "{}/notify".format(client_id)
-        if notify_channel in client_notify_queue:
-            while True:
-                notify_response = client_notify_queue[notify_channel].get()  # blocking until the next .put for this queue
-                notify_stream_response = notify_pb2.NotifyObjectResponse(
-                    id=notify_response.id,
-                    client_id=notify_response.client_id,
-                    ref_client_id=notify_response.ref_client_id,
-                    ref_group_id=notify_response.ref_group_id,
-                    notify_type=notify_response.notify_type,
-                    notify_image=notify_response.notify_image,
-                    notify_title=notify_response.notify_title,
-                    notify_content=notify_response.notify_content,
-                    read_flg=notify_response.read_flg,
-                    created_at=int(notify_response.created_at.timestamp())
-                )
-                yield notify_stream_response
+
+        while context.is_active():
+            try:
+                if notify_channel in client_notify_queue:
+                    notify_response = client_notify_queue[notify_channel].get()  # blocking until the next .put for this queue
+                    notify_stream_response = notify_pb2.NotifyObjectResponse(
+                        id=notify_response.id,
+                        client_id=notify_response.client_id,
+                        ref_client_id=notify_response.ref_client_id,
+                        ref_group_id=notify_response.ref_group_id,
+                        notify_type=notify_response.notify_type,
+                        notify_image=notify_response.notify_image,
+                        notify_title=notify_response.notify_title,
+                        notify_content=notify_response.notify_content,
+                        read_flg=notify_response.read_flg,
+                        created_at=int(notify_response.created_at.timestamp())
+                    )
+                    if not context.is_active():
+                        break
+                    yield notify_stream_response
+                    # print(message_response)
+            except Exception as e:
+                logger.error(e)
+                # print(ex)
+                context.cancel()
+                client_notify_queue[notify_channel] = None
 
 
     @request_logged
