@@ -21,7 +21,7 @@ class Message(db.Model):
     def get_message_in_group(self, group_id, offset, from_time):
         client = self.query.filter_by(group_id=group_id)
         if from_time != 0:
-            dt = datetime.fromtimestamp(from_time)
+            dt = datetime.fromtimestamp(from_time/1000) #from time in milisecond => second
             client = client.filter(Message.created_at > dt)
 
         client = client.order_by(Message.created_at.desc())

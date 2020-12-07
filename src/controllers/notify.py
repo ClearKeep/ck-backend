@@ -10,7 +10,6 @@ class NotifyController(BaseController):
     def __init__(self, *kwargs):
         self.service = NotifyService()
 
-
     @request_logged
     def get_unread_notifies(self, request, context):
         try:
@@ -27,6 +26,7 @@ class NotifyController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
     def listen(self, request, context):
         client_id = request.client_id
         notify_channel = "{}/notify".format(client_id)
@@ -45,7 +45,7 @@ class NotifyController(BaseController):
                         notify_title=notify_response.notify_title,
                         notify_content=notify_response.notify_content,
                         read_flg=notify_response.read_flg,
-                        created_at=int(notify_response.created_at.timestamp())
+                        created_at=int(notify_response.created_at.timestamp() * 1000)
                     )
                     if not context.is_active():
                         break
@@ -56,7 +56,6 @@ class NotifyController(BaseController):
                 # print(ex)
                 context.cancel()
                 client_notify_queue[notify_channel] = None
-
 
     @request_logged
     def subscribe(self, request, context):
@@ -70,7 +69,19 @@ class NotifyController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
+    def un_subscribe(self, request, context):
+        try:
+            self.service.un_subscribe(request.clientId)
+            return notify_pb2.BaseResponse(success=True)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
     def read_notify(self, request, context):
         try:
             notify_id = request.notify_id

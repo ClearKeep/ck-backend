@@ -23,11 +23,11 @@ class GroupService(BaseService):
             group_type=new_group.group_type,
             group_avatar=new_group.group_avatar,
             created_by_client_id=new_group.created_by,
-            created_at=int(new_group.created_at.timestamp()),
+            created_at=int(new_group.created_at.timestamp() * 1000),
             updated_by_client_id=new_group.updated_by
         )
         if new_group.updated_at is not None:
-            res_obj.updated_at = int(new_group.updated_at.timestamp())
+            res_obj.updated_at = int(new_group.updated_at.timestamp() * 1000)
 
         for obj in lst_client_id:
             # add to signal group key
@@ -60,11 +60,11 @@ class GroupService(BaseService):
                 group_type=obj.group_type,
                 group_avatar=obj.group_avatar,
                 created_by_client_id=obj.created_by,
-                created_at=int(obj.created_at.timestamp()),
+                created_at=int(obj.created_at.timestamp() * 1000),
                 updated_by_client_id=obj.updated_by
             )
             if obj.updated_at is not None:
-                res_obj.updated_at = int(obj.updated_at.timestamp())
+                res_obj.updated_at = int(obj.updated_at.timestamp() * 1000)
 
             # list client in group
             lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
@@ -76,7 +76,7 @@ class GroupService(BaseService):
                 res_obj.lst_client.append(client_in)
 
             if obj.last_message_at:
-                res_obj.last_message_at = int(obj.last_message_at.timestamp())
+                res_obj.last_message_at = int(obj.last_message_at.timestamp() * 1000)
 
             # get last message
             if group.Message:
@@ -85,12 +85,12 @@ class GroupService(BaseService):
                 res_obj.last_message.group_id = last_message.group_id
                 res_obj.last_message.from_client_id = last_message.from_client_id
                 res_obj.last_message.message = last_message.message
-                res_obj.last_message.created_at = int(last_message.created_at.timestamp())
+                res_obj.last_message.created_at = int(last_message.created_at.timestamp() * 1000)
 
                 if last_message.client_id:
                     res_obj.last_message.client_id = last_message.client_id
                 if last_message.updated_at:
-                    res_obj.last_message.updated_at = int(last_message.updated_at.timestamp())
+                    res_obj.last_message.updated_at = int(last_message.updated_at.timestamp() * 1000)
                 if last_message.client_id:
                     res_obj.last_message.group_type = "peer"
                 else:
@@ -114,14 +114,14 @@ class GroupService(BaseService):
                 group_type=obj.group_type,
                 group_avatar=obj.group_avatar,
                 created_by_client_id=obj.created_by,
-                created_at=int(obj.created_at.timestamp()),
+                created_at=int(obj.created_at.timestamp() * 1000),
                 updated_by_client_id=obj.updated_by
             )
             if obj.updated_at is not None:
-                obj_res.updated_at = int(obj.updated_at.timestamp())
+                obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
 
             if obj.last_message_at:
-                obj_res.last_message_at = int(obj.last_message_at.timestamp())
+                obj_res.last_message_at = int(obj.last_message_at.timestamp() * 1000)
 
             for client in lst_client_in_groups:
                 if client.group_id == obj.id:
@@ -138,12 +138,12 @@ class GroupService(BaseService):
                 obj_res.last_message.group_id = last_message.group_id
                 obj_res.last_message.from_client_id = last_message.from_client_id
                 obj_res.last_message.message = last_message.message
-                obj_res.last_message.created_at = int(last_message.created_at.timestamp())
+                obj_res.last_message.created_at = int(last_message.created_at.timestamp() * 1000)
 
                 if last_message.client_id:
                     obj_res.last_message.client_id = last_message.client_id
                 if last_message.updated_at:
-                    obj_res.last_message.updated_at = int(last_message.updated_at.timestamp())
+                    obj_res.last_message.updated_at = int(last_message.updated_at.timestamp() * 1000)
                 if last_message.client_id:
                     obj_res.last_message.group_type = "peer"
                 else:
@@ -168,7 +168,7 @@ class GroupService(BaseService):
                 group_id=obj.id,
                 group_type=obj.group_type,
                 created_by_client_id=obj.created_by,
-                created_at=int(obj.created_at.timestamp()),
+                created_at=int(obj.created_at.timestamp() * 1000),
                 updated_by_client_id=obj.updated_by
             )
             if obj.group_name:
@@ -178,7 +178,7 @@ class GroupService(BaseService):
                 obj_res.group_avatar = obj.group_avatar
 
             if obj.updated_at:
-                obj_res.updated_at = int(obj.updated_at.timestamp())
+                obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
 
             for client in lst_client_in_groups:
                 if client.group_id == obj.id:
@@ -189,7 +189,7 @@ class GroupService(BaseService):
                     obj_res.lst_client.append(client_in)
 
             if obj.last_message_at:
-                obj_res.last_message_at = int(obj.last_message_at.timestamp())
+                obj_res.last_message_at = int(obj.last_message_at.timestamp() * 1000)
 
             # get last message
             if item.Message:
@@ -198,12 +198,12 @@ class GroupService(BaseService):
                 obj_res.last_message.group_id = last_message.group_id
                 obj_res.last_message.from_client_id = last_message.from_client_id
                 obj_res.last_message.message = last_message.message
-                obj_res.last_message.created_at = int(last_message.created_at.timestamp())
+                obj_res.last_message.created_at = int(last_message.created_at.timestamp() * 1000)
 
                 if last_message.client_id:
                     obj_res.last_message.client_id = last_message.client_id
                 if last_message.updated_at:
-                    obj_res.last_message.updated_at = int(last_message.updated_at.timestamp())
+                    obj_res.last_message.updated_at = int(last_message.updated_at.timestamp() * 1000)
                 if last_message.client_id:
                     obj_res.last_message.group_type = "peer"
                 else:

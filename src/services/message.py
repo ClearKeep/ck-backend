@@ -40,12 +40,12 @@ class MessageService(BaseService):
             group_id=new_message.group_id,
             from_client_id=new_message.from_client_id,
             message=message,
-            created_at=int(new_message.created_at.timestamp())
+            created_at=int(new_message.created_at.timestamp() * 1000)
         )
         if new_message.client_id:
             res_obj.client_id = new_message.client_id
         if new_message.updated_at:
-            res_obj.updated_at = int(new_message.updated_at.timestamp())
+            res_obj.updated_at = int(new_message.updated_at.timestamp() * 1000)
 
         if client_id:
             res_obj.group_type = "peer"
@@ -69,12 +69,12 @@ class MessageService(BaseService):
                 group_id=obj.group_id,
                 from_client_id=obj.from_client_id,
                 message=obj.message,
-                created_at=int(obj.created_at.timestamp())
+                created_at=int(obj.created_at.timestamp() * 1000)
             )
             if obj.client_id:
                 obj_res.client_id = obj.client_id
             if obj.updated_at is not None:
-                obj_res.updated_at = int(obj.updated_at.timestamp())
+                obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
 
             lst_obj_res.append(obj_res)
         response = message_pb2.GetMessagesInGroupResponse(
@@ -85,6 +85,13 @@ class MessageService(BaseService):
     def subscribe(self, client_id):
         message_channel = "{}/message".format(client_id)
         client_message_queue[message_channel] = Queue()
+
+    def un_subscribe(self, client_id):
+        message_channel = "{}/message".format(client_id)
+        client_message_queue[message_channel] = None
+        del client_message_queue[message_channel]
+
+
 
 
 

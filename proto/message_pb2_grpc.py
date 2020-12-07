@@ -6,14 +6,7 @@ from proto import message_pb2 as proto_dot_message__pb2
 
 
 class MessageStub(object):
-    """message Publication {
-    string fromClientId = 1;
-    string groupId = 2;
-    string groupType = 3;
-    bytes message = 4;
-    }
-
-    Method
+    """Method
     """
 
     def __init__(self, channel):
@@ -29,12 +22,17 @@ class MessageStub(object):
                 )
         self.Subscribe = channel.unary_unary(
                 '/message.Message/Subscribe',
-                request_serializer=proto_dot_message__pb2.SubscribeAndListenRequest.SerializeToString,
+                request_serializer=proto_dot_message__pb2.SubscribeRequest.SerializeToString,
+                response_deserializer=proto_dot_message__pb2.BaseResponse.FromString,
+                )
+        self.UnSubscribe = channel.unary_unary(
+                '/message.Message/UnSubscribe',
+                request_serializer=proto_dot_message__pb2.UnSubscribeRequest.SerializeToString,
                 response_deserializer=proto_dot_message__pb2.BaseResponse.FromString,
                 )
         self.Listen = channel.unary_stream(
                 '/message.Message/Listen',
-                request_serializer=proto_dot_message__pb2.SubscribeAndListenRequest.SerializeToString,
+                request_serializer=proto_dot_message__pb2.ListenRequest.SerializeToString,
                 response_deserializer=proto_dot_message__pb2.MessageObjectResponse.FromString,
                 )
         self.Publish = channel.unary_unary(
@@ -45,14 +43,7 @@ class MessageStub(object):
 
 
 class MessageServicer(object):
-    """message Publication {
-    string fromClientId = 1;
-    string groupId = 2;
-    string groupType = 3;
-    bytes message = 4;
-    }
-
-    Method
+    """Method
     """
 
     def get_messages_in_group(self, request, context):
@@ -64,6 +55,12 @@ class MessageServicer(object):
     def Subscribe(self, request, context):
         """action
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UnSubscribe(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -90,12 +87,17 @@ def add_MessageServicer_to_server(servicer, server):
             ),
             'Subscribe': grpc.unary_unary_rpc_method_handler(
                     servicer.Subscribe,
-                    request_deserializer=proto_dot_message__pb2.SubscribeAndListenRequest.FromString,
+                    request_deserializer=proto_dot_message__pb2.SubscribeRequest.FromString,
+                    response_serializer=proto_dot_message__pb2.BaseResponse.SerializeToString,
+            ),
+            'UnSubscribe': grpc.unary_unary_rpc_method_handler(
+                    servicer.UnSubscribe,
+                    request_deserializer=proto_dot_message__pb2.UnSubscribeRequest.FromString,
                     response_serializer=proto_dot_message__pb2.BaseResponse.SerializeToString,
             ),
             'Listen': grpc.unary_stream_rpc_method_handler(
                     servicer.Listen,
-                    request_deserializer=proto_dot_message__pb2.SubscribeAndListenRequest.FromString,
+                    request_deserializer=proto_dot_message__pb2.ListenRequest.FromString,
                     response_serializer=proto_dot_message__pb2.MessageObjectResponse.SerializeToString,
             ),
             'Publish': grpc.unary_unary_rpc_method_handler(
@@ -111,14 +113,7 @@ def add_MessageServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class Message(object):
-    """message Publication {
-    string fromClientId = 1;
-    string groupId = 2;
-    string groupType = 3;
-    bytes message = 4;
-    }
-
-    Method
+    """Method
     """
 
     @staticmethod
@@ -150,7 +145,24 @@ class Message(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/message.Message/Subscribe',
-            proto_dot_message__pb2.SubscribeAndListenRequest.SerializeToString,
+            proto_dot_message__pb2.SubscribeRequest.SerializeToString,
+            proto_dot_message__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def UnSubscribe(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/message.Message/UnSubscribe',
+            proto_dot_message__pb2.UnSubscribeRequest.SerializeToString,
             proto_dot_message__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -167,7 +179,7 @@ class Message(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/message.Message/Listen',
-            proto_dot_message__pb2.SubscribeAndListenRequest.SerializeToString,
+            proto_dot_message__pb2.ListenRequest.SerializeToString,
             proto_dot_message__pb2.MessageObjectResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -40,24 +40,30 @@ message PublishRequest {
 //response: BaseResponse
 
 
-// Request: subcribe or listen
-message SubscribeAndListenRequest {
+// Request: subcribe
+message SubscribeRequest {
+  string clientId = 1;
+}
+//response: BaseResponse
+
+// Request: un-subcribe
+message UnSubscribeRequest {
+  string clientId = 1;
+}
+//response: BaseResponse
+
+// Request: listen
+message ListenRequest {
   string clientId = 1;
 }
 //response: BaseResponse or MessageObjectResponse stream
-
-//message Publication {
-//  string fromClientId = 1;
-//  string groupId = 2;
-//  string groupType = 3;
-//  bytes message = 4;
-//}
 
 // Method
 service Message {
     rpc get_messages_in_group(GetMessagesInGroupRequest) returns (GetMessagesInGroupResponse) {};
     //action
-    rpc Subscribe (SubscribeAndListenRequest) returns (BaseResponse);
-    rpc Listen (SubscribeAndListenRequest) returns (stream MessageObjectResponse);
+    rpc Subscribe (SubscribeRequest) returns (BaseResponse);
+    rpc UnSubscribe (UnSubscribeRequest) returns (BaseResponse);
+    rpc Listen (ListenRequest) returns (stream MessageObjectResponse);
     rpc Publish (PublishRequest) returns (MessageObjectResponse);
 }

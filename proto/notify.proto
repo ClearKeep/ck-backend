@@ -27,19 +27,35 @@ message GetNotifiesResponse {
 }
 
 
-// Request: subcribe or listen
-message SubscribeAndListenRequest {
+// Request: subcribe
+message SubscribeRequest {
   string client_id = 1;
 }
-//response: BaseResponse or NotifyObjectResponse stream
+//response: BaseResponse
+
+// Request: un-subcribe
+message UnSubscribeRequest {
+  string client_id = 1;
+}
+//response: BaseResponse
+
+// Request: listen
+message ListenRequest {
+  string clientId = 1;
+}
+//response: NotifyObjectResponse stream
+
 message ReadNotifyRequest {
   string notify_id = 1;
 }
+//response: BaseResponse
+
 
 // Method
 service Notify {
     rpc read_notify (ReadNotifyRequest) returns (BaseResponse);
     rpc get_unread_notifies (Empty) returns (GetNotifiesResponse);
-    rpc subscribe (SubscribeAndListenRequest) returns (BaseResponse);
-    rpc listen (SubscribeAndListenRequest) returns (stream NotifyObjectResponse);
+    rpc subscribe (SubscribeRequest) returns (BaseResponse);
+    rpc un_subscribe (UnSubscribeRequest) returns (BaseResponse);
+    rpc listen (ListenRequest) returns (stream NotifyObjectResponse);
 }

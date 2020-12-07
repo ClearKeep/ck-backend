@@ -27,12 +27,17 @@ class NotifyStub(object):
                 )
         self.subscribe = channel.unary_unary(
                 '/notification.Notify/subscribe',
-                request_serializer=proto_dot_notify__pb2.SubscribeAndListenRequest.SerializeToString,
+                request_serializer=proto_dot_notify__pb2.SubscribeRequest.SerializeToString,
+                response_deserializer=proto_dot_notify__pb2.BaseResponse.FromString,
+                )
+        self.un_subscribe = channel.unary_unary(
+                '/notification.Notify/un_subscribe',
+                request_serializer=proto_dot_notify__pb2.UnSubscribeRequest.SerializeToString,
                 response_deserializer=proto_dot_notify__pb2.BaseResponse.FromString,
                 )
         self.listen = channel.unary_stream(
                 '/notification.Notify/listen',
-                request_serializer=proto_dot_notify__pb2.SubscribeAndListenRequest.SerializeToString,
+                request_serializer=proto_dot_notify__pb2.ListenRequest.SerializeToString,
                 response_deserializer=proto_dot_notify__pb2.NotifyObjectResponse.FromString,
                 )
 
@@ -59,6 +64,12 @@ class NotifyServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def un_subscribe(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def listen(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -80,12 +91,17 @@ def add_NotifyServicer_to_server(servicer, server):
             ),
             'subscribe': grpc.unary_unary_rpc_method_handler(
                     servicer.subscribe,
-                    request_deserializer=proto_dot_notify__pb2.SubscribeAndListenRequest.FromString,
+                    request_deserializer=proto_dot_notify__pb2.SubscribeRequest.FromString,
+                    response_serializer=proto_dot_notify__pb2.BaseResponse.SerializeToString,
+            ),
+            'un_subscribe': grpc.unary_unary_rpc_method_handler(
+                    servicer.un_subscribe,
+                    request_deserializer=proto_dot_notify__pb2.UnSubscribeRequest.FromString,
                     response_serializer=proto_dot_notify__pb2.BaseResponse.SerializeToString,
             ),
             'listen': grpc.unary_stream_rpc_method_handler(
                     servicer.listen,
-                    request_deserializer=proto_dot_notify__pb2.SubscribeAndListenRequest.FromString,
+                    request_deserializer=proto_dot_notify__pb2.ListenRequest.FromString,
                     response_serializer=proto_dot_notify__pb2.NotifyObjectResponse.SerializeToString,
             ),
     }
@@ -145,7 +161,24 @@ class Notify(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/notification.Notify/subscribe',
-            proto_dot_notify__pb2.SubscribeAndListenRequest.SerializeToString,
+            proto_dot_notify__pb2.SubscribeRequest.SerializeToString,
+            proto_dot_notify__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def un_subscribe(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/notification.Notify/un_subscribe',
+            proto_dot_notify__pb2.UnSubscribeRequest.SerializeToString,
             proto_dot_notify__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -162,7 +195,7 @@ class Notify(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/notification.Notify/listen',
-            proto_dot_notify__pb2.SubscribeAndListenRequest.SerializeToString,
+            proto_dot_notify__pb2.ListenRequest.SerializeToString,
             proto_dot_notify__pb2.NotifyObjectResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

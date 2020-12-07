@@ -68,13 +68,10 @@ class MessageController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
     def Listen(self, request, context):
         client_id = request.clientId
         message_channel = "{}/message".format(client_id)
-        # if message_channel in client_message_queue:
-        #     while True:
-        #         message_response = client_message_queue[message_channel].get()  # blocking until the next .put for this queue
-        #         yield message_response
         while context.is_active():
             try:
                 if message_channel in client_message_queue:
@@ -86,11 +83,24 @@ class MessageController(BaseController):
                 logger.error(e) # print(ex)
                 context.cancel()
                 client_message_queue[message_channel] = None
+                del client_message_queue[message_channel]
 
     @request_logged
     def Subscribe(self, request, context):
         try:
             self.service.subscribe(request.clientId)
+            return message_pb2.BaseResponse(success=True)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    def UnSubscribe(self, request, context):
+        try:
+            self.service.un_subscribe(request.clientId)
             return message_pb2.BaseResponse(success=True)
         except Exception as e:
             logger.error(e)

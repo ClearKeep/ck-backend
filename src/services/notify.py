@@ -25,7 +25,7 @@ class NotifyService(BaseService):
                 client_id=obj.client_id,
                 notify_type=obj.notify_type,
                 read_flg=obj.read_flg,
-                created_at=int(obj.created_at.timestamp())
+                created_at=int(obj.created_at.timestamp() * 1000)
             )
             if obj.ref_client_id:
                 obj_res.ref_client_id = obj.ref_client_id
@@ -50,6 +50,11 @@ class NotifyService(BaseService):
     def subscribe(self, client_id):
         notify_channel = "{}/notify".format(client_id)
         client_notify_queue[notify_channel] = Queue()
+
+    def un_subscribe(self, client_id):
+        notify_channel = "{}/notify".format(client_id)
+        client_notify_queue[notify_channel] = None
+        del client_notify_queue[notify_channel]
 
     def read_notify(self, notify_id):
         self.model = Notify(id=notify_id, read_flg=True)
