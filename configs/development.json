@@ -30,5 +30,9 @@
             "ip_address": "0.0.0.0"    
         }
     ],
+    "janus_webrtc": {
+        "server_url": "http://172.16.1.214:7088/admin",
+        "admin_secret": "janusoverlord"
+    },
     "page_limit": 10
 }
