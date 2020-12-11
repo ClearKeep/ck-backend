@@ -2,6 +2,7 @@ from cryptography.fernet import Fernet
 import argon2
 import base64
 
+
 class EncryptUtils:
 
     @staticmethod
@@ -27,10 +28,8 @@ class EncryptUtils:
             return ''
         encoded_hash = EncryptUtils.encoded_hash(password, salt)
         return EncryptUtils.decrypt_with_hash(cipher, encoded_hash)
-    
+
     @classmethod
     def encoded_hash(cls, password, salt):
         password_hash = argon2.argon2_hash(password=password, salt=salt)
         return base64.urlsafe_b64encode(password_hash[:32])
-
-    

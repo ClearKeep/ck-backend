@@ -23,5 +23,20 @@ class User(db.Model):
         db.session.merge(self)
         db.session.commit()
 
+    def search(self, keyword, client_id):
+        search = "%{}%".format(keyword)
+        user = self.query \
+            .filter(User.id != client_id) \
+            .filter(User.username.like(search)) \
+            .all()
+        return user
+
+    def get_users(self, client_id):
+        user = self.query \
+            .filter(User.id != client_id) \
+            .all()
+        return user
+
+
     def __repr__(self):
         return '<Item(id=%s, username=%s, email=%s)>' % (self.id, self.username, self.email)

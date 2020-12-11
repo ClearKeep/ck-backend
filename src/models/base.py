@@ -16,4 +16,6 @@ db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_connection
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_ECHO"] = True
 db = SQLAlchemy(app)
+

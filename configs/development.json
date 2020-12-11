@@ -3,22 +3,22 @@
     "db": {
         "host": "172.16.1.214",
         "port": "5432",
-        "name": "ck-db",
-        "username": "postgres",
-        "password": "docker"
+        "name": "postgres",
+        "username": "keycloak",
+        "password": "password"
     },
     "keycloak_account": {
         "server_url": "http://172.16.1.214:8080/auth/",
         "client_id": "account",
         "realm_name": "master",
-        "client_secret_key": "730b4571-0aa3-4173-91d8-15d15591ab70"
+        "client_secret_key": "7127012b-561f-4054-80c5-6172125cffdd"
     },
     "keycloak_admin": {
         "server_url": "http://172.16.1.214:8080/auth/",
         "username": "admin",
         "password": "admin",
         "realm_name": "master",
-        "client_secret_key": "3d576f53-27ad-4d37-847c-4e818df6464e"
+        "client_secret_key": "7a2a7404-9163-4414-a083-75b077c4854b"
     },
     "fd_server": [
         {
@@ -29,5 +29,10 @@
             "domain": "localhost",
             "ip_address": "0.0.0.0"    
         }
-    ]
+    ],
+    "janus_webrtc": {
+        "server_url": "http://172.16.1.214:7088/admin",
+        "admin_secret": "janusoverlord"
+    },
+    "page_limit": 10
 }

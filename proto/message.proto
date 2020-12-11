@@ -1,0 +1,69 @@
+syntax = "proto3";
+package message;
+
+message MessageObjectResponse {
+  string id = 1;
+  string group_id = 2;
+  string group_type = 3;
+  string from_client_id = 4;
+  string client_id = 5;
+  bytes message = 6;
+  int64 created_at = 7;
+  int64 updated_at = 8;
+}
+
+message BaseResponse {
+    bool success = 1;
+}
+
+// Request: get list message group
+message GetMessagesInGroupRequest {
+  string group_id = 1;
+  int32 off_set = 2; //0
+  int64 last_message_at = 3; //8746529349
+}
+// Response: GetMessagesInGroupResponse
+message GetMessagesInGroupResponse {
+  repeated MessageObjectResponse lst_message = 1;
+}
+
+
+// ----- PUBLISH AND SUBCRIBE MESSAGE -----
+// Request: publish a message
+message PublishRequest {
+  string fromClientId = 1;
+  string clientId = 2;
+  string groupId = 3;
+  string groupType = 4;
+  bytes message = 5;
+}
+//response: BaseResponse
+
+
+// Request: subcribe
+message SubscribeRequest {
+  string clientId = 1;
+}
+//response: BaseResponse
+
+// Request: un-subcribe
+message UnSubscribeRequest {
+  string clientId = 1;
+}
+//response: BaseResponse
+
+// Request: listen
+message ListenRequest {
+  string clientId = 1;
+}
+//response: BaseResponse or MessageObjectResponse stream
+
+// Method
+service Message {
+    rpc get_messages_in_group(GetMessagesInGroupRequest) returns (GetMessagesInGroupResponse) {};
+    //action
+    rpc Subscribe (SubscribeRequest) returns (BaseResponse);
+    rpc UnSubscribe (UnSubscribeRequest) returns (BaseResponse);
+    rpc Listen (ListenRequest) returns (stream MessageObjectResponse);
+    rpc Publish (PublishRequest) returns (MessageObjectResponse);
+}
