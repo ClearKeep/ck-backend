@@ -1,6 +1,7 @@
 from src.models.base import db
 from datetime import datetime
 from src.models.user import User
+from src.models.notify_token import NotifyToken
 
 
 class GroupClientKey(db.Model):
@@ -53,6 +54,16 @@ class GroupClientKey(db.Model):
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
         return result
+
+    def get_clients_in_group_with_push_token(self, group_id):
+        result = db.session.query(GroupClientKey.group_id, GroupClientKey.client_id, User.username, NotifyToken) \
+            .join(User, GroupClientKey.client_id == User.id) \
+            .join(NotifyToken, NotifyToken.client_id == User.id) \
+            .filter(GroupClientKey.group_id == group_id) \
+            .order_by(GroupClientKey.client_id.asc()) \
+            .all()
+        return result
+
 
     def update(self):
         db.session.merge(self)

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x17protos/video_call.proto\x12\nvideo_call\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"c\n\x10VideoCallRequest\x12\x16\n\x0e\x66rom_client_id\x18\x01 \x01(\t\x12\x11\n\tclient_id\x18\x02 \x01(\t\x12\x10\n\x08group_id\x18\x03 \x01(\t\x12\x12\n\ngroup_type\x18\x04 \x01(\t2S\n\tVideoCall\x12\x46\n\nvideo_call\x12\x1c.video_call.VideoCallRequest\x1a\x18.video_call.BaseResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x17protos/video_call.proto\x12\nvideo_call\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"O\n\x10VideoCallRequest\x12\x16\n\x0e\x66rom_client_id\x18\x01 \x01(\t\x12\x11\n\tclient_id\x18\x02 \x01(\t\x12\x10\n\x08group_id\x18\x03 \x01(\t2S\n\tVideoCall\x12\x46\n\nvideo_call\x12\x1c.video_call.VideoCallRequest\x1a\x18.video_call.BaseResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -86,13 +86,6 @@ _VIDEOCALLREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='group_type', full_name='video_call.VideoCallRequest.group_type', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -106,7 +99,7 @@ _VIDEOCALLREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=72,
-  serialized_end=171,
+  serialized_end=151,
 )
 
 DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
@@ -136,8 +129,8 @@ _VIDEOCALL = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=173,
-  serialized_end=256,
+  serialized_start=153,
+  serialized_end=236,
   methods=[
   _descriptor.MethodDescriptor(
     name='video_call',

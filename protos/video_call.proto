@@ -10,7 +10,6 @@ message VideoCallRequest {
   string from_client_id = 1;
   string client_id = 2;
   string group_id = 3;
-  string group_type = 4;
 }
 //response: BaseResponse
 
