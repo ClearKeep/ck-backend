@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from proto import group_pb2 as proto_dot_group__pb2
+from protos import group_pb2 as protos_dot_group__pb2
 
 
 class GroupStub(object):
@@ -17,33 +17,33 @@ class GroupStub(object):
         """
         self.create_group = channel.unary_unary(
                 '/group.Group/create_group',
-                request_serializer=proto_dot_group__pb2.CreateGroupRequest.SerializeToString,
-                response_deserializer=proto_dot_group__pb2.GroupObjectResponse.FromString,
+                request_serializer=protos_dot_group__pb2.CreateGroupRequest.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.GroupObjectResponse.FromString,
                 )
         self.get_group = channel.unary_unary(
                 '/group.Group/get_group',
-                request_serializer=proto_dot_group__pb2.GetGroupRequest.SerializeToString,
-                response_deserializer=proto_dot_group__pb2.GroupObjectResponse.FromString,
+                request_serializer=protos_dot_group__pb2.GetGroupRequest.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.GroupObjectResponse.FromString,
                 )
         self.search_groups = channel.unary_unary(
                 '/group.Group/search_groups',
-                request_serializer=proto_dot_group__pb2.SearchGroupsRequest.SerializeToString,
-                response_deserializer=proto_dot_group__pb2.SearchGroupsResponse.FromString,
+                request_serializer=protos_dot_group__pb2.SearchGroupsRequest.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.SearchGroupsResponse.FromString,
                 )
         self.get_joined_groups = channel.unary_unary(
                 '/group.Group/get_joined_groups',
-                request_serializer=proto_dot_group__pb2.GetJoinedGroupsRequest.SerializeToString,
-                response_deserializer=proto_dot_group__pb2.GetJoinedGroupsResponse.FromString,
+                request_serializer=protos_dot_group__pb2.GetJoinedGroupsRequest.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.GetJoinedGroupsResponse.FromString,
                 )
         self.invite_to_group = channel.unary_unary(
                 '/group.Group/invite_to_group',
-                request_serializer=proto_dot_group__pb2.InviteToGroupRequest.SerializeToString,
-                response_deserializer=proto_dot_group__pb2.BaseResponse.FromString,
+                request_serializer=protos_dot_group__pb2.InviteToGroupRequest.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
                 )
         self.join_group = channel.unary_unary(
                 '/group.Group/join_group',
-                request_serializer=proto_dot_group__pb2.JoinGroupRequest.SerializeToString,
-                response_deserializer=proto_dot_group__pb2.BaseResponse.FromString,
+                request_serializer=protos_dot_group__pb2.JoinGroupRequest.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
                 )
 
 
@@ -92,33 +92,33 @@ def add_GroupServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'create_group': grpc.unary_unary_rpc_method_handler(
                     servicer.create_group,
-                    request_deserializer=proto_dot_group__pb2.CreateGroupRequest.FromString,
-                    response_serializer=proto_dot_group__pb2.GroupObjectResponse.SerializeToString,
+                    request_deserializer=protos_dot_group__pb2.CreateGroupRequest.FromString,
+                    response_serializer=protos_dot_group__pb2.GroupObjectResponse.SerializeToString,
             ),
             'get_group': grpc.unary_unary_rpc_method_handler(
                     servicer.get_group,
-                    request_deserializer=proto_dot_group__pb2.GetGroupRequest.FromString,
-                    response_serializer=proto_dot_group__pb2.GroupObjectResponse.SerializeToString,
+                    request_deserializer=protos_dot_group__pb2.GetGroupRequest.FromString,
+                    response_serializer=protos_dot_group__pb2.GroupObjectResponse.SerializeToString,
             ),
             'search_groups': grpc.unary_unary_rpc_method_handler(
                     servicer.search_groups,
-                    request_deserializer=proto_dot_group__pb2.SearchGroupsRequest.FromString,
-                    response_serializer=proto_dot_group__pb2.SearchGroupsResponse.SerializeToString,
+                    request_deserializer=protos_dot_group__pb2.SearchGroupsRequest.FromString,
+                    response_serializer=protos_dot_group__pb2.SearchGroupsResponse.SerializeToString,
             ),
             'get_joined_groups': grpc.unary_unary_rpc_method_handler(
                     servicer.get_joined_groups,
-                    request_deserializer=proto_dot_group__pb2.GetJoinedGroupsRequest.FromString,
-                    response_serializer=proto_dot_group__pb2.GetJoinedGroupsResponse.SerializeToString,
+                    request_deserializer=protos_dot_group__pb2.GetJoinedGroupsRequest.FromString,
+                    response_serializer=protos_dot_group__pb2.GetJoinedGroupsResponse.SerializeToString,
             ),
             'invite_to_group': grpc.unary_unary_rpc_method_handler(
                     servicer.invite_to_group,
-                    request_deserializer=proto_dot_group__pb2.InviteToGroupRequest.FromString,
-                    response_serializer=proto_dot_group__pb2.BaseResponse.SerializeToString,
+                    request_deserializer=protos_dot_group__pb2.InviteToGroupRequest.FromString,
+                    response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
             ),
             'join_group': grpc.unary_unary_rpc_method_handler(
                     servicer.join_group,
-                    request_deserializer=proto_dot_group__pb2.JoinGroupRequest.FromString,
-                    response_serializer=proto_dot_group__pb2.BaseResponse.SerializeToString,
+                    request_deserializer=protos_dot_group__pb2.JoinGroupRequest.FromString,
+                    response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -143,8 +143,8 @@ class Group(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/group.Group/create_group',
-            proto_dot_group__pb2.CreateGroupRequest.SerializeToString,
-            proto_dot_group__pb2.GroupObjectResponse.FromString,
+            protos_dot_group__pb2.CreateGroupRequest.SerializeToString,
+            protos_dot_group__pb2.GroupObjectResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -160,8 +160,8 @@ class Group(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/group.Group/get_group',
-            proto_dot_group__pb2.GetGroupRequest.SerializeToString,
-            proto_dot_group__pb2.GroupObjectResponse.FromString,
+            protos_dot_group__pb2.GetGroupRequest.SerializeToString,
+            protos_dot_group__pb2.GroupObjectResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -177,8 +177,8 @@ class Group(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/group.Group/search_groups',
-            proto_dot_group__pb2.SearchGroupsRequest.SerializeToString,
-            proto_dot_group__pb2.SearchGroupsResponse.FromString,
+            protos_dot_group__pb2.SearchGroupsRequest.SerializeToString,
+            protos_dot_group__pb2.SearchGroupsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -194,8 +194,8 @@ class Group(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/group.Group/get_joined_groups',
-            proto_dot_group__pb2.GetJoinedGroupsRequest.SerializeToString,
-            proto_dot_group__pb2.GetJoinedGroupsResponse.FromString,
+            protos_dot_group__pb2.GetJoinedGroupsRequest.SerializeToString,
+            protos_dot_group__pb2.GetJoinedGroupsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -211,8 +211,8 @@ class Group(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/group.Group/invite_to_group',
-            proto_dot_group__pb2.InviteToGroupRequest.SerializeToString,
-            proto_dot_group__pb2.BaseResponse.FromString,
+            protos_dot_group__pb2.InviteToGroupRequest.SerializeToString,
+            protos_dot_group__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -228,7 +228,7 @@ class Group(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/group.Group/join_group',
-            proto_dot_group__pb2.JoinGroupRequest.SerializeToString,
-            proto_dot_group__pb2.BaseResponse.FromString,
+            protos_dot_group__pb2.JoinGroupRequest.SerializeToString,
+            protos_dot_group__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

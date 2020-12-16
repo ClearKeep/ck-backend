@@ -34,5 +34,6 @@
         "server_url": "http://172.16.1.214:7088/admin",
         "admin_secret": "janusoverlord"
     },
+    "fcm_server_token": "abc",
     "page_limit": 10
 }

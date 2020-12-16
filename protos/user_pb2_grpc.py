@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from proto import user_pb2 as proto_dot_user__pb2
+from protos import user_pb2 as protos_dot_user__pb2
 
 
 class UserStub(object):
@@ -16,33 +16,33 @@ class UserStub(object):
         """
         self.get_profile = channel.unary_unary(
                 '/user.User/get_profile',
-                request_serializer=proto_dot_user__pb2.Empty.SerializeToString,
-                response_deserializer=proto_dot_user__pb2.UserProfileResponse.FromString,
+                request_serializer=protos_dot_user__pb2.Empty.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.UserProfileResponse.FromString,
                 )
         self.update_profile = channel.unary_unary(
                 '/user.User/update_profile',
-                request_serializer=proto_dot_user__pb2.UpdateProfileRequest.SerializeToString,
-                response_deserializer=proto_dot_user__pb2.BaseResponse.FromString,
+                request_serializer=protos_dot_user__pb2.UpdateProfileRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
                 )
         self.change_password = channel.unary_unary(
                 '/user.User/change_password',
-                request_serializer=proto_dot_user__pb2.ChangePasswordRequest.SerializeToString,
-                response_deserializer=proto_dot_user__pb2.BaseResponse.FromString,
+                request_serializer=protos_dot_user__pb2.ChangePasswordRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
                 )
         self.get_user_info = channel.unary_unary(
                 '/user.User/get_user_info',
-                request_serializer=proto_dot_user__pb2.GetUserRequest.SerializeToString,
-                response_deserializer=proto_dot_user__pb2.UserInfoResponse.FromString,
+                request_serializer=protos_dot_user__pb2.GetUserRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.UserInfoResponse.FromString,
                 )
         self.search_user = channel.unary_unary(
                 '/user.User/search_user',
-                request_serializer=proto_dot_user__pb2.SearchUserRequest.SerializeToString,
-                response_deserializer=proto_dot_user__pb2.SearchUserResponse.FromString,
+                request_serializer=protos_dot_user__pb2.SearchUserRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.SearchUserResponse.FromString,
                 )
         self.get_users = channel.unary_unary(
                 '/user.User/get_users',
-                request_serializer=proto_dot_user__pb2.Empty.SerializeToString,
-                response_deserializer=proto_dot_user__pb2.GetUsersResponse.FromString,
+                request_serializer=protos_dot_user__pb2.Empty.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.GetUsersResponse.FromString,
                 )
 
 
@@ -92,33 +92,33 @@ def add_UserServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'get_profile': grpc.unary_unary_rpc_method_handler(
                     servicer.get_profile,
-                    request_deserializer=proto_dot_user__pb2.Empty.FromString,
-                    response_serializer=proto_dot_user__pb2.UserProfileResponse.SerializeToString,
+                    request_deserializer=protos_dot_user__pb2.Empty.FromString,
+                    response_serializer=protos_dot_user__pb2.UserProfileResponse.SerializeToString,
             ),
             'update_profile': grpc.unary_unary_rpc_method_handler(
                     servicer.update_profile,
-                    request_deserializer=proto_dot_user__pb2.UpdateProfileRequest.FromString,
-                    response_serializer=proto_dot_user__pb2.BaseResponse.SerializeToString,
+                    request_deserializer=protos_dot_user__pb2.UpdateProfileRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
             ),
             'change_password': grpc.unary_unary_rpc_method_handler(
                     servicer.change_password,
-                    request_deserializer=proto_dot_user__pb2.ChangePasswordRequest.FromString,
-                    response_serializer=proto_dot_user__pb2.BaseResponse.SerializeToString,
+                    request_deserializer=protos_dot_user__pb2.ChangePasswordRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
             ),
             'get_user_info': grpc.unary_unary_rpc_method_handler(
                     servicer.get_user_info,
-                    request_deserializer=proto_dot_user__pb2.GetUserRequest.FromString,
-                    response_serializer=proto_dot_user__pb2.UserInfoResponse.SerializeToString,
+                    request_deserializer=protos_dot_user__pb2.GetUserRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.UserInfoResponse.SerializeToString,
             ),
             'search_user': grpc.unary_unary_rpc_method_handler(
                     servicer.search_user,
-                    request_deserializer=proto_dot_user__pb2.SearchUserRequest.FromString,
-                    response_serializer=proto_dot_user__pb2.SearchUserResponse.SerializeToString,
+                    request_deserializer=protos_dot_user__pb2.SearchUserRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.SearchUserResponse.SerializeToString,
             ),
             'get_users': grpc.unary_unary_rpc_method_handler(
                     servicer.get_users,
-                    request_deserializer=proto_dot_user__pb2.Empty.FromString,
-                    response_serializer=proto_dot_user__pb2.GetUsersResponse.SerializeToString,
+                    request_deserializer=protos_dot_user__pb2.Empty.FromString,
+                    response_serializer=protos_dot_user__pb2.GetUsersResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -142,8 +142,8 @@ class User(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/user.User/get_profile',
-            proto_dot_user__pb2.Empty.SerializeToString,
-            proto_dot_user__pb2.UserProfileResponse.FromString,
+            protos_dot_user__pb2.Empty.SerializeToString,
+            protos_dot_user__pb2.UserProfileResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -159,8 +159,8 @@ class User(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/user.User/update_profile',
-            proto_dot_user__pb2.UpdateProfileRequest.SerializeToString,
-            proto_dot_user__pb2.BaseResponse.FromString,
+            protos_dot_user__pb2.UpdateProfileRequest.SerializeToString,
+            protos_dot_user__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -176,8 +176,8 @@ class User(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/user.User/change_password',
-            proto_dot_user__pb2.ChangePasswordRequest.SerializeToString,
-            proto_dot_user__pb2.BaseResponse.FromString,
+            protos_dot_user__pb2.ChangePasswordRequest.SerializeToString,
+            protos_dot_user__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -193,8 +193,8 @@ class User(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/user.User/get_user_info',
-            proto_dot_user__pb2.GetUserRequest.SerializeToString,
-            proto_dot_user__pb2.UserInfoResponse.FromString,
+            protos_dot_user__pb2.GetUserRequest.SerializeToString,
+            protos_dot_user__pb2.UserInfoResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -210,8 +210,8 @@ class User(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/user.User/search_user',
-            proto_dot_user__pb2.SearchUserRequest.SerializeToString,
-            proto_dot_user__pb2.SearchUserResponse.FromString,
+            protos_dot_user__pb2.SearchUserRequest.SerializeToString,
+            protos_dot_user__pb2.SearchUserResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -227,7 +227,7 @@ class User(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/user.User/get_users',
-            proto_dot_user__pb2.Empty.SerializeToString,
-            proto_dot_user__pb2.GetUsersResponse.FromString,
+            protos_dot_user__pb2.Empty.SerializeToString,
+            protos_dot_user__pb2.GetUsersResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

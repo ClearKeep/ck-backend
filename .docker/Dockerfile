@@ -5,7 +5,7 @@ WORKDIR /clearkeep-backend
 RUN pip install --upgrade pip
 RUN pip install -r requirement.txt
 # generate protobuf
-RUN sh proto/gen.sh
+RUN sh protos/gen.sh
 # start application
 EXPOSE 5000
 CMD python ./app.py

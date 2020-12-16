@@ -24,7 +24,6 @@ class Notify(db.Model):
         notifies = self.query.filter_by(client_id=client_id, read_flg=False)
         return notifies
 
-
     def update(self):
         db.session.merge(self)
         db.session.commit()

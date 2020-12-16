@@ -4,7 +4,7 @@ from utils.config import get_system_config
 import uuid
 
 
-class WebRTCService:
+class VideoCallService:
     def __init__(self):
         pass
 

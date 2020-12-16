@@ -1,6 +1,6 @@
 import grpc
 import json
-import proto.auth_pb2 as auth_messages
+import protos.auth_pb2 as auth_messages
 from src.controllers.base import BaseController
 from src.services.auth import AuthService
 from utils.keycloak import KeyCloakUtils

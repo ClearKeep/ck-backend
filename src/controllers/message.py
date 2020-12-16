@@ -1,4 +1,4 @@
-from proto import message_pb2
+from protos import message_pb2
 from src.controllers.base import *
 from middlewares.permission import *
 from utils.logger import *

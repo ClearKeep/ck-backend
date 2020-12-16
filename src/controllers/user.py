@@ -1,4 +1,4 @@
-import proto.user_pb2 as user_messages
+import protos.user_pb2 as user_messages
 from src.controllers.base import *
 from src.services.user import UserService
 from middlewares.permission import *

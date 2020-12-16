@@ -2,7 +2,7 @@ from src.services.base import BaseService
 from src.models.user import User
 from utils.encrypt import EncryptUtils
 from utils.keycloak import KeyCloakUtils
-from proto import user_pb2
+from protos import user_pb2
 
 
 class UserService(BaseService):

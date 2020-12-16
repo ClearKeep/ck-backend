@@ -1,14 +1,14 @@
 from src.services.base import BaseService
 from src.models.group import GroupChat
-from proto import group_pb2
+from protos import group_pb2
 from src.models.signal_group_key import GroupClientKey
-from src.services.notify import NotifyService
+from src.services.notify_inapp import NotifyInAppService
 
 
 class GroupService(BaseService):
     def __init__(self):
         super().__init__(GroupChat())
-        self.notify_service = NotifyService()
+        self.notify_service = NotifyInAppService()
 
     def add_group(self, group_name, group_type, lst_client_id, created_by):
         self.model = GroupChat(

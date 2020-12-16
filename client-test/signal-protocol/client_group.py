@@ -1,7 +1,7 @@
 from __future__ import print_function
 import grpc
 import threading
-from proto import signal_pb2, signal_pb2_grpc
+from protos import signal_pb2, signal_pb2_grpc
 from libsignal.axolotladdress import AxolotlAddress
 from libsignal.groups.senderkeyname import SenderKeyName
 from .store.mysenderkeystore import MySenderKeyStore

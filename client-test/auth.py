@@ -1,6 +1,6 @@
 import grpc
-import proto.auth_pb2_grpc as auth_service
-import proto.auth_pb2 as auth_message
+import protos.auth_pb2_grpc as auth_service
+import protos.auth_pb2 as auth_message
 
 def auth_test():
     channel = grpc.insecure_channel("0.0.0.0:5000")

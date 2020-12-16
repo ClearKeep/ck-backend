@@ -1,6 +1,6 @@
 from src.services.base import BaseService
 from src.models.notify import Notify
-from proto import notify_pb2
+from protos import notify_pb2
 from queue import Queue
 from middlewares.request_logged import *
 
@@ -12,7 +12,7 @@ IN_GROUP = "in-group"
 
 client_notify_queue = {}
 
-class NotifyService(BaseService):
+class NotifyInAppService(BaseService):
     def __init__(self):
         super().__init__(Notify())
 

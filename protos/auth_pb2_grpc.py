@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from proto import auth_pb2 as proto_dot_auth__pb2
+from protos import auth_pb2 as protos_dot_auth__pb2
 
 
 class AuthStub(object):
@@ -16,13 +16,13 @@ class AuthStub(object):
         """
         self.login = channel.unary_unary(
                 '/auth.Auth/login',
-                request_serializer=proto_dot_auth__pb2.AuthReq.SerializeToString,
-                response_deserializer=proto_dot_auth__pb2.AuthRes.FromString,
+                request_serializer=protos_dot_auth__pb2.AuthReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
                 )
         self.register = channel.unary_unary(
                 '/auth.Auth/register',
-                request_serializer=proto_dot_auth__pb2.RegisterReq.SerializeToString,
-                response_deserializer=proto_dot_auth__pb2.RegisterRes.FromString,
+                request_serializer=protos_dot_auth__pb2.RegisterReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.RegisterRes.FromString,
                 )
 
 
@@ -46,13 +46,13 @@ def add_AuthServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'login': grpc.unary_unary_rpc_method_handler(
                     servicer.login,
-                    request_deserializer=proto_dot_auth__pb2.AuthReq.FromString,
-                    response_serializer=proto_dot_auth__pb2.AuthRes.SerializeToString,
+                    request_deserializer=protos_dot_auth__pb2.AuthReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
             ),
             'register': grpc.unary_unary_rpc_method_handler(
                     servicer.register,
-                    request_deserializer=proto_dot_auth__pb2.RegisterReq.FromString,
-                    response_serializer=proto_dot_auth__pb2.RegisterRes.SerializeToString,
+                    request_deserializer=protos_dot_auth__pb2.RegisterReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.RegisterRes.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -76,8 +76,8 @@ class Auth(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/login',
-            proto_dot_auth__pb2.AuthReq.SerializeToString,
-            proto_dot_auth__pb2.AuthRes.FromString,
+            protos_dot_auth__pb2.AuthReq.SerializeToString,
+            protos_dot_auth__pb2.AuthRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -93,7 +93,7 @@ class Auth(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/register',
-            proto_dot_auth__pb2.RegisterReq.SerializeToString,
-            proto_dot_auth__pb2.RegisterRes.FromString,
+            protos_dot_auth__pb2.RegisterReq.SerializeToString,
+            protos_dot_auth__pb2.RegisterRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

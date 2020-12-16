@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from proto import signal_pb2 as proto_dot_signal__pb2
+from protos import signal_pb2 as protos_dot_signal__pb2
 
 
 class SignalKeyDistributionStub(object):
@@ -16,28 +16,28 @@ class SignalKeyDistributionStub(object):
         """
         self.PeerRegisterClientKey = channel.unary_unary(
                 '/signal.SignalKeyDistribution/PeerRegisterClientKey',
-                request_serializer=proto_dot_signal__pb2.PeerRegisterClientKeyRequest.SerializeToString,
-                response_deserializer=proto_dot_signal__pb2.BaseResponse.FromString,
+                request_serializer=protos_dot_signal__pb2.PeerRegisterClientKeyRequest.SerializeToString,
+                response_deserializer=protos_dot_signal__pb2.BaseResponse.FromString,
                 )
         self.PeerGetClientKey = channel.unary_unary(
                 '/signal.SignalKeyDistribution/PeerGetClientKey',
-                request_serializer=proto_dot_signal__pb2.PeerGetClientKeyRequest.SerializeToString,
-                response_deserializer=proto_dot_signal__pb2.PeerGetClientKeyResponse.FromString,
+                request_serializer=protos_dot_signal__pb2.PeerGetClientKeyRequest.SerializeToString,
+                response_deserializer=protos_dot_signal__pb2.PeerGetClientKeyResponse.FromString,
                 )
         self.GroupRegisterClientKey = channel.unary_unary(
                 '/signal.SignalKeyDistribution/GroupRegisterClientKey',
-                request_serializer=proto_dot_signal__pb2.GroupRegisterClientKeyRequest.SerializeToString,
-                response_deserializer=proto_dot_signal__pb2.BaseResponse.FromString,
+                request_serializer=protos_dot_signal__pb2.GroupRegisterClientKeyRequest.SerializeToString,
+                response_deserializer=protos_dot_signal__pb2.BaseResponse.FromString,
                 )
         self.GroupGetClientKey = channel.unary_unary(
                 '/signal.SignalKeyDistribution/GroupGetClientKey',
-                request_serializer=proto_dot_signal__pb2.GroupGetClientKeyRequest.SerializeToString,
-                response_deserializer=proto_dot_signal__pb2.GroupGetClientKeyResponse.FromString,
+                request_serializer=protos_dot_signal__pb2.GroupGetClientKeyRequest.SerializeToString,
+                response_deserializer=protos_dot_signal__pb2.GroupGetClientKeyResponse.FromString,
                 )
         self.GroupGetAllClientKey = channel.unary_unary(
                 '/signal.SignalKeyDistribution/GroupGetAllClientKey',
-                request_serializer=proto_dot_signal__pb2.GroupGetAllClientKeyRequest.SerializeToString,
-                response_deserializer=proto_dot_signal__pb2.GroupGetAllClientKeyResponse.FromString,
+                request_serializer=protos_dot_signal__pb2.GroupGetAllClientKeyRequest.SerializeToString,
+                response_deserializer=protos_dot_signal__pb2.GroupGetAllClientKeyResponse.FromString,
                 )
 
 
@@ -81,28 +81,28 @@ def add_SignalKeyDistributionServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'PeerRegisterClientKey': grpc.unary_unary_rpc_method_handler(
                     servicer.PeerRegisterClientKey,
-                    request_deserializer=proto_dot_signal__pb2.PeerRegisterClientKeyRequest.FromString,
-                    response_serializer=proto_dot_signal__pb2.BaseResponse.SerializeToString,
+                    request_deserializer=protos_dot_signal__pb2.PeerRegisterClientKeyRequest.FromString,
+                    response_serializer=protos_dot_signal__pb2.BaseResponse.SerializeToString,
             ),
             'PeerGetClientKey': grpc.unary_unary_rpc_method_handler(
                     servicer.PeerGetClientKey,
-                    request_deserializer=proto_dot_signal__pb2.PeerGetClientKeyRequest.FromString,
-                    response_serializer=proto_dot_signal__pb2.PeerGetClientKeyResponse.SerializeToString,
+                    request_deserializer=protos_dot_signal__pb2.PeerGetClientKeyRequest.FromString,
+                    response_serializer=protos_dot_signal__pb2.PeerGetClientKeyResponse.SerializeToString,
             ),
             'GroupRegisterClientKey': grpc.unary_unary_rpc_method_handler(
                     servicer.GroupRegisterClientKey,
-                    request_deserializer=proto_dot_signal__pb2.GroupRegisterClientKeyRequest.FromString,
-                    response_serializer=proto_dot_signal__pb2.BaseResponse.SerializeToString,
+                    request_deserializer=protos_dot_signal__pb2.GroupRegisterClientKeyRequest.FromString,
+                    response_serializer=protos_dot_signal__pb2.BaseResponse.SerializeToString,
             ),
             'GroupGetClientKey': grpc.unary_unary_rpc_method_handler(
                     servicer.GroupGetClientKey,
-                    request_deserializer=proto_dot_signal__pb2.GroupGetClientKeyRequest.FromString,
-                    response_serializer=proto_dot_signal__pb2.GroupGetClientKeyResponse.SerializeToString,
+                    request_deserializer=protos_dot_signal__pb2.GroupGetClientKeyRequest.FromString,
+                    response_serializer=protos_dot_signal__pb2.GroupGetClientKeyResponse.SerializeToString,
             ),
             'GroupGetAllClientKey': grpc.unary_unary_rpc_method_handler(
                     servicer.GroupGetAllClientKey,
-                    request_deserializer=proto_dot_signal__pb2.GroupGetAllClientKeyRequest.FromString,
-                    response_serializer=proto_dot_signal__pb2.GroupGetAllClientKeyResponse.SerializeToString,
+                    request_deserializer=protos_dot_signal__pb2.GroupGetAllClientKeyRequest.FromString,
+                    response_serializer=protos_dot_signal__pb2.GroupGetAllClientKeyResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -126,8 +126,8 @@ class SignalKeyDistribution(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/signal.SignalKeyDistribution/PeerRegisterClientKey',
-            proto_dot_signal__pb2.PeerRegisterClientKeyRequest.SerializeToString,
-            proto_dot_signal__pb2.BaseResponse.FromString,
+            protos_dot_signal__pb2.PeerRegisterClientKeyRequest.SerializeToString,
+            protos_dot_signal__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -143,8 +143,8 @@ class SignalKeyDistribution(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/signal.SignalKeyDistribution/PeerGetClientKey',
-            proto_dot_signal__pb2.PeerGetClientKeyRequest.SerializeToString,
-            proto_dot_signal__pb2.PeerGetClientKeyResponse.FromString,
+            protos_dot_signal__pb2.PeerGetClientKeyRequest.SerializeToString,
+            protos_dot_signal__pb2.PeerGetClientKeyResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -160,8 +160,8 @@ class SignalKeyDistribution(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/signal.SignalKeyDistribution/GroupRegisterClientKey',
-            proto_dot_signal__pb2.GroupRegisterClientKeyRequest.SerializeToString,
-            proto_dot_signal__pb2.BaseResponse.FromString,
+            protos_dot_signal__pb2.GroupRegisterClientKeyRequest.SerializeToString,
+            protos_dot_signal__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -177,8 +177,8 @@ class SignalKeyDistribution(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/signal.SignalKeyDistribution/GroupGetClientKey',
-            proto_dot_signal__pb2.GroupGetClientKeyRequest.SerializeToString,
-            proto_dot_signal__pb2.GroupGetClientKeyResponse.FromString,
+            protos_dot_signal__pb2.GroupGetClientKeyRequest.SerializeToString,
+            protos_dot_signal__pb2.GroupGetClientKeyResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -194,7 +194,7 @@ class SignalKeyDistribution(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/signal.SignalKeyDistribution/GroupGetAllClientKey',
-            proto_dot_signal__pb2.GroupGetAllClientKeyRequest.SerializeToString,
-            proto_dot_signal__pb2.GroupGetAllClientKeyResponse.FromString,
+            protos_dot_signal__pb2.GroupGetAllClientKeyRequest.SerializeToString,
+            protos_dot_signal__pb2.GroupGetAllClientKeyResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

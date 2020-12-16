@@ -1,14 +1,14 @@
-from proto import notify_pb2
+from protos import notify_pb2
 from src.controllers.base import *
 from middlewares.permission import *
 from utils.logger import *
 from middlewares.request_logged import *
-from src.services.notify import NotifyService, client_notify_queue
+from src.services.notify_inapp import NotifyInAppService, client_notify_queue
 
 
-class NotifyController(BaseController):
+class NotifyInAppController(BaseController):
     def __init__(self, *kwargs):
-        self.service = NotifyService()
+        self.service = NotifyInAppService()
 
     @request_logged
     def get_unread_notifies(self, request, context):

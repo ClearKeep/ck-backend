@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from proto import message_pb2 as proto_dot_message__pb2
+from protos import message_pb2 as protos_dot_message__pb2
 
 
 class MessageStub(object):
@@ -17,28 +17,28 @@ class MessageStub(object):
         """
         self.get_messages_in_group = channel.unary_unary(
                 '/message.Message/get_messages_in_group',
-                request_serializer=proto_dot_message__pb2.GetMessagesInGroupRequest.SerializeToString,
-                response_deserializer=proto_dot_message__pb2.GetMessagesInGroupResponse.FromString,
+                request_serializer=protos_dot_message__pb2.GetMessagesInGroupRequest.SerializeToString,
+                response_deserializer=protos_dot_message__pb2.GetMessagesInGroupResponse.FromString,
                 )
         self.Subscribe = channel.unary_unary(
                 '/message.Message/Subscribe',
-                request_serializer=proto_dot_message__pb2.SubscribeRequest.SerializeToString,
-                response_deserializer=proto_dot_message__pb2.BaseResponse.FromString,
+                request_serializer=protos_dot_message__pb2.SubscribeRequest.SerializeToString,
+                response_deserializer=protos_dot_message__pb2.BaseResponse.FromString,
                 )
         self.UnSubscribe = channel.unary_unary(
                 '/message.Message/UnSubscribe',
-                request_serializer=proto_dot_message__pb2.UnSubscribeRequest.SerializeToString,
-                response_deserializer=proto_dot_message__pb2.BaseResponse.FromString,
+                request_serializer=protos_dot_message__pb2.UnSubscribeRequest.SerializeToString,
+                response_deserializer=protos_dot_message__pb2.BaseResponse.FromString,
                 )
         self.Listen = channel.unary_stream(
                 '/message.Message/Listen',
-                request_serializer=proto_dot_message__pb2.ListenRequest.SerializeToString,
-                response_deserializer=proto_dot_message__pb2.MessageObjectResponse.FromString,
+                request_serializer=protos_dot_message__pb2.ListenRequest.SerializeToString,
+                response_deserializer=protos_dot_message__pb2.MessageObjectResponse.FromString,
                 )
         self.Publish = channel.unary_unary(
                 '/message.Message/Publish',
-                request_serializer=proto_dot_message__pb2.PublishRequest.SerializeToString,
-                response_deserializer=proto_dot_message__pb2.MessageObjectResponse.FromString,
+                request_serializer=protos_dot_message__pb2.PublishRequest.SerializeToString,
+                response_deserializer=protos_dot_message__pb2.MessageObjectResponse.FromString,
                 )
 
 
@@ -82,28 +82,28 @@ def add_MessageServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'get_messages_in_group': grpc.unary_unary_rpc_method_handler(
                     servicer.get_messages_in_group,
-                    request_deserializer=proto_dot_message__pb2.GetMessagesInGroupRequest.FromString,
-                    response_serializer=proto_dot_message__pb2.GetMessagesInGroupResponse.SerializeToString,
+                    request_deserializer=protos_dot_message__pb2.GetMessagesInGroupRequest.FromString,
+                    response_serializer=protos_dot_message__pb2.GetMessagesInGroupResponse.SerializeToString,
             ),
             'Subscribe': grpc.unary_unary_rpc_method_handler(
                     servicer.Subscribe,
-                    request_deserializer=proto_dot_message__pb2.SubscribeRequest.FromString,
-                    response_serializer=proto_dot_message__pb2.BaseResponse.SerializeToString,
+                    request_deserializer=protos_dot_message__pb2.SubscribeRequest.FromString,
+                    response_serializer=protos_dot_message__pb2.BaseResponse.SerializeToString,
             ),
             'UnSubscribe': grpc.unary_unary_rpc_method_handler(
                     servicer.UnSubscribe,
-                    request_deserializer=proto_dot_message__pb2.UnSubscribeRequest.FromString,
-                    response_serializer=proto_dot_message__pb2.BaseResponse.SerializeToString,
+                    request_deserializer=protos_dot_message__pb2.UnSubscribeRequest.FromString,
+                    response_serializer=protos_dot_message__pb2.BaseResponse.SerializeToString,
             ),
             'Listen': grpc.unary_stream_rpc_method_handler(
                     servicer.Listen,
-                    request_deserializer=proto_dot_message__pb2.ListenRequest.FromString,
-                    response_serializer=proto_dot_message__pb2.MessageObjectResponse.SerializeToString,
+                    request_deserializer=protos_dot_message__pb2.ListenRequest.FromString,
+                    response_serializer=protos_dot_message__pb2.MessageObjectResponse.SerializeToString,
             ),
             'Publish': grpc.unary_unary_rpc_method_handler(
                     servicer.Publish,
-                    request_deserializer=proto_dot_message__pb2.PublishRequest.FromString,
-                    response_serializer=proto_dot_message__pb2.MessageObjectResponse.SerializeToString,
+                    request_deserializer=protos_dot_message__pb2.PublishRequest.FromString,
+                    response_serializer=protos_dot_message__pb2.MessageObjectResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -128,8 +128,8 @@ class Message(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/message.Message/get_messages_in_group',
-            proto_dot_message__pb2.GetMessagesInGroupRequest.SerializeToString,
-            proto_dot_message__pb2.GetMessagesInGroupResponse.FromString,
+            protos_dot_message__pb2.GetMessagesInGroupRequest.SerializeToString,
+            protos_dot_message__pb2.GetMessagesInGroupResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -145,8 +145,8 @@ class Message(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/message.Message/Subscribe',
-            proto_dot_message__pb2.SubscribeRequest.SerializeToString,
-            proto_dot_message__pb2.BaseResponse.FromString,
+            protos_dot_message__pb2.SubscribeRequest.SerializeToString,
+            protos_dot_message__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -162,8 +162,8 @@ class Message(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/message.Message/UnSubscribe',
-            proto_dot_message__pb2.UnSubscribeRequest.SerializeToString,
-            proto_dot_message__pb2.BaseResponse.FromString,
+            protos_dot_message__pb2.UnSubscribeRequest.SerializeToString,
+            protos_dot_message__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -179,8 +179,8 @@ class Message(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/message.Message/Listen',
-            proto_dot_message__pb2.ListenRequest.SerializeToString,
-            proto_dot_message__pb2.MessageObjectResponse.FromString,
+            protos_dot_message__pb2.ListenRequest.SerializeToString,
+            protos_dot_message__pb2.MessageObjectResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -196,7 +196,7 @@ class Message(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/message.Message/Publish',
-            proto_dot_message__pb2.PublishRequest.SerializeToString,
-            proto_dot_message__pb2.MessageObjectResponse.FromString,
+            protos_dot_message__pb2.PublishRequest.SerializeToString,
+            protos_dot_message__pb2.MessageObjectResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

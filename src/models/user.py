@@ -12,8 +12,10 @@ class User(db.Model):
     avatar = db.Column(db.String(256), unique=False, nullable=True)
     auth_source = db.Column(db.String(50), unique=False, nullable=True)
     active = db.Column(db.Boolean, unique=False, nullable=True, default=True)
+    last_active_at = db.Column(db.DateTime, nullable=True)
+    last_login_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now)
     
     def add(self):
         db.session.add(self)

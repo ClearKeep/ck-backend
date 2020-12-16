@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from proto import notify_pb2 as proto_dot_notify__pb2
+from protos import notify_pb2 as protos_dot_notify__pb2
 
 
 class NotifyStub(object):
@@ -17,28 +17,28 @@ class NotifyStub(object):
         """
         self.read_notify = channel.unary_unary(
                 '/notification.Notify/read_notify',
-                request_serializer=proto_dot_notify__pb2.ReadNotifyRequest.SerializeToString,
-                response_deserializer=proto_dot_notify__pb2.BaseResponse.FromString,
+                request_serializer=protos_dot_notify__pb2.ReadNotifyRequest.SerializeToString,
+                response_deserializer=protos_dot_notify__pb2.BaseResponse.FromString,
                 )
         self.get_unread_notifies = channel.unary_unary(
                 '/notification.Notify/get_unread_notifies',
-                request_serializer=proto_dot_notify__pb2.Empty.SerializeToString,
-                response_deserializer=proto_dot_notify__pb2.GetNotifiesResponse.FromString,
+                request_serializer=protos_dot_notify__pb2.Empty.SerializeToString,
+                response_deserializer=protos_dot_notify__pb2.GetNotifiesResponse.FromString,
                 )
         self.subscribe = channel.unary_unary(
                 '/notification.Notify/subscribe',
-                request_serializer=proto_dot_notify__pb2.SubscribeRequest.SerializeToString,
-                response_deserializer=proto_dot_notify__pb2.BaseResponse.FromString,
+                request_serializer=protos_dot_notify__pb2.SubscribeRequest.SerializeToString,
+                response_deserializer=protos_dot_notify__pb2.BaseResponse.FromString,
                 )
         self.un_subscribe = channel.unary_unary(
                 '/notification.Notify/un_subscribe',
-                request_serializer=proto_dot_notify__pb2.UnSubscribeRequest.SerializeToString,
-                response_deserializer=proto_dot_notify__pb2.BaseResponse.FromString,
+                request_serializer=protos_dot_notify__pb2.UnSubscribeRequest.SerializeToString,
+                response_deserializer=protos_dot_notify__pb2.BaseResponse.FromString,
                 )
         self.listen = channel.unary_stream(
                 '/notification.Notify/listen',
-                request_serializer=proto_dot_notify__pb2.ListenRequest.SerializeToString,
-                response_deserializer=proto_dot_notify__pb2.NotifyObjectResponse.FromString,
+                request_serializer=protos_dot_notify__pb2.ListenRequest.SerializeToString,
+                response_deserializer=protos_dot_notify__pb2.NotifyObjectResponse.FromString,
                 )
 
 
@@ -81,28 +81,28 @@ def add_NotifyServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'read_notify': grpc.unary_unary_rpc_method_handler(
                     servicer.read_notify,
-                    request_deserializer=proto_dot_notify__pb2.ReadNotifyRequest.FromString,
-                    response_serializer=proto_dot_notify__pb2.BaseResponse.SerializeToString,
+                    request_deserializer=protos_dot_notify__pb2.ReadNotifyRequest.FromString,
+                    response_serializer=protos_dot_notify__pb2.BaseResponse.SerializeToString,
             ),
             'get_unread_notifies': grpc.unary_unary_rpc_method_handler(
                     servicer.get_unread_notifies,
-                    request_deserializer=proto_dot_notify__pb2.Empty.FromString,
-                    response_serializer=proto_dot_notify__pb2.GetNotifiesResponse.SerializeToString,
+                    request_deserializer=protos_dot_notify__pb2.Empty.FromString,
+                    response_serializer=protos_dot_notify__pb2.GetNotifiesResponse.SerializeToString,
             ),
             'subscribe': grpc.unary_unary_rpc_method_handler(
                     servicer.subscribe,
-                    request_deserializer=proto_dot_notify__pb2.SubscribeRequest.FromString,
-                    response_serializer=proto_dot_notify__pb2.BaseResponse.SerializeToString,
+                    request_deserializer=protos_dot_notify__pb2.SubscribeRequest.FromString,
+                    response_serializer=protos_dot_notify__pb2.BaseResponse.SerializeToString,
             ),
             'un_subscribe': grpc.unary_unary_rpc_method_handler(
                     servicer.un_subscribe,
-                    request_deserializer=proto_dot_notify__pb2.UnSubscribeRequest.FromString,
-                    response_serializer=proto_dot_notify__pb2.BaseResponse.SerializeToString,
+                    request_deserializer=protos_dot_notify__pb2.UnSubscribeRequest.FromString,
+                    response_serializer=protos_dot_notify__pb2.BaseResponse.SerializeToString,
             ),
             'listen': grpc.unary_stream_rpc_method_handler(
                     servicer.listen,
-                    request_deserializer=proto_dot_notify__pb2.ListenRequest.FromString,
-                    response_serializer=proto_dot_notify__pb2.NotifyObjectResponse.SerializeToString,
+                    request_deserializer=protos_dot_notify__pb2.ListenRequest.FromString,
+                    response_serializer=protos_dot_notify__pb2.NotifyObjectResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -127,8 +127,8 @@ class Notify(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/notification.Notify/read_notify',
-            proto_dot_notify__pb2.ReadNotifyRequest.SerializeToString,
-            proto_dot_notify__pb2.BaseResponse.FromString,
+            protos_dot_notify__pb2.ReadNotifyRequest.SerializeToString,
+            protos_dot_notify__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -144,8 +144,8 @@ class Notify(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/notification.Notify/get_unread_notifies',
-            proto_dot_notify__pb2.Empty.SerializeToString,
-            proto_dot_notify__pb2.GetNotifiesResponse.FromString,
+            protos_dot_notify__pb2.Empty.SerializeToString,
+            protos_dot_notify__pb2.GetNotifiesResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -161,8 +161,8 @@ class Notify(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/notification.Notify/subscribe',
-            proto_dot_notify__pb2.SubscribeRequest.SerializeToString,
-            proto_dot_notify__pb2.BaseResponse.FromString,
+            protos_dot_notify__pb2.SubscribeRequest.SerializeToString,
+            protos_dot_notify__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -178,8 +178,8 @@ class Notify(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/notification.Notify/un_subscribe',
-            proto_dot_notify__pb2.UnSubscribeRequest.SerializeToString,
-            proto_dot_notify__pb2.BaseResponse.FromString,
+            protos_dot_notify__pb2.UnSubscribeRequest.SerializeToString,
+            protos_dot_notify__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -195,7 +195,7 @@ class Notify(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/notification.Notify/listen',
-            proto_dot_notify__pb2.ListenRequest.SerializeToString,
-            proto_dot_notify__pb2.NotifyObjectResponse.FromString,
+            protos_dot_notify__pb2.ListenRequest.SerializeToString,
+            protos_dot_notify__pb2.NotifyObjectResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
