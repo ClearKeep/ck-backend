@@ -5,11 +5,10 @@ message BaseResponse {
     bool success = 1;
 }
 
-// Request: publish a message
+// Request: new call
 message VideoCallRequest {
-  string from_client_id = 1;
-  string client_id = 2;
-  string group_id = 3;
+  string client_id = 1;
+  string group_id = 2;
 }
 //response: BaseResponse
 

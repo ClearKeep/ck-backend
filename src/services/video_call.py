@@ -51,18 +51,18 @@ class VideoCallService:
             if client.client_id == from_client_id:
                 from_client_username = client.username
             else:
-                for client_token in client.NotifyToken:
-                    list_client_push_token.append(client_token.push_token)
+                list_client_push_token.append(client.NotifyToken.push_token)
+                # for client_token in client.NotifyToken:
+                #     list_client_push_token.append(client_token.push_token)
         # push notification for other clients in group
         push_service = NotifyPushService()
         push_payload = {
-            "group_id": group_id,
-            "from_client": {
-                "client_id": from_client_id,
-                "username": from_client_username,
-                "avatar": ""
-            },
-            "client_id": client_id
+            'notify_type': 'request_call',
+            'group_id': group_id,
+            'from_client_id': from_client_id,
+            'from_client_name': from_client_username,
+            'from_client_avatar': '',
+            'client_id': client_id
         }
         push_service.android_data_notification(list_client_push_token, push_payload)
 

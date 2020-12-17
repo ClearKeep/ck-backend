@@ -13,8 +13,11 @@ class VideoCallController(BaseController):
     @request_logged
     def video_call(self, request, context):
         try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            from_client_id = introspect_token['sub']
+
             group_id = request.group_id
-            from_client_id = request.from_client_id
             client_id = request.client_id
             self.service.request_call(group_id, from_client_id, client_id)
 

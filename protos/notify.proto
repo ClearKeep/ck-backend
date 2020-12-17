@@ -41,7 +41,7 @@ message UnSubscribeRequest {
 
 // Request: listen
 message ListenRequest {
-  string clientId = 1;
+  string client_id = 1;
 }
 //response: NotifyObjectResponse stream
 

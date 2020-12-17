@@ -9,6 +9,7 @@ import protos.group_pb2_grpc as group_service
 import protos.message_pb2_grpc as message_service
 import protos.notify_pb2_grpc as notify_inapp_service
 import protos.notify_push_pb2_grpc as notify_push_service
+import protos.video_call_pb2_grpc as video_call_service
 from src.controllers.user import UserController
 from src.controllers.auth import AuthController
 from src.controllers.signal import SignalController
@@ -16,8 +17,11 @@ from src.controllers.group import GroupController
 from src.controllers.message import MessageController
 from src.controllers.notify_inapp import NotifyInAppController
 from src.controllers.notify_push import NotifyPushController
+from src.controllers.video_call import VideoCallController
 
 from utils.logger import *
+from utils.firebase import *
+from src.services.video_call import VideoCallService
 #from middlewares.auth_interceptor import AuthInterceptor
 
 def grpc_server(port):
@@ -31,11 +35,13 @@ def grpc_server(port):
     message_service.add_MessageServicer_to_server(MessageController(), server)
     notify_inapp_service.add_NotifyServicer_to_server(NotifyInAppController(), server)
     notify_push_service.add_NotifyPushServicer_to_server(NotifyPushController(), server)
-
+    video_call_service.add_VideoCallServicer_to_server(VideoCallController(), server)
     # create all table in database
     db.create_all()
     # init log
     create_timed_rotating_log('logs/logfile.log')
+
+    init_firebase_app()
 
     server.add_insecure_port('0.0.0.0:5000')
     server.start()
