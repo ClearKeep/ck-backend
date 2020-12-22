@@ -5,7 +5,7 @@ message NotifyObjectResponse {
   int64 id = 1;
   string client_id = 2;
   string ref_client_id = 4;
-  string ref_group_id = 5;
+  int64 ref_group_id = 5;
   string notify_type = 6;
   string notify_image = 7;
   string notify_title = 8;

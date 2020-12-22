@@ -52,6 +52,8 @@ class VideoCallService:
                 from_client_username = client.username
             else:
                 list_client_push_token.append(client.NotifyToken.push_token)
+                #ios:
+                #
                 # for client_token in client.NotifyToken:
                 #     list_client_push_token.append(client_token.push_token)
         # push notification for other clients in group

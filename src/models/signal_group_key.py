@@ -6,7 +6,7 @@ from src.models.notify_token import NotifyToken
 
 class GroupClientKey(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    group_id = db.Column(db.String(36), unique=False, nullable=False)
+    group_id = db.Column(db.Integer, unique=False, nullable=False)
     client_id = db.Column(db.String(36), unique=False, nullable=False)
     device_id = db.Column(db.Integer, unique=False, nullable=True)
     client_key = db.Column(db.Binary, nullable=True)

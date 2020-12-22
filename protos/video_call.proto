@@ -8,7 +8,7 @@ message BaseResponse {
 // Request: new call
 message VideoCallRequest {
   string client_id = 1;
-  string group_id = 2;
+  int64 group_id = 2;
 }
 //response: BaseResponse
 

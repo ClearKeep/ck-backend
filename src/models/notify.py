@@ -6,7 +6,7 @@ class Notify(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.String(36), unique=False, nullable=True)
     ref_client_id = db.Column(db.String(36), unique=False, nullable=True)
-    ref_group_id = db.Column(db.String(36), unique=False, nullable=True)
+    ref_group_id = db.Column(db.Integer, unique=False, nullable=True)
     notify_type = db.Column(db.String(36), unique=False, nullable=True)  # new-peer, in-peer, new-group, in-group
     notify_image = db.Column(db.String(255), unique=False, nullable=True)
     notify_title = db.Column(db.String(255), unique=False, nullable=True)

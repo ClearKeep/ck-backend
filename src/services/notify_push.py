@@ -37,7 +37,10 @@ class NotifyPushService(BaseService):
     def android_data_notification(self, registration_tokens, payload):
         message = messaging.MulticastMessage(
             tokens=registration_tokens,
-            data=payload
+            data=payload,
+            android=messaging.AndroidConfig(
+                priority="high"
+            )
         )
         response = messaging.send_multicast(message)
         print('{0} messages were sent successfully'.format(response.success_count))

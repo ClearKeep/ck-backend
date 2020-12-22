@@ -6,7 +6,7 @@ import uuid
 
 
 class GroupChat(db.Model):
-    id = db.Column(db.String(36), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     group_name = db.Column(db.String(255), unique=False, nullable=True)
     group_avatar = db.Column(db.String(255), unique=False, nullable=True)
     group_type = db.Column(db.String(36), unique=False, nullable=True)

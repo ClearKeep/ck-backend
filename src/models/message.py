@@ -5,7 +5,7 @@ from utils.config import get_system_config
 
 class Message(db.Model):
     id = db.Column(db.String(36), primary_key=True)
-    group_id = db.Column(db.String(36), unique=False, nullable=True)
+    group_id = db.Column(db.Integer, unique=False, nullable=True)
     from_client_id = db.Column(db.String(36), unique=False, nullable=True)
     client_id = db.Column(db.String(36), unique=False, nullable=True)
     message = db.Column(db.Binary)
