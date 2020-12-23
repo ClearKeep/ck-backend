@@ -60,7 +60,7 @@ class VideoCallService:
         push_service = NotifyPushService()
         push_payload = {
             'notify_type': 'request_call',
-            'group_id': group_id,
+            'group_id': str(group_id),
             'from_client_id': from_client_id,
             'from_client_name': from_client_username,
             'from_client_avatar': '',

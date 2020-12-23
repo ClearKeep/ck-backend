@@ -50,7 +50,7 @@ message PeerGetClientKeyResponse {
 // ----- SIGNAL GROUP KEY -----
 // Request: register key of client when join to group
 message GroupRegisterClientKeyRequest {
-    string groupId = 1;
+    int64 groupId = 1;
     string clientId = 2;
     int32 deviceId = 3;
     bytes clientKeyDistribution = 4;
@@ -68,23 +68,23 @@ message GroupClientKeyObject {
 
 //Request: Get client key via clientId and groupId
 message GroupGetClientKeyRequest {
-  string groupId = 1;
+  int64 groupId = 1;
   string clientId = 2;
 }
 //Response
 message GroupGetClientKeyResponse {
-  string groupId = 1;
+  int64 groupId = 1;
   GroupClientKeyObject clientKey = 2;
 }
 
 
 // Request: Get all client key via groupId
 message GroupGetAllClientKeyRequest {
-  string groupId = 1;
+  int64 groupId = 1;
 }
 // Response
 message GroupGetAllClientKeyResponse {
-    string groupId = 1;
+    int64 groupId = 1;
     repeated GroupClientKeyObject lstClientKey = 2;
 }
 

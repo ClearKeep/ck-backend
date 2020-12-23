@@ -20,7 +20,7 @@ class GroupChat(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def add(self):
-        self.id = str(uuid.uuid4())
+        # self.id = str(uuid.uuid4())
         db.session.add(self)
         db.session.commit()
         return self

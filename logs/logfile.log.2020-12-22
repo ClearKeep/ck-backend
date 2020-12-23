@@ -1,0 +1,12 @@
+2020-12-22 09:16:46,054 root INFO Listening on port 5000..
+2020-12-22 09:17:11,924 sqlalchemy.engine.base.Engine INFO BEGIN (implicit)
+2020-12-22 09:17:11,929 sqlalchemy.engine.base.Engine INFO SELECT group_chat.id AS group_chat_id, group_chat.group_name AS group_chat_group_name, group_chat.group_avatar AS group_chat_group_avatar, group_chat.group_type AS group_chat_group_type, group_chat.group_clients AS group_chat_group_clients, group_chat.created_by AS group_chat_created_by, group_chat.created_at AS group_chat_created_at, group_chat.updated_by AS group_chat_updated_by, group_chat.updated_at AS group_chat_updated_at, group_chat.last_message_at AS group_chat_last_message_at, group_chat.last_message_id AS group_chat_last_message_id, group_chat.deleted_at AS group_chat_deleted_at, message.id AS message_id, message.group_id AS message_group_id, message.from_client_id AS message_from_client_id, message.client_id AS message_client_id, message.message AS message_message, message.created_at AS message_created_at, message.updated_at AS message_updated_at, message.deleted_at AS message_deleted_at 
+FROM group_chat LEFT OUTER JOIN message ON group_chat.last_message_id = message.id 
+WHERE group_chat.id = %(id_1)s
+2020-12-22 09:17:11,929 sqlalchemy.engine.base.Engine INFO {'id_1': '9f2c70fa-cd8a-4a3d-b271-c97c758dbea6'}
+2020-12-22 09:17:11,943 sqlalchemy.engine.base.Engine INFO SELECT group_client_key.group_id AS group_client_key_group_id, group_client_key.client_id AS group_client_key_client_id, "user".username AS user_username 
+FROM group_client_key JOIN "user" ON group_client_key.client_id = "user".id 
+WHERE group_client_key.group_id = %(group_id_1)s ORDER BY group_client_key.client_id ASC
+2020-12-22 09:17:11,943 sqlalchemy.engine.base.Engine INFO {'group_id_1': '9f2c70fa-cd8a-4a3d-b271-c97c758dbea6'}
+2020-12-22 14:06:43,065 root INFO Listening on port 5000..
+2020-12-22 17:20:18,472 root INFO Listening on port 5000..

@@ -33,7 +33,7 @@ message GetMessagesInGroupResponse {
 message PublishRequest {
   string fromClientId = 1;
   string clientId = 2;
-  string groupId = 3;
+  int64 groupId = 3;
   string groupType = 4;
   bytes message = 5;
 }
