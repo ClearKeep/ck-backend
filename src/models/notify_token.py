@@ -1,16 +1,19 @@
 from src.models.base import db
 from datetime import datetime
 import uuid
-
+from sqlalchemy.orm import relationship, backref, load_only
+from sqlalchemy import ForeignKey
 
 class NotifyToken(db.Model):
+    __tablename__ = 'notify_token'
     id = db.Column(db.String(36), primary_key=True)
-    client_id = db.Column(db.String(36), nullable=False)
+    client_id = db.Column(db.String(36), ForeignKey('user.id'))
     device_id = db.Column(db.String(255), nullable=False)
     device_type = db.Column(db.String(16), nullable=False)
     push_token = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
+    user = relationship('User', back_populates='tokens')
 
     def add(self):
         client_device = self.get(self.client_id, self.device_id)

@@ -1,8 +1,9 @@
 from src.models.base import db
 from datetime import datetime
-
+from sqlalchemy.orm import relationship
 
 class User(db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.String(36), primary_key=True)
     username = db.Column(db.String(255), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
@@ -16,6 +17,7 @@ class User(db.Model):
     last_login_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
+    tokens = relationship('NotifyToken', back_populates='user')
     
     def add(self):
         db.session.add(self)

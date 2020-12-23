@@ -56,9 +56,8 @@ class GroupClientKey(db.Model):
         return result
 
     def get_clients_in_group_with_push_token(self, group_id):
-        result = db.session.query(GroupClientKey.group_id, GroupClientKey.client_id, User.username, NotifyToken) \
+        result = db.session.query(GroupClientKey.group_id, GroupClientKey.client_id, User) \
             .join(User, GroupClientKey.client_id == User.id) \
-            .join(NotifyToken, NotifyToken.client_id == User.id) \
             .filter(GroupClientKey.group_id == group_id) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
