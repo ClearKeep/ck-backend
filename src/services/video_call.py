@@ -65,19 +65,22 @@ class VideoCallService:
            'gameID' : '12345678'
         }
         for client in lst_client_in_groups:
-            token_ios = []
-            android_token_notifys = []
+            ios_tokens = []
+            android_tokens = []
             if client.client_id == from_client_id:
                 from_client_username = client.User.username
             else:
                 for client_token in client.User.tokens:
                     if client_token.device_type == 'android':
-                        android_token_notifys.append(client_token.push_token)
+                        android_tokens.append(client_token.push_token)
                     elif client_token.device_type == 'ios':
                         push_service.ios_data_notification(client_token.push_token, ios_payload)
 
-            push_service.android_data_notification(android_token_notifys, android_payload)
+            if len(android_tokens) > 0:
+                push_service.android_data_notification(android_tokens, android_payload)
         # push notification for other clients in group
+
+
 
 
 
