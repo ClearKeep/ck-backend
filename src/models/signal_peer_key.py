@@ -1,10 +1,14 @@
-from src.models.base import db
 from datetime import datetime
+
+from sqlalchemy import ForeignKey
+
+from src.models.base import db
 
 
 class PeerClientKey(db.Model):
+    __tablename__ = 'peer_client_key'
     id = db.Column(db.Integer, primary_key=True)
-    client_id = db.Column(db.String(36), unique=False, nullable=False)
+    client_id = db.Column(db.String(36), ForeignKey('user.id'))
     device_id = db.Column(db.Integer, unique=False, nullable=False)
     registration_id = db.Column(db.Integer, unique=False, nullable=False)
     identity_key_public = db.Column(db.Binary)

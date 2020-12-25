@@ -1,9 +1,11 @@
-from src.models.base import db
 from datetime import datetime
+
+from src.models.base import db
 from utils.config import get_system_config
 
 
 class Message(db.Model):
+    __tablename__ = 'message'
     id = db.Column(db.String(36), primary_key=True)
     group_id = db.Column(db.Integer, unique=False, nullable=True)
     from_client_id = db.Column(db.String(36), unique=False, nullable=True)

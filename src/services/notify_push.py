@@ -1,18 +1,20 @@
 from firebase_admin import messaging
+from kalyke.client import VoIPClient
+
 from src.models.notify_token import NotifyToken
-from protos import notify_push_pb2
-from middlewares.request_logged import *
 from src.services.base import BaseService
-from pushjack import APNSClient
+from utils.config import get_system_config
+
 
 class NotifyPushService(BaseService):
     def __init__(self):
         super().__init__(NotifyToken())
-        self.client = APNSClient(certificate='configs/apns/certificate.pem>',
-                            default_error_timeout=10,
-                            default_expiration_offset=2592000,
-                            default_batch_size=100,
-                            default_retries=5)
+        self.client_ios = VoIPClient(
+            auth_key_filepath=get_system_config()["device_ios"].get('certificates'),
+            bundle_id= get_system_config()["device_ios"].get('bundle_id'),
+            use_sandbox=True
+            )
+        print(get_system_config()["device_ios"].get('certificates'))
 
     def register_token(self, client_id, device_id, device_type, push_token):
         self.model = NotifyToken(
@@ -59,20 +61,9 @@ class NotifyPushService(BaseService):
                     failed_tokens.append(registration_tokens)
             print('List of tokens that caused failures: {0}'.format(failed_tokens))
 
-    def ios_data_notification(self, registration_token, payload):
-        alert = 'request_call'
-        token = registration_token
-        response = self.client.send(token,
-              alert,
-              badge='badge count',
-              sound='sound to play',
-              category='category',
-              content_available=True,
-              title='Title',
-              title_loc_key='t_loc_key',
-              title_loc_args='t_loc_args',
-              action_loc_key='a_loc_key',
-              loc_key='loc_key',
-              extra={'custom': 'data'})
-        self.client.close()
-        print('{0} messages were sent successfully'.format(response.success_count))
+    def ios_data_notification(self, registration_tokens, payload):
+        try:
+            for token in registration_tokens:
+                res = self.client_ios.send_message(token, payload)
+        except Exception as e:
+            print(e)

@@ -35,5 +35,11 @@
         "admin_secret": "janusoverlord"
     },
     "fcm_server_token": "abc",
-    "page_limit": 10
+    "page_limit": 10,
+    "device_ios": {
+        "bundle_id": "com.telred.clearkeep3.ios.dev",
+        "certificates": "/home/global/Ductn/ck-backend/configs/apns/Certificates.pem"
+    },
+    "device_android": {
+    }
 }
