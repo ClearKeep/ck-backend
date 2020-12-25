@@ -1,8 +1,11 @@
-from src.models.base import db
-from datetime import datetime
 import uuid
-from sqlalchemy.orm import relationship, backref, load_only
+from datetime import datetime
+
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
+
+from src.models.base import db
+
 
 class NotifyToken(db.Model):
     __tablename__ = 'notify_token'

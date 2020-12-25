@@ -1,8 +1,9 @@
 import requests
 import json
-from utils.config import get_system_config
+from utils.config import get_system_config, DeviceType
 import uuid
 from src.models.signal_group_key import GroupClientKey
+from src.models.user import User
 from src.services.notify_push import NotifyPushService
 
 
@@ -43,9 +44,12 @@ class VideoCallService:
     def request_call(self, group_id, from_client_id, client_id):
         from_client_username = ""
         # send push notification to all member of group
-        lst_client_in_groups = GroupClientKey().get_clients_in_group_with_push_token(group_id)
+        if group_id:
+            lst_client_in_groups = GroupClientKey().get_clients_in_group_with_push_token(group_id)
+        elif client_id:
+            lst_client_in_groups = User().get_client_id_with_push_token(client_id)
         push_service = NotifyPushService()
-        android_payload = {
+        push_payload = {
             'notify_type': 'request_call',
             'group_id': str(group_id),
             'from_client_id': from_client_id,
@@ -53,31 +57,23 @@ class VideoCallService:
             'from_client_avatar': '',
             'client_id': client_id
         }
-        ios_payload = {
-           'aps' : {
-              'alert' : {
-                 'title' : 'request_call',
-                 'subtitle' : 'request_call',
-                 'body' : 'call',
-                        },
-              'category' : 'request_call'
-                    },
-           'gameID' : '12345678'
-        }
         for client in lst_client_in_groups:
             ios_tokens = []
             android_tokens = []
-            if client.client_id == from_client_id:
+            if client.User.id == from_client_id:
                 from_client_username = client.User.username
             else:
                 for client_token in client.User.tokens:
-                    if client_token.device_type == 'android':
+                    if client_token.device_type == DeviceType.android:
                         android_tokens.append(client_token.push_token)
-                    elif client_token.device_type == 'ios':
-                        push_service.ios_data_notification(client_token.push_token, ios_payload)
+                    elif client_token.device_type == DeviceType.ios:
+                        ios_tokens.append(client_token.push_token)
+
 
             if len(android_tokens) > 0:
-                push_service.android_data_notification(android_tokens, android_payload)
+                push_service.android_data_notification(android_tokens, push_payload)
+            if len(ios_tokens) > 0:
+                push_service.ios_data_notification(ios_tokens, push_payload)
         # push notification for other clients in group
 
 
