@@ -1,11 +1,12 @@
-from src.models.base import db
 from datetime import datetime
-from src.models.signal_group_key import GroupClientKey
+
+from src.models.base import db
 from src.models.message import Message
-import uuid
+from src.models.signal_group_key import GroupClientKey
 
 
 class GroupChat(db.Model):
+    __tablename__ = 'group_chat'
     id = db.Column(db.Integer, primary_key=True)
     group_name = db.Column(db.String(255), unique=False, nullable=True)
     group_avatar = db.Column(db.String(255), unique=False, nullable=True)

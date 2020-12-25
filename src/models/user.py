@@ -1,6 +1,9 @@
-from src.models.base import db
 from datetime import datetime
+
 from sqlalchemy.orm import relationship
+
+from src.models.base import db
+
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -18,6 +21,7 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
     tokens = relationship('NotifyToken', back_populates='user')
+    notifys = relationship('Notify', back_populates='user')
     
     def add(self):
         db.session.add(self)
@@ -41,6 +45,11 @@ class User(db.Model):
             .all()
         return user
 
+    def get_client_id_with_push_token(self, id):
+        result = db.session.query(User.id, User) \
+            .filter(User.id == id) \
+            .all()
+        return result
 
     def __repr__(self):
         return '<Item(id=%s, username=%s, email=%s)>' % (self.id, self.username, self.email)
