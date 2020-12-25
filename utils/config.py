@@ -9,7 +9,3 @@ print("Load config env=", env_name)
 
 def get_system_config():
     return data
-
-class DeviceType:
-    ios = "ios"
-    android="android"

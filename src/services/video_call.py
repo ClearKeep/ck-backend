@@ -1,6 +1,7 @@
 import requests
 import json
-from utils.config import get_system_config, DeviceType
+from utils.config import get_system_config
+from utils.const import DeviceType
 import uuid
 from src.models.signal_group_key import GroupClientKey
 from src.models.user import User
@@ -49,17 +50,12 @@ class VideoCallService:
         elif client_id:
             lst_client_in_groups = User().get_client_id_with_push_token(client_id)
         push_service = NotifyPushService()
-        push_payload = {
-            'notify_type': 'request_call',
-            'group_id': str(group_id),
-            'from_client_id': from_client_id,
-            'from_client_name': from_client_username,
-            'from_client_avatar': '',
-            'client_id': client_id
-        }
+
+        # list token for each device type
+        ios_tokens = []
+        android_tokens = []
+
         for client in lst_client_in_groups:
-            ios_tokens = []
-            android_tokens = []
             if client.User.id == from_client_id:
                 from_client_username = client.User.username
             else:
@@ -69,11 +65,19 @@ class VideoCallService:
                     elif client_token.device_type == DeviceType.ios:
                         ios_tokens.append(client_token.push_token)
 
+        push_payload = {
+            'notify_type': 'request_call',
+            'group_id': str(group_id),
+            'from_client_id': from_client_id,
+            'from_client_name': from_client_username,
+            'from_client_avatar': '',
+            'client_id': client_id
+        }
 
-            if len(android_tokens) > 0:
-                push_service.android_data_notification(android_tokens, push_payload)
-            if len(ios_tokens) > 0:
-                push_service.ios_data_notification(ios_tokens, push_payload)
+        if len(android_tokens) > 0:
+            push_service.android_data_notification(android_tokens, push_payload)
+        if len(ios_tokens) > 0:
+            push_service.ios_data_notification(ios_tokens, push_payload)
         # push notification for other clients in group
 
 
