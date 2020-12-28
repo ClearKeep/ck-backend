@@ -9,7 +9,7 @@ from src.models.user import User
 class GroupClientKey(db.Model):
     __tablename__ = 'group_client_key'
     id = db.Column(db.Integer, primary_key=True)
-    group_id = db.Column(db.Integer, ForeignKey('group.id'))
+    group_id = db.Column(db.Integer, ForeignKey('group_chat.id'))
     client_id = db.Column(db.String(36), ForeignKey('user.id'))
     device_id = db.Column(db.Integer, unique=False, nullable=True)
     client_key = db.Column(db.Binary, nullable=True)

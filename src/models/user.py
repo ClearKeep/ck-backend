@@ -22,7 +22,8 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
     tokens = relationship('NotifyToken', back_populates='user')
     notifys = relationship('Notify', back_populates='user')
-    
+    messages = relationship('Message', back_populates='user')
+
     def add(self):
         db.session.add(self)
         db.session.commit()

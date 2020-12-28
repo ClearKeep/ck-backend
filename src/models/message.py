@@ -2,18 +2,21 @@ from datetime import datetime
 
 from src.models.base import db
 from utils.config import get_system_config
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 
 
 class Message(db.Model):
     __tablename__ = 'message'
     id = db.Column(db.String(36), primary_key=True)
-    group_id = db.Column(db.Integer, unique=False, nullable=True)
+    group_id = db.Column(db.Integer, ForeignKey('group_chat.id'))
     from_client_id = db.Column(db.String(36), unique=False, nullable=True)
-    client_id = db.Column(db.String(36), unique=False, nullable=True)
+    client_id = db.Column(db.String(36), ForeignKey('user.id'))
     message = db.Column(db.Binary)
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
     deleted_at = db.Column(db.DateTime, nullable=True)
+    user = relationship('User', back_populates='messages')
 
     def add(self):
         db.session.add(self)
