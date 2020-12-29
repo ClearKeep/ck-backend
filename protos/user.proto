@@ -40,14 +40,16 @@ message ChangePasswordRequest {
 message UserInfoResponse {
     string id = 1;
     string username = 2;
+    string domain = 3;
 }
 
 //Request: get other user info
 message GetUserRequest {
     string client_id = 1;
+    string domain = 2;
 }
-// Response: UserObjectResponse
 
+// Response: UserObjectResponse
 
 // Request: Search User
 message SearchUserRequest {
