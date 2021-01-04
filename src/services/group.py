@@ -10,16 +10,20 @@ class GroupService(BaseService):
         super().__init__(GroupChat())
         self.notify_service = NotifyInAppService()
 
-    def add_group(self, group_name, group_type, lst_client_id, created_by):
+    def add_group(self, group_name, group_type, group_domain, lst_client_id, created_by, ref_group_id, ref_domain):
         self.model = GroupChat(
-            group_name=group_name,
-            group_type=group_type,
-            created_by=created_by
+            group_name= group_name,
+            group_type= group_type,
+            created_by= created_by,
+            group_domain= group_domain,
+            ref_group_id= ref_group_id,
+            ref_server_domain= ref_domain
         )
         new_group = self.model.add()
         res_obj = group_pb2.GroupObjectResponse(
             group_id=new_group.id,
             group_name=new_group.group_name,
+            group_domain=new_group.group_domain,
             group_type=new_group.group_type,
             group_avatar=new_group.group_avatar,
             created_by_client_id=new_group.created_by,
@@ -31,7 +35,7 @@ class GroupService(BaseService):
 
         for obj in lst_client_id:
             # add to signal group key
-            client_group_key = GroupClientKey().set_key(new_group.id, obj, None, None)
+            client_group_key = GroupClientKey().set_key(new_group.id ,group_domain, obj, None, None)
             client_group_key.add()
             # notify per client
             if group_type == "peer":
@@ -40,7 +44,7 @@ class GroupService(BaseService):
                 self.notify_service.notify_invite_group(obj, created_by, new_group.id)
 
         # list client in group
-        lst_client_in_group = GroupClientKey().get_clients_in_group(new_group.id)
+        lst_client_in_group = GroupClientKey().get_clients_in_group(new_group.id,new_group.group_domain)
         for client in lst_client_in_group:
             client_in = group_pb2.ClientInGroupResponse(
                 id=client.client_id,
@@ -50,7 +54,7 @@ class GroupService(BaseService):
 
         return res_obj
 
-    def get_group(self, group_id):
+    def get_group(self, group_id,group_domain=None):
         group = self.model.get(group_id)
         if group is not None:
             obj = group.GroupChat
@@ -61,13 +65,14 @@ class GroupService(BaseService):
                 group_avatar=obj.group_avatar,
                 created_by_client_id=obj.created_by,
                 created_at=int(obj.created_at.timestamp() * 1000),
-                updated_by_client_id=obj.updated_by
+                updated_by_client_id=obj.updated_by,
+                group_domain=group_domain,
             )
             if obj.updated_at is not None:
                 res_obj.updated_at = int(obj.updated_at.timestamp() * 1000)
 
             # list client in group
-            lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
+            lst_client_in_group = GroupClientKey().get_clients_in_group(group_id,group_domain)
             for client in lst_client_in_group:
                 client_in = group_pb2.ClientInGroupResponse(
                     id=client.client_id,
@@ -100,17 +105,18 @@ class GroupService(BaseService):
         else:
             return None
 
-    def search_group(self, keyword):
+    def search_group(self, keyword,group_domain=None):
         lst_group = self.model.search(keyword)
         lst_obj_res = []
         group_ids = (group.GroupChat.id for group in lst_group)
-        lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
+        lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids,group_domain)
 
         for item in lst_group:
             obj = item.GroupChat
             obj_res = group_pb2.GroupObjectResponse(
                 group_id=obj.id,
                 group_name=obj.group_name,
+                group_domain=obj.group_domain,
                 group_type=obj.group_type,
                 group_avatar=obj.group_avatar,
                 created_by_client_id=obj.created_by,
@@ -156,17 +162,18 @@ class GroupService(BaseService):
         )
         return response
 
-    def get_joined_group(self, client_id):
+    def get_joined_group(self, client_id,group_domain=None):
         lst_group = self.model.get_joined(client_id)
         lst_obj_res = []
         group_ids = (group.GroupChat.id for group in lst_group)
-        lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
+        lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids,group_domain)
 
         for item in lst_group:
             obj = item.GroupChat
             obj_res = group_pb2.GroupObjectResponse(
                 group_id=obj.id,
                 group_type=obj.group_type,
+                group_domain=obj.group_domain,
                 created_by_client_id=obj.created_by,
                 created_at=int(obj.created_at.timestamp() * 1000),
                 updated_by_client_id=obj.updated_by

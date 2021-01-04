@@ -18,7 +18,7 @@ class GroupStub(object):
         self.create_group = channel.unary_unary(
                 '/group.Group/create_group',
                 request_serializer=protos_dot_group__pb2.CreateGroupRequest.SerializeToString,
-                response_deserializer=protos_dot_group__pb2.GroupObjectResponse.FromString,
+                response_deserializer=protos_dot_group__pb2.ListGroupObjectResponse.FromString,
                 )
         self.get_group = channel.unary_unary(
                 '/group.Group/get_group',
@@ -93,7 +93,7 @@ def add_GroupServicer_to_server(servicer, server):
             'create_group': grpc.unary_unary_rpc_method_handler(
                     servicer.create_group,
                     request_deserializer=protos_dot_group__pb2.CreateGroupRequest.FromString,
-                    response_serializer=protos_dot_group__pb2.GroupObjectResponse.SerializeToString,
+                    response_serializer=protos_dot_group__pb2.ListGroupObjectResponse.SerializeToString,
             ),
             'get_group': grpc.unary_unary_rpc_method_handler(
                     servicer.get_group,
@@ -144,7 +144,7 @@ class Group(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/group.Group/create_group',
             protos_dot_group__pb2.CreateGroupRequest.SerializeToString,
-            protos_dot_group__pb2.GroupObjectResponse.FromString,
+            protos_dot_group__pb2.ListGroupObjectResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

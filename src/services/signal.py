@@ -25,7 +25,7 @@ class SignalService(BaseService):
         return self.peer_model.get_by_client_id(client_id)
 
     def group_register_client_key(self, request):
-        client_group_key = GroupClientKey().set_key(request.groupId, request.clientId, request.deviceId, request.clientKeyDistribution)
+        client_group_key = GroupClientKey().set_key(request.groupId, request.client_domain, request.clientId, request.deviceId, request.clientKeyDistribution)
         client_group_key.add()
 
     def group_get_client_key(self, group_id, client_id):

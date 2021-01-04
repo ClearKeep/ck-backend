@@ -5,7 +5,8 @@ from middlewares.permission import *
 from utils.logger import *
 from middlewares.request_logged import *
 from src.services.group import GroupService
-
+from utils.config import get_system_domain, get_ip_domain
+from client.client_group import *
 
 class GroupController(BaseController):
     def __init__(self, *kwargs):
@@ -19,10 +20,43 @@ class GroupController(BaseController):
             # created_by_client_id = introspect_token['sub']
             group_name = request.group_name
             group_type = request.group_type
-            lst_client_id = request.lst_client_id
-            obj_res = self.service.add_group(group_name, group_type, lst_client_id, request.created_by_client_id)
+            lst_client = list(request.lst_client)
+            list_domain = set()
+            list_domain_client = {}
+            domain_local = get_system_domain()
+            for client in lst_client:
+                if client.client_domain in list_domain:
+                    list_domain_client[str(client.client_domain)].append(client.client_id)
+                else:
+                    list_domain.add(str(client.client_domain))
+                    list_domain_client[client.client_domain] = [client.client_id]
 
-            return obj_res
+            def client_to_dict(domain,client_id):
+                return {
+                    'client_domain': domain,
+                    'client_id': client_id
+                }
+
+            obj_res = []
+            for client_domain,lst_client_id in list_domain_client.items():
+                ref_group_id = request.ref_group_id
+                ref_domain = request.ref_domain
+                group_res = self.service.add_group(group_name, group_type, client_domain,
+                                                 lst_client_id, request.created_by_client_id,
+                                                 ref_group_id, ref_domain)
+                ## check domain
+                if client_domain != domain_local:
+                    lst_client_to = [client_to_dict(domain=client_domain,client_id=client_id) for client_id in lst_client_id]
+                    server_ip = get_ip_domain(client_domain)
+                    client = ClientGroup(server_ip, get_system_config()['port'])
+                    user_info = client.add_group(new_group=group_res,lst_client=lst_client_to,ref_domain=domain_local)
+
+                obj_res.append(group_res)
+
+            list_group_result = group_pb2.ListGroupObjectResponse(
+                lst_group=obj_res
+            )
+            return list_group_result
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]

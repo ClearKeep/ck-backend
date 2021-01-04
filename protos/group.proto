@@ -21,27 +21,41 @@ message ClientInGroupResponse {
 message GroupObjectResponse {
   int64 group_id = 1;
   string group_name = 2;
-  string group_avatar = 3;
-  string group_type = 4;
-  repeated ClientInGroupResponse lst_client = 5;
-  int64 last_message_at = 6;
-  MessageObjectResponse last_message = 7;
-  string created_by_client_id = 8;
-  int64 created_at = 9;
-  string updated_by_client_id = 10;
-  int64 updated_at = 11;
+  string group_domain = 3;
+  string group_avatar = 4;
+  string group_type = 5;
+  repeated ClientInGroupResponse lst_client = 6;
+  int64 last_message_at = 7;
+  MessageObjectResponse last_message = 8;
+  string created_by_client_id = 9;
+  int64 created_at = 10;
+  string updated_by_client_id = 11;
+  int64 updated_at = 12;
+}
+
+message ListGroupObjectResponse {
+  repeated GroupObjectResponse lst_group = 1;
 }
 
 message BaseResponse {
     bool success = 1;
 }
 
+// object client
+message base_client {
+  string client_domain = 1;
+  string client_id = 2;
+}
+
 // Request: create group
 message CreateGroupRequest {
   string group_name = 1;
   string group_type = 2;
-  string created_by_client_id = 3;
-  repeated string lst_client_id = 4;
+  string group_domain = 3;
+  string created_by_client_id = 4;
+  repeated base_client lst_client = 5;
+  int64 ref_group_id = 6;
+  string ref_domain = 7;
 }
 // Response: groupObjectResponse
 
@@ -100,7 +114,7 @@ message JoinGroupRequest {
 
 // Method
 service Group {
-    rpc create_group(CreateGroupRequest) returns (GroupObjectResponse) {};
+    rpc create_group(CreateGroupRequest) returns (ListGroupObjectResponse) {};
     rpc get_group(GetGroupRequest) returns (GroupObjectResponse) {};
     rpc search_groups(SearchGroupsRequest) returns (SearchGroupsResponse) {};
     rpc get_joined_groups(GetJoinedGroupsRequest) returns (GetJoinedGroupsResponse) {};

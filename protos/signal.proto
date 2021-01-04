@@ -51,9 +51,10 @@ message PeerGetClientKeyResponse {
 // Request: register key of client when join to group
 message GroupRegisterClientKeyRequest {
     int64 groupId = 1;
-    string clientId = 2;
-    int32 deviceId = 3;
-    bytes clientKeyDistribution = 4;
+    string domain_client = 2;
+    string clientId = 3;
+    int32 deviceId = 4;
+    bytes clientKeyDistribution = 5;
 }
 //response: BaseResponse
 
