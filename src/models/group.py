@@ -3,7 +3,7 @@ from datetime import datetime
 from src.models.base import db
 from src.models.message import Message
 from src.models.signal_group_key import GroupClientKey
-
+from sqlalchemy import ForeignKey
 
 class GroupChat(db.Model):
     __tablename__ = 'group_chat'
@@ -19,7 +19,7 @@ class GroupChat(db.Model):
     updated_by = db.Column(db.String(36), unique=False, nullable=True)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now, nullable=True)
     last_message_at = db.Column(db.DateTime, nullable=True)
-    last_message_id = db.Column(db.String(36), unique=False, nullable=True)
+    last_message_id = db.Column(db.String(36), nullable=True)
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def add(self):

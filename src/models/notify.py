@@ -9,7 +9,7 @@ from src.models.base import db
 class Notify(db.Model):
     __tablename__ = 'notify'
     id = db.Column(db.Integer, primary_key=True)
-    client_id = db.Column(db.String(36), ForeignKey('user.id'))
+    client_id = db.Column(db.String(36), unique=False, nullable=True)
     ref_client_id = db.Column(db.String(36), unique=False, nullable=True)
     ref_group_id = db.Column(db.Integer, unique=False, nullable=True)
     notify_type = db.Column(db.String(36), unique=False, nullable=True)  # new-peer, in-peer, new-group, in-group
@@ -19,7 +19,6 @@ class Notify(db.Model):
     notify_platform = db.Column(db.String(36), unique=False, nullable=True)
     read_flg = db.Column(db.Boolean, nullable=True, default=False)
     created_at = db.Column(db.DateTime, default=datetime.now)
-    user = relationship('User', back_populates='notifys')
 
     def add(self):
         db.session.add(self)

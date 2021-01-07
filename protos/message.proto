@@ -21,6 +21,7 @@ message GetMessagesInGroupRequest {
   int64 group_id = 1;
   int32 off_set = 2; //0
   int64 last_message_at = 3; //8746529349
+  string domain = 4;
 }
 // Response: GetMessagesInGroupResponse
 message GetMessagesInGroupResponse {

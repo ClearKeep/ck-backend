@@ -5,7 +5,8 @@ from utils.logger import *
 from middlewares.request_logged import *
 from src.services.message import MessageService, client_message_queue
 from src.services.signal import SignalService
-
+from client.client_message import *
+from utils.config import get_system_domain, get_ip_domain
 
 class MessageController(BaseController):
     def __init__(self, *kwargs):
@@ -14,10 +15,18 @@ class MessageController(BaseController):
     @request_logged
     def get_messages_in_group(self, request, context):
         try:
+            domain_local = get_system_domain()
+            domain_client = request.domain
             group_id = request.group_id
             off_set = request.off_set
             last_message_at = request.last_message_at
-            lst_message = self.service.get_message_in_group(group_id, off_set, last_message_at)
+            if domain_client == domain_local:
+                lst_message = self.service.get_message_in_group(group_id, off_set, last_message_at)
+            else:
+                server_ip = get_ip_domain(domain_client)
+                client = ClientMessage(server_ip, get_system_config()['port'])
+                lst_message = client.get_messages_group(request)
+
             return lst_message
         except Exception as e:
             logger.error(e)

@@ -54,7 +54,6 @@ class MessageService(BaseService):
 
         return res_obj
 
-
     def add_message(self, group_id, from_client_id, client_id, message):
         thread = Thread(target=self.store_message, args=(group_id, from_client_id, client_id, message))
         thread.start()
