@@ -11,7 +11,7 @@ from client.client_group import *
 class GroupController(BaseController):
     def __init__(self, *kwargs):
         self.service = GroupService()
-
+        self.domain_local = get_system_domain()
     @request_logged
     def create_group(self, request, context):
         try:
@@ -23,7 +23,6 @@ class GroupController(BaseController):
             lst_client = list(request.lst_client)
             list_domain = set()
             list_domain_client = {}
-            domain_local = get_system_domain()
             for client in lst_client:
                 if client.client_domain in list_domain:
                     list_domain_client[str(client.client_domain)].append(client.client_id)
@@ -45,11 +44,11 @@ class GroupController(BaseController):
                                                  lst_client_id, request.created_by_client_id,
                                                  ref_group_id, ref_domain)
                 ## check domain
-                if client_domain != domain_local:
+                if client_domain != self.domain_local:
                     lst_client_to = [client_to_dict(domain=client_domain,client_id=client_id) for client_id in lst_client_id]
                     server_ip = get_ip_domain(client_domain)
                     client = ClientGroup(server_ip, get_system_config()['port'])
-                    user_info = client.add_group(new_group=group_res,lst_client=lst_client_to,ref_domain=domain_local)
+                    user_info = client.add_group(new_group=group_res,lst_client=lst_client_to,ref_domain=self.domain_local)
 
                 obj_res.append(group_res)
 
@@ -68,7 +67,14 @@ class GroupController(BaseController):
     def get_group(self, request, context):
         try:
             group_id = request.group_id
-            obj_res = self.service.get_group(group_id)
+            group_domain = request.group_domain
+            if group_domain == self.domain_local:
+                obj_res = self.service.get_group(group_id)
+            else:
+                server_ip = get_ip_domain(group_domain)
+                client = ClientGroup(server_ip, get_system_config()['port'])
+                obj_res = client.get_group(group_id=group_id, group_domain=group_domain)
+
             if obj_res is not None:
                 return obj_res
             else:
@@ -102,7 +108,7 @@ class GroupController(BaseController):
             # header_data = dict(context.invocation_metadata())
             # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             # client_id = introspect_token['sub']
-            obj_res = self.service.get_joined_group(request.client_id)
+            obj_res = self.service.get_joined_group(request.client_id,self.domain_local)
             return obj_res
         except Exception as e:
             logger.error(e)

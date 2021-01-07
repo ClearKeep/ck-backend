@@ -3,7 +3,8 @@ from src.models.group import GroupChat
 from protos import group_pb2
 from src.models.signal_group_key import GroupClientKey
 from src.services.notify_inapp import NotifyInAppService
-
+from utils.config import get_system_domain, get_ip_domain, get_system_config
+from client.client_group import *
 
 class GroupService(BaseService):
     def __init__(self):
@@ -109,7 +110,7 @@ class GroupService(BaseService):
         lst_group = self.model.search(keyword)
         lst_obj_res = []
         group_ids = (group.GroupChat.id for group in lst_group)
-        lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids,group_domain)
+        lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
 
         for item in lst_group:
             obj = item.GroupChat
@@ -162,60 +163,64 @@ class GroupService(BaseService):
         )
         return response
 
-    def get_joined_group(self, client_id,group_domain=None):
+    def get_joined_group(self, client_id,local_domain=None):
         lst_group = self.model.get_joined(client_id)
         lst_obj_res = []
         group_ids = (group.GroupChat.id for group in lst_group)
-        lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids,group_domain)
+        lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
 
         for item in lst_group:
             obj = item.GroupChat
-            obj_res = group_pb2.GroupObjectResponse(
-                group_id=obj.id,
-                group_type=obj.group_type,
-                group_domain=obj.group_domain,
-                created_by_client_id=obj.created_by,
-                created_at=int(obj.created_at.timestamp() * 1000),
-                updated_by_client_id=obj.updated_by
-            )
-            if obj.group_name:
-                obj_res.group_name = obj.group_name
+            if not obj.ref_server_domain:
+                obj_res = group_pb2.GroupObjectResponse(
+                    group_id=obj.id,
+                    group_type=obj.group_type,
+                    group_domain=obj.group_domain,
+                    created_by_client_id=obj.created_by,
+                    created_at=int(obj.created_at.timestamp() * 1000),
+                    updated_by_client_id=obj.updated_by
+                )
+                if obj.group_name:
+                    obj_res.group_name = obj.group_name
 
-            if obj.group_avatar:
-                obj_res.group_avatar = obj.group_avatar
+                if obj.group_avatar:
+                    obj_res.group_avatar = obj.group_avatar
 
-            if obj.updated_at:
-                obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
+                if obj.updated_at:
+                    obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
 
-            for client in lst_client_in_groups:
-                if client.group_id == obj.id:
-                    client_in = group_pb2.ClientInGroupResponse(
-                        id=client.client_id,
-                        username=client.username
-                    )
-                    obj_res.lst_client.append(client_in)
+                for client in lst_client_in_groups:
+                    if client.group_id == obj.id:
+                        client_in = group_pb2.ClientInGroupResponse(
+                            id=client.client_id,
+                            username=client.username
+                        )
+                        obj_res.lst_client.append(client_in)
 
-            if obj.last_message_at:
-                obj_res.last_message_at = int(obj.last_message_at.timestamp() * 1000)
+                if obj.last_message_at:
+                    obj_res.last_message_at = int(obj.last_message_at.timestamp() * 1000)
 
-            # get last message
-            if item.Message:
-                last_message = item.Message
-                obj_res.last_message.id = last_message.id
-                obj_res.last_message.group_id = last_message.group_id
-                obj_res.last_message.from_client_id = last_message.from_client_id
-                obj_res.last_message.message = last_message.message
-                obj_res.last_message.created_at = int(last_message.created_at.timestamp() * 1000)
+                # get last message
+                if item.Message:
+                    last_message = item.Message
+                    obj_res.last_message.id = last_message.id
+                    obj_res.last_message.group_id = last_message.group_id
+                    obj_res.last_message.from_client_id = last_message.from_client_id
+                    obj_res.last_message.message = last_message.message
+                    obj_res.last_message.created_at = int(last_message.created_at.timestamp() * 1000)
 
-                if last_message.client_id:
-                    obj_res.last_message.client_id = last_message.client_id
-                if last_message.updated_at:
-                    obj_res.last_message.updated_at = int(last_message.updated_at.timestamp() * 1000)
-                if last_message.client_id:
-                    obj_res.last_message.group_type = "peer"
-                else:
-                    obj_res.last_message.group_type = "group"
-
+                    if last_message.client_id:
+                        obj_res.last_message.client_id = last_message.client_id
+                    if last_message.updated_at:
+                        obj_res.last_message.updated_at = int(last_message.updated_at.timestamp() * 1000)
+                    if last_message.client_id:
+                        obj_res.last_message.group_type = "peer"
+                    else:
+                        obj_res.last_message.group_type = "group"
+            else:
+                server_ip = get_ip_domain(obj.ref_server_domain)
+                client = ClientGroup(server_ip, get_system_config()['port'])
+                obj_res = client.get_group(obj.ref_group_id,obj.ref_server_domain)
             lst_obj_res.append(obj_res)
 
         response = group_pb2.GetJoinedGroupsResponse(

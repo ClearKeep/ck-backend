@@ -11,21 +11,20 @@ from utils.config import get_system_domain, get_ip_domain
 class MessageController(BaseController):
     def __init__(self, *kwargs):
         self.service = MessageService()
-
+        self.domain_local = get_system_domain()
     @request_logged
     def get_messages_in_group(self, request, context):
         try:
-            domain_local = get_system_domain()
             domain_client = request.domain
             group_id = request.group_id
             off_set = request.off_set
             last_message_at = request.last_message_at
-            if domain_client == domain_local:
+            if domain_client == self.domain_local:
                 lst_message = self.service.get_message_in_group(group_id, off_set, last_message_at)
             else:
                 server_ip = get_ip_domain(domain_client)
                 client = ClientMessage(server_ip, get_system_config()['port'])
-                lst_message = client.get_messages_group(request)
+                lst_message = self.client.get_messages_group(request)
 
             return lst_message
         except Exception as e:

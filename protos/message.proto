@@ -10,6 +10,7 @@ message MessageObjectResponse {
   bytes message = 6;
   int64 created_at = 7;
   int64 updated_at = 8;
+  string domain = 9;
 }
 
 message BaseResponse {
@@ -37,6 +38,7 @@ message PublishRequest {
   int64 groupId = 3;
   string groupType = 4;
   bytes message = 5;
+  string domain = 6;
 }
 //response: BaseResponse
 
@@ -44,18 +46,21 @@ message PublishRequest {
 // Request: subcribe
 message SubscribeRequest {
   string clientId = 1;
+  string domain = 2;
 }
 //response: BaseResponse
 
 // Request: un-subcribe
 message UnSubscribeRequest {
   string clientId = 1;
+  string domain = 2;
 }
 //response: BaseResponse
 
 // Request: listen
 message ListenRequest {
   string clientId = 1;
+  string domain = 2;
 }
 //response: BaseResponse or MessageObjectResponse stream
 

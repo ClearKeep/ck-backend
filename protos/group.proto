@@ -73,6 +73,7 @@ message UpdateGroupRequest {
 // Request: get group
 message GetGroupRequest {
   int64 group_id = 1;
+  string group_domain = 2;
 }
 // Response: groupObjectResponse
 
@@ -80,6 +81,7 @@ message GetGroupRequest {
 // Request: get joined groups
 message GetJoinedGroupsRequest {
   string client_id = 1;
+
 }
 // Response
 message GetJoinedGroupsResponse {

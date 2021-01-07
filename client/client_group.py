@@ -26,3 +26,13 @@ class ClientGroup:
         except Exception as e:
             print(e)
             return None
+
+    def get_group(self,group_id,group_domain):
+        try:
+            request = group_pb2.GetGroupRequest(group_id=group_id,
+                                                   group_domain=group_domain)
+            response = self.stub.get_group(request)
+            return response
+        except Exception as e:
+            print(e)
+            return None

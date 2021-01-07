@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x14protos/message.proto\x12\x07message\"\xad\x01\n\x15MessageObjectResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x12\n\ngroup_type\x18\x03 \x01(\t\x12\x16\n\x0e\x66rom_client_id\x18\x04 \x01(\t\x12\x11\n\tclient_id\x18\x05 \x01(\t\x12\x0f\n\x07message\x18\x06 \x01(\x0c\x12\x12\n\ncreated_at\x18\x07 \x01(\x03\x12\x12\n\nupdated_at\x18\x08 \x01(\x03\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"g\n\x19GetMessagesInGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x0f\n\x07off_set\x18\x02 \x01(\x05\x12\x17\n\x0flast_message_at\x18\x03 \x01(\x03\x12\x0e\n\x06\x64omain\x18\x04 \x01(\t\"Q\n\x1aGetMessagesInGroupResponse\x12\x33\n\x0blst_message\x18\x01 \x03(\x0b\x32\x1e.message.MessageObjectResponse\"m\n\x0ePublishRequest\x12\x14\n\x0c\x66romClientId\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x0f\n\x07groupId\x18\x03 \x01(\x03\x12\x11\n\tgroupType\x18\x04 \x01(\t\x12\x0f\n\x07message\x18\x05 \x01(\x0c\"$\n\x10SubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"&\n\x12UnSubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"!\n\rListenRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t2\xf7\x02\n\x07Message\x12\x62\n\x15get_messages_in_group\x12\".message.GetMessagesInGroupRequest\x1a#.message.GetMessagesInGroupResponse\"\x00\x12=\n\tSubscribe\x12\x19.message.SubscribeRequest\x1a\x15.message.BaseResponse\x12\x41\n\x0bUnSubscribe\x12\x1b.message.UnSubscribeRequest\x1a\x15.message.BaseResponse\x12\x42\n\x06Listen\x12\x16.message.ListenRequest\x1a\x1e.message.MessageObjectResponse0\x01\x12\x42\n\x07Publish\x12\x17.message.PublishRequest\x1a\x1e.message.MessageObjectResponseb\x06proto3'
+  serialized_pb=b'\n\x14protos/message.proto\x12\x07message\"\xbd\x01\n\x15MessageObjectResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x12\n\ngroup_type\x18\x03 \x01(\t\x12\x16\n\x0e\x66rom_client_id\x18\x04 \x01(\t\x12\x11\n\tclient_id\x18\x05 \x01(\t\x12\x0f\n\x07message\x18\x06 \x01(\x0c\x12\x12\n\ncreated_at\x18\x07 \x01(\x03\x12\x12\n\nupdated_at\x18\x08 \x01(\x03\x12\x0e\n\x06\x64omain\x18\t \x01(\t\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"g\n\x19GetMessagesInGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x0f\n\x07off_set\x18\x02 \x01(\x05\x12\x17\n\x0flast_message_at\x18\x03 \x01(\x03\x12\x0e\n\x06\x64omain\x18\x04 \x01(\t\"Q\n\x1aGetMessagesInGroupResponse\x12\x33\n\x0blst_message\x18\x01 \x03(\x0b\x32\x1e.message.MessageObjectResponse\"}\n\x0ePublishRequest\x12\x14\n\x0c\x66romClientId\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x0f\n\x07groupId\x18\x03 \x01(\x03\x12\x11\n\tgroupType\x18\x04 \x01(\t\x12\x0f\n\x07message\x18\x05 \x01(\x0c\x12\x0e\n\x06\x64omain\x18\x06 \x01(\t\"4\n\x10SubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x0e\n\x06\x64omain\x18\x02 \x01(\t\"6\n\x12UnSubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x0e\n\x06\x64omain\x18\x02 \x01(\t\"1\n\rListenRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x0e\n\x06\x64omain\x18\x02 \x01(\t2\xf7\x02\n\x07Message\x12\x62\n\x15get_messages_in_group\x12\".message.GetMessagesInGroupRequest\x1a#.message.GetMessagesInGroupResponse\"\x00\x12=\n\tSubscribe\x12\x19.message.SubscribeRequest\x1a\x15.message.BaseResponse\x12\x41\n\x0bUnSubscribe\x12\x1b.message.UnSubscribeRequest\x1a\x15.message.BaseResponse\x12\x42\n\x06Listen\x12\x16.message.ListenRequest\x1a\x1e.message.MessageObjectResponse0\x01\x12\x42\n\x07Publish\x12\x17.message.PublishRequest\x1a\x1e.message.MessageObjectResponseb\x06proto3'
 )
 
 
@@ -89,6 +89,13 @@ _MESSAGEOBJECTRESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='domain', full_name='message.MessageObjectResponse.domain', index=8,
+      number=9, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -102,7 +109,7 @@ _MESSAGEOBJECTRESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=34,
-  serialized_end=207,
+  serialized_end=223,
 )
 
 
@@ -133,8 +140,8 @@ _BASERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=209,
-  serialized_end=240,
+  serialized_start=225,
+  serialized_end=256,
 )
 
 
@@ -186,8 +193,8 @@ _GETMESSAGESINGROUPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=242,
-  serialized_end=345,
+  serialized_start=258,
+  serialized_end=361,
 )
 
 
@@ -218,8 +225,8 @@ _GETMESSAGESINGROUPRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=347,
-  serialized_end=428,
+  serialized_start=363,
+  serialized_end=444,
 )
 
 
@@ -266,6 +273,13 @@ _PUBLISHREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='domain', full_name='message.PublishRequest.domain', index=5,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -278,8 +292,8 @@ _PUBLISHREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=430,
-  serialized_end=539,
+  serialized_start=446,
+  serialized_end=571,
 )
 
 
@@ -298,6 +312,13 @@ _SUBSCRIBEREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='domain', full_name='message.SubscribeRequest.domain', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -310,8 +331,8 @@ _SUBSCRIBEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=541,
-  serialized_end=577,
+  serialized_start=573,
+  serialized_end=625,
 )
 
 
@@ -330,6 +351,13 @@ _UNSUBSCRIBEREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='domain', full_name='message.UnSubscribeRequest.domain', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -342,8 +370,8 @@ _UNSUBSCRIBEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=579,
-  serialized_end=617,
+  serialized_start=627,
+  serialized_end=681,
 )
 
 
@@ -362,6 +390,13 @@ _LISTENREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='domain', full_name='message.ListenRequest.domain', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -374,8 +409,8 @@ _LISTENREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=619,
-  serialized_end=652,
+  serialized_start=683,
+  serialized_end=732,
 )
 
 _GETMESSAGESINGROUPRESPONSE.fields_by_name['lst_message'].message_type = _MESSAGEOBJECTRESPONSE
@@ -454,8 +489,8 @@ _MESSAGE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=655,
-  serialized_end=1030,
+  serialized_start=735,
+  serialized_end=1110,
   methods=[
   _descriptor.MethodDescriptor(
     name='get_messages_in_group',
