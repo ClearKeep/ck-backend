@@ -45,7 +45,7 @@ class GroupService(BaseService):
                 self.notify_service.notify_invite_group(obj, created_by, new_group.id)
 
         # list client in group
-        lst_client_in_group = GroupClientKey().get_clients_in_group(new_group.id,new_group.group_domain)
+        lst_client_in_group = GroupClientKey().get_clients_in_group(new_group.id)
         for client in lst_client_in_group:
             client_in = group_pb2.ClientInGroupResponse(
                 id=client.client_id,
@@ -73,7 +73,7 @@ class GroupService(BaseService):
                 res_obj.updated_at = int(obj.updated_at.timestamp() * 1000)
 
             # list client in group
-            lst_client_in_group = GroupClientKey().get_clients_in_group(group_id,group_domain)
+            lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
             for client in lst_client_in_group:
                 client_in = group_pb2.ClientInGroupResponse(
                     id=client.client_id,

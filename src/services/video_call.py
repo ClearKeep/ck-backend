@@ -6,7 +6,8 @@ import uuid
 from src.models.signal_group_key import GroupClientKey
 from src.models.user import User
 from src.services.notify_push import NotifyPushService
-
+from utils.config import get_system_domain, get_ip_domain, get_system_config
+from client.client_videocall import *
 
 class VideoCallService:
     def __init__(self):
@@ -42,7 +43,7 @@ class VideoCallService:
         else:
             return False
 
-    def request_call(self, group_id, from_client_id, client_id):
+    def request_call(self,domain_client, group_id, from_client_id, client_id, rtc_client):
         from_client_username = ""
         # send push notification to all member of group
         if group_id:
@@ -68,6 +69,8 @@ class VideoCallService:
         push_payload = {
             'notify_type': 'request_call',
             'group_id': str(group_id),
+            'group_domain': domain_client,
+            'group_rtc': rtc_client,
             'from_client_id': from_client_id,
             'from_client_name': from_client_username,
             'from_client_avatar': '',
@@ -80,7 +83,10 @@ class VideoCallService:
             push_service.ios_data_notification(ios_tokens, push_payload)
         # push notification for other clients in group
 
-
+    def request_call_fedevation(self, domain_client, group_id, from_client_id, client_id, rtc_client):
+        server_ip = get_ip_domain(domain_client)
+        client = ClientVideoCall(server_ip, get_system_config()['port'])
+        obj_res = client.videocall_notify(client_id, group_id, domain_client, rtc_client)
 
 
 

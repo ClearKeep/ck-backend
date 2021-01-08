@@ -52,11 +52,10 @@ class GroupClientKey(db.Model):
             .all()
         return result
 
-    def get_clients_in_group(self, group_id, client_domain):
+    def get_clients_in_group(self, group_id):
         result = db.session.query(GroupClientKey.group_id, GroupClientKey.client_id, User.username) \
             .join(User, GroupClientKey.client_id == User.id) \
             .filter(GroupClientKey.group_id == group_id) \
-            .filter(GroupClientKey.client_domain.in_(client_domain)) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
         return result
