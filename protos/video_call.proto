@@ -9,6 +9,8 @@ message BaseResponse {
 message VideoCallRequest {
   string client_id = 1;
   int64 group_id = 2;
+  string domain_client = 3;
+  string rtc_client = 4;
 }
 //response: BaseResponse
 

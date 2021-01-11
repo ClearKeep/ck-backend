@@ -10,17 +10,19 @@ class GroupClientKey(db.Model):
     __tablename__ = 'group_client_key'
     id = db.Column(db.Integer, primary_key=True)
     group_id = db.Column(db.Integer, ForeignKey('group_chat.id'))
-    client_id = db.Column(db.String(36), ForeignKey('user.id'))
+    client_id = db.Column(db.String(36), nullable=True)
+    client_domain = db.Column(db.String(36), nullable=True)
     device_id = db.Column(db.Integer, unique=False, nullable=True)
     client_key = db.Column(db.Binary, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
-    def set_key(self, group_id, client_id, device_id, client_key):
+    def set_key(self, group_id, client_domain,  client_id, device_id, client_key):
         self.group_id = group_id
         self.client_id = client_id
         self.device_id = device_id
         self.client_key = client_key
+        self.client_domain = client_domain
         return self
 
     def add(self):

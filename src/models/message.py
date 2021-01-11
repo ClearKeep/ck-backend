@@ -9,7 +9,7 @@ from sqlalchemy.orm import relationship
 class Message(db.Model):
     __tablename__ = 'message'
     id = db.Column(db.String(36), primary_key=True)
-    group_id = db.Column(db.Integer, ForeignKey('group_chat.id'))
+    group_id = db.Column(db.Integer, nullable=True)
     from_client_id = db.Column(db.String(36), unique=False, nullable=True)
     client_id = db.Column(db.String(36), ForeignKey('user.id'))
     message = db.Column(db.Binary)

@@ -21,7 +21,6 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
     tokens = relationship('NotifyToken', back_populates='user')
-    notifys = relationship('Notify', back_populates='user')
     messages = relationship('Message', back_populates='user')
 
     def add(self):

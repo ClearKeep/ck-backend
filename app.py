@@ -37,7 +37,7 @@ def grpc_server(port):
     notify_push_service.add_NotifyPushServicer_to_server(NotifyPushController(), server)
     video_call_service.add_VideoCallServicer_to_server(VideoCallController(), server)
     # create all table in database
-    db.create_all()
+    # db.create_all()
     # init log
     create_timed_rotating_log('logs/logfile.log')
 

@@ -3,21 +3,23 @@ from datetime import datetime
 from src.models.base import db
 from src.models.message import Message
 from src.models.signal_group_key import GroupClientKey
-
+from sqlalchemy import ForeignKey
 
 class GroupChat(db.Model):
     __tablename__ = 'group_chat'
     id = db.Column(db.Integer, primary_key=True)
+    ref_group_id = db.Column(db.Integer, unique=False, nullable=True)
+    ref_server_domain = db.Column(db.String(255), unique=False, nullable=True)
     group_name = db.Column(db.String(255), unique=False, nullable=True)
     group_avatar = db.Column(db.String(255), unique=False, nullable=True)
     group_type = db.Column(db.String(36), unique=False, nullable=True)
-    group_clients = db.Column(db.Text, unique=False, nullable=True)
+    group_domain = db.Column(db.String(36), unique=False, nullable=True)
     created_by = db.Column(db.String(36), unique=False, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_by = db.Column(db.String(36), unique=False, nullable=True)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now, nullable=True)
     last_message_at = db.Column(db.DateTime, nullable=True)
-    last_message_id = db.Column(db.String(36), unique=False, nullable=True)
+    last_message_id = db.Column(db.String(36), nullable=True)
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def add(self):
