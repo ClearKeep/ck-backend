@@ -7,7 +7,7 @@ from datetime import datetime
 from queue import Queue
 import uuid
 
-client_message_queue = {}
+client_message_queue = []
 
 
 class MessageService(BaseService):

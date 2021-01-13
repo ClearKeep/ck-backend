@@ -54,8 +54,9 @@ class VideoCallService:
         # list token for each device type
         ios_tokens = []
         android_tokens = []
-
+        group_rtc_token = GroupClientKey.get_group_rtc_token(group_id)
         for client in lst_client_in_groups:
+            group_rtc_token = client.group_rtc_token
             if client.User.id == from_client_id:
                 from_client_username = client.User.username
             else:
@@ -68,6 +69,7 @@ class VideoCallService:
         push_payload = {
             'notify_type': 'request_call',
             'group_id': str(group_id),
+            'group_rtc_token': group_rtc_token,
             'from_client_id': from_client_id,
             'from_client_name': from_client_username,
             'from_client_avatar': '',

@@ -4,6 +4,7 @@ from sqlalchemy import ForeignKey
 
 from src.models.base import db
 from src.models.user import User
+from src.models.group import GroupChat
 
 
 class GroupClientKey(db.Model):
@@ -64,6 +65,12 @@ class GroupClientKey(db.Model):
             .filter(GroupClientKey.group_id == group_id) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
+        return result
+
+    def get_group_rtc_token(self, group_id):
+        result = db.session.query(GroupClientKey.group_id, GroupChat.group_rtc_token) \
+            .join(GroupChat, GroupChat.id == group_id) \
+            .first()
         return result
 
     def update(self):
