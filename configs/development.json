@@ -32,7 +32,7 @@
     ],
     "janus_webrtc": {
     "admin_url": "http://172.16.1.214:7088/admin",
-    "client_url" : "http://172.16.1.214:8088/janus/",
+    "client_url" : "http://172.16.1.214:8088/janus",
     "client_ws_url" : "ws://172.16.1.214:8188/janus",
     "admin_secret": "janusoverlord"
     },
@@ -40,7 +40,7 @@
     "page_limit": 10,
     "device_ios": {
         "bundle_id": "com.telred.clearkeep3.ios.dev",
-        "certificates": "/home/global/Ductn/ck-backend/configs/apns/Certificates.pem"
+        "certificates": "configs/apns/Certificates.pem"
     },
     "device_android": {
     }
