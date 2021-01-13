@@ -30,6 +30,7 @@ message GroupObjectResponse {
   int64 created_at = 9;
   string updated_by_client_id = 10;
   int64 updated_at = 11;
+  string group_rtc_token = 12;
 }
 
 message BaseResponse {
