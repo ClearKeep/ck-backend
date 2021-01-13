@@ -6,7 +6,7 @@ import uuid
 from src.models.signal_group_key import GroupClientKey
 from src.models.user import User
 from src.services.notify_push import NotifyPushService
-
+from src.models.group import GroupChat
 
 class VideoCallService:
     def __init__(self):
@@ -54,7 +54,7 @@ class VideoCallService:
         # list token for each device type
         ios_tokens = []
         android_tokens = []
-
+        group_rtc_token = GroupChat.get_group_rtc_token(group_id)
         for client in lst_client_in_groups:
             if client.User.id == from_client_id:
                 from_client_username = client.User.username
@@ -68,6 +68,7 @@ class VideoCallService:
         push_payload = {
             'notify_type': 'request_call',
             'group_id': str(group_id),
+            'group_rtc_token': group_rtc_token,
             'from_client_id': from_client_id,
             'from_client_name': from_client_username,
             'from_client_avatar': '',

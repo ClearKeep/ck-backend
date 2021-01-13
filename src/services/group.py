@@ -22,7 +22,7 @@ class GroupService(BaseService):
             created_by=created_by
         )
         new_group = self.model.add()
-        new_token = self.registor_token(new_group.group_rtc_token)
+        new_token = self.register_webrtc_token(new_group.group_rtc_token)
         self.create_rtc_group(new_group.id,new_token)
         res_obj = group_pb2.GroupObjectResponse(
             group_id=new_group.id,
@@ -59,19 +59,19 @@ class GroupService(BaseService):
 
         return res_obj
 
-    def registor_token(self, tokend):
+    def register_webrtc_token(self, token):
         payload = {
             "janus": 'add_token',
-            "token": tokend,
+            "token": token,
             "transaction": self.transaction,
             "admin_secret": get_system_config()['janus_webrtc'].get('admin_secret')
         }
         rtc_admin_url = get_system_config()['janus_webrtc'].get('admin_url')
-        # registor token
+        # register token
         response = requests.post(rtc_admin_url, data=json.dumps(payload))
         json_response = json.loads(response.text)
         if json_response.get("janus") == 'success':
-            return tokend
+            return token
         else:
             raise
 

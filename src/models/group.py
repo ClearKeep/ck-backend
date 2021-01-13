@@ -1,9 +1,9 @@
 from datetime import datetime
-
+import secrets
 from src.models.base import db
 from src.models.message import Message
 from src.models.signal_group_key import GroupClientKey
-import secrets
+
 
 def create_token_rtc():
     return secrets.token_hex(10)
@@ -57,6 +57,14 @@ class GroupChat(db.Model):
         db.session.merge(self)
         db.session.commit()
         return True
+
+
+    def get_group_rtc_token(self, group_id):
+        result = db.session.query(GroupChat.group_rtc_token) \
+            .filter(GroupChat.id == group_id) \
+            .first()
+        # result = self.query.filter_by(id=group_id).first()
+        return result
 
     def __repr__(self):
         return '<Item(id=%s, username=%s, email=%s)>' % (self.id, self.username, self.email)
