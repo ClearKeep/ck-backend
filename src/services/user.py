@@ -2,12 +2,14 @@ from src.services.base import BaseService
 from src.models.user import User
 from utils.encrypt import EncryptUtils
 from utils.keycloak import KeyCloakUtils
-from proto import user_pb2
+from protos import user_pb2
+from utils.config import get_system_domain
 
 
 class UserService(BaseService):
     def __init__(self):
         super().__init__(User())
+        self.domain = get_system_domain()
 
     def create_new_user(self, id, record, auth_source):
         self.model = User(
@@ -83,7 +85,8 @@ class UserService(BaseService):
         if user_info is not None:
             return user_pb2.UserInfoResponse(
                 id=user_info.id,
-                username=user_info.username
+                username=user_info.username,
+                domain=self.domain
             )
         else:
             return None

@@ -1,9 +1,11 @@
-import proto.user_pb2 as user_messages
+import protos.user_pb2 as user_messages
 from src.controllers.base import *
 from src.services.user import UserService
 from middlewares.permission import *
 from middlewares.request_logged import *
 from utils.logger import *
+from utils.config import get_system_domain, get_ip_domain
+from client.client_user import *
 
 class UserController(BaseController):
     def __init__(self, *kwargs):
@@ -64,11 +66,19 @@ class UserController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @auth_required
     @request_logged
     def get_user_info(self, request, context):
         try:
             client_id = request.client_id
-            user_info = self.service.get_user_info(client_id)
+            domain_client = request.domain
+            domain_local = get_system_domain()
+            if domain_local== domain_client :
+                user_info = self.service.get_user_info(client_id)
+            else:
+                server_ip = get_ip_domain(domain_client)
+                client = ClientUser(server_ip, get_system_config()['port'])
+                user_info = client.get_user_info(client_id=client_id,domain=domain_client)
             if user_info is not None:
                 return user_info
             else:
@@ -108,6 +118,20 @@ class UserController(BaseController):
             client_id = introspect_token['sub']
 
             obj_res = self.service.get_users(client_id)
+            return obj_res
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    def get_user_domain(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            domain = "server.domain2"
+            obj_res = self.service.get_users_domain(domain=domain)
             return obj_res
         except Exception as e:
             logger.error(e)

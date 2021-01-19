@@ -1,0 +1,17 @@
+syntax = "proto3";
+package notify_push;
+
+message RegisterTokenRequest {
+  string device_id = 1;
+  string device_type = 2;
+  string token = 3;
+}
+
+message BaseResponse {
+    bool success = 1;
+}
+
+// Method
+service NotifyPush {
+    rpc register_token (RegisterTokenRequest) returns (BaseResponse);
+}

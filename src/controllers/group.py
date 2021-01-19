@@ -1,4 +1,4 @@
-from proto import group_pb2
+from protos import group_pb2
 from src.controllers.base import *
 from src.services.signal import SignalService, client_queue
 from middlewares.permission import *

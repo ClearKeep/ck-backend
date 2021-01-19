@@ -1,8 +1,9 @@
 # import sqlalchemy as db
 # from sqlalchemy.ext.declarative import declarative_base
-from utils.config import get_system_config
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+
+from utils.config import get_system_config
 
 db_config = get_system_config()['db']
 db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(

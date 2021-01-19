@@ -1,16 +1,21 @@
-from src.models.base import db
 from datetime import datetime
-from src.models.signal_group_key import GroupClientKey
+import secrets
+from src.models.base import db
 from src.models.message import Message
-import uuid
+from src.models.signal_group_key import GroupClientKey
 
+
+def create_token_rtc():
+    return secrets.token_hex(10)
 
 class GroupChat(db.Model):
-    id = db.Column(db.String(36), primary_key=True)
+    __tablename__ = 'group_chat'
+    id = db.Column(db.Integer, primary_key=True)
     group_name = db.Column(db.String(255), unique=False, nullable=True)
     group_avatar = db.Column(db.String(255), unique=False, nullable=True)
     group_type = db.Column(db.String(36), unique=False, nullable=True)
     group_clients = db.Column(db.Text, unique=False, nullable=True)
+    group_rtc_token = db.Column(db.Text, default=create_token_rtc)
     created_by = db.Column(db.String(36), unique=False, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_by = db.Column(db.String(36), unique=False, nullable=True)
@@ -20,7 +25,7 @@ class GroupChat(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def add(self):
-        self.id = str(uuid.uuid4())
+        # self.id = str(uuid.uuid4())
         db.session.add(self)
         db.session.commit()
         return self
@@ -52,6 +57,14 @@ class GroupChat(db.Model):
         db.session.merge(self)
         db.session.commit()
         return True
+
+
+    def get_group_rtc_token(self, group_id):
+        result = db.session.query(GroupChat.group_rtc_token) \
+            .filter(GroupChat.id == group_id) \
+            .first()
+        # result = self.query.filter_by(id=group_id).first()
+        return result
 
     def __repr__(self):
         return '<Item(id=%s, username=%s, email=%s)>' % (self.id, self.username, self.email)

@@ -1,0 +1,17 @@
+syntax = "proto3";
+package video_call;
+
+message BaseResponse {
+    bool success = 1;
+}
+
+// Request: new call
+message VideoCallRequest {
+  string client_id = 1;
+  int64 group_id = 2;
+}
+//response: BaseResponse
+
+service VideoCall {
+    rpc video_call(VideoCallRequest) returns (BaseResponse) {};
+}

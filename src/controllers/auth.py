@@ -1,6 +1,6 @@
 import grpc
 import json
-import proto.auth_pb2 as auth_messages
+import protos.auth_pb2 as auth_messages
 from src.controllers.base import BaseController
 from src.services.auth import AuthService
 from utils.keycloak import KeyCloakUtils
@@ -40,27 +40,34 @@ class AuthController(BaseController):
 
     def register(self, request, context):
         # check exist user
-        exists_user = self.service.get_user_id_by_username(request.username)
-        if exists_user:
-            errors = [Message.get_error_object(
-                Message.REGISTER_USER_ALREADY_EXISTS)]
+        try:
+            exists_user = self.service.get_user_id_by_username(request.username)
+            if exists_user:
+                errors = [Message.get_error_object(
+                    Message.REGISTER_USER_ALREADY_EXISTS)]
+                context.set_details(json.dumps(
+                    errors, default=lambda x: x.__dict__))
+                context.set_code(grpc.StatusCode.ALREADY_EXISTS)
+                return auth_messages.AuthRes()
+
+            # register new user
+            new_user = self.service.register_user(
+                request.email, request.username, request.password)
+
+            if new_user:
+                # create new user in database
+                UserService().create_new_user(new_user, request, 'account')
+                return auth_messages.RegisterRes(success=True)
+
+            # return error
+            errors = [Message.get_error_object(Message.REGISTER_USER_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.ALREADY_EXISTS)
-            return auth_messages.AuthRes()
-
-        # register new user
-        new_user = self.service.register_user(
-            request.email, request.username, request.password)
-
-        if new_user:
-            # create new user in database
-            UserService().create_new_user(new_user, request, 'account')
-            return auth_messages.RegisterRes(success=True)
-
-        # return error
-        errors = [Message.get_error_object(Message.REGISTER_USER_FAILED)]
-        context.set_details(json.dumps(
-            errors, default=lambda x: x.__dict__))
-        context.set_code(grpc.StatusCode.INTERNAL)
-        # return auth_messages.AuthRes()
+            context.set_code(grpc.StatusCode.INTERNAL)
+            # return auth_messages.AuthRes()
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.ALREADY_EXISTS)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)

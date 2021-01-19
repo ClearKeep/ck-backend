@@ -1,10 +1,11 @@
-from proto import message_pb2
+from protos import message_pb2
 from src.controllers.base import *
 from middlewares.permission import *
 from utils.logger import *
 from middlewares.request_logged import *
 from src.services.message import MessageService, client_message_queue
 from src.services.signal import SignalService
+from queue import Empty
 
 
 class MessageController(BaseController):
@@ -76,11 +77,13 @@ class MessageController(BaseController):
             try:
                 if message_channel in client_message_queue:
                     message_response = client_message_queue[message_channel].get()
+                    if message_response is None:
+                        break
                     if not context.is_active():
                         break
                     yield message_response #print(message_response)
-            except Exception as e:
-                logger.error(e) # print(ex)
+            except Exception as error:
+                logger.error(error) # print(ex)
                 context.cancel()
                 client_message_queue[message_channel] = None
                 del client_message_queue[message_channel]

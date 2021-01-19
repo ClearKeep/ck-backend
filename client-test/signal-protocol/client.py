@@ -1,8 +1,8 @@
 from __future__ import print_function
 import grpc
 import threading
-from proto import signal_pb2
-from proto import signal_pb2_grpc
+from protos import signal_pb2
+from protos import signal_pb2_grpc
 from libsignal.util.keyhelper import KeyHelper
 from .store.mystore import MyStore
 from libsignal.sessionbuilder import SessionBuilder

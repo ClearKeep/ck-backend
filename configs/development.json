@@ -31,8 +31,17 @@
         }
     ],
     "janus_webrtc": {
-        "server_url": "http://172.16.1.214:7088/admin",
-        "admin_secret": "janusoverlord"
+    "admin_url": "http://172.16.1.214:7088/admin",
+    "client_url" : "http://172.16.1.214:8088/janus",
+    "client_ws_url" : "ws://172.16.1.214:8188/janus",
+    "admin_secret": "janusoverlord"
     },
-    "page_limit": 10
+    "fcm_server_token": "abc",
+    "page_limit": 10,
+    "device_ios": {
+        "bundle_id": "com.telred.clearkeep3.ios.dev",
+        "certificates": "configs/apns/Certificates.pem"
+    },
+    "device_android": {
+    }
 }
