@@ -62,5 +62,8 @@ jobs:
           cd /home/ubuntu/ck-backend
           git checkout development
           git pull
-          docker restart clearkeep
+          pip install -r requirement.txt
+          sh protos/gen.sh
+          sudo systemctl restart clearkeep
+        #  docker restart clearkeep
         # ./restart-service.sh
