@@ -4,6 +4,7 @@ WORKDIR /clearkeep-backend
 # setup library
 RUN pip install --upgrade pip
 RUN pip install -r requirement.txt
+RUN pip install psycopg2
 # generate protobuf
 RUN sh protos/gen.sh
 # start application
