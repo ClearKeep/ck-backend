@@ -1,0 +1,66 @@
+name: clearkeep-test
+
+on:
+  push:
+    branches: [ development ]
+  pull_request:
+    branches: [ development ]
+#   schedule:
+#     - cron: '0 12 * * *'
+jobs:
+  deploy-test:
+    runs-on: ubuntu-latest
+    # strategy:
+    #   matrix:
+    #     python-version: [3.8]
+
+    steps:
+    # - uses: actions/checkout@v2
+    # - name: Set up Python ${{ matrix.python-version }}
+    #   uses: actions/setup-python@v2
+    #   with:
+    #     python-version: ${{ matrix.python-version }}
+
+    #   # Install dependencies
+    # - name: Install dependencies
+    #   run: |
+    #     python -m pip install --upgrade pip
+    #     if [ -f requirement.txt ]; then pip install -r requirement.txt; fi
+
+      # Build and gen api document
+    # - name: Build
+    #   run: npm run build:staging
+
+    # - name: Login to Docker Hub
+    #   uses: docker/login-action@v1
+    #   with:
+    #     username: ${{ secrets.DOCKER_HUB_USERNAME }}
+    #     password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+    # - name: Set up Docker Buildx
+    #   id: buildx
+    #   uses: docker/setup-buildx-action@v1
+
+    # - name: Build and push
+    #   id: docker_build
+    #   uses: docker/build-push-action@v2
+    #   with:
+    #     context: .
+    #     file: ./docker/staging.dockerfile
+    #     push: true
+    #     tags: duonghx98/demo-app:latest
+
+    # - name: Image digest
+    #   run: echo ${{ steps.docker_build.outputs.digest }}
+
+    - name: Run app
+      uses: JimCronqvist/action-ssh@master
+      with:
+        hosts: ${{ secrets.USERNAME }}@${{ secrets.HOST }}
+        privateKey: ${{ secrets.KEY }}
+        command: |
+          cd /home/ubuntu/ck-backend
+          git checkout development
+          git pull
+          docker restart clearkeep
+        # ./restart-service.sh
