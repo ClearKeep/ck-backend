@@ -14,12 +14,14 @@ services:
         - postgres_data:/var/lib/postgresql/data
       ports:
               - 5432:5432
+      restart: always
       environment:
         POSTGRES_DB: keycloak
         POSTGRES_USER: keycloak
         POSTGRES_PASSWORD: password
   keycloak:
       image: jboss/keycloak:10.0.0
+      restart: always
       environment:
         DB_VENDOR: POSTGRES
         DB_ADDR: postgres
@@ -34,8 +36,9 @@ services:
       depends_on:
         - postgres
   janus_webrtc:
-    image: phuongvmodev/janus-webrtc-gateway-docker
-    ports:
-      - 80:80
-      - 8088:8088
-      - 8188:8188
+      image: phuongvmodev/janus-webrtc-gateway-docker
+      restart: always
+      ports:
+        - 80:80
+        - 8088:8088
+        - 8188:8188
