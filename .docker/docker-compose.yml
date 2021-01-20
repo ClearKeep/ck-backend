@@ -32,7 +32,7 @@ services:
         KEYCLOAK_PASSWORD: admin
 
       ports:
-        - 9080:8443
+        - 8080:8080
       depends_on:
         - postgres
   janus_webrtc:
