@@ -1,0 +1,47 @@
+{
+    "port": 5000,
+    "db": {
+        "host": "54.235.68.160",
+        "port": "5432",
+        "name": "postgres",
+        "username": "keycloak",
+        "password": "password"
+    },
+    "keycloak_account": {
+        "server_url": "http://54.235.68.160:8080/auth/",
+        "client_id": "account",
+        "realm_name": "master",
+        "client_secret_key": "7127012b-561f-4054-80c5-6172125cffdd"
+    },
+    "keycloak_admin": {
+        "server_url": "http://54.235.68.160:8080/auth/",
+        "username": "admin",
+        "password": "admin",
+        "realm_name": "master",
+        "client_secret_key": "7a2a7404-9163-4414-a083-75b077c4854b"
+    },
+    "fd_server": [
+        {
+            "domain": "localhost",
+            "ip_address": "0.0.0.0"
+        },
+        {
+            "domain": "localhost",
+            "ip_address": "0.0.0.0"
+        }
+    ],
+    "janus_webrtc": {
+    "admin_url": "http://54.235.68.160:7088/admin",
+    "client_url" : "http://54.235.68.160:8088/janus",
+    "client_ws_url" : "ws://54.235.68.160:8188/janus",
+    "admin_secret": "janusoverlord"
+    },
+    "fcm_server_token": "abc",
+    "page_limit": 10,
+    "device_ios": {
+        "bundle_id": "com.telred.clearkeep3.ios.dev",
+        "certificates": "configs/apns/Certificates.pem"
+    },
+    "device_android": {
+    }
+}
