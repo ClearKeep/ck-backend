@@ -65,7 +65,6 @@ jobs:
           pip3 install -r requirement.txt
           pip3 install psycopg2-binary
           python3 -m grpc_tools.protoc -I=. protos/*.proto --python_out=. --grpc_python_out=.
-        #  sh protos/gen.sh
           sudo systemctl restart clearkeep
         #  docker restart clearkeep
         # ./restart-service.sh
