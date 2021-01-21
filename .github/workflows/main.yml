@@ -62,7 +62,8 @@ jobs:
           cd /home/ubuntu/ck-backend
           git checkout development
           git pull
-          pip install -r requirement.txt
+          pip3 install -r requirement.txt
+          pip3 install psycopg2-binary
           sh protos/gen.sh
           sudo systemctl restart clearkeep
         #  docker restart clearkeep
