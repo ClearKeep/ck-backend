@@ -3,8 +3,8 @@ name: clearkeep-test
 on:
   push:
     branches: [ development ]
-  pull_request:
-    branches: [ development ]
+#  pull_request:
+#    branches: [ development ]
 #   schedule:
 #     - cron: '0 12 * * *'
 jobs:
