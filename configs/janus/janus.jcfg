@@ -285,8 +285,8 @@ nat: {
 	turn_server = "global.turn.twilio.com"
 	turn_port = 3478
 	turn_type = "udp"
-	turn_user = "9c57f5e5e278657931c2f8e1396d1ebf6109cda6a09748d2ae0f6ba2ad4c10b1"
-	turn_pwd = "HFqVPyZWSkjufm3moL6Wxi4+BTj1NoLQRn15R8CIHGg="
+	turn_user = "7b77eddc0b07cf19d7f94bd8fd443223f558a61a55327dfc34f8d2bdbb9e8323"
+	turn_pwd = "PUhwdZZUU2B0/U+9JlSuCAcdT7NRZR4qZu/dhDoC+1w="
 
 	# ... or you can make use of the TURN REST API to get info on one or more
 	# TURN services dynamically. This makes use of the proposed standard of

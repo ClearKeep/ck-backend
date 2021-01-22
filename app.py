@@ -51,14 +51,14 @@ def grpc_server(port):
     print("Listening on port {}..".format(port))
     logger.info("Listening on port {}..".format(port))
 
-    # get_thread()
+    get_thread()
 
     server.wait_for_termination()
 
 def get_thread():
     total = threading.activeCount()
-    print("total thread= ", total)
-    time.sleep(30)
+    print("Total thread= ", total)
+    time.sleep(3600)
     get_thread()
 
 
