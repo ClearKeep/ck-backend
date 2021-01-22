@@ -29,7 +29,7 @@ import time
 def grpc_server(port):
 
     # server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), interceptors=(AuthInterceptor(),))
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=100))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=200))
     user_service.add_UserServicer_to_server(UserController(), server)
     auth_service.add_AuthServicer_to_server(AuthController(), server)
     signal_service.add_SignalKeyDistributionServicer_to_server(SignalController(), server)
@@ -51,7 +51,7 @@ def grpc_server(port):
     print("Listening on port {}..".format(port))
     logger.info("Listening on port {}..".format(port))
 
-    get_thread()
+    # get_thread()
 
     server.wait_for_termination()
 
