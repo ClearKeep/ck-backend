@@ -18,5 +18,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_connection
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
+app.config["SQLALCHEMY_POOL_SIZE"] = 30
+app.config["SQLALCHEMY_POOL_TIMEOUT"] = 300
+
 db = SQLAlchemy(app)
 
