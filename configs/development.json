@@ -1,39 +1,39 @@
 {
     "port": 5000,
     "db": {
-        "host": "172.16.1.214",
+        "host": "54.235.68.160",
         "port": "5432",
         "name": "postgres",
         "username": "keycloak",
         "password": "password"
     },
     "keycloak_account": {
-        "server_url": "http://172.16.1.214:8080/auth/",
+        "server_url": "http://54.235.68.160:8080/auth/",
         "client_id": "account",
         "realm_name": "master",
-        "client_secret_key": "7127012b-561f-4054-80c5-6172125cffdd"
+        "client_secret_key": "42cae57a-4f8c-4339-b33d-8d9bbb311149"
     },
     "keycloak_admin": {
-        "server_url": "http://172.16.1.214:8080/auth/",
+        "server_url": "http://54.235.68.160:8080/auth/",
         "username": "admin",
         "password": "admin",
         "realm_name": "master",
-        "client_secret_key": "7a2a7404-9163-4414-a083-75b077c4854b"
+        "client_secret_key": "1d45f5d7-96cf-45b1-9bc1-a76cb96d0e4e"
     },
     "fd_server": [
         {
             "domain": "localhost",
-            "ip_address": "0.0.0.0"    
+            "ip_address": "0.0.0.0"
         },
         {
             "domain": "localhost",
-            "ip_address": "0.0.0.0"    
+            "ip_address": "0.0.0.0"
         }
     ],
     "janus_webrtc": {
-    "admin_url": "http://172.16.1.214:7088/admin",
-    "client_url" : "http://172.16.1.214:8088/janus",
-    "client_ws_url" : "ws://172.16.1.214:8188/janus",
+    "admin_url": "http://54.235.68.160:7088/admin",
+    "client_url" : "http://54.235.68.160:8088/janus",
+    "client_ws_url" : "ws://54.235.68.160:8188/janus",
     "admin_secret": "janusoverlord"
     },
     "fcm_server_token": "abc",
