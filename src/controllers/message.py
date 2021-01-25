@@ -6,6 +6,12 @@ from middlewares.request_logged import *
 from src.services.message import MessageService, client_message_queue
 from src.services.signal import SignalService
 from queue import Empty
+from src.models.user import User
+from src.models.signal_group_key import GroupClientKey
+from utils.const import DeviceType
+from kalyke.payload import PayloadAlert
+from src.services.notify_push import NotifyPushService
+from firebase_admin import messaging
 
 
 class MessageController(BaseController):
@@ -41,24 +47,50 @@ class MessageController(BaseController):
                 message=request.message
             )
 
+            ios_tokens = []
+            android_tokens = []
+
             # put for other client
             if client_id:
                 message_channel = "{}/message".format(client_id)
                 if message_channel in client_message_queue:
                     client_message_queue[message_channel].put(new_message)
-                # else:
-                #     logger.error("client queue not found")
-                #     errors = [Message.get_error_object(Message.CLIENT_QUEUE_NOT_FOUND)]
-                #     context.set_details(json.dumps(
-                #         errors, default=lambda x: x.__dict__))
-                #     context.set_code(grpc.StatusCode.INTERNAL)
+                else:
+                    #push text notification for client
+                    client = User().get_client_id_with_push_token(client_id)
+                    for client_token in client.User.tokens:
+                        if client_token.device_type == DeviceType.android:
+                            android_tokens.append(client_token.push_token)
+                        elif client_token.device_type == DeviceType.ios:
+                            arr_token = client_token.push_token.split(',')
+                            ios_tokens.append(arr_token[-1])
+
             else:
-                lst_client = SignalService().group_get_all_client_key(group_id)
-                for client in lst_client:
-                    if client.client_id != request.fromClientId:
-                        message_channel = "{}/message".format(client.client_id)
+                #push for other people in group
+                lst_client_in_groups = GroupClientKey().get_clients_in_group_with_push_token(group_id)
+                for client in lst_client_in_groups:
+                    if client.User.id != request.fromClientId:
+                        message_channel = "{}/message".format(client.User.id)
                         if message_channel in client_message_queue:
                             client_message_queue[message_channel].put(new_message)
+                        else:
+                            for client_token in client.User.tokens:
+                                if client_token.device_type == DeviceType.android:
+                                    android_tokens.append(client_token.push_token)
+                                elif client_token.device_type == DeviceType.ios:
+                                    arr_token = client_token.push_token.split(',')
+                                    ios_tokens.append(arr_token[-1])
+
+            push_service = NotifyPushService()
+            if len(android_tokens) > 0:
+                notification = messaging.Notification(
+                    title='ClearKeep',
+                    body='You have a new message',
+                )
+                push_service.android_text_notifications(android_tokens, notification)
+            if len(ios_tokens) > 0:
+                payload_alert = PayloadAlert(title="ClearKeep", body="You have a new message")
+                push_service.ios_text_notifications(ios_tokens, payload_alert)
 
             return new_message
 
@@ -111,3 +143,4 @@ class MessageController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+

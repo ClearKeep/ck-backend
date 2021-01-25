@@ -47,7 +47,7 @@ class User(db.Model):
     def get_client_id_with_push_token(self, id):
         result = db.session.query(User.id, User) \
             .filter(User.id == id) \
-            .all()
+            .first()
         return result
 
     def __repr__(self):

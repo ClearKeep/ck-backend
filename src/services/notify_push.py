@@ -86,8 +86,15 @@ class NotifyPushService(BaseService):
     def ios_text_notifications(self, registration_tokens, payload):
         alert = Payload(alert=payload, badge=1, sound="default")
         try:
-            self.client_ios_chat.send_bulk_message(registration_tokens, alert)
+            for token in registration_tokens:
+                res = self.client_ios_chat.send_message(token, alert)
         except Exception as e:
             logger.info(e)
+
+
+        # try:
+        #     self.client_ios_chat.send_bulk_message(registration_tokens, alert)
+        # except Exception as e:
+        #     logger.info(e)
 
 

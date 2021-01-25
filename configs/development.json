@@ -42,7 +42,7 @@
         "team_id": "H4C7478UQW",
         "auth_key_id": "LRKZJ6859V",
         "bundle_id": "com.telred.clearkeep3.ios.dev",
-        "certificates_voip": "configs/apns/Certificates_voip.p8",
+        "certificates_voip": "configs/apns/Certificates_voip.pem",
         "certificates_apns": "configs/apns/Certificates_apns.p8",
         "use_sandbox": true
     },

@@ -63,7 +63,8 @@ class VideoCallService:
                     if client_token.device_type == DeviceType.android:
                         android_tokens.append(client_token.push_token)
                     elif client_token.device_type == DeviceType.ios:
-                        ios_tokens.append(client_token.push_token)
+                        arr_token = client_token.push_token.split(',')
+                        ios_tokens.append(arr_token[0])
 
         push_payload = {
             'notify_type': 'request_call',
