@@ -4,7 +4,7 @@ from kalyke.client import VoIPClient
 from src.models.notify_token import NotifyToken
 from src.services.base import BaseService
 from utils.config import get_system_config
-
+from utils.logger import logger
 
 class NotifyPushService(BaseService):
     def __init__(self):
@@ -12,9 +12,13 @@ class NotifyPushService(BaseService):
         self.client_ios = VoIPClient(
             auth_key_filepath=get_system_config()["device_ios"].get('certificates'),
             bundle_id= get_system_config()["device_ios"].get('bundle_id'),
-            use_sandbox=True
+            use_sandbox=get_system_config()["device_ios"].get('use_sandbox')
             )
-        print(get_system_config()["device_ios"].get('certificates'))
+        if get_system_config()["device_ios"].get('use_sandbox'):
+            logger.info("Device ios use sanbox for Development")
+        else:
+            logger.info("Device ios use sanbox for Production")
+        logger.info(get_system_config()["device_ios"].get('certificates'))
 
     def register_token(self, client_id, device_id, device_type, push_token):
         self.model = NotifyToken(
@@ -31,7 +35,7 @@ class NotifyPushService(BaseService):
             notification=payload
         )
         response = messaging.send_multicast(message)
-        print('{0} messages were sent successfully'.format(response.success_count))
+        logger.info('{0} messages were sent successfully'.format(response.success_count))
         if response.failure_count > 0:
             responses = response.responses
             failed_tokens = []
@@ -39,7 +43,7 @@ class NotifyPushService(BaseService):
                 if not resp.success:
                     # The order of responses corresponds to the order of the registration tokens.
                     failed_tokens.append(registration_tokens[idx])
-            print('List of tokens that caused failures: {0}'.format(failed_tokens))
+            logger.info('List of tokens that caused failures: {0}'.format(failed_tokens))
 
 
     def android_data_notification(self, registration_tokens, payload):
@@ -51,7 +55,7 @@ class NotifyPushService(BaseService):
             )
         )
         response = messaging.send_multicast(message)
-        print('{0} messages were sent successfully'.format(response.success_count))
+        logger.info('{0} messages were sent successfully'.format(response.success_count))
         if response.failure_count > 0:
             responses = response.responses
             failed_tokens = []
@@ -59,11 +63,11 @@ class NotifyPushService(BaseService):
                 if not resp.success:
                     # The order of responses corresponds to the order of the registration tokens.
                     failed_tokens.append(registration_tokens)
-            print('List of tokens that caused failures: {0}'.format(failed_tokens))
+            logger.info('List of tokens that caused failures: {0}'.format(failed_tokens))
 
     def ios_data_notification(self, registration_tokens, payload):
         try:
             for token in registration_tokens:
                 res = self.client_ios.send_message(token, payload)
         except Exception as e:
-            print(e)
+            logger.info(e)
