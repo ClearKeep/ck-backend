@@ -39,8 +39,11 @@
     "fcm_server_token": "abc",
     "page_limit": 10,
     "device_ios": {
+        "team_id": "H4C7478UQW",
+        "auth_key_id": "LRKZJ6859V",
         "bundle_id": "com.telred.clearkeep3.ios.dev",
-        "certificates": "configs/apns/Certificates.pem",
+        "certificates_voip": "configs/apns/Certificates_voip.p8",
+        "certificates_apns": "configs/apns/Certificates_apns.p8",
         "use_sandbox": true
     },
     "device_android": {

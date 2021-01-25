@@ -28,7 +28,7 @@ httplib2==0.18.1
 idna==2.10
 itsdangerous==1.1.0
 Jinja2==2.11.2
-kalyke-apns==0.1.2
+kalyke-apns==0.1.4
 libsignal==0.0.4
 MarkupSafe==1.1.1
 msgpack==1.0.1

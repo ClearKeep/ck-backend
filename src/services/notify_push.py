@@ -1,5 +1,6 @@
 from firebase_admin import messaging
-from kalyke.client import VoIPClient
+from kalyke.client import VoIPClient, APNsClient
+from kalyke.payload import PayloadAlert, Payload
 
 from src.models.notify_token import NotifyToken
 from src.services.base import BaseService
@@ -9,10 +10,20 @@ from utils.logger import logger
 class NotifyPushService(BaseService):
     def __init__(self):
         super().__init__(NotifyToken())
-        self.client_ios = VoIPClient(
-            auth_key_filepath=get_system_config()["device_ios"].get('certificates'),
+        self.client_ios_voip = VoIPClient(
+            auth_key_filepath=get_system_config()["device_ios"].get('certificates_voip'),
             bundle_id= get_system_config()["device_ios"].get('bundle_id'),
             use_sandbox=get_system_config()["device_ios"].get('use_sandbox')
+            )
+
+        self.client_ios_chat = APNsClient(
+            team_id= get_system_config()["device_ios"].get('team_id'),
+            auth_key_id= get_system_config()["device_ios"].get('auth_key_id'),
+            auth_key_filepath=get_system_config()["device_ios"].get('certificates_apns'),
+            bundle_id= get_system_config()["device_ios"].get('bundle_id'),
+            use_sandbox=get_system_config()["device_ios"].get('use_sandbox'),
+            force_proto="h2",
+            apns_push_type="alert"
             )
         if get_system_config()["device_ios"].get('use_sandbox'):
             logger.info("Device ios use sanbox for Development")
@@ -68,6 +79,15 @@ class NotifyPushService(BaseService):
     def ios_data_notification(self, registration_tokens, payload):
         try:
             for token in registration_tokens:
-                res = self.client_ios.send_message(token, payload)
+                res = self.client_ios_voip.send_message(token, payload)
         except Exception as e:
             logger.info(e)
+
+    def ios_text_notifications(self, registration_tokens, payload):
+        alert = Payload(alert=payload, badge=1, sound="default")
+        try:
+            self.client_ios_chat.send_bulk_message(registration_tokens, alert)
+        except Exception as e:
+            logger.info(e)
+
+
