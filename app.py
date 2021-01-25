@@ -57,7 +57,7 @@ def grpc_server(port):
 
 def get_thread():
     total = threading.activeCount()
-    print("Total thread= ", total)
+    logger.info("Total thread= {}".format(total))
     time.sleep(3600)
     get_thread()
 

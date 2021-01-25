@@ -20,6 +20,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SQLALCHEMY_POOL_SIZE"] = 30
 app.config["SQLALCHEMY_POOL_TIMEOUT"] = 300
+app.config["SQLALCHEMY_MAX_OVERFLOW"] = -1
 
 db = SQLAlchemy(app)
 
