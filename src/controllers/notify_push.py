@@ -21,7 +21,23 @@ class NotifyPushController(BaseController):
             device_type = request.device_type
 
             self.service.register_token(client_id, device_id, device_type, token)
-            return notify_push_pb2.BaseResponse(success=True)
+
+            server_info = self.service.get_server_info()
+            stun_server = video_call_pb2.Stun_Server(
+                server = server_info.turn_server.get("server"),
+                port = server_info.turn_server.get("port")
+            )
+            turn_server = video_call_pb2.Turn_Server(
+                server=server_info.turn_server.get("server"),
+                port=server_info.turn_server.get("port"),
+                type=server_info.turn_server.get("type"),
+                user=server_info.turn_server.get("user"),
+                pwd=server_info.turn_server.get("pwd")
+            )
+            return notify_push_pb2.ServerResponse(
+                stun_server= server_info.stun_server,
+                turn_server= server_info.turn_server
+            )
 
         except Exception as e:
             logger.error(e)

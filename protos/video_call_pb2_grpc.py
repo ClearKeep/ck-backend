@@ -17,7 +17,7 @@ class VideoCallStub(object):
         self.video_call = channel.unary_unary(
                 '/video_call.VideoCall/video_call',
                 request_serializer=protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
-                response_deserializer=protos_dot_video__call__pb2.BaseResponse.FromString,
+                response_deserializer=protos_dot_video__call__pb2.ServerResponse.FromString,
                 )
 
 
@@ -36,7 +36,7 @@ def add_VideoCallServicer_to_server(servicer, server):
             'video_call': grpc.unary_unary_rpc_method_handler(
                     servicer.video_call,
                     request_deserializer=protos_dot_video__call__pb2.VideoCallRequest.FromString,
-                    response_serializer=protos_dot_video__call__pb2.BaseResponse.SerializeToString,
+                    response_serializer=protos_dot_video__call__pb2.ServerResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -61,6 +61,6 @@ class VideoCall(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/video_call',
             protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
-            protos_dot_video__call__pb2.BaseResponse.FromString,
+            protos_dot_video__call__pb2.ServerResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

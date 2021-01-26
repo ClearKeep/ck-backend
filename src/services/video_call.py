@@ -7,6 +7,7 @@ from src.models.signal_group_key import GroupClientKey
 from src.models.user import User
 from src.services.notify_push import NotifyPushService
 from src.models.group import GroupChat
+from src.models.server_info import Server_info
 
 class VideoCallService:
     def __init__(self):
@@ -81,6 +82,8 @@ class VideoCallService:
             push_service.ios_data_notification(ios_tokens, push_payload)
         # push notification for other clients in group
 
+    def get_server_info(self):
+        return Server_info().get()
 
 
 

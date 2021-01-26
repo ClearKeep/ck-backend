@@ -5,6 +5,7 @@ from src.models.notify_token import NotifyToken
 from src.services.base import BaseService
 from utils.config import get_system_config
 from utils.logger import logger
+from src.models.server_info import Server_info
 
 class NotifyPushService(BaseService):
     def __init__(self):
@@ -71,3 +72,6 @@ class NotifyPushService(BaseService):
                 res = self.client_ios.send_message(token, payload)
         except Exception as e:
             logger.info(e)
+
+    def get_server_info(self):
+        return Server_info().get()
