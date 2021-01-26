@@ -105,20 +105,24 @@ class MessageController(BaseController):
     def Listen(self, request, context):
         client_id = request.clientId
         message_channel = "{}/message".format(client_id)
+
         while context.is_active():
+            print(' context.is_active()=',  context.is_active())
             try:
                 if message_channel in client_message_queue:
                     message_response = client_message_queue[message_channel].get()
                     if message_response is None:
                         break
-                    if not context.is_active():
-                        break
                     yield message_response #print(message_response)
-            except Exception as error:
-                logger.error(error) # print(ex)
+            except:
+                logger.info('Client {} is disconnected'.format(client_id))
                 context.cancel()
+                print(' context.is_active()=', context.is_active())
+                print('len queue before=', len(client_message_queue))
                 client_message_queue[message_channel] = None
                 del client_message_queue[message_channel]
+                print('len queue after=', len(client_message_queue))
+                #need push notify here
 
     @request_logged
     def Subscribe(self, request, context):
