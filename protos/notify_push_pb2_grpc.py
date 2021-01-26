@@ -18,7 +18,7 @@ class NotifyPushStub(object):
         self.register_token = channel.unary_unary(
                 '/notify_push.NotifyPush/register_token',
                 request_serializer=protos_dot_notify__push__pb2.RegisterTokenRequest.SerializeToString,
-                response_deserializer=protos_dot_notify__push__pb2.BaseResponse.FromString,
+                response_deserializer=protos_dot_notify__push__pb2.ServerResponse.FromString,
                 )
 
 
@@ -38,7 +38,7 @@ def add_NotifyPushServicer_to_server(servicer, server):
             'register_token': grpc.unary_unary_rpc_method_handler(
                     servicer.register_token,
                     request_deserializer=protos_dot_notify__push__pb2.RegisterTokenRequest.FromString,
-                    response_serializer=protos_dot_notify__push__pb2.BaseResponse.SerializeToString,
+                    response_serializer=protos_dot_notify__push__pb2.ServerResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -64,6 +64,6 @@ class NotifyPush(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/notify_push.NotifyPush/register_token',
             protos_dot_notify__push__pb2.RegisterTokenRequest.SerializeToString,
-            protos_dot_notify__push__pb2.BaseResponse.FromString,
+            protos_dot_notify__push__pb2.ServerResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

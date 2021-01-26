@@ -5,6 +5,24 @@ message BaseResponse {
     bool success = 1;
 }
 
+message ServerResponse {
+    StunServer stun_server = 1;
+    TurnServer turn_server = 2;
+}
+
+message StunServer {
+  string server = 1;
+  int64 port = 2;
+}
+
+message TurnServer {
+  string server = 1;
+  int64 port = 2;
+  string type = 3;
+  string user = 4;
+  string pwd = 5;
+}
+
 // Request: new call
 message VideoCallRequest {
   string client_id = 1;
@@ -13,5 +31,5 @@ message VideoCallRequest {
 //response: BaseResponse
 
 service VideoCall {
-    rpc video_call(VideoCallRequest) returns (BaseResponse) {};
+    rpc video_call(VideoCallRequest) returns (ServerResponse) {};
 }

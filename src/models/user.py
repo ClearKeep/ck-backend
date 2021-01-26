@@ -50,5 +50,6 @@ class User(db.Model):
             .all()
         return result
 
+
     def __repr__(self):
         return '<Item(id=%s, username=%s, email=%s)>' % (self.id, self.username, self.email)
