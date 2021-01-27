@@ -3,7 +3,6 @@ from src.services.base import BaseService
 from utils.const import DeviceType
 from utils.push_notify import *
 
-notify_payload_new_message = messaging.Notification(title='', body='You have a new message')
 
 class NotifyPushService(BaseService):
     def __init__(self):

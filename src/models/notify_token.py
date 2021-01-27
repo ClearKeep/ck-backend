@@ -38,7 +38,7 @@ class NotifyToken(db.Model):
         return client_tokens
 
     def get_clients(self, client_ids):
-        client_tokens = self.query.filter_by(NotifyToken.client_id.in_(client_ids)).all()
+        client_tokens = self.query.filter(NotifyToken.client_id.in_(client_ids)).all()
         return client_tokens
 
     def update(self):

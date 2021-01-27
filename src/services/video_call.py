@@ -1,13 +1,11 @@
 import requests
 import json
 from utils.config import get_system_config
-from utils.const import DeviceType
 import uuid
 from src.models.signal_group_key import GroupClientKey
-from src.models.user import User
 from src.services.notify_push import NotifyPushService
 from src.models.group import GroupChat
-from src.services.server_info import ServerService
+from src.services.server_info import ServerInfoService
 from protos import video_call_pb2
 
 class VideoCallService:
@@ -56,22 +54,13 @@ class VideoCallService:
             else:
                 other_clients_in_group.append(client.User.id)
 
+        server_info = ServerInfoService().get_server_info()
+
         if len(other_clients_in_group) > 0:
             # push notification voip for other clients in group
             push_service = NotifyPushService()
             group_rtc_token = GroupChat().get_group_rtc_token(group_id=group_id)
-            server_info = ServerService().get_info()
-            stun_server = video_call_pb2.StunServer(
-                server = server_info.turn_server.get("server"),
-                port = server_info.turn_server.get("port")
-            )
-            turn_server = video_call_pb2.TurnServer(
-                server=server_info.turn_server.get("server"),
-                port=server_info.turn_server.get("port"),
-                type=server_info.turn_server.get("type"),
-                user=server_info.turn_server.get("user"),
-                pwd=server_info.turn_server.get("pwd")
-            )
+
             push_payload = {
                 'notify_type': 'request_call',
                 'group_id': str(group_id),
@@ -80,10 +69,28 @@ class VideoCallService:
                 'from_client_name': from_client_username,
                 'from_client_avatar': '',
                 'client_id': client_id,
-                'stun_server': stun_server,
-                'tunr_server': turn_server
+                'stun_server': json.dumps(server_info.stun_server),
+                'turn_server': json.dumps(server_info.turn_server)
             }
             push_service.push_voip_clients(other_clients_in_group, push_payload)
+
+        stun_server = video_call_pb2.StunServer(
+            server=server_info.turn_server.get("server"),
+            port=server_info.turn_server.get("port")
+        )
+
+        turn_server = video_call_pb2.TurnServer(
+            server=server_info.turn_server.get("server"),
+            port=server_info.turn_server.get("port"),
+            type=server_info.turn_server.get("type"),
+            user=server_info.turn_server.get("user"),
+            pwd=server_info.turn_server.get("pwd")
+        )
+
+        return video_call_pb2.ServerResponse(
+            stun_server=stun_server,
+            turn_server=turn_server
+        )
 
 
 

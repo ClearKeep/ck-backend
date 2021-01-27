@@ -43,7 +43,7 @@ class GroupClientKey(db.Model):
         return client
 
     def get_clients_in_groups(self, group_ids):
-        result = db.session.query(GroupClientKey.group_id, GroupClientKey.client_id, User.username) \
+        result = db.session.query(GroupClientKey.group_id, User) \
             .join(User, GroupClientKey.client_id == User.id) \
             .filter(GroupClientKey.group_id.in_(group_ids)) \
             .order_by(GroupClientKey.client_id.asc()) \

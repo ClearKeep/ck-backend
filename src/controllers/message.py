@@ -97,7 +97,7 @@ class MessageController(BaseController):
                 print('len queue after=', len(client_message_queue))
                 # push text notification for client
                 push_service = NotifyPushService()
-                push_service.push_text_to_clients(client_id, title="", body="You have a new message")
+                push_service.push_text_to_clients([client_id], title="", body="You have a new message")
 
     @request_logged
     def Subscribe(self, request, context):

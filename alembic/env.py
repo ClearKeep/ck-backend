@@ -17,7 +17,7 @@ from src.models.notify_token import NotifyToken
 from src.models.signal_peer_key import PeerClientKey
 from src.models.signal_group_key import GroupClientKey
 from src.models.group import GroupChat
-from src.models.server_info import Server_info
+from src.models.server_info import ServerInfo
 
 db_config = get_system_config()['db']
 db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(
