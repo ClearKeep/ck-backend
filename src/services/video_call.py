@@ -46,41 +46,31 @@ class VideoCallService:
     def request_call(self, group_id, from_client_id, client_id):
         from_client_username = ""
         # send push notification to all member of group
-        if group_id:
-            lst_client_in_groups = GroupClientKey().get_clients_in_group_with_push_token(group_id)
-        elif client_id:
-            lst_client_in_groups = User().get_client_id_with_push_token(client_id)
-        push_service = NotifyPushService()
-
+        lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
         # list token for each device type
-        ios_tokens = []
-        android_tokens = []
-        group_rtc_token = GroupChat().get_group_rtc_token(group_id=group_id)
+        other_clients_in_group = []
+
         for client in lst_client_in_groups:
             if client.User.id == from_client_id:
                 from_client_username = client.User.username
             else:
-                for client_token in client.User.tokens:
-                    if client_token.device_type == DeviceType.android:
-                        android_tokens.append(client_token.push_token)
-                    elif client_token.device_type == DeviceType.ios:
-                        ios_tokens.append(client_token.push_token)
+                other_clients_in_group.append(client.User.id)
 
-        push_payload = {
-            'notify_type': 'request_call',
-            'group_id': str(group_id),
-            'group_rtc_token': group_rtc_token.group_rtc_token,
-            'from_client_id': from_client_id,
-            'from_client_name': from_client_username,
-            'from_client_avatar': '',
-            'client_id': client_id
-        }
+        if len(other_clients_in_group) > 0:
+            # push notification voip for other clients in group
+            push_service = NotifyPushService()
+            group_rtc_token = GroupChat().get_group_rtc_token(group_id=group_id)
+            push_payload = {
+                'notify_type': 'request_call',
+                'group_id': str(group_id),
+                'group_rtc_token': group_rtc_token.group_rtc_token,
+                'from_client_id': from_client_id,
+                'from_client_name': from_client_username,
+                'from_client_avatar': '',
+                'client_id': client_id
+            }
+            push_service.push_voip_clients(other_clients_in_group, push_payload)
 
-        if len(android_tokens) > 0:
-            push_service.android_data_notification(android_tokens, push_payload)
-        if len(ios_tokens) > 0:
-            push_service.ios_data_notification(ios_tokens, push_payload)
-        # push notification for other clients in group
 
     def get_server_info(self):
         return Server_info().get()
