@@ -84,7 +84,7 @@ class MessageController(BaseController):
             push_service = NotifyPushService()
             if len(android_tokens) > 0:
                 notification = messaging.Notification(
-                    title='ClearKeep',
+                    title='',
                     body='You have a new message',
                 )
                 push_service.android_text_notifications(android_tokens, notification)
