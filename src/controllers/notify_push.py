@@ -23,11 +23,11 @@ class NotifyPushController(BaseController):
             self.service.register_token(client_id, device_id, device_type, token)
 
             server_info = self.service.get_server_info()
-            stun_server = video_call_pb2.Stun_Server(
+            stun_server = notify_push_pb2.StunServer(
                 server = server_info.turn_server.get("server"),
                 port = server_info.turn_server.get("port")
             )
-            turn_server = video_call_pb2.Turn_Server(
+            turn_server = notify_push_pb2.TurnServer(
                 server=server_info.turn_server.get("server"),
                 port=server_info.turn_server.get("port"),
                 type=server_info.turn_server.get("type"),
