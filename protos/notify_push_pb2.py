@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x18protos/notify_push.proto\x12\x0bnotify_push\"M\n\x14RegisterTokenRequest\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x02 \x01(\t\x12\r\n\x05token\x18\x03 \x01(\t\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"l\n\x0eServerResponse\x12,\n\x0bstun_server\x18\x01 \x01(\x0b\x32\x17.notify_push.StunServer\x12,\n\x0bturn_server\x18\x02 \x01(\x0b\x32\x17.notify_push.TurnServer\"*\n\nStunServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\"S\n\nTurnServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\x12\x0c\n\x04type\x18\x03 \x01(\t\x12\x0c\n\x04user\x18\x04 \x01(\t\x12\x0b\n\x03pwd\x18\x05 \x01(\t2^\n\nNotifyPush\x12P\n\x0eregister_token\x12!.notify_push.RegisterTokenRequest\x1a\x1b.notify_push.ServerResponseb\x06proto3'
+  serialized_pb=b'\n\x18protos/notify_push.proto\x12\x0bnotify_push\"M\n\x14RegisterTokenRequest\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x02 \x01(\t\x12\r\n\x05token\x18\x03 \x01(\t\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\\\n\nNotifyPush\x12N\n\x0eregister_token\x12!.notify_push.RegisterTokenRequest\x1a\x19.notify_push.BaseResponseb\x06proto3'
 )
 
 
@@ -102,151 +102,8 @@ _BASERESPONSE = _descriptor.Descriptor(
   serialized_end=151,
 )
 
-
-_SERVERRESPONSE = _descriptor.Descriptor(
-  name='ServerResponse',
-  full_name='notify_push.ServerResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='stun_server', full_name='notify_push.ServerResponse.stun_server', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='turn_server', full_name='notify_push.ServerResponse.turn_server', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=153,
-  serialized_end=261,
-)
-
-
-_STUNSERVER = _descriptor.Descriptor(
-  name='StunServer',
-  full_name='notify_push.StunServer',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='server', full_name='notify_push.StunServer.server', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='port', full_name='notify_push.StunServer.port', index=1,
-      number=2, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=263,
-  serialized_end=305,
-)
-
-
-_TURNSERVER = _descriptor.Descriptor(
-  name='TurnServer',
-  full_name='notify_push.TurnServer',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='server', full_name='notify_push.TurnServer.server', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='port', full_name='notify_push.TurnServer.port', index=1,
-      number=2, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='type', full_name='notify_push.TurnServer.type', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='user', full_name='notify_push.TurnServer.user', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='pwd', full_name='notify_push.TurnServer.pwd', index=4,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=307,
-  serialized_end=390,
-)
-
-_SERVERRESPONSE.fields_by_name['stun_server'].message_type = _STUNSERVER
-_SERVERRESPONSE.fields_by_name['turn_server'].message_type = _TURNSERVER
 DESCRIPTOR.message_types_by_name['RegisterTokenRequest'] = _REGISTERTOKENREQUEST
 DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
-DESCRIPTOR.message_types_by_name['ServerResponse'] = _SERVERRESPONSE
-DESCRIPTOR.message_types_by_name['StunServer'] = _STUNSERVER
-DESCRIPTOR.message_types_by_name['TurnServer'] = _TURNSERVER
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 RegisterTokenRequest = _reflection.GeneratedProtocolMessageType('RegisterTokenRequest', (_message.Message,), {
@@ -263,27 +120,6 @@ BaseResponse = _reflection.GeneratedProtocolMessageType('BaseResponse', (_messag
   })
 _sym_db.RegisterMessage(BaseResponse)
 
-ServerResponse = _reflection.GeneratedProtocolMessageType('ServerResponse', (_message.Message,), {
-  'DESCRIPTOR' : _SERVERRESPONSE,
-  '__module__' : 'protos.notify_push_pb2'
-  # @@protoc_insertion_point(class_scope:notify_push.ServerResponse)
-  })
-_sym_db.RegisterMessage(ServerResponse)
-
-StunServer = _reflection.GeneratedProtocolMessageType('StunServer', (_message.Message,), {
-  'DESCRIPTOR' : _STUNSERVER,
-  '__module__' : 'protos.notify_push_pb2'
-  # @@protoc_insertion_point(class_scope:notify_push.StunServer)
-  })
-_sym_db.RegisterMessage(StunServer)
-
-TurnServer = _reflection.GeneratedProtocolMessageType('TurnServer', (_message.Message,), {
-  'DESCRIPTOR' : _TURNSERVER,
-  '__module__' : 'protos.notify_push_pb2'
-  # @@protoc_insertion_point(class_scope:notify_push.TurnServer)
-  })
-_sym_db.RegisterMessage(TurnServer)
-
 
 
 _NOTIFYPUSH = _descriptor.ServiceDescriptor(
@@ -293,8 +129,8 @@ _NOTIFYPUSH = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=392,
-  serialized_end=486,
+  serialized_start=153,
+  serialized_end=245,
   methods=[
   _descriptor.MethodDescriptor(
     name='register_token',
@@ -302,7 +138,7 @@ _NOTIFYPUSH = _descriptor.ServiceDescriptor(
     index=0,
     containing_service=None,
     input_type=_REGISTERTOKENREQUEST,
-    output_type=_SERVERRESPONSE,
+    output_type=_BASERESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

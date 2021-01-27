@@ -1,6 +1,5 @@
 from src.models.notify_token import NotifyToken
 from src.services.base import BaseService
-from src.models.server_info import Server_info
 from utils.const import DeviceType
 from utils.push_notify import *
 
@@ -52,6 +51,3 @@ class NotifyPushService(BaseService):
             android_data_notification(android_tokens, payload)
         if len(ios_tokens) > 0:
             ios_data_notification(ios_tokens, payload)
-
-    def get_server_info(self):
-        return Server_info().get()

@@ -7,7 +7,8 @@ from src.models.signal_group_key import GroupClientKey
 from src.models.user import User
 from src.services.notify_push import NotifyPushService
 from src.models.group import GroupChat
-from src.models.server_info import Server_info
+from src.services.server_info import ServerService
+from protos import video_call_pb2
 
 class VideoCallService:
     def __init__(self):
@@ -49,7 +50,6 @@ class VideoCallService:
         lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
         # list token for each device type
         other_clients_in_group = []
-
         for client in lst_client_in_groups:
             if client.User.id == from_client_id:
                 from_client_username = client.User.username
@@ -60,6 +60,18 @@ class VideoCallService:
             # push notification voip for other clients in group
             push_service = NotifyPushService()
             group_rtc_token = GroupChat().get_group_rtc_token(group_id=group_id)
+            server_info = ServerService().get_info()
+            stun_server = video_call_pb2.StunServer(
+                server = server_info.turn_server.get("server"),
+                port = server_info.turn_server.get("port")
+            )
+            turn_server = video_call_pb2.TurnServer(
+                server=server_info.turn_server.get("server"),
+                port=server_info.turn_server.get("port"),
+                type=server_info.turn_server.get("type"),
+                user=server_info.turn_server.get("user"),
+                pwd=server_info.turn_server.get("pwd")
+            )
             push_payload = {
                 'notify_type': 'request_call',
                 'group_id': str(group_id),
@@ -67,13 +79,11 @@ class VideoCallService:
                 'from_client_id': from_client_id,
                 'from_client_name': from_client_username,
                 'from_client_avatar': '',
-                'client_id': client_id
+                'client_id': client_id,
+                'stun_server': stun_server,
+                'tunr_server': turn_server
             }
             push_service.push_voip_clients(other_clients_in_group, push_payload)
-
-
-    def get_server_info(self):
-        return Server_info().get()
 
 
 

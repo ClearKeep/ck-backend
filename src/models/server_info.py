@@ -13,6 +13,6 @@ class Server_info(db.Model):
     stun_server = db.Column(db.JSON, nullable=True)
     turn_server = db.Column(db.JSON, nullable=True)
 
-    def get(self):
+    def get_info(self):
         server_info = self.query.one_or_none()
         return server_info
