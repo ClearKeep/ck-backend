@@ -47,5 +47,6 @@
         "use_sandbox": true
     },
     "device_android": {
+        "fire_base_config": "configs/ck-3-test-firebase-adminsdk-gszn7-fc1b46d732.json"
     }
 }
