@@ -16,7 +16,7 @@ class AuthController(BaseController):
 
     def login(self, request, context):
         try:
-            token = self.service.token(request.username, request.password)
+            token = self.service.token(request.email, request.password)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if token:
                 return auth_messages.AuthRes(
@@ -41,7 +41,7 @@ class AuthController(BaseController):
     def register(self, request, context):
         # check exist user
         try:
-            exists_user = self.service.get_user_id_by_username(request.username)
+            exists_user = self.service.get_user_id_by_email(request.display_name)
             if exists_user:
                 errors = [Message.get_error_object(
                     Message.REGISTER_USER_ALREADY_EXISTS)]
@@ -52,7 +52,7 @@ class AuthController(BaseController):
 
             # register new user
             new_user = self.service.register_user(
-                request.email, request.username, request.password)
+                request.email, request.password)
 
             if new_user:
                 # create new user in database

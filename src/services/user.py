@@ -14,7 +14,7 @@ class UserService(BaseService):
     def create_new_user(self, id, record, auth_source):
         self.model = User(
             id=id,
-            username=record.username,
+            display_name=record.display_name,
             auth_source=auth_source
         )
         if record.email:
@@ -48,10 +48,7 @@ class UserService(BaseService):
         if user_info is not None:
             obj_res = user_pb2.UserProfileResponse(
                 id=user_info.id,
-                username=user_info.username,
-                # email=EncryptUtils.decrypt_with_hash(user_info.email, hash_key),
-                # first_name=EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key),
-                # last_name=EncryptUtils.decrypt_with_hash(user_info.last_name, hash_key)
+                display_name=user_info.display_name
             )
             if user_info.email:
                 obj_res.email = EncryptUtils.decrypt_with_hash(user_info.email, hash_key)
@@ -66,8 +63,8 @@ class UserService(BaseService):
 
     def update_profile(self, request, user_id, hash_key):
         user_info = self.find_by_id(user_id)
-        if request.username:
-            user_info.username = request.username
+        if request.display_name:
+            user_info.display_name = request.display_name
 
         if request.email:
             user_info.email = EncryptUtils.encrypt_with_hash(request.email, hash_key)
@@ -85,7 +82,7 @@ class UserService(BaseService):
         if user_info is not None:
             return user_pb2.UserInfoResponse(
                 id=user_info.id,
-                username=user_info.username,
+                display_name=user_info.display_name,
                 domain=self.domain
             )
         else:
@@ -97,7 +94,7 @@ class UserService(BaseService):
         for obj in lst_user:
             obj_res = user_pb2.UserInfoResponse(
                 id=obj.id,
-                username=obj.username,
+                display_name=obj.display_name,
             )
             lst_obj_res.append(obj_res)
 
@@ -112,7 +109,7 @@ class UserService(BaseService):
         for obj in lst_user:
             obj_res = user_pb2.UserInfoResponse(
                 id=obj.id,
-                username=obj.username,
+                display_name=obj.display_name,
             )
             lst_obj_res.append(obj_res)
 

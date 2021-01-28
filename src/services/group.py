@@ -53,7 +53,7 @@ class GroupService(BaseService):
         for client in lst_client_in_group:
             client_in = group_pb2.ClientInGroupResponse(
                 id=client.User.id,
-                username=client.User.username
+                email=client.User.email
             )
             res_obj.lst_client.append(client_in)
 
@@ -131,7 +131,7 @@ class GroupService(BaseService):
             for client in lst_client_in_group:
                 client_in = group_pb2.ClientInGroupResponse(
                     id=client.client_id,
-                    username=client.username
+                    email=client.email
                 )
                 res_obj.lst_client.append(client_in)
 
@@ -188,7 +188,7 @@ class GroupService(BaseService):
                 if client.group_id == obj.id:
                     client_in = group_pb2.ClientInGroupResponse(
                         id=client.User.id,
-                        username=client.User.username
+                        email=client.User.email
                     )
                     obj_res.lst_client.append(client_in)
 
@@ -246,7 +246,7 @@ class GroupService(BaseService):
                 if client.group_id == obj.id:
                     client_in = group_pb2.ClientInGroupResponse(
                         id=client.User.id,
-                        username=client.User.username
+                        email=client.User.email
                     )
                     obj_res.lst_client.append(client_in)
 

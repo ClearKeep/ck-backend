@@ -38,16 +38,15 @@ class KeyCloakUtils:
         return keycloak_openid.token(user, password)
 
     @staticmethod
-    def create_user(email, username, password):
+    def create_user(email, password):
         return keycloak_admin.create_user({"email": email,
-                                           "username": username,
                                            "enabled": True,
                                            "firstName": "",
                                            "lastName": "",
                                            "credentials": [{"value": password, "type": "password", }]})
     @staticmethod
-    def get_user_id_by_username(username):
-        test = keycloak_admin.get_user_id(username)
+    def get_user_id_by_email(email):
+        test = keycloak_admin.get_user_id(email)
         return test
 
     @staticmethod
