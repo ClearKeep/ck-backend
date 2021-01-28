@@ -11,6 +11,7 @@ class AuthService:
 
     def register_user(self, email, password):
         newUserId = KeyCloakUtils.create_user(email, password)
+        KeyCloakUtils.send_verify_email(newUserId)
         print("Register new user ID=", newUserId)
         return newUserId  
 

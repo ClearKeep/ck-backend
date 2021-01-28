@@ -40,6 +40,7 @@ class KeyCloakUtils:
     @staticmethod
     def create_user(email, password):
         return keycloak_admin.create_user({"email": email,
+                                           "username": email,
                                            "enabled": True,
                                            "firstName": "",
                                            "lastName": "",
@@ -52,3 +53,9 @@ class KeyCloakUtils:
     @staticmethod
     def set_user_password(user_id, password):
         return keycloak_admin.set_user_password(user_id=user_id, password=password, temporary=False)
+
+    @staticmethod
+    def send_verify_email(user_id):
+        return keycloak_admin.send_verify_email(
+            user_id=user_id
+        )

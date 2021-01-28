@@ -41,7 +41,7 @@ class AuthController(BaseController):
     def register(self, request, context):
         # check exist user
         try:
-            exists_user = self.service.get_user_id_by_email(request.display_name)
+            exists_user = self.service.get_user_id_by_email(request.email)
             if exists_user:
                 errors = [Message.get_error_object(
                     Message.REGISTER_USER_ALREADY_EXISTS)]
