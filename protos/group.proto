@@ -15,7 +15,7 @@ message MessageObjectResponse {
 
 message ClientInGroupResponse {
   string id = 1;
-  string email = 2;
+  string display_name = 2;
 }
 
 message GroupObjectResponse {

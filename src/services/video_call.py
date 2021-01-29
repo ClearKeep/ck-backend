@@ -50,7 +50,7 @@ class VideoCallService:
         other_clients_in_group = []
         for client in lst_client_in_groups:
             if client.User.id == from_client_id:
-                from_client_username = client.User.username
+                from_client_username = client.User.display_name
             else:
                 other_clients_in_group.append(client.User.id)
 
