@@ -10,3 +10,10 @@ class ServerInfo(db.Model):
     def get(self):
         server_info = self.query.one_or_none()
         return server_info
+
+    def update(self):
+        server_info = self.get()
+        self.id = server_info.id
+        db.session.merge(self)
+        db.session.commit()
+        return True

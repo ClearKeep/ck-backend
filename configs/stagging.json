@@ -47,5 +47,10 @@
         "use_sandbox": false
     },
     "device_android": {
+        "fire_base_config": "configs/ck-3-test-firebase-adminsdk-gszn7-fc1b46d732.json"
+    },
+    "stun_turn_credential": {
+        "twilio_account_sid": "ACf5be2a1c8cf572858dcd7196b336126f",
+        "twilio_auth_token": "1d6d1fb5c8355c7b8b8a8822d94ad0b1"
     }
 }
