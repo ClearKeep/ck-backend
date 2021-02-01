@@ -18,4 +18,14 @@ class AuthService:
     #param: name or email
     def get_user_id_by_email(self, email):
         userId = KeyCloakUtils.get_user_id_by_email(email)
-        return userId    
+        return userId
+
+    def send_forgot_password(self,email):
+        try:
+            Userid = self.get_user_id_by_email(email=email)
+            if Userid:
+                KeyCloakUtils.send_forgot_password(user_id=Userid,email=email)
+            return Userid
+        except Exception as e:
+            raise e
+

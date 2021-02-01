@@ -27,15 +27,17 @@ class AuthController(BaseController):
                     token_type=token['token_type'],
                     session_state=token['session_state'],
                     scope=token['scope'],
-                    hash_key=EncryptUtils.encoded_hash(request.password, introspect_token['sub']),
+                    hash_key=EncryptUtils.encoded_hash(request.password, introspect_token['sub'],
+                    base_response=auth_messages.BaseResponse(success=True))
                 )
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.NOT_FOUND)
-            # return auth_messages.AuthRes()
+            return auth_messages.AuthRes(
+                base_response=auth_messages.BaseResponse(
+                    success=False,
+                    errors=json.dumps([ob.__dict__ for ob in errors])
+            ))
        
 
     def register(self, request, context):
@@ -64,10 +66,28 @@ class AuthController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-            # return auth_messages.AuthRes()
+            return auth_messages.AuthRes()
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.ALREADY_EXISTS)]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
+            errors = [Message.get_error_object(Message.REGISTER_USER_ALREADY_EXISTS)]
+            return auth_messages.RegisterRes(
+                base_response=auth_messages.BaseResponse(
+                    success=False,
+                    errors=json.dumps([ob.__dict__ for ob in errors])
+            ))
+
+
+    def fogot_password(self, request, context):
+        try:
+            self.service.send_forgot_password(request.email)
+            return auth_messages.BaseResponse(
+                success=True
+            )
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.USER_NOT_FOUND)]
+            return auth_messages.RegisterRes(
+                base_response=auth_messages.BaseResponse(
+                    success=False,
+                    errors=json.dumps([ob.__dict__ for ob in errors])
+            ))
