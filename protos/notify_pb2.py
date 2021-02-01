@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x13protos/notify.proto\x12\x0cnotification\"\xe1\x01\n\x14NotifyObjectResponse\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x11\n\tclient_id\x18\x02 \x01(\t\x12\x15\n\rref_client_id\x18\x04 \x01(\t\x12\x14\n\x0cref_group_id\x18\x05 \x01(\x03\x12\x13\n\x0bnotify_type\x18\x06 \x01(\t\x12\x14\n\x0cnotify_image\x18\x07 \x01(\t\x12\x14\n\x0cnotify_title\x18\x08 \x01(\t\x12\x16\n\x0enotify_content\x18\t \x01(\t\x12\x10\n\x08read_flg\x18\x0b \x01(\x08\x12\x12\n\ncreated_at\x18\x0c \x01(\x03\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"\x07\n\x05\x45mpty\"M\n\x13GetNotifiesResponse\x12\x36\n\nlst_notify\x18\x01 \x03(\x0b\x32\".notification.NotifyObjectResponse\"%\n\x10SubscribeRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\"\'\n\x12UnSubscribeRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\"\"\n\rListenRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\"&\n\x11ReadNotifyRequest\x12\x11\n\tnotify_id\x18\x01 \x01(\t2\x87\x03\n\x06Notify\x12J\n\x0bread_notify\x12\x1f.notification.ReadNotifyRequest\x1a\x1a.notification.BaseResponse\x12M\n\x13get_unread_notifies\x12\x13.notification.Empty\x1a!.notification.GetNotifiesResponse\x12G\n\tsubscribe\x12\x1e.notification.SubscribeRequest\x1a\x1a.notification.BaseResponse\x12L\n\x0cun_subscribe\x12 .notification.UnSubscribeRequest\x1a\x1a.notification.BaseResponse\x12K\n\x06listen\x12\x1b.notification.ListenRequest\x1a\".notification.NotifyObjectResponse0\x01\x62\x06proto3'
+  serialized_pb=b'\n\x13protos/notify.proto\x12\x0cnotification\"\xe1\x01\n\x14NotifyObjectResponse\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x11\n\tclient_id\x18\x02 \x01(\t\x12\x15\n\rref_client_id\x18\x04 \x01(\t\x12\x14\n\x0cref_group_id\x18\x05 \x01(\x03\x12\x13\n\x0bnotify_type\x18\x06 \x01(\t\x12\x14\n\x0cnotify_image\x18\x07 \x01(\t\x12\x14\n\x0cnotify_title\x18\x08 \x01(\t\x12\x16\n\x0enotify_content\x18\t \x01(\t\x12\x10\n\x08read_flg\x18\x0b \x01(\x08\x12\x12\n\ncreated_at\x18\x0c \x01(\x03\"/\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0e\n\x06\x65rrors\x18\x02 \x01(\t\"\x07\n\x05\x45mpty\"M\n\x13GetNotifiesResponse\x12\x36\n\nlst_notify\x18\x01 \x03(\x0b\x32\".notification.NotifyObjectResponse\"%\n\x10SubscribeRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\"\'\n\x12UnSubscribeRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\"\"\n\rListenRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\"&\n\x11ReadNotifyRequest\x12\x11\n\tnotify_id\x18\x01 \x01(\t2\x87\x03\n\x06Notify\x12J\n\x0bread_notify\x12\x1f.notification.ReadNotifyRequest\x1a\x1a.notification.BaseResponse\x12M\n\x13get_unread_notifies\x12\x13.notification.Empty\x1a!.notification.GetNotifiesResponse\x12G\n\tsubscribe\x12\x1e.notification.SubscribeRequest\x1a\x1a.notification.BaseResponse\x12L\n\x0cun_subscribe\x12 .notification.UnSubscribeRequest\x1a\x1a.notification.BaseResponse\x12K\n\x06listen\x12\x1b.notification.ListenRequest\x1a\".notification.NotifyObjectResponse0\x01\x62\x06proto3'
 )
 
 
@@ -135,6 +135,13 @@ _BASERESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='errors', full_name='notification.BaseResponse.errors', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -148,7 +155,7 @@ _BASERESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=265,
-  serialized_end=296,
+  serialized_end=312,
 )
 
 
@@ -172,8 +179,8 @@ _EMPTY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=298,
-  serialized_end=305,
+  serialized_start=314,
+  serialized_end=321,
 )
 
 
@@ -204,8 +211,8 @@ _GETNOTIFIESRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=307,
-  serialized_end=384,
+  serialized_start=323,
+  serialized_end=400,
 )
 
 
@@ -236,8 +243,8 @@ _SUBSCRIBEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=386,
-  serialized_end=423,
+  serialized_start=402,
+  serialized_end=439,
 )
 
 
@@ -268,8 +275,8 @@ _UNSUBSCRIBEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=425,
-  serialized_end=464,
+  serialized_start=441,
+  serialized_end=480,
 )
 
 
@@ -300,8 +307,8 @@ _LISTENREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=466,
-  serialized_end=500,
+  serialized_start=482,
+  serialized_end=516,
 )
 
 
@@ -332,8 +339,8 @@ _READNOTIFYREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=502,
-  serialized_end=540,
+  serialized_start=518,
+  serialized_end=556,
 )
 
 _GETNOTIFIESRESPONSE.fields_by_name['lst_notify'].message_type = _NOTIFYOBJECTRESPONSE
@@ -412,8 +419,8 @@ _NOTIFY = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=543,
-  serialized_end=934,
+  serialized_start=559,
+  serialized_end=950,
   methods=[
   _descriptor.MethodDescriptor(
     name='read_notify',

@@ -9,8 +9,8 @@ message RegisterTokenRequest {
 
 message BaseResponse {
     bool success = 1;
+    string errors = 2;
 }
-
 // Method
 service NotifyPush {
     rpc register_token (RegisterTokenRequest) returns (BaseResponse);

@@ -35,6 +35,7 @@ message GroupObjectResponse {
 
 message BaseResponse {
     bool success = 1;
+    string errors = 2;
 }
 
 // Request: create group

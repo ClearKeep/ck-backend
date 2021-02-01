@@ -4,6 +4,7 @@ package user;
 
 message BaseResponse {
     bool success = 1;
+    string errors = 2;
 }
 
 //----- FROM MY ACCOUNT -----

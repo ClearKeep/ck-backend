@@ -47,8 +47,10 @@ class KeyCloakUtils:
                                            "credentials": [{"value": password, "type": "password", }]})
     @staticmethod
     def get_user_id_by_email(email):
-        test = keycloak_admin.get_user_id(email)
-        return test
+        try:
+            return keycloak_admin.get_user_id(email)
+        except:
+            raise
 
     @staticmethod
     def set_user_password(user_id, password):

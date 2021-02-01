@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x18protos/notify_push.proto\x12\x0bnotify_push\"M\n\x14RegisterTokenRequest\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x02 \x01(\t\x12\r\n\x05token\x18\x03 \x01(\t\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\\\n\nNotifyPush\x12N\n\x0eregister_token\x12!.notify_push.RegisterTokenRequest\x1a\x19.notify_push.BaseResponseb\x06proto3'
+  serialized_pb=b'\n\x18protos/notify_push.proto\x12\x0bnotify_push\"M\n\x14RegisterTokenRequest\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x02 \x01(\t\x12\r\n\x05token\x18\x03 \x01(\t\"/\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0e\n\x06\x65rrors\x18\x02 \x01(\t2\\\n\nNotifyPush\x12N\n\x0eregister_token\x12!.notify_push.RegisterTokenRequest\x1a\x19.notify_push.BaseResponseb\x06proto3'
 )
 
 
@@ -86,6 +86,13 @@ _BASERESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='errors', full_name='notify_push.BaseResponse.errors', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -99,7 +106,7 @@ _BASERESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=120,
-  serialized_end=151,
+  serialized_end=167,
 )
 
 DESCRIPTOR.message_types_by_name['RegisterTokenRequest'] = _REGISTERTOKENREQUEST
@@ -129,8 +136,8 @@ _NOTIFYPUSH = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=153,
-  serialized_end=245,
+  serialized_start=169,
+  serialized_end=261,
   methods=[
   _descriptor.MethodDescriptor(
     name='register_token',
