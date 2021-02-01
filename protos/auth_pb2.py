@@ -19,10 +19,88 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x11protos/auth.proto\x12\x04\x61uth\"=\n\x07\x41uthReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x11\n\tauth_type\x18\x03 \x01(\x03\"\xb2\x01\n\x07\x41uthRes\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x01 \x01(\t\x12\x12\n\nexpires_in\x18\x02 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x03 \x01(\x03\x12\x15\n\rrefresh_token\x18\x04 \x01(\t\x12\x12\n\ntoken_type\x18\x05 \x01(\t\x12\x15\n\rsession_state\x18\x06 \x01(\t\x12\r\n\x05scope\x18\x07 \x01(\t\x12\x10\n\x08hash_key\x18\x08 \x01(\t\"~\n\x0bRegisterReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\x12\x12\n\nfirst_name\x18\x05 \x01(\t\x12\x11\n\tlast_name\x18\x06 \x01(\t\"\x1e\n\x0bRegisterRes\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\x63\n\x04\x41uth\x12\'\n\x05login\x12\r.auth.AuthReq\x1a\r.auth.AuthRes\"\x00\x12\x32\n\x08register\x12\x11.auth.RegisterReq\x1a\x11.auth.RegisterRes\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x11protos/auth.proto\x12\x04\x61uth\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"/\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0e\n\x06\x65rrors\x18\x02 \x01(\t\"=\n\x07\x41uthReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\x11\n\tauth_type\x18\x03 \x01(\x03\"\x1e\n\rFogotPassWord\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"\xdd\x01\n\x07\x41uthRes\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x01 \x01(\t\x12\x12\n\nexpires_in\x18\x02 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x03 \x01(\x03\x12\x15\n\rrefresh_token\x18\x04 \x01(\t\x12\x12\n\ntoken_type\x18\x05 \x01(\t\x12\x15\n\rsession_state\x18\x06 \x01(\t\x12\r\n\x05scope\x18\x07 \x01(\t\x12\x10\n\x08hash_key\x18\x08 \x01(\t\x12)\n\rbase_response\x18\t \x01(\x0b\x32\x12.auth.BaseResponse\"~\n\x0bRegisterReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\x12\x12\n\nfirst_name\x18\x05 \x01(\t\x12\x11\n\tlast_name\x18\x06 \x01(\t\"8\n\x0bRegisterRes\x12)\n\rbase_response\x18\x01 \x01(\x0b\x32\x12.auth.BaseResponse2\xa0\x01\n\x04\x41uth\x12\'\n\x05login\x12\r.auth.AuthReq\x1a\r.auth.AuthRes\"\x00\x12\x32\n\x08register\x12\x11.auth.RegisterReq\x1a\x11.auth.RegisterRes\"\x00\x12;\n\x0e\x66ogot_password\x12\x13.auth.FogotPassWord\x1a\x12.auth.BaseResponse\"\x00\x62\x06proto3'
 )
 
 
+
+
+_ERRORRES = _descriptor.Descriptor(
+  name='ErrorRes',
+  full_name='auth.ErrorRes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='code', full_name='auth.ErrorRes.code', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='message', full_name='auth.ErrorRes.message', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=27,
+  serialized_end=68,
+)
+
+
+_BASERESPONSE = _descriptor.Descriptor(
+  name='BaseResponse',
+  full_name='auth.BaseResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='success', full_name='auth.BaseResponse.success', index=0,
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='errors', full_name='auth.BaseResponse.errors', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=70,
+  serialized_end=117,
+)
 
 
 _AUTHREQ = _descriptor.Descriptor(
@@ -66,8 +144,40 @@ _AUTHREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=27,
-  serialized_end=88,
+  serialized_start=119,
+  serialized_end=180,
+)
+
+
+_FOGOTPASSWORD = _descriptor.Descriptor(
+  name='FogotPassWord',
+  full_name='auth.FogotPassWord',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='email', full_name='auth.FogotPassWord.email', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=182,
+  serialized_end=212,
 )
 
 
@@ -135,6 +245,13 @@ _AUTHRES = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='base_response', full_name='auth.AuthRes.base_response', index=8,
+      number=9, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -147,8 +264,8 @@ _AUTHRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=91,
-  serialized_end=269,
+  serialized_start=215,
+  serialized_end=436,
 )
 
 
@@ -214,8 +331,8 @@ _REGISTERREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=271,
-  serialized_end=397,
+  serialized_start=438,
+  serialized_end=564,
 )
 
 
@@ -228,9 +345,9 @@ _REGISTERRES = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='success', full_name='auth.RegisterRes.success', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
+      name='base_response', full_name='auth.RegisterRes.base_response', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -246,15 +363,34 @@ _REGISTERRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=399,
-  serialized_end=429,
+  serialized_start=566,
+  serialized_end=622,
 )
 
+_AUTHRES.fields_by_name['base_response'].message_type = _BASERESPONSE
+_REGISTERRES.fields_by_name['base_response'].message_type = _BASERESPONSE
+DESCRIPTOR.message_types_by_name['ErrorRes'] = _ERRORRES
+DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
 DESCRIPTOR.message_types_by_name['AuthReq'] = _AUTHREQ
+DESCRIPTOR.message_types_by_name['FogotPassWord'] = _FOGOTPASSWORD
 DESCRIPTOR.message_types_by_name['AuthRes'] = _AUTHRES
 DESCRIPTOR.message_types_by_name['RegisterReq'] = _REGISTERREQ
 DESCRIPTOR.message_types_by_name['RegisterRes'] = _REGISTERRES
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
+
+ErrorRes = _reflection.GeneratedProtocolMessageType('ErrorRes', (_message.Message,), {
+  'DESCRIPTOR' : _ERRORRES,
+  '__module__' : 'protos.auth_pb2'
+  # @@protoc_insertion_point(class_scope:auth.ErrorRes)
+  })
+_sym_db.RegisterMessage(ErrorRes)
+
+BaseResponse = _reflection.GeneratedProtocolMessageType('BaseResponse', (_message.Message,), {
+  'DESCRIPTOR' : _BASERESPONSE,
+  '__module__' : 'protos.auth_pb2'
+  # @@protoc_insertion_point(class_scope:auth.BaseResponse)
+  })
+_sym_db.RegisterMessage(BaseResponse)
 
 AuthReq = _reflection.GeneratedProtocolMessageType('AuthReq', (_message.Message,), {
   'DESCRIPTOR' : _AUTHREQ,
@@ -262,6 +398,13 @@ AuthReq = _reflection.GeneratedProtocolMessageType('AuthReq', (_message.Message,
   # @@protoc_insertion_point(class_scope:auth.AuthReq)
   })
 _sym_db.RegisterMessage(AuthReq)
+
+FogotPassWord = _reflection.GeneratedProtocolMessageType('FogotPassWord', (_message.Message,), {
+  'DESCRIPTOR' : _FOGOTPASSWORD,
+  '__module__' : 'protos.auth_pb2'
+  # @@protoc_insertion_point(class_scope:auth.FogotPassWord)
+  })
+_sym_db.RegisterMessage(FogotPassWord)
 
 AuthRes = _reflection.GeneratedProtocolMessageType('AuthRes', (_message.Message,), {
   'DESCRIPTOR' : _AUTHRES,
@@ -293,8 +436,8 @@ _AUTH = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=431,
-  serialized_end=530,
+  serialized_start=625,
+  serialized_end=785,
   methods=[
   _descriptor.MethodDescriptor(
     name='login',
@@ -313,6 +456,16 @@ _AUTH = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_REGISTERREQ,
     output_type=_REGISTERRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='fogot_password',
+    full_name='auth.Auth.fogot_password',
+    index=2,
+    containing_service=None,
+    input_type=_FOGOTPASSWORD,
+    output_type=_BASERESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

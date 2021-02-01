@@ -2,7 +2,7 @@
 
 from keycloak import KeycloakOpenID, KeycloakAdmin
 from utils.config import get_system_config
-
+import json
 # keycloak client
 config_keycloak_client = get_system_config()['keycloak_account']
 keycloak_openid = KeycloakOpenID(server_url=config_keycloak_client['server_url'],
@@ -59,3 +59,13 @@ class KeyCloakUtils:
         return keycloak_admin.send_verify_email(
             user_id=user_id
         )
+
+    @staticmethod
+    def send_forgot_password(user_id,email):
+        try:
+            update = keycloak_admin.send_update_account(
+                user_id=user_id,
+                payload=json.dumps(['UPDATE_PASSWORD']))
+            return update
+        except Exception as e:
+            print(e)
