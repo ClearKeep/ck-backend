@@ -5,16 +5,16 @@ import json
 from protos import server_info_pb2, server_info_pb2_grpc
 import grpc
 from utils.logger import *
+from utils.config import get_system_config
 
-env = os.getenv("ENV")
-env_name = env if env else 'development'
-with open(f'../configs/{env_name}.json') as json_data_file:
-    data = json.load(json_data_file)
-print("Load config env=", env_name)
-
+# env = os.getenv("ENV")
+# env_name = env if env else 'development'
+# with open(f'./configs/{env_name}.json') as json_data_file:
+#     data = json.load(json_data_file)
+# print("Load config env=", env_name)
 
 def generate_stun_turn_credential():
-
+    data = get_system_config()
     account_sid = data['stun_turn_credential'].get('twilio_account_sid')
     auth_token = data['stun_turn_credential'].get('twilio_auth_token')
     client = Client(account_sid, auth_token)
