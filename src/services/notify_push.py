@@ -2,6 +2,8 @@ from src.models.notify_token import NotifyToken
 from src.services.base import BaseService
 from utils.const import DeviceType
 from utils.push_notify import *
+from msg.message import Message
+from utils.logger import *
 
 
 class NotifyPushService(BaseService):
@@ -9,13 +11,17 @@ class NotifyPushService(BaseService):
         super().__init__(NotifyToken())
 
     def register_token(self, client_id, device_id, device_type, push_token):
-        self.model = NotifyToken(
-            client_id=client_id,
-            device_id=device_id,
-            device_type=device_type,
-            push_token=push_token,
-        )
-        return self.model.add()
+        try:
+            self.model = NotifyToken(
+                client_id=client_id,
+                device_id=device_id,
+                device_type=device_type,
+                push_token=push_token,
+            )
+            return self.model.add()
+        except Exception as e:
+            logger.info(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.REGISTER_USER_FAILED)
 
     def push_text_to_clients(self, lst_client, title, body):
         ios_tokens = []

@@ -38,6 +38,10 @@ class KeyCloakUtils:
         return keycloak_openid.token(user, password)
 
     @staticmethod
+    def refresh_token(user, password):
+        return keycloak_openid.refresh_token(user, password)
+
+    @staticmethod
     def create_user(email, password):
         return keycloak_admin.create_user({"email": email,
                                            "username": email,
