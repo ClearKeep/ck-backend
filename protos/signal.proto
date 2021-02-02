@@ -4,6 +4,7 @@ package signal;
 
 message BaseResponse {
     bool success = 1;
+    string errors = 2;
 }
 
 // ----- SIGNAL PEER TO PEER KEY -----

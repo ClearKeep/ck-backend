@@ -14,8 +14,8 @@ message MessageObjectResponse {
 
 message BaseResponse {
     bool success = 1;
+    string errors = 2;
 }
-
 // Request: get list message group
 message GetMessagesInGroupRequest {
   int64 group_id = 1;
