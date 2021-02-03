@@ -14,7 +14,7 @@ class AuthController(BaseController):
 
     def login(self, request, context):
         try:
-            token = self.service.refresh_token(request.email, request.password)
+            token = self.service.token(request.email, request.password)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if token:
                 hash_key = EncryptUtils.encoded_hash(request.password, introspect_token['sub'])
