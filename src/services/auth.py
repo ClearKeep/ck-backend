@@ -1,7 +1,8 @@
 from msg.message import Message
 from utils.keycloak import KeyCloakUtils
 from utils.logger import *
-
+from src.models.notify_token import NotifyToken
+from src.services.notify_push import NotifyPushService
 
 class AuthService:
     def __init__(self):
@@ -18,12 +19,35 @@ class AuthService:
 
     def refresh_token(self, email, password):
         try:
-            token = KeyCloakUtils.refresh_token(email, password)
-            if token:
+            token = self.token(email,password)
+            refresh_token = KeyCloakUtils.refresh_token(token['refresh_token'])
+            if refresh_token:
+                return refresh_token
+            else:
                 return token
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.AUTH_USER_NOT_FOUND)
+
+    def logout(self, email=None, password=None, refresh_token=None):
+        try:
+            if refresh_token:
+                KeyCloakUtils.logout(refresh_token)
+            else:
+                token = self.token(email, password)
+                KeyCloakUtils.logout(token['refresh_token'])
+            if token:
+                return token
+        except Exception as e:
+            logger.info(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.UNAUTHENTICATED)
+
+    def remove_token(self, client_id, device_id):
+        try:
+            NotifyPushService().delete_token(client_id=client_id,device_id=device_id)
+        except Exception as e:
+            logger.info(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.UNAUTHENTICATED)
 
     def register_user(self, email, password):
         try:

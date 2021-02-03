@@ -6,6 +6,8 @@ from msg.message import Message
 from src.services.user import UserService
 from utils.encrypt import EncryptUtils
 from utils.logger import *
+from middlewares.permission import *
+from middlewares.request_logged import *
 
 class AuthController(BaseController):
     def __init__(self, *kwargs):
@@ -43,7 +45,6 @@ class AuthController(BaseController):
                         message=errors[0].message
                     )
             ))
-       
 
     def register(self, request, context):
         # check exist user
@@ -77,10 +78,32 @@ class AuthController(BaseController):
                     )
             ))
 
-
     def fogot_password(self, request, context):
         try:
             self.service.send_forgot_password(request.email)
+            return auth_messages.BaseResponse(
+                success=True
+            )
+        except Exception as e:
+            errors = [Message.get_error_object(e.args[0])]
+            logger.error(errors)
+            return auth_messages.BaseResponse(
+                    success=False,
+                    errors=auth_messages.ErrorRes(
+                        code=errors[0].code,
+                        message=errors[0].message
+                    )
+            )
+
+    @auth_required
+    def logout(self,request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            device_id = request.device_id
+            self.service.logout(header_data['refresh_token'])
+            self.service.remove_token(client_id=client_id,device_id=device_id)
             return auth_messages.BaseResponse(
                 success=True
             )

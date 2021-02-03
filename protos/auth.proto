@@ -9,7 +9,7 @@ message ErrorRes {
 
 message BaseResponse {
     bool success = 1;
-    ErrorRes errors = 2;
+    repeated ErrorRes errors = 2;
 }
 
 
@@ -17,7 +17,11 @@ message BaseResponse {
 message AuthReq {
     string email = 1;
     string password = 2;
-    int64 auth_type = 3;   
+    int64 auth_type = 3;
+}
+
+message LogoutReq {
+    string device_id = 1;
 }
 
 // fogot password
@@ -55,4 +59,5 @@ service Auth {
     rpc login(AuthReq) returns (AuthRes) {};
     rpc register(RegisterReq) returns (RegisterRes) {};
     rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
+    rpc logout(LogoutReq) returns (BaseResponse) {};
 }

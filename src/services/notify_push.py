@@ -23,6 +23,17 @@ class NotifyPushService(BaseService):
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.REGISTER_USER_FAILED)
 
+    def delete_token(self,client_id, device_id):
+        try:
+            id_device_token = self.model.get(client_id=client_id,device_id=device_id)
+            if id_device_token:
+                id_device_token.delete()
+            else:
+                raise Exception(Message.UNAUTHENTICATED)
+        except Exception as e:
+            logger.info(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.UNAUTHENTICATED)
+
     def push_text_to_clients(self, lst_client, title, body):
         ios_tokens = []
         android_tokens = []
