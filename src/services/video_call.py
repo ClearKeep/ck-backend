@@ -69,22 +69,23 @@ class VideoCallService:
                 'from_client_name': from_client_username,
                 'from_client_avatar': '',
                 'client_id': client_id,
-                'stun_server': json.dumps(server_info.stun_server),
-                'turn_server': json.dumps(server_info.turn_server)
+                'stun_server': server_info.stun_server,
+                'turn_server': server_info.turn_server
             }
             push_service.push_voip_clients(other_clients_in_group, push_payload)
 
+        stun_server_obj = json.loads(server_info.stun_server)
         stun_server = video_call_pb2.StunServer(
-            server=server_info.turn_server.get("server"),
-            port=server_info.turn_server.get("port")
+            server=stun_server_obj["server"],
+            port=stun_server_obj["port"]
         )
-
+        turn_server_obj = json.loads(server_info.turn_server)
         turn_server = video_call_pb2.TurnServer(
-            server=server_info.turn_server.get("server"),
-            port=server_info.turn_server.get("port"),
-            type=server_info.turn_server.get("type"),
-            user=server_info.turn_server.get("user"),
-            pwd=server_info.turn_server.get("pwd")
+            server=turn_server_obj["server"],
+            port=turn_server_obj["port"],
+            type=turn_server_obj["type"],
+            user=turn_server_obj["user"],
+            pwd=turn_server_obj["pwd"]
         )
 
         return video_call_pb2.ServerResponse(

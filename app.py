@@ -10,6 +10,7 @@ import protos.message_pb2_grpc as message_service
 import protos.notify_pb2_grpc as notify_inapp_service
 import protos.notify_push_pb2_grpc as notify_push_service
 import protos.video_call_pb2_grpc as video_call_service
+import protos.server_info_pb2_grpc as server_info_service
 from src.controllers.user import UserController
 from src.controllers.auth import AuthController
 from src.controllers.signal import SignalController
@@ -18,13 +19,13 @@ from src.controllers.message import MessageController
 from src.controllers.notify_inapp import NotifyInAppController
 from src.controllers.notify_push import NotifyPushController
 from src.controllers.video_call import VideoCallController
+from src.controllers.server_info import ServerInfoController
 from utils.logger import *
 # from middlewares.auth_interceptor import AuthInterceptor
 import threading
 import time
 
 def grpc_server(port):
-
     # server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), interceptors=(AuthInterceptor(),))
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=200))
     user_service.add_UserServicer_to_server(UserController(), server)
@@ -35,6 +36,7 @@ def grpc_server(port):
     notify_inapp_service.add_NotifyServicer_to_server(NotifyInAppController(), server)
     notify_push_service.add_NotifyPushServicer_to_server(NotifyPushController(), server)
     video_call_service.add_VideoCallServicer_to_server(VideoCallController(), server)
+    server_info_service.add_ServerInfoServicer_to_server(ServerInfoController(), server)
     # create all table in database
     db.create_all()
     # init log

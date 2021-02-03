@@ -1,5 +1,3 @@
-import grpc
-import json
 import protos.auth_pb2 as auth_messages
 from src.controllers.base import BaseController
 from src.services.auth import AuthService
@@ -55,8 +53,7 @@ class AuthController(BaseController):
                 raise Exception(Message.REGISTER_USER_ALREADY_EXISTS)
 
             # register new user
-            new_user = self.service.register_user(
-                request.email, request.password)
+            new_user = self.service.register_user(request.email, request.password)
 
             if new_user:
                 # create new user in database
@@ -83,7 +80,6 @@ class AuthController(BaseController):
 
     def fogot_password(self, request, context):
         try:
-
             self.service.send_forgot_password(request.email)
             return auth_messages.BaseResponse(
                 success=True
