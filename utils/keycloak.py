@@ -67,6 +67,10 @@ class KeyCloakUtils:
         return keycloak_admin.send_verify_email(user_id=user_id)
 
     @staticmethod
+    def delete_user(user_id):
+        return keycloak_admin.delete_user(user_id=user_id)
+
+    @staticmethod
     def send_forgot_password(user_id,email):
         return keycloak_admin.send_update_account(
             user_id=user_id,

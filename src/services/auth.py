@@ -56,9 +56,7 @@ class AuthService:
             
     def delete_user(self, userid):
         try:
-            keycloak_admin.delete_user(user_id=userid)
-            if newUserId:
-                return newUserId
+            KeyCloakUtils.delete_user(user_id=userid)
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.UNAUTHENTICATED)
