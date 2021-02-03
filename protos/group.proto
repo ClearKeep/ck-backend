@@ -15,7 +15,7 @@ message MessageObjectResponse {
 
 message ClientInGroupResponse {
   string id = 1;
-  string username = 2;
+  string display_name = 2;
 }
 
 message GroupObjectResponse {
@@ -33,8 +33,15 @@ message GroupObjectResponse {
   string group_rtc_token = 12;
 }
 
+//errors response
+message ErrorRes {
+    int64 code = 1;
+    string message = 2;
+}
+
 message BaseResponse {
     bool success = 1;
+    ErrorRes errors = 2;
 }
 
 // Request: create group

@@ -18,11 +18,8 @@ from src.controllers.message import MessageController
 from src.controllers.notify_inapp import NotifyInAppController
 from src.controllers.notify_push import NotifyPushController
 from src.controllers.video_call import VideoCallController
-
 from utils.logger import *
-from utils.firebase import *
-from src.services.video_call import VideoCallService
-#from middlewares.auth_interceptor import AuthInterceptor
+# from middlewares.auth_interceptor import AuthInterceptor
 import threading
 import time
 
@@ -43,7 +40,7 @@ def grpc_server(port):
     # init log
     create_timed_rotating_log('logs/logfile.log')
 
-    init_firebase_app()
+    # init_firebase_app()
 
     server.add_insecure_port('0.0.0.0:5000')
     server.start()

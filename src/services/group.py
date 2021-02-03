@@ -52,8 +52,8 @@ class GroupService(BaseService):
         lst_client_in_group = GroupClientKey().get_clients_in_group(new_group.id)
         for client in lst_client_in_group:
             client_in = group_pb2.ClientInGroupResponse(
-                id=client.client_id,
-                username=client.username
+                id=client.User.id,
+                display_name=client.User.display_name
             )
             res_obj.lst_client.append(client_in)
 
@@ -130,8 +130,8 @@ class GroupService(BaseService):
             lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
             for client in lst_client_in_group:
                 client_in = group_pb2.ClientInGroupResponse(
-                    id=client.client_id,
-                    username=client.username
+                    id=client.id,
+                    display_name=client.display_name
                 )
                 res_obj.lst_client.append(client_in)
 
@@ -187,8 +187,8 @@ class GroupService(BaseService):
             for client in lst_client_in_groups:
                 if client.group_id == obj.id:
                     client_in = group_pb2.ClientInGroupResponse(
-                        id=client.client_id,
-                        username=client.username
+                        id=client.User.id,
+                        display_name=client.User.display_name
                     )
                     obj_res.lst_client.append(client_in)
 
@@ -245,8 +245,8 @@ class GroupService(BaseService):
             for client in lst_client_in_groups:
                 if client.group_id == obj.id:
                     client_in = group_pb2.ClientInGroupResponse(
-                        id=client.client_id,
-                        username=client.username
+                        id=client.User.id,
+                        display_name=client.User.display_name
                     )
                     obj_res.lst_client.append(client_in)
 

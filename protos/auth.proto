@@ -1,11 +1,28 @@
 syntax = "proto3";
 package auth;
 
+//errors response
+message ErrorRes {
+    int64 code = 1;
+    string message = 2;
+}
+
+message BaseResponse {
+    bool success = 1;
+    ErrorRes errors = 2;
+}
+
+
 //Login message struct
 message AuthReq {
-    string username = 1;
+    string email = 1;
     string password = 2;
     int64 auth_type = 3;   
+}
+
+// fogot password
+message FogotPassWord {
+    string email = 1;
 }
 
 message AuthRes {
@@ -17,12 +34,13 @@ message AuthRes {
     string session_state = 6;
     string scope = 7;
     string hash_key = 8;
+    BaseResponse base_response = 9;
 }
 
 //Register message struct
 message RegisterReq {
     string email = 1;
-    string username = 2;
+    string display_name = 2;
     string password = 3;
     int64 auth_type = 4;
     string first_name = 5;
@@ -30,10 +48,11 @@ message RegisterReq {
 }
 
 message RegisterRes {
-    bool success = 1;
+    BaseResponse base_response = 1;
 }
 
 service Auth {
     rpc login(AuthReq) returns (AuthRes) {};
     rpc register(RegisterReq) returns (RegisterRes) {};
+    rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
 }

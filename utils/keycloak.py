@@ -2,7 +2,7 @@
 
 from keycloak import KeycloakOpenID, KeycloakAdmin
 from utils.config import get_system_config
-
+import json
 # keycloak client
 config_keycloak_client = get_system_config()['keycloak_account']
 keycloak_openid = KeycloakOpenID(server_url=config_keycloak_client['server_url'],
@@ -38,18 +38,40 @@ class KeyCloakUtils:
         return keycloak_openid.token(user, password)
 
     @staticmethod
-    def create_user(email, username, password):
+    def refresh_token(user, password):
+        return keycloak_openid.refresh_token(user, password)
+
+    @staticmethod
+    def create_user(email, password):
         return keycloak_admin.create_user({"email": email,
-                                           "username": username,
+                                           "username": email,
                                            "enabled": True,
                                            "firstName": "",
                                            "lastName": "",
                                            "credentials": [{"value": password, "type": "password", }]})
     @staticmethod
-    def get_user_id_by_username(username):
-        test = keycloak_admin.get_user_id(username)
-        return test
+    def get_user_id_by_email(email):
+        try:
+            return keycloak_admin.get_user_id(email)
+        except:
+            raise
 
     @staticmethod
     def set_user_password(user_id, password):
         return keycloak_admin.set_user_password(user_id=user_id, password=password, temporary=False)
+
+    @staticmethod
+    def send_verify_email(user_id):
+        return keycloak_admin.send_verify_email(
+            user_id=user_id
+        )
+
+    @staticmethod
+    def send_forgot_password(user_id,email):
+        try:
+            update = keycloak_admin.send_update_account(
+                user_id=user_id,
+                payload=json.dumps(['UPDATE_PASSWORD']))
+            return update
+        except Exception as e:
+            print(e)

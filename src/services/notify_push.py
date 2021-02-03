@@ -1,73 +1,58 @@
-from firebase_admin import messaging
-from kalyke.client import VoIPClient
-
 from src.models.notify_token import NotifyToken
 from src.services.base import BaseService
-from utils.config import get_system_config
-from utils.logger import logger
+from utils.const import DeviceType
+from utils.push_notify import *
+from msg.message import Message
+from utils.logger import *
+
 
 class NotifyPushService(BaseService):
     def __init__(self):
         super().__init__(NotifyToken())
-        self.client_ios = VoIPClient(
-            auth_key_filepath=get_system_config()["device_ios"].get('certificates'),
-            bundle_id= get_system_config()["device_ios"].get('bundle_id'),
-            use_sandbox=get_system_config()["device_ios"].get('use_sandbox')
-            )
-        if get_system_config()["device_ios"].get('use_sandbox'):
-            logger.info("Device ios use sanbox for Development")
-        else:
-            logger.info("Device ios use sanbox for Production")
-        logger.info(get_system_config()["device_ios"].get('certificates'))
 
     def register_token(self, client_id, device_id, device_type, push_token):
-        self.model = NotifyToken(
-            client_id=client_id,
-            device_id=device_id,
-            device_type=device_type,
-            push_token=push_token,
-        )
-        return self.model.add()
-
-    def android_text_notifications(self, registration_tokens, payload):
-        message = messaging.MulticastMessage(
-            tokens=registration_tokens,
-            notification=payload
-        )
-        response = messaging.send_multicast(message)
-        logger.info('{0} messages were sent successfully'.format(response.success_count))
-        if response.failure_count > 0:
-            responses = response.responses
-            failed_tokens = []
-            for idx, resp in enumerate(responses):
-                if not resp.success:
-                    # The order of responses corresponds to the order of the registration tokens.
-                    failed_tokens.append(registration_tokens[idx])
-            logger.info('List of tokens that caused failures: {0}'.format(failed_tokens))
-
-
-    def android_data_notification(self, registration_tokens, payload):
-        message = messaging.MulticastMessage(
-            tokens=registration_tokens,
-            data=payload,
-            android=messaging.AndroidConfig(
-                priority="high"
-            )
-        )
-        response = messaging.send_multicast(message)
-        logger.info('{0} messages were sent successfully'.format(response.success_count))
-        if response.failure_count > 0:
-            responses = response.responses
-            failed_tokens = []
-            for idx, resp in enumerate(responses):
-                if not resp.success:
-                    # The order of responses corresponds to the order of the registration tokens.
-                    failed_tokens.append(registration_tokens)
-            logger.info('List of tokens that caused failures: {0}'.format(failed_tokens))
-
-    def ios_data_notification(self, registration_tokens, payload):
         try:
-            for token in registration_tokens:
-                res = self.client_ios.send_message(token, payload)
+            self.model = NotifyToken(
+                client_id=client_id,
+                device_id=device_id,
+                device_type=device_type,
+                push_token=push_token,
+            )
+            return self.model.add()
         except Exception as e:
-            logger.info(e)
+            logger.info(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.REGISTER_USER_FAILED)
+
+    def push_text_to_clients(self, lst_client, title, body):
+        ios_tokens = []
+        android_tokens = []
+        push_tokens = self.model.get_clients(lst_client)
+        for client_token in push_tokens:
+            if client_token.device_type == DeviceType.android:
+                android_tokens.append(client_token.push_token)
+            elif client_token.device_type == DeviceType.ios:
+                arr_token = client_token.push_token.split(',')
+                ios_tokens.append(arr_token[-1])
+
+        if len(android_tokens) > 0:
+            payload = messaging.Notification(title=title, body=body)
+            android_text_notifications(android_tokens, payload)
+        if len(ios_tokens) > 0:
+            payload_alert = PayloadAlert(title=title, body=body)
+            ios_text_notifications(ios_tokens, payload_alert)
+
+    def push_voip_clients(self, lst_client, payload):
+        ios_tokens = []
+        android_tokens = []
+        push_tokens = self.model.get_clients(lst_client)
+        for client_token in push_tokens:
+            if client_token.device_type == DeviceType.android:
+                android_tokens.append(client_token.push_token)
+            elif client_token.device_type == DeviceType.ios:
+                arr_token = client_token.push_token.split(',')
+                ios_tokens.append(arr_token[0])
+
+        if len(android_tokens) > 0:
+            android_data_notification(android_tokens, payload)
+        if len(ios_tokens) > 0:
+            ios_data_notification(ios_tokens, payload)

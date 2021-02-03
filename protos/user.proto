@@ -2,14 +2,21 @@ syntax = "proto3";
 
 package user;
 
+//errors response
+message ErrorRes {
+    int64 code = 1;
+    string message = 2;
+}
+
 message BaseResponse {
     bool success = 1;
+    ErrorRes errors = 2;
 }
 
 //----- FROM MY ACCOUNT -----
 message UserProfileResponse {
     string id = 1;
-    string username = 2;
+    string display_name = 2;
     string email = 3;
     string first_name = 4;
     string last_name = 5;
@@ -39,7 +46,7 @@ message ChangePasswordRequest {
 //----- FROM ANOTHER ACCOUNT -----
 message UserInfoResponse {
     string id = 1;
-    string username = 2;
+    string display_name = 2;
     string domain = 3;
 }
 

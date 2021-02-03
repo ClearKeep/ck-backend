@@ -8,7 +8,7 @@ from src.models.base import db
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.String(36), primary_key=True)
-    username = db.Column(db.String(255), unique=True, nullable=False)
+    display_name = db.Column(db.String(255), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     first_name = db.Column(db.String(255), unique=False, nullable=True)
     last_name = db.Column(db.String(255), unique=False, nullable=True)
@@ -34,7 +34,7 @@ class User(db.Model):
         search = "%{}%".format(keyword)
         user = self.query \
             .filter(User.id != client_id) \
-            .filter(User.username.like(search)) \
+            .filter(User.display_name.like(search)) \
             .all()
         return user
 
@@ -47,8 +47,9 @@ class User(db.Model):
     def get_client_id_with_push_token(self, id):
         result = db.session.query(User.id, User) \
             .filter(User.id == id) \
-            .all()
+            .first()
         return result
 
+
     def __repr__(self):
-        return '<Item(id=%s, username=%s, email=%s)>' % (self.id, self.username, self.email)
+        return '<Item(id=%s, display_name=%s, email=%s)>' % (self.id, self.display_name, self.email)
