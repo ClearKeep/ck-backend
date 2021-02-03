@@ -1,11 +1,11 @@
 import protos.auth_pb2 as auth_messages
 from src.controllers.base import BaseController
 from src.services.auth import AuthService
-from utils.keycloak import KeyCloakUtils
-from msg.message import Message
 from src.services.user import UserService
 from utils.encrypt import EncryptUtils
-from utils.logger import *
+from middlewares.permission import *
+from middlewares.request_logged import *
+
 
 class AuthController(BaseController):
     def __init__(self, *kwargs):
@@ -17,7 +17,6 @@ class AuthController(BaseController):
             token = self.service.token(request.email, request.password)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if token:
-                hash_key = EncryptUtils.encoded_hash(request.password, introspect_token['sub'])
                 return auth_messages.AuthRes(
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
@@ -33,8 +32,8 @@ class AuthController(BaseController):
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
 
         except Exception as e:
+            logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            logger.error(errors)
             return auth_messages.AuthRes(
                 base_response=auth_messages.BaseResponse(
                     success=False,
@@ -42,8 +41,7 @@ class AuthController(BaseController):
                         code=errors[0].code,
                         message=errors[0].message
                     )
-            ))
-       
+                ))
 
     def register(self, request, context):
         # check exist user
@@ -66,8 +64,8 @@ class AuthController(BaseController):
                 self.service.delete_user(new_user)
                 raise Exception(Message.REGISTER_USER_FAILED)
         except Exception as e:
+            logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            logger.error(errors)
             return auth_messages.RegisterRes(
                 base_response=auth_messages.BaseResponse(
                     success=False,
@@ -75,8 +73,7 @@ class AuthController(BaseController):
                         code=errors[0].code,
                         message=errors[0].message
                     )
-            ))
-
+                ))
 
     def fogot_password(self, request, context):
         try:
@@ -85,12 +82,36 @@ class AuthController(BaseController):
                 success=True
             )
         except Exception as e:
+            logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            logger.error(errors)
             return auth_messages.BaseResponse(
-                    success=False,
-                    errors=auth_messages.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
+                success=False,
+                errors=auth_messages.ErrorRes(
+                    code=errors[0].code,
+                    message=errors[0].message
+                )
+            )
+
+    @auth_required
+    def logout(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            device_id = request.device_id
+            refresh_token = request.refresh_token
+            self.service.logout(refresh_token)
+            self.service.remove_token(client_id=client_id, device_id=device_id)
+            return auth_messages.BaseResponse(
+                success=True
+            )
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(e.args[0])]
+            return auth_messages.BaseResponse(
+                success=False,
+                errors=auth_messages.ErrorRes(
+                    code=errors[0].code,
+                    message=errors[0].message
+                )
             )
