@@ -18,15 +18,15 @@ class AuthService:
 
     def register_user(self, email, password):
         try:
-            newUserId = KeyCloakUtils.create_user(email, password)
-            KeyCloakUtils.send_verify_email(newUserId)
-            if newUserId:
-                return newUserId
+            user_id = KeyCloakUtils.create_user(email, password)
+            KeyCloakUtils.send_verify_email(user_id)
+            if user_id:
+                return user_id
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.REGISTER_USER_FAILED)
 
-    #param: name or email
+
     def get_user_id_by_email(self, email):
         try:
             return KeyCloakUtils.get_user_id_by_email(email)
@@ -36,12 +36,12 @@ class AuthService:
 
     def send_forgot_password(self,email):
         try:
-            Userid = self.get_user_id_by_email(email=email)
-            if Userid:
-                KeyCloakUtils.send_forgot_password(user_id=Userid,email=email)
-                return Userid
+            user_id = self.get_user_id_by_email(email=email)
+            if user_id:
+                KeyCloakUtils.send_forgot_password(user_id=user_id,email=email)
+                return user_id
             else:
-                logger.info(bytes(str(e), encoding='utf-8'))
+                # logger.info(bytes(str(e), encoding='utf-8'))
                 raise Exception(Message.USER_NOT_FOUND)
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))

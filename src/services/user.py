@@ -27,7 +27,7 @@ class UserService(BaseService):
                 self.model.last_name = EncryptUtils.encrypt_data(record.last_name, record.password, id)
 
             return self.model.add()
-        except:
+        except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.REGISTER_USER_FAILED)
 
@@ -48,7 +48,7 @@ class UserService(BaseService):
                 user_info.last_name = EncryptUtils.encrypt_data(last_name, new_pass, user_id)
 
             return user_info.update()
-        except:
+        except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.CHANGE_PASSWORD_FAILED)
 
@@ -70,7 +70,7 @@ class UserService(BaseService):
                 return obj_res
             else:
                 return None
-        except:
+        except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.GET_PROFILE_FAILED)
 
@@ -90,7 +90,7 @@ class UserService(BaseService):
                 user_info.last_name = EncryptUtils.encrypt_with_hash(request.last_name, hash_key)
 
             return user_info.update()
-        except:
+        except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.UPDATE_PROFILE_FAILED)
 
@@ -105,7 +105,7 @@ class UserService(BaseService):
                 )
             else:
                 raise Exception(Message.GET_USER_INFO_FAILED)
-        except:
+        except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.GET_USER_INFO_FAILED)
 
@@ -124,7 +124,7 @@ class UserService(BaseService):
                 lst_user=lst_obj_res
             )
             return response
-        except:
+        except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.SEARCH_USER_FAILED)
 
@@ -143,6 +143,6 @@ class UserService(BaseService):
                 lst_user=lst_obj_res
             )
             return response
-        except:
+        except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.GET_USER_INFO_FAILED)

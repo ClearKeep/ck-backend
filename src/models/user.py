@@ -8,8 +8,8 @@ from src.models.base import db
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.String(36), primary_key=True)
-    display_name = db.Column(db.String(255), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
+    display_name = db.Column(db.String(255), unique=False, nullable=True)
     first_name = db.Column(db.String(255), unique=False, nullable=True)
     last_name = db.Column(db.String(255), unique=False, nullable=True)
     status = db.Column(db.String(256), unique=False, nullable=True)

@@ -130,8 +130,8 @@ class GroupService(BaseService):
             lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
             for client in lst_client_in_group:
                 client_in = group_pb2.ClientInGroupResponse(
-                    id=client.client_id,
-                    display_name=client.display_name
+                    id=client.User.id,
+                    display_name=client.User.display_name
                 )
                 res_obj.lst_client.append(client_in)
 
