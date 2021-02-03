@@ -14,7 +14,7 @@ class AuthController(BaseController):
 
     def login(self, request, context):
         try:
-            token = self.service.token(request.email, request.password)
+            token = self.service.refresh_token(request.email, request.password)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if token:
                 hash_key = EncryptUtils.encoded_hash(request.password, introspect_token['sub'])
@@ -63,6 +63,7 @@ class AuthController(BaseController):
                         success=True
                     ))
             else:
+                self.service.delete_user(new_user)
                 raise Exception(Message.REGISTER_USER_FAILED)
         except Exception as e:
             errors = [Message.get_error_object(e.args[0])]

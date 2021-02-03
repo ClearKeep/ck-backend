@@ -7,10 +7,17 @@ message RegisterTokenRequest {
   string token = 3;
 }
 
+//errors response
+message ErrorRes {
+    int64 code = 1;
+    string message = 2;
+}
+
 message BaseResponse {
     bool success = 1;
-    string errors = 2;
+    ErrorRes errors = 2;
 }
+
 // Method
 service NotifyPush {
     rpc register_token (RegisterTokenRequest) returns (BaseResponse);
