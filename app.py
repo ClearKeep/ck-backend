@@ -25,6 +25,7 @@ from utils.logger import *
 import threading
 import time
 
+
 def grpc_server(port):
     # server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), interceptors=(AuthInterceptor(),))
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=200))
@@ -53,6 +54,7 @@ def grpc_server(port):
     get_thread()
 
     server.wait_for_termination()
+
 
 def get_thread():
     total = threading.activeCount()

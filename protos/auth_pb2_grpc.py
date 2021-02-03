@@ -29,6 +29,11 @@ class AuthStub(object):
                 request_serializer=protos_dot_auth__pb2.FogotPassWord.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.BaseResponse.FromString,
                 )
+        self.logout = channel.unary_unary(
+                '/auth.Auth/logout',
+                request_serializer=protos_dot_auth__pb2.LogoutReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.BaseResponse.FromString,
+                )
 
 
 class AuthServicer(object):
@@ -52,6 +57,12 @@ class AuthServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def logout(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AuthServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -68,6 +79,11 @@ def add_AuthServicer_to_server(servicer, server):
             'fogot_password': grpc.unary_unary_rpc_method_handler(
                     servicer.fogot_password,
                     request_deserializer=protos_dot_auth__pb2.FogotPassWord.FromString,
+                    response_serializer=protos_dot_auth__pb2.BaseResponse.SerializeToString,
+            ),
+            'logout': grpc.unary_unary_rpc_method_handler(
+                    servicer.logout,
+                    request_deserializer=protos_dot_auth__pb2.LogoutReq.FromString,
                     response_serializer=protos_dot_auth__pb2.BaseResponse.SerializeToString,
             ),
     }
@@ -127,6 +143,23 @@ class Auth(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/fogot_password',
             protos_dot_auth__pb2.FogotPassWord.SerializeToString,
+            protos_dot_auth__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def logout(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/logout',
+            protos_dot_auth__pb2.LogoutReq.SerializeToString,
             protos_dot_auth__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

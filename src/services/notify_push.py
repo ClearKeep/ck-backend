@@ -23,9 +23,9 @@ class NotifyPushService(BaseService):
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.REGISTER_USER_FAILED)
 
-    def delete_token(self,client_id, device_id):
+    def delete_token(self, client_id, device_id):
         try:
-            id_device_token = self.model.get(client_id=client_id,device_id=device_id)
+            id_device_token = self.model.get(client_id=client_id, device_id=device_id)
             if id_device_token:
                 id_device_token.delete()
             else:

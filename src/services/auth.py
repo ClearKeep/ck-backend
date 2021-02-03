@@ -29,15 +29,9 @@ class AuthService:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.AUTH_USER_NOT_FOUND)
 
-    def logout(self, email=None, password=None, refresh_token=None):
+    def logout(self, refresh_token):
         try:
-            if refresh_token:
-                KeyCloakUtils.logout(refresh_token)
-            else:
-                token = self.token(email, password)
-                KeyCloakUtils.logout(token['refresh_token'])
-            if token:
-                return token
+            KeyCloakUtils.logout(refresh_token)
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.UNAUTHENTICATED)
@@ -62,7 +56,7 @@ class AuthService:
             
     def delete_user(self, userid):
         try:
-            rkeycloak_admin.delete_user(user_id=userid)
+            keycloak_admin.delete_user(user_id=userid)
             if newUserId:
                 return newUserId
         except Exception as e:
