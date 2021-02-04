@@ -7,7 +7,6 @@ from src.models.signal_group_key import GroupClientKey
 from src.services.notify_push import NotifyPushService
 
 
-
 class MessageController(BaseController):
     def __init__(self, *kwargs):
         self.service = MessageService()
