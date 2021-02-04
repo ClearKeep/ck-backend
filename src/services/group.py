@@ -29,18 +29,7 @@ class GroupService(BaseService):
                     created_at=int(group_chat.created_at.timestamp() * 1000),
                     updated_by_client_id=group_chat.updated_by,
                     group_rtc_token=group_chat.group_rtc_token
-
                 )
-
-                # list client in group
-                lst_client_in_group = GroupClientKey().get_clients_in_group(group_chat.id)
-                for client in lst_client_in_group:
-                    client_in = group_pb2.ClientInGroupResponse(
-                        id=client.User.id,
-                        display_name=client.User.display_name
-                    )
-                    res_obj.lst_client.append(client_in)
-
                 return res_obj
 
         self.model = GroupChat(
