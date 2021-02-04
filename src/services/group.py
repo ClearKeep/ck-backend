@@ -16,10 +16,38 @@ class GroupService(BaseService):
         self.transaction = 'ckbackendtransaction'
 
     def add_group(self, group_name, group_type, lst_client_id, created_by):
+        # check duplicate with create group peer
+        if group_type == 'peer':
+            group_chat = self.check_joined(create_by=created_by, list_client_id=lst_client_id)
+            if group_chat:
+                res_obj = group_pb2.GroupObjectResponse(
+                    group_id=group_chat.id,
+                    group_name=group_chat.group_name,
+                    group_type=group_chat.group_type,
+                    group_avatar=group_chat.group_avatar,
+                    created_by_client_id=group_chat.created_by,
+                    created_at=int(group_chat.created_at.timestamp() * 1000),
+                    updated_by_client_id=group_chat.updated_by,
+                    group_rtc_token=group_chat.group_rtc_token
+
+                )
+
+                # list client in group
+                lst_client_in_group = GroupClientKey().get_clients_in_group(group_chat.id)
+                for client in lst_client_in_group:
+                    client_in = group_pb2.ClientInGroupResponse(
+                        id=client.User.id,
+                        display_name=client.User.display_name
+                    )
+                    res_obj.lst_client.append(client_in)
+
+                return res_obj
+
         self.model = GroupChat(
             group_name=group_name,
             group_type=group_type,
-            created_by=created_by
+            created_by=created_by,
+            group_clients= str(lst_client_id)
         )
         new_group = self.model.add()
         new_token = self.register_webrtc_token(new_group.group_rtc_token)
@@ -277,4 +305,14 @@ class GroupService(BaseService):
             lst_group=lst_obj_res
         )
         return response
+
+    def check_joined(self, create_by, list_client_id):
+        lst_group_peer = self.model.get_joined_group_type(client_id=create_by, group_type="peer")
+        for member_id in list_client_id:
+            if member_id != create_by:
+                for group_joined in lst_group_peer:
+                    if group_joined.group_clients:
+                        if member_id in group_joined.group_clients:
+                            return group_joined.GroupChat
+        return None
 

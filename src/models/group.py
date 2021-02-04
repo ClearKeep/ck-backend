@@ -52,6 +52,13 @@ class GroupChat(db.Model):
             .all()
         return result
 
+    def get_joined_group_type(self, client_id, group_type):
+        result = db.session.query(GroupChat, GroupClientKey.id, GroupChat.group_clients) \
+            .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \
+            .filter(GroupClientKey.client_id == client_id) \
+            .filter(GroupChat.group_type == group_type) \
+            .all()
+        return result
 
     def update(self):
         db.session.merge(self)
