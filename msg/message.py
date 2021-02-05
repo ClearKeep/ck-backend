@@ -28,12 +28,15 @@ class Message:
 
     #call
     CLIENT_REQUEST_CALL_FAILED = 1025
+    #email
+    USER_NOT_VERIFY_EMAIL = 1026
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
         AUTH_USER_NOT_FOUND: "Login information is not correct. Please try again",
         REGISTER_USER_ALREADY_EXISTS: "This email address is already being used",
         REGISTER_USER_FAILED: "Register account failed. Please try again",
+        USER_NOT_VERIFY_EMAIL: "Your account has not been activated. Please check email for activation link",
         CHANGE_PASSWORD_FAILED: "Change password failed. please try again",
         USER_NOT_FOUND: "User information is not correct. Please try again",
         GET_PROFILE_FAILED: "Get profile failed. Please try again",
