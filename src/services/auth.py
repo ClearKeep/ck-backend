@@ -3,7 +3,7 @@ from utils.keycloak import KeyCloakUtils
 from utils.logger import *
 from src.models.notify_token import NotifyToken
 from src.services.notify_push import NotifyPushService
-
+import json
 
 class AuthService:
     def __init__(self):
@@ -16,6 +16,9 @@ class AuthService:
                 return token
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
+            check_error = json.loads(e.args[0]).get("error")
+            if check_error == "invalid_grant":
+                raise Exception(Message.USER_NOT_VERIFY_EMAIL)
             raise Exception(Message.AUTH_USER_NOT_FOUND)
 
     def refresh_token(self, email, password):
