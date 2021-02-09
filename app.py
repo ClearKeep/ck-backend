@@ -24,7 +24,7 @@ from utils.logger import *
 # from middlewares.auth_interceptor import AuthInterceptor
 import threading
 import time
-
+from src.controllers import app
 
 def grpc_server(port):
     # server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), interceptors=(AuthInterceptor(),))
@@ -47,12 +47,11 @@ def grpc_server(port):
 
     server.add_insecure_port('0.0.0.0:5000')
     server.start()
-
     print("Listening on port {}..".format(port))
     logger.info("Listening on port {}..".format(port))
 
-    get_thread()
-
+    # get_thread()
+    app.run(host="0.0.0.0", port="5001",threaded=False, processes=3,debug=True)
     server.wait_for_termination()
 
 
@@ -63,6 +62,8 @@ def get_thread():
     get_thread()
 
 
+
 if __name__ == '__main__':
     port = get_system_config()['port']
     grpc_server(port)
+

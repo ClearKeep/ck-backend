@@ -61,3 +61,4 @@ twilio==6.51.1
 uritemplate==3.0.1
 urllib3==1.25.10
 Werkzeug==1.0.1
+flask_restful
