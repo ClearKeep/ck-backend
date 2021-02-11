@@ -7,6 +7,8 @@ from src.services.notify_push import NotifyPushService
 from src.models.group import GroupChat
 from src.services.server_info import ServerInfoService
 from protos import video_call_pb2
+from src.services.group import GroupService
+import secrets
 
 class VideoCallService:
     def __init__(self):
@@ -56,15 +58,16 @@ class VideoCallService:
 
         server_info = ServerInfoService().get_server_info()
 
+        webrtc_token = secrets.token_hex(10)
+        GroupService().register_webrtc_token(webrtc_token)
+
         if len(other_clients_in_group) > 0:
             # push notification voip for other clients in group
             push_service = NotifyPushService()
-            group_rtc_token = GroupChat().get_group_rtc_token(group_id=group_id)
-
             push_payload = {
                 'notify_type': 'request_call',
                 'group_id': str(group_id),
-                'group_rtc_token': group_rtc_token.group_rtc_token,
+                'group_rtc_token': webrtc_token,
                 'from_client_id': from_client_id,
                 'from_client_name': from_client_username,
                 'from_client_avatar': '',
@@ -87,10 +90,11 @@ class VideoCallService:
             user=turn_server_obj["user"],
             pwd=turn_server_obj["pwd"]
         )
-
         return video_call_pb2.ServerResponse(
             stun_server=stun_server,
-            turn_server=turn_server
+            turn_server=turn_server,
+            group_rtc_token=webrtc_token
+
         )
 
 

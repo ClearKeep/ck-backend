@@ -15,6 +15,7 @@ message BaseResponse {
 message ServerResponse {
     StunServer stun_server = 1;
     TurnServer turn_server = 2;
+    string group_rtc_token = 3;
 }
 
 message StunServer {

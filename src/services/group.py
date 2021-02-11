@@ -7,6 +7,7 @@ from src.services.janus_webrtc import JanusService
 from utils.config import get_system_config
 import requests
 import json
+import secrets
 
 
 class GroupService(BaseService):
@@ -36,10 +37,12 @@ class GroupService(BaseService):
             group_name=group_name,
             group_type=group_type,
             created_by=created_by,
-            group_clients= str(lst_client_id)
+            group_clients=str(lst_client_id),
+            group_rtc_token=secrets.token_hex(10)
         )
         new_group = self.model.add()
         new_token = self.register_webrtc_token(new_group.group_rtc_token)
+
         self.create_rtc_group(new_group.id,new_token)
         res_obj = group_pb2.GroupObjectResponse(
             group_id=new_group.id,

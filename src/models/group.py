@@ -5,9 +5,6 @@ from src.models.message import Message
 from src.models.signal_group_key import GroupClientKey
 
 
-def create_token_rtc():
-    return secrets.token_hex(10)
-
 class GroupChat(db.Model):
     __tablename__ = 'group_chat'
     id = db.Column(db.Integer, primary_key=True)
@@ -15,7 +12,7 @@ class GroupChat(db.Model):
     group_avatar = db.Column(db.String(255), unique=False, nullable=True)
     group_type = db.Column(db.String(36), unique=False, nullable=True)
     group_clients = db.Column(db.Text, unique=False, nullable=True)
-    group_rtc_token = db.Column(db.Text, default=create_token_rtc)
+    group_rtc_token = db.Column(db.Text, unique=False, nullable=True)
     created_by = db.Column(db.String(36), unique=False, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_by = db.Column(db.String(36), unique=False, nullable=True)
