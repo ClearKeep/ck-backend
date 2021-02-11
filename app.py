@@ -25,6 +25,7 @@ from utils.logger import *
 import threading
 import time
 from src.controllers import app
+from crontab import CronTab
 
 def grpc_server():
     grpc_port = get_system_config()['grpc_port']
@@ -57,7 +58,10 @@ def grpc_server():
     print("HTTP listening on port {}..".format(http_port))
     logger.info("HTTP listening on port {}..".format(http_port))
 
-    # get_thread()
+    # set cronjob
+    cron_tab_update_turn_server()
+    # log total thread
+    get_thread()
     server.wait_for_termination()
 
 
@@ -66,6 +70,15 @@ def get_thread():
     logger.info("Total thread= {}".format(total))
     time.sleep(1800)
     get_thread()
+
+def cron_tab_update_turn_server():
+    cron = CronTab(user='ubuntu')
+    cron.remove_all()
+    job = cron.new(command='ENV=stagging python3 -m client.client_nts')
+    job.minute.every(1439) #set to 23h59p
+    cron.write()
+    print("Cronjob cron_tab_update_turn_server set")
+    logger.info("Cronjob cron_tab_update_turn_server set")
 
 
 if __name__ == '__main__':
