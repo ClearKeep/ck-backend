@@ -9,6 +9,7 @@ from src.services.server_info import ServerInfoService
 from protos import video_call_pb2
 from src.services.group import GroupService
 import secrets
+from utils.logger import *
 
 class VideoCallService:
     def __init__(self):
@@ -60,6 +61,7 @@ class VideoCallService:
 
         webrtc_token = secrets.token_hex(10)
         GroupService().register_webrtc_token(webrtc_token)
+        logger.info('janus webrtc token=', webrtc_token)
 
         if len(other_clients_in_group) > 0:
             # push notification voip for other clients in group
@@ -94,7 +96,6 @@ class VideoCallService:
             stun_server=stun_server,
             turn_server=turn_server,
             group_rtc_token=webrtc_token
-
         )
 
 
