@@ -1,20 +1,13 @@
 # Retrieve a Network Traversal Service Token
 from twilio.rest import Client
-import os
 import json
 from protos import server_info_pb2, server_info_pb2_grpc
 import grpc
 from utils.logger import *
 from utils.config import get_system_config
 
-# env = os.getenv("ENV")
-# env_name = env if env else 'development'
-# with open(f'./configs/{env_name}.json') as json_data_file:
-#     data = json.load(json_data_file)
-# print("Load config env=", env_name)
 
-def generate_stun_turn_credential():
-    data = get_system_config()
+def generate_stun_turn_credential(data):
     account_sid = data['stun_turn_credential'].get('twilio_account_sid')
     auth_token = data['stun_turn_credential'].get('twilio_auth_token')
     client = Client(account_sid, auth_token)
@@ -46,9 +39,10 @@ def generate_stun_turn_credential():
 
 def update_stun_turn_credential():
     try:
-        stun, turn = generate_stun_turn_credential()
-        host = "localhost"  # data['']
-        port = 5000  # data['']
+        data = get_system_config()
+        stun, turn = generate_stun_turn_credential(data)
+        host = data['server_domain']
+        port = data['grpc_port']
         channel = grpc.insecure_channel(host + ':' + str(port))
         stub = server_info_pb2_grpc.ServerInfoStub(channel)
 

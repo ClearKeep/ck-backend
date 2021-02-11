@@ -24,9 +24,10 @@ from utils.logger import *
 # from middlewares.auth_interceptor import AuthInterceptor
 import threading
 import time
+from src.controllers import app
 
-
-def grpc_server(port):
+def grpc_server():
+    grpc_port = get_system_config()['grpc_port']
     # server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), interceptors=(AuthInterceptor(),))
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=200))
     user_service.add_UserServicer_to_server(UserController(), server)
@@ -43,26 +44,30 @@ def grpc_server(port):
     # init log
     create_timed_rotating_log('logs/logfile.log')
 
-    # init_firebase_app()
-
-    server.add_insecure_port('0.0.0.0:5000')
+    #start grpc api
+    grpc_add = "0.0.0.0:{}".format(grpc_port)
+    server.add_insecure_port(grpc_add)
     server.start()
+    print("gRPC listening on port {}..".format(grpc_port))
+    logger.info("gRPC listening on port {}..".format(grpc_port))
 
-    print("Listening on port {}..".format(port))
-    logger.info("Listening on port {}..".format(port))
+    # start http api
+    http_port = get_system_config()['http_port']
+    app.run(host="0.0.0.0", port=str(http_port), threaded=False, processes=3, debug=False)
+    print("HTTP listening on port {}..".format(http_port))
+    logger.info("HTTP listening on port {}..".format(http_port))
 
-    get_thread()
-
+    # get_thread()
     server.wait_for_termination()
 
 
 def get_thread():
     total = threading.activeCount()
     logger.info("Total thread= {}".format(total))
-    time.sleep(3600)
+    time.sleep(1800)
     get_thread()
 
 
 if __name__ == '__main__':
-    port = get_system_config()['port']
-    grpc_server(port)
+    grpc_server()
+
