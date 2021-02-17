@@ -25,8 +25,14 @@ class NotifyToken(db.Model):
             self.update()
         else:
             self.id = str(uuid.uuid4())
-            db.session.add(self)
-            db.session.commit()
+            try:
+                db.session.add(self)
+                db.session.commit()
+            except:
+                db.session.rollback()
+                raise
+            finally:
+                db.session.close()
         return self
 
     def get(self, client_id, device_id):
@@ -42,9 +48,21 @@ class NotifyToken(db.Model):
         return client_tokens
 
     def update(self):
-        db.session.merge(self)
-        db.session.commit()
+        try:
+            db.session.merge(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()
 
     def delete(self):
-        db.session.delete(self)
-        db.session.commit()
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()

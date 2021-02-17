@@ -29,8 +29,14 @@ class GroupClientKey(db.Model):
             self.id = client.id
             self.update()
         else:
-            db.session.add(self)
-            db.session.commit()
+            try:
+                db.session.add(self)
+                db.session.commit()
+            except:
+                db.session.rollback()
+                raise
+            finally:
+                db.session.close()
 
     def get(self, group_id, client_id):
         client = self.query.filter_by(group_id=group_id, client_id=client_id).one_or_none()
@@ -67,5 +73,11 @@ class GroupClientKey(db.Model):
     #     return result
 
     def update(self):
-        db.session.merge(self)
-        db.session.commit()
+        try:
+            db.session.merge(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()

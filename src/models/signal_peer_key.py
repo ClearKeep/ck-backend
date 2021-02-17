@@ -38,13 +38,28 @@ class PeerClientKey(db.Model):
             self.id = client.id
             self.update()
         else:
-            db.session.add(self)
-            db.session.commit()
+            try:
+                db.session.add(self)
+                db.session.commit()
+            except:
+                db.session.rollback()
+                raise
+            finally:
+                db.session.close()
+
+
 
     def get_by_client_id(self, client_id):
         client = self.query.filter_by(client_id=client_id).one_or_none()
         return client
 
     def update(self):
-        db.session.merge(self)
-        db.session.commit()
+        try:
+            db.session.merge(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()
+            return True
