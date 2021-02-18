@@ -27,6 +27,7 @@ import time
 from src.controllers import app
 from crontab import CronTab
 
+
 def grpc_server():
     grpc_port = get_system_config()['grpc_port']
     # server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), interceptors=(AuthInterceptor(),))
@@ -45,7 +46,7 @@ def grpc_server():
     # init log
     create_timed_rotating_log('logs/logfile.log')
 
-    #start grpc api
+    # start grpc api
     grpc_add = "0.0.0.0:{}".format(grpc_port)
     server.add_insecure_port(grpc_add)
     server.start()
@@ -71,11 +72,12 @@ def get_thread():
     time.sleep(1800)
     get_thread()
 
+
 def cron_tab_update_turn_server():
     cron = CronTab(user='ubuntu')
     cron.remove_all()
     job = cron.new(command='ENV=stagging python3 -m client.client_nts')
-    job.minute.every(1439) #set to 23h59p
+    job.minute.every(1439)  # set to 23h59p
     cron.write()
     print("Cronjob cron_tab_update_turn_server set")
     logger.info("Cronjob cron_tab_update_turn_server set")
@@ -83,4 +85,3 @@ def cron_tab_update_turn_server():
 
 if __name__ == '__main__':
     grpc_server()
-
