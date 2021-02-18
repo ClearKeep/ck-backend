@@ -8,9 +8,16 @@ class ServerInfo(db.Model):
     turn_server = db.Column(db.String(500), nullable=True)
 
     def add(self):
-        db.session.add(self)
-        db.session.commit()
-        return self
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()
+            return self
+
 
     def get(self):
         server_info = self.query.one_or_none()
@@ -20,8 +27,15 @@ class ServerInfo(db.Model):
         server_info = self.get()
         if server_info is not None:
             self.id = server_info.id
-            db.session.merge(self)
-            db.session.commit()
+            try:
+                db.session.merge(self)
+                db.session.commit()
+            except:
+                db.session.rollback()
+                raise
+            finally:
+                db.session.close()
+                return True
         else:
             self.add()
         return True

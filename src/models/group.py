@@ -22,10 +22,15 @@ class GroupChat(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)
 
     def add(self):
-        # self.id = str(uuid.uuid4())
-        db.session.add(self)
-        db.session.commit()
-        return self
+        try:
+            db.session.add(self)
+            db.session.commit()
+            return self
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()
 
     def get(self, group_id):
         group = db.session.query(GroupChat, Message) \
@@ -58,9 +63,15 @@ class GroupChat(db.Model):
         return result
 
     def update(self):
-        db.session.merge(self)
-        db.session.commit()
-        return True
+        try:
+            db.session.merge(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()
+            return True
 
 
     def get_group_rtc_token(self, group_id):

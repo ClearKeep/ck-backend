@@ -23,12 +23,24 @@ class User(db.Model):
     tokens = relationship('NotifyToken', back_populates='user')
 
     def add(self):
-        db.session.add(self)
-        db.session.commit()
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()
 
     def update(self):
-        db.session.merge(self)
-        db.session.commit()
+        try:
+            db.session.merge(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()
 
     def search(self, keyword, client_id):
         search = "%{}%".format(keyword)
