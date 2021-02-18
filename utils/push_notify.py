@@ -25,20 +25,22 @@ client_ios_text = APNsClient(
 
 
 def ios_data_notification(registration_tokens, payload):
-    try:
-        for token in registration_tokens:
+    for token in registration_tokens:
+        try:
             res = client_ios_voip.send_message(token, payload)
-    except Exception as e:
-        logger.info(e)
+            logger.info("Send succesed {}".fomat(token))
+        except Exception as e:
+            logger.info(e)
 
 
 def ios_text_notifications(registration_tokens, payload):
     alert = Payload(alert=payload, badge=1, sound="default")
-    try:
-        for token in registration_tokens:
+    for token in registration_tokens:
+        try:
             res = client_ios_text.send_message(token, alert)
-    except Exception as e:
-        logger.info(e)
+            logger.info("Send succesed {}".fomat(token))
+        except Exception as e:
+            logger.info(e)
 
 
 # init push service for Android
