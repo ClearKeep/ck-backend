@@ -20,7 +20,8 @@ class PeerClientKey(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
-    def set_key(self, client_id, registration_id, device_id, identity_key_public, prekey_id, prekey, signed_prekey_id, signed_prekey, signed_prekey_signature):
+    def set_key(self, client_id, registration_id, device_id, identity_key_public, prekey_id, prekey, signed_prekey_id,
+                signed_prekey, signed_prekey_signature):
         self.client_id = client_id
         self.registration_id = registration_id
         self.device_id = device_id
@@ -44,10 +45,6 @@ class PeerClientKey(db.Model):
             except:
                 db.session.rollback()
                 raise
-            finally:
-                db.session.close()
-
-
 
     def get_by_client_id(self, client_id):
         client = self.query.filter_by(client_id=client_id).one_or_none()
@@ -60,6 +57,3 @@ class PeerClientKey(db.Model):
         except:
             db.session.rollback()
             raise
-        finally:
-            db.session.close()
-            return True

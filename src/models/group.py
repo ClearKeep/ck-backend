@@ -29,8 +29,6 @@ class GroupChat(db.Model):
         except:
             db.session.rollback()
             raise
-        finally:
-            db.session.close()
 
     def get(self, group_id):
         group = db.session.query(GroupChat, Message) \
@@ -69,10 +67,6 @@ class GroupChat(db.Model):
         except:
             db.session.rollback()
             raise
-        finally:
-            db.session.close()
-            return True
-
 
     def get_group_rtc_token(self, group_id):
         result = db.session.query(GroupChat.group_rtc_token) \
