@@ -5,6 +5,7 @@ from protos import server_info_pb2, server_info_pb2_grpc
 import grpc
 from utils.logger import *
 from utils.config import get_system_config
+from datetime import datetime
 
 
 def generate_stun_turn_credential(data):
@@ -21,7 +22,7 @@ def generate_stun_turn_credential(data):
         "port": 3478
     }
     str_stun = json.dumps(stun)
-    print("str_stun=", str_stun)
+    #print("str_stun=", str_stun)
 
     turn_obj = token.ice_servers[1]
     turn = {
@@ -32,13 +33,15 @@ def generate_stun_turn_credential(data):
         "pwd": turn_obj["credential"]
     }
     str_turn = json.dumps(turn)
-    print("str_turn=", str_turn)
+    #print("str_turn=", str_turn)
 
     return str_stun, str_turn
 
 
 def update_stun_turn_credential():
     try:
+        print('Cronjob Run At: ' + str(datetime.now()))
+
         data = get_system_config()
         stun, turn = generate_stun_turn_credential(data)
         host = data['server_domain']
