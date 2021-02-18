@@ -29,7 +29,7 @@ from crontab import CronTab
 import os
 
 
-def grpc_server():
+def start_server():
     grpc_port = get_system_config()['grpc_port']
     # server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), interceptors=(AuthInterceptor(),))
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=200))
@@ -57,15 +57,16 @@ def grpc_server():
     # set cronjob
     cron_tab_update_turn_server()
     # log total thread
-    get_thread()
+    #get_thread()
 
     # start http api
     http_port = get_system_config()['http_port']
-    app.run(host="0.0.0.0", port=str(http_port), threaded=False, processes=3, debug=False)
     print("HTTP listening on port {}..".format(http_port))
     logger.info("HTTP listening on port {}..".format(http_port))
+    app.run(host="0.0.0.0", port=str(http_port), threaded=False, processes=3, debug=False)
 
     server.wait_for_termination()
+
 
 
 def get_thread():
@@ -76,16 +77,20 @@ def get_thread():
 
 
 def cron_tab_update_turn_server():
-    # run in the first time
-    os.system('ENV=stagging python3 -m client.client_nts')
-    # set cronjob in next time
-    cron = CronTab(user='ubuntu')
-    cron.remove_all()
-    job = cron.new(command='ENV=stagging python3 -m client.client_nts')
-    job.hour.on(1)
-    cron.write()
-    logger.info("Cronjob cron_tab_update_turn_server set")
+    try:
+        # run in the first time
+        os.system('ENV=stagging python3 -m client.client_nts')
+        # set cronjob in next time
+        cron = CronTab(user='ubuntu')
+        cron.remove_all()
+        job = cron.new(command='ENV=stagging python3 -m client.client_nts')
+        job.hour.on(1)
+        cron.write()
+        logger.info("Cronjob cron_tab_update_turn_server set")
+
+    except Exception as e:
+        logger.error(e)
 
 
 if __name__ == '__main__':
-    grpc_server()
+    start_server()
