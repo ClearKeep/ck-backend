@@ -28,9 +28,9 @@ def ios_data_notification(registration_tokens, payload):
     for token in registration_tokens:
         try:
             res = client_ios_voip.send_message(token, payload)
-            logger.info("Send succesed {}".fomat(token))
+            logger.info("Push iOS data notify success with token: {}".fomat(token))
         except Exception as e:
-            logger.info(e)
+            logger.error(e)
 
 
 def ios_text_notifications(registration_tokens, payload):
@@ -38,9 +38,9 @@ def ios_text_notifications(registration_tokens, payload):
     for token in registration_tokens:
         try:
             res = client_ios_text.send_message(token, alert)
-            logger.info("Send succesed {}".fomat(token))
+            logger.info("Push iOS text notify success with token: {}".fomat(token))
         except Exception as e:
-            logger.info(e)
+            logger.error(e)
 
 
 # init push service for Android
