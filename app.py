@@ -26,6 +26,7 @@ import threading
 import time
 from src.controllers import app
 from crontab import CronTab
+import os
 
 
 def grpc_server():
@@ -75,6 +76,9 @@ def get_thread():
 
 
 def cron_tab_update_turn_server():
+    # run in the first time
+    os.system('ENV=stagging python3 -m client.client_nts')
+    # set cronjob in next time
     cron = CronTab(user='ubuntu')
     cron.remove_all()
     job = cron.new(command='ENV=stagging python3 -m client.client_nts')
