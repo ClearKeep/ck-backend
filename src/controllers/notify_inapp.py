@@ -31,7 +31,7 @@ class NotifyInAppController(BaseController):
         client_id = request.client_id
         notify_channel = "{}/notify".format(client_id)
 
-        while context.is_active():
+        while True:
             try:
                 if notify_channel in client_notify_queue:
                     notify_response = client_notify_queue[notify_channel].get()  # blocking until the next .put for this queue
@@ -47,8 +47,6 @@ class NotifyInAppController(BaseController):
                         read_flg=notify_response.read_flg,
                         created_at=int(notify_response.created_at.timestamp() * 1000)
                     )
-                    if not context.is_active():
-                        break
                     yield notify_stream_response
                     # print(message_response)
             except Exception as e:

@@ -1,7 +1,7 @@
 from flask import Flask
 from utils.config import get_system_config
 from flask_restful import Resource, Api
-from src.controllers.turn_server import Server
+# from src.controllers.turn_server import Server
 
 db_config = get_system_config()['db']
 db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(
@@ -21,7 +21,6 @@ app.config["SQLALCHEMY_POOL_TIMEOUT"] = 300
 app.config["SQLALCHEMY_MAX_OVERFLOW"] = -1
 
 api = Api(app)
-api.add_resource(Server, '/turn-server')
 
 
 @app.after_request

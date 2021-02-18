@@ -78,8 +78,7 @@ class MessageController(BaseController):
         client_id = request.clientId
         message_channel = "{}/message".format(client_id)
 
-        while context.is_active():
-            print(' context.is_active()=',  context.is_active())
+        while True:
             try:
                 if message_channel in client_message_queue:
                     message_response = client_message_queue[message_channel].get()
@@ -89,7 +88,6 @@ class MessageController(BaseController):
             except:
                 logger.info('Client {} is disconnected'.format(client_id))
                 context.cancel()
-                print(' context.is_active()=', context.is_active())
                 print('len queue before=', len(client_message_queue))
                 client_message_queue[message_channel] = None
                 del client_message_queue[message_channel]
