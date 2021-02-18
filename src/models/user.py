@@ -29,8 +29,6 @@ class User(db.Model):
         except:
             db.session.rollback()
             raise
-        finally:
-            db.session.close()
 
     def update(self):
         try:
@@ -39,8 +37,7 @@ class User(db.Model):
         except:
             db.session.rollback()
             raise
-        finally:
-            db.session.close()
+
 
     def search(self, keyword, client_id):
         search = "%{}%".format(keyword)
