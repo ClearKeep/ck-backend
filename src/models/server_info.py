@@ -11,12 +11,11 @@ class ServerInfo(db.Model):
         try:
             db.session.add(self)
             db.session.commit()
+            return self
         except:
             db.session.rollback()
             raise
-        finally:
-            db.session.close()
-            return self
+
 
 
     def get(self):
@@ -33,9 +32,6 @@ class ServerInfo(db.Model):
             except:
                 db.session.rollback()
                 raise
-            finally:
-                db.session.close()
-                return True
         else:
             self.add()
         return True

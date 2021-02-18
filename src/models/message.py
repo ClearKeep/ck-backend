@@ -44,6 +44,3 @@ class Message(db.Model):
         except:
             db.session.rollback()
             raise
-        finally:
-            db.session.close()
-            return True
