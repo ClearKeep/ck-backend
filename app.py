@@ -53,16 +53,17 @@ def grpc_server():
     print("gRPC listening on port {}..".format(grpc_port))
     logger.info("gRPC listening on port {}..".format(grpc_port))
 
+    # set cronjob
+    cron_tab_update_turn_server()
+    # log total thread
+    get_thread()
+
     # start http api
     http_port = get_system_config()['http_port']
     app.run(host="0.0.0.0", port=str(http_port), threaded=False, processes=3, debug=False)
     print("HTTP listening on port {}..".format(http_port))
     logger.info("HTTP listening on port {}..".format(http_port))
 
-    # set cronjob
-    cron_tab_update_turn_server()
-    # log total thread
-    get_thread()
     server.wait_for_termination()
 
 
