@@ -84,7 +84,8 @@ def cron_tab_update_turn_server():
         cron = CronTab(user='ubuntu')
         cron.remove_all()
         job = cron.new(command='ENV=stagging python3 -m client.client_nts')
-        job.hour.on(1)
+        #job.hour.on(1)
+        job.minute.every(30)
         cron.write()
         logger.info("Cronjob cron_tab_update_turn_server set")
 
