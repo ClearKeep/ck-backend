@@ -21,15 +21,26 @@ class Notify(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
 
     def add(self):
-        db.session.add(self)
-        db.session.commit()
-        return self
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()
 
     def get_unread_notifies(self, client_id):
         notifies = self.query.filter_by(client_id=client_id, read_flg=False)
         return notifies
 
     def update(self):
-        db.session.merge(self)
-        db.session.commit()
+        try:
+            db.session.merge(self)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        finally:
+            db.session.close()
 
