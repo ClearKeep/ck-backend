@@ -35,8 +35,6 @@ class GroupClientKey(db.Model):
             except:
                 db.session.rollback()
                 raise
-            finally:
-                db.session.close()
 
     def get(self, group_id, client_id):
         client = self.query.filter_by(group_id=group_id, client_id=client_id).one_or_none()
@@ -79,5 +77,3 @@ class GroupClientKey(db.Model):
         except:
             db.session.rollback()
             raise
-        finally:
-            db.session.close()

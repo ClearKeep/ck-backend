@@ -31,8 +31,6 @@ class NotifyToken(db.Model):
             except:
                 db.session.rollback()
                 raise
-            finally:
-                db.session.close()
         return self
 
     def get(self, client_id, device_id):
@@ -54,8 +52,6 @@ class NotifyToken(db.Model):
         except:
             db.session.rollback()
             raise
-        finally:
-            db.session.close()
 
     def delete(self):
         try:
@@ -64,5 +60,3 @@ class NotifyToken(db.Model):
         except:
             db.session.rollback()
             raise
-        finally:
-            db.session.close()
