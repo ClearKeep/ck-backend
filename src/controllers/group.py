@@ -12,7 +12,8 @@ class GroupController(BaseController):
         self.service = GroupService()
 
     @request_logged
-    def create_group(self, request, context):
+    async def create_group(self, request, context):
+        print("group create_group api")
         try:
             # header_data = dict(context.invocation_metadata())
             # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -31,7 +32,8 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def get_group(self, request, context):
+    async def get_group(self, request, context):
+        print("group get_group api")
         try:
             group_id = request.group_id
             obj_res = self.service.get_group(group_id)
@@ -50,7 +52,8 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def search_groups(self, request, context):
+    async def search_groups(self, request, context):
+        print("group search_groups api")
         try:
             keyword = request.keyword
             obj_res = self.service.search_group(keyword)
@@ -63,7 +66,8 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def get_joined_groups(self, request, context):
+    async def get_joined_groups(self, request, context):
+        print("group get_joined_groups api")
         try:
             # header_data = dict(context.invocation_metadata())
             # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -78,7 +82,8 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def invite_to_group(self, request, context):
+    async def invite_to_group(self, request, context):
+        print("group invite_to_group api")
         try:
             pass
         except Exception as e:
@@ -89,7 +94,8 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def join_group(self, request, context):
+    async def join_group(self, request, context):
+        print("group join_group api")
         try:
             pass
         except Exception as e:

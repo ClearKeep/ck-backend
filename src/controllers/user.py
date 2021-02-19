@@ -28,8 +28,9 @@ class UserController(BaseController):
 
 
     @auth_required
-    @request_logged
+    # @request_logged
     def get_profile(self, request, context):
+        print("user get_profile api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -52,6 +53,7 @@ class UserController(BaseController):
 
     @auth_required
     def update_profile(self, request, context):
+        print("user update_profile api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -67,9 +69,11 @@ class UserController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @auth_required
-    @request_logged
+    # @request_logged
     def get_user_info(self, request, context):
+        print("user get_user_info api")
         try:
+            print("user get_user_info api")
             client_id = request.client_id
             domain_client = request.domain
             domain_local = get_system_domain()
@@ -94,7 +98,8 @@ class UserController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def search_user(self, request, context):
+    async def search_user(self, request, context):
+        print("user search_user api")
         try:
             keyword = request.keyword
             header_data = dict(context.invocation_metadata())
@@ -111,7 +116,8 @@ class UserController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def get_users(self, request, context):
+    async def get_users(self, request, context):
+        print("user get_users api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -127,7 +133,7 @@ class UserController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def get_user_domain(self, request, context):
+    async def get_user_domain(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             domain = "server.domain2"

@@ -10,7 +10,7 @@ class ServerInfoController(BaseController):
         self.service = ServerInfoService()
 
     @request_logged
-    def update_nts(self, request, context):
+    async def update_nts(self, request, context):
         try:
             stun = request.stun
             turn = request.turn

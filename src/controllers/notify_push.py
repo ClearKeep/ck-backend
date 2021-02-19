@@ -11,7 +11,7 @@ class NotifyPushController(BaseController):
         self.service = NotifyPushService()
 
     @request_logged
-    def register_token(self, request, context):
+    async def register_token(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
