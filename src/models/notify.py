@@ -24,6 +24,7 @@ class Notify(db.Model):
         try:
             db.session.add(self)
             db.session.commit()
+            return self
         except:
             db.session.rollback()
             raise
