@@ -1,6 +1,6 @@
 from concurrent import futures
 import grpc
-from src.models.base import db
+from src.models.base import Database
 from utils.config import get_system_config
 import protos.user_pb2_grpc as user_service
 import protos.auth_pb2_grpc as auth_service
@@ -43,7 +43,7 @@ def start_server():
     video_call_service.add_VideoCallServicer_to_server(VideoCallController(), server)
     server_info_service.add_ServerInfoServicer_to_server(ServerInfoController(), server)
     # create all table in database
-    db.create_all()
+    Database.get().create_all()
     # init log
     create_timed_rotating_log('logs/logfile.log')
 
