@@ -1,19 +1,19 @@
-from src.models.base import db
+from src.models.base import Database
 
 
-class ServerInfo(db.Model):
+class ServerInfo(Database.get().Model):
     __tablename__ = 'server_info'
-    id = db.Column(db.Integer, primary_key=True)
-    stun_server = db.Column(db.String(500), nullable=True)
-    turn_server = db.Column(db.String(500), nullable=True)
+    id = Database.get().Column(Database.get().Integer, primary_key=True)
+    stun_server = Database.get().Column(Database.get().String(500), nullable=True)
+    turn_server = Database.get().Column(Database.get().String(500), nullable=True)
 
     def add(self):
         try:
-            db.session.add(self)
-            db.session.commit()
+            Database.get().session.add(self)
+            Database.get().session.commit()
             return self
         except:
-            db.session.rollback()
+            Database.get().session.rollback()
             raise
 
 
@@ -27,10 +27,10 @@ class ServerInfo(db.Model):
         if server_info is not None:
             self.id = server_info.id
             try:
-                db.session.merge(self)
-                db.session.commit()
+                Database.get().session.merge(self)
+                Database.get().session.commit()
             except:
-                db.session.rollback()
+                Database.get().session.rollback()
                 raise
         else:
             self.add()

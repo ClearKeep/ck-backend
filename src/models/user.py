@@ -2,40 +2,40 @@ from datetime import datetime
 
 from sqlalchemy.orm import relationship
 
-from src.models.base import db
+from src.models.base import Database
 
 
-class User(db.Model):
+class User(Database.get().Model):
     __tablename__ = 'user'
-    id = db.Column(db.String(36), primary_key=True)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    display_name = db.Column(db.String(255), unique=False, nullable=True)
-    first_name = db.Column(db.String(255), unique=False, nullable=True)
-    last_name = db.Column(db.String(255), unique=False, nullable=True)
-    status = db.Column(db.String(256), unique=False, nullable=True)
-    avatar = db.Column(db.String(256), unique=False, nullable=True)
-    auth_source = db.Column(db.String(50), unique=False, nullable=True)
-    active = db.Column(db.Boolean, unique=False, nullable=True, default=True)
-    last_active_at = db.Column(db.DateTime, nullable=True)
-    last_login_at = db.Column(db.DateTime, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.now)
+    id = Database.get().Column(Database.get().String(36), primary_key=True)
+    email = Database.get().Column(Database.get().String(255), unique=True, nullable=False)
+    display_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
+    first_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
+    last_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
+    status = Database.get().Column(Database.get().String(256), unique=False, nullable=True)
+    avatar = Database.get().Column(Database.get().String(256), unique=False, nullable=True)
+    auth_source = Database.get().Column(Database.get().String(50), unique=False, nullable=True)
+    active = Database.get().Column(Database.get().Boolean, unique=False, nullable=True, default=True)
+    last_active_at = Database.get().Column(Database.get().DateTime, nullable=True)
+    last_login_at = Database.get().Column(Database.get().DateTime, nullable=True)
+    created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
+    updated_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
     tokens = relationship('NotifyToken', back_populates='user')
 
     def add(self):
         try:
-            db.session.add(self)
-            db.session.commit()
+            Database.get().session.add(self)
+            Database.get().session.commit()
         except:
-            db.session.rollback()
+            Database.get().session.rollback()
             raise
 
     def update(self):
         try:
-            db.session.merge(self)
-            db.session.commit()
+            Database.get().session.merge(self)
+            Database.get().session.commit()
         except:
-            db.session.rollback()
+            Database.get().session.rollback()
             raise
 
 
@@ -54,7 +54,7 @@ class User(db.Model):
         return user
 
     def get_client_id_with_push_token(self, id):
-        result = db.session.query(User.id, User) \
+        result = Database.get().session.query(User.id, User) \
             .filter(User.id == id) \
             .first()
         return result
