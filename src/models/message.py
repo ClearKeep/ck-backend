@@ -1,25 +1,25 @@
 from datetime import datetime
 
-from src.models.base import db
+from src.models.base import Database
 from utils.config import get_system_config
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
 
-class Message(db.Model):
+class Message(Database.get().Model):
     __tablename__ = 'message'
-    id = db.Column(db.String(36), primary_key=True)
-    group_id = db.Column(db.Integer, nullable=True)
-    from_client_id = db.Column(db.String(36), unique=False, nullable=True)
-    client_id = db.Column(db.String(36), nullable=True)
-    message = db.Column(db.Binary)
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.now)
-    deleted_at = db.Column(db.DateTime, nullable=True)
+    id = Database.get().Column(Database.get().String(36), primary_key=True)
+    group_id = Database.get().Column(Database.get().Integer, nullable=True)
+    from_client_id = Database.get().Column(Database.get().String(36), unique=False, nullable=True)
+    client_id = Database.get().Column(Database.get().String(36), nullable=True)
+    message = Database.get().Column(Database.get().Binary)
+    created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
+    updated_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
+    deleted_at = Database.get().Column(Database.get().DateTime, nullable=True)
 
     def add(self):
-        db.session.add(self)
-        db.session.commit()
+        Database.get().session.add(self)
+        Database.get().session.commit()
         return self
 
     def get_message_in_group(self, group_id, offset, from_time):
@@ -39,8 +39,8 @@ class Message(db.Model):
 
     def update(self):
         try:
-            db.session.merge(self)
-            db.session.commit()
+            Database.get().session.merge(self)
+            Database.get().session.commit()
         except:
-            db.session.rollback()
+            Database.get().session.rollback()
             raise

@@ -4,18 +4,18 @@ from datetime import datetime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 
-from src.models.base import db
+from src.models.base import Database
 
 
-class NotifyToken(db.Model):
+class NotifyToken(Database.get().Model):
     __tablename__ = 'notify_token'
-    id = db.Column(db.String(36), primary_key=True)
-    client_id = db.Column(db.String(36), ForeignKey('user.id'))
-    device_id = db.Column(db.String(255), nullable=False)
-    device_type = db.Column(db.String(16), nullable=False)
-    push_token = db.Column(db.String(255), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, onupdate=datetime.now)
+    id = Database.get().Column(Database.get().String(36), primary_key=True)
+    client_id = Database.get().Column(Database.get().String(36), ForeignKey('user.id'))
+    device_id = Database.get().Column(Database.get().String(255), nullable=False)
+    device_type = Database.get().Column(Database.get().String(16), nullable=False)
+    push_token = Database.get().Column(Database.get().String(255), nullable=True)
+    created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
+    updated_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
     user = relationship('User', back_populates='tokens')
 
     def add(self):
@@ -26,10 +26,10 @@ class NotifyToken(db.Model):
         else:
             self.id = str(uuid.uuid4())
             try:
-                db.session.add(self)
-                db.session.commit()
+                Database.get().session.add(self)
+                Database.get().session.commit()
             except:
-                db.session.rollback()
+                Database.get().session.rollback()
                 raise
         return self
 
@@ -47,16 +47,16 @@ class NotifyToken(db.Model):
 
     def update(self):
         try:
-            db.session.merge(self)
-            db.session.commit()
+            Database.get().session.merge(self)
+            Database.get().session.commit()
         except:
-            db.session.rollback()
+            Database.get().session.rollback()
             raise
 
     def delete(self):
         try:
-            db.session.delete(self)
-            db.session.commit()
+            Database.get().session.delete(self)
+            Database.get().session.commit()
         except:
-            db.session.rollback()
+            Database.get().session.rollback()
             raise
