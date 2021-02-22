@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from src.controllers import app
 
-db = SQLAlchemy(app)
+db = SQLAlchemy(app, session_options={'autocommit': True, 'autoflush': True})
 
 
 class Database:
