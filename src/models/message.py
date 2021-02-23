@@ -18,6 +18,7 @@ class Message(Database.get().Model):
     def add(self):
         Database.get_session().add(self)
         Database.get_session().commit()
+        Database.get().session.remove()
         return self
 
     def get_message_in_group(self, group_id, offset, from_time):
@@ -43,6 +44,8 @@ class Message(Database.get().Model):
         try:
             Database.get_session().merge(self)
             Database.get_session().commit()
+            Database.get().session.remove()
         except:
             Database.get_session().rollback()
+            Database.get().session.remove()
             raise
