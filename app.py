@@ -6,6 +6,8 @@ import grpc
 from aiohttp import web
 from crontab import CronTab
 from grpc.experimental.aio import init_grpc_aio
+from grpclib.server import Server as Server_aio
+from grpclib.utils import graceful_exit
 
 import protos.auth_pb2_grpc as auth_service
 import protos.group_pb2_grpc as group_service
@@ -23,6 +25,7 @@ from src.controllers.notify_inapp import NotifyInAppController
 from src.controllers.notify_push import NotifyPushController
 from src.controllers.server_info import ServerInfoController
 from src.controllers.signal import SignalController
+from src.controllers.stream import Greeter
 from src.controllers.turn_server import Server
 from src.controllers.user import UserController
 from src.controllers.video_call import VideoCallController
@@ -54,6 +57,7 @@ def cron_tab_update_turn_server():
     except Exception as e:
         logger.error(e)
 
+
 class Server_info(web.View):
     async def get(self):
         response = {
@@ -61,11 +65,13 @@ class Server_info(web.View):
         }
         return web.json_response(response)
 
+
 class GrpcServer:
     def __init__(self):
         init_grpc_aio()
         grpc_port = get_system_config()['grpc_port']
         self.server = grpc.experimental.aio.server()
+        self.streamController = Greeter()
         self.authController = AuthController()
         self.userController = UserController()
         self.signalController = SignalController()
@@ -95,23 +101,35 @@ class GrpcServer:
         await self.server.wait_for_termination()
 
     async def stop(self):
-        await self.authController.close()
-        await self.userController.close()
-        await self.signalController.close()
-        await self.groupController.close()
-        await self.messageController.close()
-        await self.notifyInAppController.close()
-        await self.notifyPushController.close()
-        await self.videoCallController.close()
-        await self.serverInfoController.close()
+        await self.server.close()
         await self.server.wait_for_termination()
+
+
+class GrpcServerStream:
+    def __init__(self):
+        self.server_stream = Server_aio([Greeter()])
+
+    async def start(self):
+        try:
+            with graceful_exit([self.server_stream]):
+                await self.server_stream.start('127.0.0.1', 5002)
+                print(f'Serving on 127.0.0.1:5002')
+                await self.server_stream.wait_closed()
+        except Exception as e:
+            print(e)
+
+    async def stop(self):
+        await self.server_stream.close()
+        await self.server_stream.wait_closed()
 
 
 class Application(web.Application):
     def __init__(self):
         super().__init__()
         self.grpc_task = None
+        self.grpc_task_stream = None
         self.grpc_server = GrpcServer()
+        self.grpc_server_stream = GrpcServerStream()
         self.add_routes()
         self.init_all()
         self.on_startup.append(self.__on_startup())
@@ -119,14 +137,14 @@ class Application(web.Application):
 
     def __on_startup(self):
         async def _on_startup(app):
-            self.grpc_task = \
-                asyncio.ensure_future(app.grpc_server.start())
+            self.grpc_task = asyncio.ensure_future(app.grpc_server.start())
+            self.grpc_task_stream = asyncio.ensure_future(app.grpc_server_stream.start())
 
         return _on_startup
 
     def __on_shutdown(self):
         async def _on_shutdown(app):
-            await app.grpc_server.stop()
+            # await app.grpc_server.stop()
             app.grpc_task.cancel()
             await app.grpc_task
 

@@ -29,38 +29,34 @@ class NotifyInAppController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     # @request_logged
-    def listen(self, request, context):
+    async def listen(self, request, context):
         print("notify_inapp listen api")
         client_id = request.client_id
         notify_channel = "{}/notify".format(client_id)
-        timeout = time.time() + 60 * 10
-        print(context)
-        while context.is_active():
-            try:
-                if time.time() > timeout:
-                    break
-                if notify_channel in client_notify_queue:
-                    notify_response = client_notify_queue[notify_channel].get()  # blocking until the next .put for this queue
-                    notify_stream_response = notify_pb2.NotifyObjectResponse(
-                        id=notify_response.id,
-                        client_id=notify_response.client_id,
-                        ref_client_id=notify_response.ref_client_id,
-                        ref_group_id=notify_response.ref_group_id,
-                        notify_type=notify_response.notify_type,
-                        notify_image=notify_response.notify_image,
-                        notify_title=notify_response.notify_title,
-                        notify_content=notify_response.notify_content,
-                        read_flg=notify_response.read_flg,
-                        created_at=int(notify_response.created_at.timestamp() * 1000)
-                    )
-                    timeout = time.time() + 60 * 10
-                    yield notify_stream_response
-                    # print(message_response)
-            except Exception as e:
-                logger.error(e)
-                # print(ex)
-                context.cancel()
-                client_notify_queue[notify_channel] = None
+        while True:
+            while notify_channel in client_notify_queue:
+                try:
+                    if notify_channel in client_notify_queue:
+                        notify_response = client_notify_queue[notify_channel].get(timeout=0.1)
+                        notify_stream_response = notify_pb2.NotifyObjectResponse(
+                            id=notify_response.id,
+                            client_id=notify_response.client_id,
+                            ref_client_id=notify_response.ref_client_id,
+                            ref_group_id=notify_response.ref_group_id,
+                            notify_type=notify_response.notify_type,
+                            notify_image=notify_response.notify_image,
+                            notify_title=notify_response.notify_title,
+                            notify_content=notify_response.notify_content,
+                            read_flg=notify_response.read_flg,
+                            created_at=int(notify_response.created_at.timestamp() * 1000)
+                        )
+                        yield notify_stream_response
+                    await asyncio.sleep(0.1)
+                except Exception as e:
+                    logger.error(e)
+                    # print(ex)
+                    context.cancel()
+                    client_notify_queue[notify_channel] = None
 
     @request_logged
     async def subscribe(self, request, context):

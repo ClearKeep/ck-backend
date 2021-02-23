@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package stream;
+
+message StreamRequest {
+  string name = 1;
+}
+
+message StreamReply {
+  string message = 1;
+}
+
+service Greeter {
+  // A simple RPC
+  rpc UnaryUnaryGreeting (StreamRequest) returns (StreamReply) {}
+
+  // A response streaming RPC
+  rpc UnaryStreamGreeting (StreamRequest) returns (stream StreamReply) {}
+}

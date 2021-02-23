@@ -79,29 +79,27 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     # @request_logged
-    def Listen(self, request, context):
+    async def Listen(self, request, context):
         print("message Listen api")
         client_id = request.clientId
         message_channel = "{}/message".format(client_id)
-        timeout = time.time() + 60 * 10
-        while context.is_active():
-            try:
-                if time.time() > timeout:
-                    break
-                if message_channel in client_message_queue:
-                    message_response = client_message_queue[message_channel].get()
-                    timeout = time.time() + 60 * 10
-                    yield message_response
-            except:
-                logger.info('Client {} is disconnected'.format(client_id))
-                context.cancel()
-                print('len queue before=', len(client_message_queue))
-                client_message_queue[message_channel] = None
-                del client_message_queue[message_channel]
-                print('len queue after=', len(client_message_queue))
-                # push text notification for client
-                push_service = NotifyPushService()
-                push_service.push_text_to_clients([client_id], title="", body="You have a new message")
+        while True:
+            while message_channel in client_message_queue:
+                try:
+                    if message_channel in client_message_queue:
+                        message_response = client_message_queue[message_channel].get(False)
+                        yield message_response
+                    await asyncio.sleep(0.1)
+                except Exception as e:
+                    logger.info('Client {} is disconnected'.format(client_id))
+                    context.cancel()
+                    print('len queue before=', len(client_message_queue))
+                    # client_message_queue[message_channel] = None
+                    del client_message_queue[message_channel]
+                    print('len queue after=', len(client_message_queue))
+                    # push text notification for client
+                    push_service = NotifyPushService()
+                    push_service.push_text_to_clients([client_id], title="", body="You have a new message")
 
     @request_logged
     async def Subscribe(self, request, context):
