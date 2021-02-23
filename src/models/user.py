@@ -57,6 +57,7 @@ class User(Database.get().Model):
         result = Database.get().session.query(User.id, User) \
             .filter(User.id == id) \
             .first()
+        Database.get().session.commit()
         return result
 
 

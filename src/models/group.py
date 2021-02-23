@@ -35,6 +35,7 @@ class GroupChat(Database.get().Model):
             .join(Message, GroupChat.last_message_id == Message.id, isouter=True) \
             .filter(GroupChat.id == group_id) \
             .one_or_none()
+        Database.get().session.commit()
         return group
 
     def search(self, keyword):
@@ -42,6 +43,7 @@ class GroupChat(Database.get().Model):
         group = Database.get().session.query(GroupChat, Message) \
             .join(Message, GroupChat.last_message_id == Message.id, isouter=True) \
             .filter(GroupChat.group_name.like(search)).all()
+        Database.get().session.commit()
         return group
 
     def get_joined(self, client_id):
@@ -50,6 +52,7 @@ class GroupChat(Database.get().Model):
             .join(Message, GroupChat.last_message_id == Message.id, isouter=True) \
             .filter(GroupClientKey.client_id == client_id) \
             .all()
+        Database.get().session.commit()
         return result
 
     def get_joined_group_type(self, client_id, group_type):
@@ -58,6 +61,7 @@ class GroupChat(Database.get().Model):
             .filter(GroupClientKey.client_id == client_id) \
             .filter(GroupChat.group_type == group_type) \
             .all()
+        Database.get().session.commit()
         return result
 
     def update(self):
@@ -72,6 +76,7 @@ class GroupChat(Database.get().Model):
         result = Database.get().session.query(GroupChat.group_rtc_token) \
             .filter(GroupChat.id == group_id) \
             .first()
+        Database.get().session.commit()
         # result = self.query.filter_by(id=group_id).first()
         return result
 
