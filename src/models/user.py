@@ -38,6 +38,13 @@ class User(Database.get().Model):
             Database.get_session().rollback()
             raise
 
+    def get(self, client_id):
+        user = Database.get_session().query(User) \
+            .filter(User.id == client_id) \
+            .one_or_none()
+        Database.get().session.remove()
+        return user
+
 
     def search(self, keyword, client_id):
         search = "%{}%".format(keyword)

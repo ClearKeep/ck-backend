@@ -33,7 +33,7 @@ class UserService(BaseService):
 
     def change_password(self, request, old_pass, new_pass, user_id):
         try:
-            user_info = self.find_by_id(user_id)
+            user_info = self.model.get(user_id)
 
             response = KeyCloakUtils.set_user_password(user_id, new_pass)
 
@@ -54,7 +54,7 @@ class UserService(BaseService):
 
     def get_profile(self, user_id, hash_key):
         try:
-            user_info = self.find_by_id(user_id)
+            user_info = self.model.get(user_id)
             if user_info is not None:
                 obj_res = user_pb2.UserProfileResponse(
                     id=user_info.id,
@@ -76,7 +76,7 @@ class UserService(BaseService):
 
     def update_profile(self, request, user_id, hash_key):
         try:
-            user_info = self.find_by_id(user_id)
+            user_info = self.model.get(user_id)
             if request.display_name:
                 user_info.display_name = request.display_name
 
@@ -96,7 +96,7 @@ class UserService(BaseService):
 
     def get_user_info(self, client_id):
         try:
-            user_info = self.find_by_id(client_id)
+            user_info = self.model.get(client_id)
             if user_info is not None:
                 return user_pb2.UserInfoResponse(
                     id=user_info.id,
