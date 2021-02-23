@@ -52,6 +52,7 @@ class GroupClientKey(Database.get().Model):
             .filter(GroupClientKey.group_id.in_(group_ids)) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
+        Database.get().session.commit()
         return result
 
     def get_clients_in_group(self, group_id):
@@ -60,6 +61,7 @@ class GroupClientKey(Database.get().Model):
             .filter(GroupClientKey.group_id == group_id) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
+        Database.get().session.commit()
         return result
 
     # def get_clients_in_group_with_push_token(self, group_id):
