@@ -27,6 +27,7 @@ class Message(Database.get().Model):
             .filter(Message.group_id == group_id) \
             .order_by(Message.created_at.desc()) \
             .all()
+        Database.get().session.commit()
 
         # client = self.query.filter_by(group_id=group_id)
         # Database.get().session.commit()
