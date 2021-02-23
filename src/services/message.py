@@ -27,7 +27,7 @@ class MessageService(BaseService):
             message=message,
             created_at=created_at
         )
-        new_message = self.model.add()
+        self.model.add()
         # update group last message
         GroupChat(
             id=group_id,
@@ -35,6 +35,7 @@ class MessageService(BaseService):
             last_message_id=message_id
         ).update()
         # response
+        new_message = self.model.get(message_id)
         res_obj = message_pb2.MessageObjectResponse(
             id=new_message.id,
             group_id=new_message.group_id,

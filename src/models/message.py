@@ -21,6 +21,13 @@ class Message(Database.get().Model):
         #Database.get().session.remove()
         return self
 
+    def get(self, message_id):
+        message = Database.get_session().query(Message) \
+            .filter(Message.id == message_id) \
+            .one_or_none()
+        Database.get().session.remove()
+        return message
+
     def get_message_in_group(self, group_id, offset, from_time):
         client = Database.get_session().query(Message) \
             .filter(Message.group_id == group_id)
