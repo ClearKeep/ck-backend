@@ -23,7 +23,7 @@ class Message(Database.get().Model):
         return self
 
     def get_message_in_group(self, group_id, offset, from_time):
-        client = self.query.filter_by(group_id=group_id)
+        client = Message.query.filter_by(group_id=group_id)
         Database.get().session.object_session(client).rollback()
 
         if from_time != 0:

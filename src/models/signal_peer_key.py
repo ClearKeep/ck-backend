@@ -47,7 +47,7 @@ class PeerClientKey(Database.get().Model):
                 raise
 
     def get_by_client_id(self, client_id):
-        client = self.query.filter_by(client_id=client_id).one_or_none()
+        client = PeerClientKey.query.filter_by(client_id=client_id).one_or_none()
         Database.get().session.object_session(client).rollback()
         return client
 
