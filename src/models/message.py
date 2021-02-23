@@ -19,7 +19,7 @@ class Message(Database.get().Model):
 
     def add(self):
         Database.get().session.add(self)
-        #Database.get().session.commit()
+        Database.get().session.commit()
         return self
 
     def get_message_in_group(self, group_id, offset, from_time):
@@ -41,7 +41,7 @@ class Message(Database.get().Model):
     def update(self):
         try:
             Database.get().session.merge(self)
-            #Database.get().session.commit()
+            Database.get().session.commit()
         except:
             Database.get().session.rollback()
             raise
