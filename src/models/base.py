@@ -1,7 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from src.controllers import app
 
-db = SQLAlchemy(app, session_options={'autocommit': True, 'autoflush': True})
+
+db = SQLAlchemy(app)
 
 
 class Database:
@@ -12,3 +13,11 @@ class Database:
         if Database.__instance is None:
             Database.__instance = db
         return Database.__instance
+
+    @staticmethod
+    def get_session():
+        if Database.get().session is None:
+            Database.get().session = Database.get().create_scoped_session()
+        return Database.get().session
+
+

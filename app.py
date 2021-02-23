@@ -55,7 +55,7 @@ def start_server():
     logger.info("gRPC listening on port {}..".format(grpc_port))
 
     # set cronjob
-    cron_tab_update_turn_server()
+    #cron_tab_update_turn_server()
     # log total thread
     #get_thread()
 

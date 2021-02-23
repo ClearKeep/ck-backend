@@ -26,10 +26,10 @@ class NotifyToken(Database.get().Model):
         else:
             self.id = str(uuid.uuid4())
             try:
-                Database.get().session.add(self)
-                #Database.get().session.commit()
+                Database.get_session().add(self)
+                Database.get_session().commit()
             except:
-                Database.get().session.rollback()
+                Database.get_session().rollback()
                 raise
         return self
 
@@ -47,16 +47,16 @@ class NotifyToken(Database.get().Model):
 
     def update(self):
         try:
-            Database.get().session.merge(self)
-            #Database.get().session.commit()
+            Database.get_session().merge(self)
+            Database.get_session().commit()
         except:
-            Database.get().session.rollback()
+            Database.get_session().rollback()
             raise
 
     def delete(self):
         try:
-            Database.get().session.delete(self)
-            #Database.get().session.commit()
+            Database.get_session().delete(self)
+            Database.get_session().commit()
         except:
-            Database.get().session.rollback()
+            Database.get_session().rollback()
             raise
