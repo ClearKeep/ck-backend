@@ -37,13 +37,22 @@ class GroupClientKey(Database.get().Model):
                 raise
 
     def get(self, group_id, client_id):
-        client = self.query.filter_by(group_id=group_id, client_id=client_id).one_or_none()
+        #client = self.query.filter_by(group_id=group_id, client_id=client_id).one_or_none()
+        client = Database.get_session().query(GroupClientKey) \
+            .filter(GroupClientKey.group_id == group_id, GroupClientKey.client_id == client_id) \
+            .one_or_none()
+        Database.get().session.remove()
         return client
 
     def get_all_in_group(self, group_id):
-        client = self.query.filter_by(group_id=group_id) \
+        # client = self.query.filter_by(group_id=group_id) \
+        #     .order_by(GroupClientKey.client_id.asc()) \
+        #     .all()
+        client = Database.get_session().query(GroupClientKey) \
+            .filter(GroupClientKey.group_id == group_id) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
+        Database.get().session.remove()
         return client
 
     def get_clients_in_groups(self, group_ids):
