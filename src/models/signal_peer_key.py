@@ -40,20 +40,23 @@ class PeerClientKey(Database.get().Model):
             self.update()
         else:
             try:
-                Database.get().session.add(self)
-                #Database.get().session.commit()
+                Database.get_session().add(self)
+                Database.get_session().commit()
             except:
-                Database.get().session.rollback()
+                Database.get_session().rollback()
                 raise
 
     def get_by_client_id(self, client_id):
-        client = self.query.filter_by(client_id=client_id).one_or_none()
+        client = Database.get_session().query(PeerClientKey) \
+            .filter(PeerClientKey.client_id == client_id) \
+            .one_or_none()
+        Database.get().session.remove()
         return client
 
     def update(self):
         try:
-            Database.get().session.merge(self)
-            #Database.get().session.commit()
+            Database.get_session().merge(self)
+            Database.get_session().commit()
         except:
-            Database.get().session.rollback()
+            Database.get_session().rollback()
             raise

@@ -30,10 +30,10 @@ class GroupClientKey(Database.get().Model):
             self.update()
         else:
             try:
-                Database.get().session.add(self)
-                #Database.get().session.commit()
+                Database.get_session().add(self)
+                Database.get_session().commit()
             except:
-                Database.get().session.rollback()
+                Database.get_session().rollback()
                 raise
 
     def get(self, group_id, client_id):
@@ -47,19 +47,21 @@ class GroupClientKey(Database.get().Model):
         return client
 
     def get_clients_in_groups(self, group_ids):
-        result = Database.get().session.query(GroupClientKey.group_id, User) \
+        result = Database.get_session().query(GroupClientKey.group_id, User) \
             .join(User, GroupClientKey.client_id == User.id) \
             .filter(GroupClientKey.group_id.in_(group_ids)) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
+        Database.get().session.remove()
         return result
 
     def get_clients_in_group(self, group_id):
-        result = Database.get().session.query(GroupClientKey.group_id, User) \
+        result = Database.get_session().query(GroupClientKey.group_id, User) \
             .join(User, GroupClientKey.client_id == User.id) \
             .filter(GroupClientKey.group_id == group_id) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
+        Database.get().session.remove()
         return result
 
     # def get_clients_in_group_with_push_token(self, group_id):
@@ -72,8 +74,8 @@ class GroupClientKey(Database.get().Model):
 
     def update(self):
         try:
-            Database.get().session.merge(self)
-            #Database.get().session.commit()
+            Database.get_session().merge(self)
+            Database.get_session().commit()
         except:
-            Database.get().session.rollback()
+            Database.get_session().rollback()
             raise

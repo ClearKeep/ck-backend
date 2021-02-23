@@ -1,8 +1,4 @@
 from datetime import datetime
-
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
-
 from src.models.base import Database
 
 
@@ -22,11 +18,11 @@ class Notify(Database.get().Model):
 
     def add(self):
         try:
-            Database.get().session.add(self)
-            #Database.get().session.commit()
+            Database.get_session().add(self)
+            Database.get_session().commit()
             return self
         except:
-            Database.get().session.rollback()
+            Database.get_session().rollback()
             raise
 
 
@@ -36,9 +32,9 @@ class Notify(Database.get().Model):
 
     def update(self):
         try:
-            Database.get().session.merge(self)
-            #Database.get().session.commit()
+            Database.get_session().merge(self)
+            Database.get_session().commit()
         except:
-            Database.get().session.rollback()
+            Database.get_session().rollback()
             raise
 

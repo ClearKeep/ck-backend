@@ -24,18 +24,18 @@ class User(Database.get().Model):
 
     def add(self):
         try:
-            Database.get().session.add(self)
-            #Database.get().session.commit()
+            Database.get_session().add(self)
+            Database.get_session().commit()
         except:
-            Database.get().session.rollback()
+            Database.get_session().rollback()
             raise
 
     def update(self):
         try:
-            Database.get().session.merge(self)
-            #Database.get().session.commit()
+            Database.get_session().merge(self)
+            Database.get_session().commit()
         except:
-            Database.get().session.rollback()
+            Database.get_session().rollback()
             raise
 
 
@@ -48,15 +48,20 @@ class User(Database.get().Model):
         return user
 
     def get_users(self, client_id):
-        user = self.query \
+        user = Database.get_session().query(User) \
             .filter(User.id != client_id) \
             .all()
+        Database.get().session.remove()
+        # user = self.query \
+        #     .filter(User.id != client_id) \
+        #     .all()
         return user
 
     def get_client_id_with_push_token(self, id):
-        result = Database.get().session.query(User.id, User) \
+        result = Database.get_session().query(User.id, User) \
             .filter(User.id == id) \
             .first()
+        Database.get().session.remove()
         return result
 
 

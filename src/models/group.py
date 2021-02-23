@@ -23,55 +23,62 @@ class GroupChat(Database.get().Model):
 
     def add(self):
         try:
-            Database.get().session.add(self)
-            #Database.get().session.commit()
+            Database.get_session().add(self)
+            Database.get_session().commit()
             return self
         except:
-            Database.get().session.rollback()
+            Database.get_session().rollback()
             raise
 
     def get(self, group_id):
-        group = Database.get().session.query(GroupChat, Message) \
+        group = Database.get_session().query(GroupChat, Message) \
             .join(Message, GroupChat.last_message_id == Message.id, isouter=True) \
             .filter(GroupChat.id == group_id) \
             .one_or_none()
+        Database.get().session.remove()
+
         return group
 
     def search(self, keyword):
         search = "%{}%".format(keyword)
-        group = Database.get().session.query(GroupChat, Message) \
+        group = Database.get_session().query(GroupChat, Message) \
             .join(Message, GroupChat.last_message_id == Message.id, isouter=True) \
-            .filter(GroupChat.group_name.like(search)).all()
+            .filter(GroupChat.group_name.like(search)) \
+            .all()
+        Database.get().session.remove()
         return group
 
     def get_joined(self, client_id):
-        result = Database.get().session.query(GroupChat, Message) \
+        result = Database.get_session().query(GroupChat, Message) \
             .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \
             .join(Message, GroupChat.last_message_id == Message.id, isouter=True) \
             .filter(GroupClientKey.client_id == client_id) \
             .all()
+        Database.get().session.remove()
         return result
 
     def get_joined_group_type(self, client_id, group_type):
-        result = Database.get().session.query(GroupChat, GroupClientKey.id, GroupChat.group_clients) \
+        result = Database.get_session().query(GroupChat, GroupClientKey.id, GroupChat.group_clients) \
             .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \
             .filter(GroupClientKey.client_id == client_id) \
             .filter(GroupChat.group_type == group_type) \
             .all()
+        Database.get().session.remove()
         return result
 
     def update(self):
         try:
-            Database.get().session.merge(self)
-            #Database.get().session.commit()
+            Database.get_session().merge(self)
+            Database.get_session().commit()
         except:
-            Database.get().session.rollback()
+            Database.get_session().rollback()
             raise
 
     def get_group_rtc_token(self, group_id):
-        result = Database.get().session.query(GroupChat.group_rtc_token) \
+        result = Database.get_session().query(GroupChat.group_rtc_token) \
             .filter(GroupChat.id == group_id) \
             .first()
+        Database.get().session.remove()
         # result = self.query.filter_by(id=group_id).first()
         return result
 

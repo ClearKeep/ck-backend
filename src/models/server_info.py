@@ -9,17 +9,18 @@ class ServerInfo(Database.get().Model):
 
     def add(self):
         try:
-            Database.get().session.add(self)
-            #Database.get().session.commit()
+            Database.get_session().add(self)
+            Database.get_session().commit()
             return self
         except:
-            Database.get().session.rollback()
+            Database.get_session().rollback()
             raise
 
-
-
     def get(self):
-        server_info = self.query.one_or_none()
+        server_info = Database.get_session().query(ServerInfo) \
+            .filter(ServerInfo.id == 1) \
+            .one_or_none()
+        Database.get().session.remove()
         return server_info
 
     def update(self):
@@ -27,10 +28,10 @@ class ServerInfo(Database.get().Model):
         if server_info is not None:
             self.id = server_info.id
             try:
-                Database.get().session.merge(self)
-                #Database.get().session.commit()
+                Database.get_session().merge(self)
+                Database.get_session().commit()
             except:
-                Database.get().session.rollback()
+                Database.get_session().rollback()
                 raise
         else:
             self.add()
