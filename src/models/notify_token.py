@@ -27,7 +27,7 @@ class NotifyToken(Database.get().Model):
             self.id = str(uuid.uuid4())
             try:
                 Database.get().session.add(self)
-                Database.get().session.commit()
+                #Database.get().session.commit()
             except:
                 Database.get().session.rollback()
                 raise
@@ -48,7 +48,7 @@ class NotifyToken(Database.get().Model):
     def update(self):
         try:
             Database.get().session.merge(self)
-            Database.get().session.commit()
+            #Database.get().session.commit()
         except:
             Database.get().session.rollback()
             raise
@@ -56,7 +56,7 @@ class NotifyToken(Database.get().Model):
     def delete(self):
         try:
             Database.get().session.delete(self)
-            Database.get().session.commit()
+            #Database.get().session.commit()
         except:
             Database.get().session.rollback()
             raise

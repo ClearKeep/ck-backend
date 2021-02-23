@@ -6,6 +6,7 @@ from src.controllers import app
 db = SQLAlchemy(app)
 
 
+
 class Database:
     __instance = None
 
