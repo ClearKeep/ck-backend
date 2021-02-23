@@ -35,14 +35,17 @@ class NotifyToken(Database.get().Model):
 
     def get(self, client_id, device_id):
         client_device = self.query.filter_by(client_id=client_id, device_id=device_id).one_or_none()
+        Database.get().session.commit()
         return client_device
 
     def get_client(self, client_id):
         client_tokens = self.query.filter_by(client_id=client_id).all()
+        Database.get().session.commit()
         return client_tokens
 
     def get_clients(self, client_ids):
         client_tokens = self.query.filter(NotifyToken.client_id.in_(client_ids)).all()
+        Database.get().session.commit()
         return client_tokens
 
     def update(self):

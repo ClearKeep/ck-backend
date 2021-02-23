@@ -38,12 +38,14 @@ class GroupClientKey(Database.get().Model):
 
     def get(self, group_id, client_id):
         client = self.query.filter_by(group_id=group_id, client_id=client_id).one_or_none()
+        Database.get().session.commit()
         return client
 
     def get_all_in_group(self, group_id):
         client = self.query.filter_by(group_id=group_id) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
+        Database.get().session.commit()
         return client
 
     def get_clients_in_groups(self, group_ids):

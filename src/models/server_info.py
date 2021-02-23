@@ -20,6 +20,7 @@ class ServerInfo(Database.get().Model):
 
     def get(self):
         server_info = self.query.one_or_none()
+        Database.get().session.commit()
         return server_info
 
     def update(self):

@@ -32,6 +32,7 @@ class Notify(Database.get().Model):
 
     def get_unread_notifies(self, client_id):
         notifies = self.query.filter_by(client_id=client_id, read_flg=False)
+        Database.get().session.commit()
         return notifies
 
     def update(self):

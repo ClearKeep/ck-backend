@@ -48,6 +48,7 @@ class PeerClientKey(Database.get().Model):
 
     def get_by_client_id(self, client_id):
         client = self.query.filter_by(client_id=client_id).one_or_none()
+        Database.get().session.commit()
         return client
 
     def update(self):
