@@ -1,5 +1,5 @@
 # Docker Compose Keycloak Postgres ( Docker compose for Keycloak with Postgres Database).
-
+# docker-compose -f development-docker-compose.yml up -d
 version: '3.1'
 
 
