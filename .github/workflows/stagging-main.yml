@@ -2,7 +2,7 @@ name: clearkeep-test
 
 on:
   push:
-    branches: [ development ]
+    branches: [ stagging ]
 #  pull_request:
 #    branches: [ development ]
 #   schedule:
@@ -60,7 +60,7 @@ jobs:
         privateKey: ${{ secrets.KEY }}
         command: |
           cd /home/ubuntu/ck-backend
-          git checkout development
+          git checkout stagging
           git pull
           pip3 install -r requirement.txt
           python3 -m grpc_tools.protoc -I=. protos/*.proto --python_out=. --grpc_python_out=.
