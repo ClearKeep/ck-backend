@@ -51,6 +51,14 @@ def update_stun_turn_credential():
 
         request = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
         response = stub.update_nts(request)
+        #update for development branch
+
+        channel2 = grpc.insecure_channel(host + ':1' + str(port))
+        stub = server_info_pb2_grpc.ServerInfoStub(channel)
+
+        request = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
+        response2 = stub.update_nts(request)
+
     except Exception as e:
         logger.error(e)
 
