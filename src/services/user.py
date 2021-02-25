@@ -148,7 +148,7 @@ class UserService(BaseService):
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.GET_USER_INFO_FAILED)
 
-    def update_login(self,user_id):
+    def update_last_login(self,user_id):
         try:
             user_info = self.model.get(user_id)
             user_info.last_login_at = datetime.datetime.now()
