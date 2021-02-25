@@ -57,6 +57,7 @@ class User(Database.get().Model):
     def get_users(self, client_id):
         user = Database.get_session().query(User) \
             .filter(User.id != client_id) \
+            .filter(User.last_login_at != None) \
             .all()
         Database.get().session.remove()
         # user = self.query \
