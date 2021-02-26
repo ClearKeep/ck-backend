@@ -12,7 +12,7 @@ class UserController(BaseController):
         self.service = UserService()
     
     @auth_required
-    def change_password(self, request, context):
+    async def change_password(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -29,7 +29,7 @@ class UserController(BaseController):
 
     @auth_required
     # @request_logged
-    def get_profile(self, request, context):
+    async def get_profile(self, request, context):
         print("user get_profile api")
         try:
             header_data = dict(context.invocation_metadata())
@@ -52,7 +52,7 @@ class UserController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @auth_required
-    def update_profile(self, request, context):
+    async def update_profile(self, request, context):
         print("user update_profile api")
         try:
             header_data = dict(context.invocation_metadata())
@@ -70,7 +70,7 @@ class UserController(BaseController):
 
     @auth_required
     # @request_logged
-    def get_user_info(self, request, context):
+    async def get_user_info(self, request, context):
         print("user get_user_info api")
         try:
             print("user get_user_info api")
