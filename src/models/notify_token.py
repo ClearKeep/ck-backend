@@ -3,6 +3,7 @@ from datetime import datetime
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy import desc
 
 from src.models.base import Database
 
@@ -45,6 +46,8 @@ class NotifyToken(Database.get().Model):
         #client_tokens = self.query.filter_by(client_id=client_id).all()
         client_tokens = Database.get_session().query(NotifyToken) \
             .filter(NotifyToken.client_id == client_id) \
+            .order_by(desc(NotifyToken.created_at)) \
+            .limit(1) \
             .all()
         Database.get().session.remove()
         return client_tokens
