@@ -2,6 +2,7 @@ from flask import Flask
 from utils.config import get_system_config
 from src.controllers.turn_server import Server
 from src.models.base import db
+import threading
 
 db_config = get_system_config()['db']
 db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(
@@ -29,6 +30,13 @@ with app.app_context():
 def turn_server():
     server = Server()
     return server.get()
+
+@app.route('/thread', methods=['GET'])
+def thread_server():
+    response = {
+        "total": threading.activeCount()
+    }
+    return response
 
 
 # api = Api(app)

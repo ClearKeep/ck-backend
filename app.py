@@ -63,7 +63,7 @@ async def start_server():
     #     cron_tab_update_turn_server()
 
     # log total thread
-    # get_thread()
+    #get_thread()
 
     # start http api
     http_port = get_system_config()['http_port']
