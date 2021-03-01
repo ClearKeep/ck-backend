@@ -40,4 +40,5 @@ message VideoCallRequest {
 
 service VideoCall {
     rpc video_call(VideoCallRequest) returns (ServerResponse) {};
+    rpc cancel_request_call(VideoCallRequest) returns (BaseResponse) {};
 }
