@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x17protos/video_call.proto\x12\nvideo_call\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"E\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12$\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x14.video_call.ErrorRes\"\x83\x01\n\x0eServerResponse\x12+\n\x0bstun_server\x18\x01 \x01(\x0b\x32\x16.video_call.StunServer\x12+\n\x0bturn_server\x18\x02 \x01(\x0b\x32\x16.video_call.TurnServer\x12\x17\n\x0fgroup_rtc_token\x18\x03 \x01(\t\"*\n\nStunServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\"S\n\nTurnServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\x12\x0c\n\x04type\x18\x03 \x01(\t\x12\x0c\n\x04user\x18\x04 \x01(\t\x12\x0b\n\x03pwd\x18\x05 \x01(\t\"7\n\x10VideoCallRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x32U\n\tVideoCall\x12H\n\nvideo_call\x12\x1c.video_call.VideoCallRequest\x1a\x1a.video_call.ServerResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x17protos/video_call.proto\x12\nvideo_call\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"E\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12$\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x14.video_call.ErrorRes\"\x83\x01\n\x0eServerResponse\x12+\n\x0bstun_server\x18\x01 \x01(\x0b\x32\x16.video_call.StunServer\x12+\n\x0bturn_server\x18\x02 \x01(\x0b\x32\x16.video_call.TurnServer\x12\x17\n\x0fgroup_rtc_token\x18\x03 \x01(\t\"*\n\nStunServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\"S\n\nTurnServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\x12\x0c\n\x04type\x18\x03 \x01(\t\x12\x0c\n\x04user\x18\x04 \x01(\t\x12\x0b\n\x03pwd\x18\x05 \x01(\t\"7\n\x10VideoCallRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x32\x9e\x01\n\tVideoCall\x12H\n\nvideo_call\x12\x1c.video_call.VideoCallRequest\x1a\x1a.video_call.ServerResponse\"\x00\x12G\n\x0b\x63\x61ncel_call\x12\x1c.video_call.VideoCallRequest\x1a\x18.video_call.BaseResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -348,8 +348,8 @@ _VIDEOCALL = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=473,
-  serialized_end=558,
+  serialized_start=474,
+  serialized_end=632,
   methods=[
   _descriptor.MethodDescriptor(
     name='video_call',
@@ -358,6 +358,16 @@ _VIDEOCALL = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_VIDEOCALLREQUEST,
     output_type=_SERVERRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='cancel_call',
+    full_name='video_call.VideoCall.cancel_call',
+    index=1,
+    containing_service=None,
+    input_type=_VIDEOCALLREQUEST,
+    output_type=_BASERESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
