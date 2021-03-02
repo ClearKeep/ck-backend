@@ -34,16 +34,18 @@ class NotifyPushService(BaseService):
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.UNAUTHENTICATED)
 
-    def push_text_to_clients(self, lst_client, title, body):
+    def push_text_to_clients(self, lst_client, title, body, from_client_id):
         ios_tokens = []
         android_tokens = []
-        push_tokens = self.model.get_clients(lst_client)
-        for client_token in push_tokens:
-            if client_token.device_type == DeviceType.android:
-                android_tokens.append(client_token.push_token)
-            elif client_token.device_type == DeviceType.ios:
-                arr_token = client_token.push_token.split(',')
-                ios_tokens.append(arr_token[-1])
+        client_device_push_tokens = self.model.get_clients(lst_client)
+        from_client_devices = self.model.get_client(from_client_id)
+        for client_token in client_device_push_tokens:
+            if client_token.device_id != from_client_devices[0].device_id:
+                if client_token.device_type == DeviceType.android:
+                    android_tokens.append(client_token.push_token)
+                elif client_token.device_type == DeviceType.ios:
+                    arr_token = client_token.push_token.split(',')
+                    ios_tokens.append(arr_token[-1])
 
         if len(android_tokens) > 0:
             payload = messaging.Notification(title=title, body=body)
@@ -52,16 +54,20 @@ class NotifyPushService(BaseService):
             payload_alert = PayloadAlert(title=title, body=body)
             ios_text_notifications(ios_tokens, payload_alert)
 
-    def push_voip_clients(self, lst_client, payload):
+    def push_voip_clients(self, lst_client, payload, from_client_id):
         ios_tokens = []
         android_tokens = []
-        push_tokens = self.model.get_clients(lst_client)
-        for client_token in push_tokens:
-            if client_token.device_type == DeviceType.android:
-                android_tokens.append(client_token.push_token)
-            elif client_token.device_type == DeviceType.ios:
-                arr_token = client_token.push_token.split(',')
-                ios_tokens.append(arr_token[0])
+        from_client_devices = self.model.get_client(from_client_id)
+        client_device_push_tokens = self.model.get_clients(lst_client)
+        for client_token in client_device_push_tokens:
+            if client_token.device_id != from_client_devices[0].device_id:
+                if client_token.device_type == DeviceType.android:
+                    android_tokens.append(client_token.push_token)
+                elif client_token.device_type == DeviceType.ios:
+                    arr_token = client_token.push_token.split(',')
+                    ios_tokens.append(arr_token[0])
+            else:
+                self.delete_token(client_token.client_id, client_token.device_id)
 
         if len(android_tokens) > 0:
             android_data_notification(android_tokens, payload)
