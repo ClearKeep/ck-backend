@@ -1,5 +1,3 @@
-import asyncio
-
 from protos import message_pb2
 from src.controllers.base import *
 from middlewares.permission import *
@@ -67,7 +65,8 @@ class MessageController(BaseController):
 
             if len(other_clients_in_group) > 0:
                 push_service = NotifyPushService()
-                push_service.push_text_to_clients(other_clients_in_group, title="", body="You have a new message")
+                push_service.push_text_to_clients(other_clients_in_group, title="",
+                                                  body="You have a new message",from_client_id=request.fromClientId)
 
             return new_message
 
@@ -83,23 +82,28 @@ class MessageController(BaseController):
         print("message Listen api")
         client_id = request.clientId
         message_channel = "{}/message".format(client_id)
-        while True:
-            while message_channel in client_message_queue:
-                try:
-                    if message_channel in client_message_queue:
-                        message_response = client_message_queue[message_channel].get(False)
-                        yield message_response
-                    await asyncio.sleep(0.1)
-                except Exception as e:
-                    logger.info('Client {} is disconnected'.format(client_id))
-                    context.cancel()
-                    print('len queue before=', len(client_message_queue))
-                    # client_message_queue[message_channel] = None
-                    del client_message_queue[message_channel]
-                    print('len queue after=', len(client_message_queue))
-                    # push text notification for client
-                    push_service = NotifyPushService()
-                    push_service.push_text_to_clients([client_id], title="", body="You have a new message")
+
+        while context.is_active():
+            print(' context.is_active()=',  context.is_active())
+            try:
+                if message_channel in client_message_queue:
+                    message_response = client_message_queue[message_channel].get()
+                    if message_response is None:
+                        break
+                    yield message_response
+            except:
+                logger.info('Client {} is disconnected'.format(client_id))
+                context.cancel()
+                print(' context.is_active()=', context.is_active())
+                print('len queue before=', len(client_message_queue))
+                client_message_queue[message_channel] = None
+                del client_message_queue[message_channel]
+                print('len queue after=', len(client_message_queue))
+                # push text notification for client
+                push_service = NotifyPushService()
+                push_service.push_text_to_clients(
+                    [client_id], title="", body="You have a new message",
+                    from_client_id=client_id)
 
     @request_logged
     async def Subscribe(self, request, context):

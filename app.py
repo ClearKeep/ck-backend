@@ -1,5 +1,6 @@
 from concurrent import futures
 import grpc
+from src.models.base import Database
 from utils.config import get_system_config
 import protos.user_pb2_grpc as user_service
 import protos.auth_pb2_grpc as auth_service
@@ -44,7 +45,8 @@ async def start_server():
     notify_push_service.add_NotifyPushServicer_to_server(NotifyPushController(), server)
     video_call_service.add_VideoCallServicer_to_server(VideoCallController(), server)
     server_info_service.add_ServerInfoServicer_to_server(ServerInfoController(), server)
-
+    # create all table in database
+    #Database.get().create_all()
     # init log
     create_timed_rotating_log('logs/logfile.log')
 
@@ -58,9 +60,9 @@ async def start_server():
     logger.info("gRPC listening on port {}..".format(grpc_port))
 
     # set cronjob
-    # env = os.getenv("ENV")
-    # if env == 'stagging' :
-    #     cron_tab_update_turn_server()
+    env = os.getenv("ENV")
+    if env == 'stagging' :
+        cron_tab_update_turn_server()
 
     # log total thread
     #get_thread()
@@ -93,7 +95,7 @@ def cron_tab_update_turn_server():
         cron.remove_all()
         job = cron.new(command='ENV=stagging python3 -m client.client_nts')
         job.hour.on(1)
-        # job.minute.every(30)
+        #job.minute.every(30)
         cron.write()
         logger.info("Cronjob cron_tab_update_turn_server set")
 

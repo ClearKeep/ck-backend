@@ -2,23 +2,23 @@ from datetime import datetime
 
 from sqlalchemy import ForeignKey
 
-from src.models.base import db
+from src.models.base import Database
 
 
-class PeerClientKey(db.Model):
+class PeerClientKey(Database.get().Model):
     __tablename__ = 'peer_client_key'
-    id = db.Column(db.Integer, primary_key=True)
-    client_id = db.Column(db.String(36), nullable=True)
-    device_id = db.Column(db.Integer, unique=False, nullable=False)
-    registration_id = db.Column(db.Integer, unique=False, nullable=False)
-    identity_key_public = db.Column(db.Binary)
-    prekey_id = db.Column(db.Integer, unique=False, nullable=False)
-    prekey = db.Column(db.Binary)
-    signed_prekey_id = db.Column(db.Integer, unique=False, nullable=False)
-    signed_prekey = db.Column(db.Binary)
-    signed_prekey_signature = db.Column(db.Binary)
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    id = Database.get().Column(Database.get().Integer, primary_key=True)
+    client_id = Database.get().Column(Database.get().String(36), nullable=True)
+    device_id = Database.get().Column(Database.get().Integer, unique=False, nullable=False)
+    registration_id = Database.get().Column(Database.get().Integer, unique=False, nullable=False)
+    identity_key_public = Database.get().Column(Database.get().Binary)
+    prekey_id = Database.get().Column(Database.get().Integer, unique=False, nullable=False)
+    prekey = Database.get().Column(Database.get().Binary)
+    signed_prekey_id = Database.get().Column(Database.get().Integer, unique=False, nullable=False)
+    signed_prekey = Database.get().Column(Database.get().Binary)
+    signed_prekey_signature = Database.get().Column(Database.get().Binary)
+    created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
+    updated_at = Database.get().Column(Database.get().DateTime, default=datetime.now, onupdate=datetime.now)
 
     def set_key(self, client_id, registration_id, device_id, identity_key_public, prekey_id, prekey, signed_prekey_id,
                 signed_prekey, signed_prekey_signature):
@@ -40,20 +40,23 @@ class PeerClientKey(db.Model):
             self.update()
         else:
             try:
-                db.session.add(self)
-                db.session.commit()
+                Database.get_session().add(self)
+                Database.get_session().commit()
             except:
-                db.session.rollback()
+                Database.get_session().rollback()
                 raise
 
     def get_by_client_id(self, client_id):
-        client = self.query.filter_by(client_id=client_id).one_or_none()
+        client = Database.get_session().query(PeerClientKey) \
+            .filter(PeerClientKey.client_id == client_id) \
+            .one_or_none()
+        Database.get().session.remove()
         return client
 
     def update(self):
         try:
-            db.session.merge(self)
-            db.session.commit()
+            Database.get_session().merge(self)
+            Database.get_session().commit()
         except:
-            db.session.rollback()
+            Database.get_session().rollback()
             raise

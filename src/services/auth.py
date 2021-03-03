@@ -16,8 +16,9 @@ class AuthService:
                 return token
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
+            response_code = e.response_code
             check_error = json.loads(e.args[0]).get("error")
-            if check_error == "invalid_grant":
+            if check_error == "invalid_grant" and response_code == 400:
                 raise Exception(Message.USER_NOT_VERIFY_EMAIL)
             raise Exception(Message.AUTH_USER_NOT_FOUND)
 

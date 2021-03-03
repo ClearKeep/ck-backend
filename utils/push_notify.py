@@ -28,7 +28,7 @@ def ios_data_notification(registration_tokens, payload):
     for token in registration_tokens:
         try:
             res = client_ios_voip.send_message(token, payload)
-            logger.info("Push iOS data notify success with token: {}".fomat(token))
+            logger.info("Push iOS data notify success with token: {}".format(token))
         except Exception as e:
             logger.error(e)
 
@@ -38,7 +38,7 @@ def ios_text_notifications(registration_tokens, payload):
     for token in registration_tokens:
         try:
             res = client_ios_text.send_message(token, alert)
-            logger.info("Push iOS text notify success with token: {}".fomat(token))
+            logger.info("Push iOS text notify success with token: {}".format(token))
         except Exception as e:
             logger.error(e)
 

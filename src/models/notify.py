@@ -1,31 +1,28 @@
 from datetime import datetime
-
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
-
-from src.models.base import db
+from src.models.base import Database
 
 
-class Notify(db.Model):
+class Notify(Database.get().Model):
     __tablename__ = 'notify'
-    id = db.Column(db.Integer, primary_key=True)
-    client_id = db.Column(db.String(36), nullable=True)
-    ref_client_id = db.Column(db.String(36), unique=False, nullable=True)
-    ref_group_id = db.Column(db.Integer, unique=False, nullable=True)
-    notify_type = db.Column(db.String(36), unique=False, nullable=True)  # new-peer, in-peer, new-group, in-group
-    notify_image = db.Column(db.String(255), unique=False, nullable=True)
-    notify_title = db.Column(db.String(255), unique=False, nullable=True)
-    notify_content = db.Column(db.String(255), unique=False, nullable=True)
-    notify_platform = db.Column(db.String(36), unique=False, nullable=True)
-    read_flg = db.Column(db.Boolean, nullable=True, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.now)
+    id = Database.get().Column(Database.get().Integer, primary_key=True)
+    client_id = Database.get().Column(Database.get().String(36), nullable=True)
+    ref_client_id = Database.get().Column(Database.get().String(36), unique=False, nullable=True)
+    ref_group_id = Database.get().Column(Database.get().Integer, unique=False, nullable=True)
+    notify_type = Database.get().Column(Database.get().String(36), unique=False, nullable=True)  # new-peer, in-peer, new-group, in-group
+    notify_image = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
+    notify_title = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
+    notify_content = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
+    notify_platform = Database.get().Column(Database.get().String(36), unique=False, nullable=True)
+    read_flg = Database.get().Column(Database.get().Boolean, nullable=True, default=False)
+    created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
 
     def add(self):
         try:
-            db.session.add(self)
-            db.session.commit()
+            Database.get_session().add(self)
+            Database.get_session().commit()
+            return self
         except:
-            db.session.rollback()
+            Database.get_session().rollback()
             raise
 
 
@@ -35,9 +32,9 @@ class Notify(db.Model):
 
     def update(self):
         try:
-            db.session.merge(self)
-            db.session.commit()
+            Database.get_session().merge(self)
+            Database.get_session().commit()
         except:
-            db.session.rollback()
+            Database.get_session().rollback()
             raise
 

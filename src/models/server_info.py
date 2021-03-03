@@ -1,25 +1,26 @@
-from src.models.base import db
+from src.models.base import Database
 
 
-class ServerInfo(db.Model):
+class ServerInfo(Database.get().Model):
     __tablename__ = 'server_info'
-    id = db.Column(db.Integer, primary_key=True)
-    stun_server = db.Column(db.String(500), nullable=True)
-    turn_server = db.Column(db.String(500), nullable=True)
+    id = Database.get().Column(Database.get().Integer, primary_key=True)
+    stun_server = Database.get().Column(Database.get().String(500), nullable=True)
+    turn_server = Database.get().Column(Database.get().String(500), nullable=True)
 
     def add(self):
         try:
-            db.session.add(self)
-            db.session.commit()
+            Database.get_session().add(self)
+            Database.get_session().commit()
             return self
         except:
-            db.session.rollback()
+            Database.get_session().rollback()
             raise
 
-
-
     def get(self):
-        server_info = self.query.one_or_none()
+        server_info = Database.get_session().query(ServerInfo) \
+            .filter(ServerInfo.id == 1) \
+            .one_or_none()
+        Database.get().session.remove()
         return server_info
 
     def update(self):
@@ -27,10 +28,10 @@ class ServerInfo(db.Model):
         if server_info is not None:
             self.id = server_info.id
             try:
-                db.session.merge(self)
-                db.session.commit()
+                Database.get_session().merge(self)
+                Database.get_session().commit()
             except:
-                db.session.rollback()
+                Database.get_session().rollback()
                 raise
         else:
             self.add()
