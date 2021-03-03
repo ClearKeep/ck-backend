@@ -8,6 +8,7 @@ from utils.config import get_system_config
 import requests
 import json
 import secrets
+import datetime
 
 
 class GroupService(BaseService):
@@ -37,6 +38,7 @@ class GroupService(BaseService):
             group_name=group_name,
             group_type=group_type,
             created_by=created_by,
+            updated_at=datetime.datetime.now(),
             group_clients=str(lst_client_id),
             group_rtc_token=secrets.token_hex(10)
         )
