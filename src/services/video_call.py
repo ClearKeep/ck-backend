@@ -77,7 +77,7 @@ class VideoCallService:
                 'stun_server': server_info.stun_server,
                 'turn_server': server_info.turn_server
             }
-            push_service.push_voip_clients(other_clients_in_group, push_payload)
+            push_service.push_voip_clients(other_clients_in_group, push_payload,from_client_id)
 
         stun_server_obj = json.loads(server_info.stun_server)
         stun_server = video_call_pb2.StunServer(
@@ -121,7 +121,7 @@ class VideoCallService:
                 'from_client_avatar': '',
                 'client_id': client_id
             }
-            push_service.push_voip_clients(other_clients_in_group, push_payload)
+            push_service.push_voip_clients(other_clients_in_group, push_payload, from_client_id)
         return video_call_pb2.BaseResponse(
             success=True
         )

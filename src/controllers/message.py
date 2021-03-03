@@ -62,7 +62,8 @@ class MessageController(BaseController):
 
             if len(other_clients_in_group) > 0:
                 push_service = NotifyPushService()
-                push_service.push_text_to_clients(other_clients_in_group, title="", body="You have a new message")
+                push_service.push_text_to_clients(other_clients_in_group, title="",
+                                                  body="You have a new message",from_client_id=request.fromClientId)
 
             return new_message
 
@@ -96,7 +97,9 @@ class MessageController(BaseController):
                 print('len queue after=', len(client_message_queue))
                 # push text notification for client
                 push_service = NotifyPushService()
-                push_service.push_text_to_clients([client_id], title="", body="You have a new message")
+                push_service.push_text_to_clients(
+                    [client_id], title="", body="You have a new message",
+                    from_client_id=client_id)
 
     @request_logged
     def Subscribe(self, request, context):
