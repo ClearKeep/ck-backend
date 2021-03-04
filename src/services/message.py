@@ -13,6 +13,7 @@ client_message_queue = {}
 class MessageService(BaseService):
     def __init__(self):
         super().__init__(Message())
+        self.service_group = GroupChat()
 
     def store_message(self, group_id, from_client_id, client_id, message):
         # store message to database
@@ -63,11 +64,13 @@ class MessageService(BaseService):
 
     def get_message_in_group(self, group_id, offset=0, from_time=0):
         lst_message = self.model.get_message_in_group(group_id, offset, from_time)
+        group_type = self.service_group.get_group_type(group_id=group_id)
         lst_obj_res = []
         for obj in lst_message:
             obj_res = message_pb2.MessageObjectResponse(
                 id=obj.id,
                 group_id=obj.group_id,
+                group_type=group_type,
                 from_client_id=obj.from_client_id,
                 message=obj.message,
                 created_at=int(obj.created_at.timestamp() * 1000)
