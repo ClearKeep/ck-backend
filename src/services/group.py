@@ -43,9 +43,7 @@ class GroupService(BaseService):
             group_rtc_token=secrets.token_hex(10)
         )
         new_group = self.model.add()
-        new_token = self.register_webrtc_token(new_group.group_rtc_token)
 
-        self.create_rtc_group(new_group.id,new_token)
         res_obj = group_pb2.GroupObjectResponse(
             group_id=new_group.id,
             group_name=new_group.group_name,
@@ -82,6 +80,7 @@ class GroupService(BaseService):
         return res_obj
 
     def register_webrtc_token(self, token):
+        self.token = token
         payload = {
             "janus": 'add_token',
             "token": token,
@@ -109,7 +108,10 @@ class GroupService(BaseService):
         if json_response.get("janus") == 'success':
             janus.janus_sesion = json_response.get("data").get('id')
         else:
-            raise
+            if json_response.get("janus") == 'error':
+                janus.janus_sesion = json_response.get("session_id")
+            else:
+                raise
 
         # attach plugin
         janus.set_janus_plugin_url(janus.janus_sesion)
@@ -120,8 +122,15 @@ class GroupService(BaseService):
         else:
             raise
 
-        # create room
+        # check room
         janus.set_janus_create_room_url(janus.janus_plugin)
+        response = requests.post(janus.janus_create_room_url, data=json.dumps(janus.check_janus_create_room(group_id)))
+        json_response = json.loads(response.text)
+        if json_response.get("janus") == 'success':
+            if json_response.get("plugindata").get('data').get('error_code') == 427:
+                return group_id
+
+        # create room
         response = requests.post(janus.janus_create_room_url, data=json.dumps(janus.get_janus_create_room(group_id)))
         json_response = json.loads(response.text)
         if json_response.get("janus") == 'success':
@@ -130,6 +139,9 @@ class GroupService(BaseService):
             raise
 
         return janus.janus_room
+
+    def get_group_obj(self, group_id):
+        return self.model.get(group_id).GroupChat
 
     def get_group(self, group_id):
         group = self.model.get(group_id)
