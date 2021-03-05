@@ -108,7 +108,10 @@ class GroupService(BaseService):
         if json_response.get("janus") == 'success':
             janus.janus_sesion = json_response.get("data").get('id')
         else:
-            raise
+            if json_response.get("janus") == 'error':
+                janus.janus_sesion = json_response.get("session_id")
+            else:
+                raise
 
         # attach plugin
         janus.set_janus_plugin_url(janus.janus_sesion)
