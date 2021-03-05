@@ -13,7 +13,7 @@ from utils.logger import *
 
 class VideoCallService:
     def __init__(self):
-        pass
+        self.service_group = GroupService()
 
     def add_client_token(self, token):
         webrtc_config = get_system_config()["janus_webrtc"]
@@ -60,12 +60,14 @@ class VideoCallService:
         server_info = ServerInfoService().get_server_info()
 
         webrtc_token = secrets.token_hex(10)
-        rtc_token = GroupService().register_webrtc_token(webrtc_token)
-        group_janus_room_url = GroupService().get_url_janus_create_room(group_id=group_id)
-        # check create room
-        # room_rtc = GroupService().check_rtc_room(room_id=group_id,janus_check_room_url=group_janus_room_url,rtc_token=rtc_token)
-        # if room_rtc == None:
-            # GroupService().create_rtc_group(group_id, rtc_token)
+
+        group_ojb = self.service_group.get_group_obj(group_id=group_id)
+        group_ojb.group_rtc_token = webrtc_token
+        group_ojb.update()
+        # register webrtc
+        self.service_group.register_webrtc_token(webrtc_token)
+        #  create room
+        self.service_group.create_rtc_group(group_id, webrtc_token)
         logger.info('janus webrtc token={}'.format(webrtc_token))
 
         if len(other_clients_in_group) > 0:

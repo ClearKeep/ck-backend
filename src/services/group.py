@@ -43,11 +43,6 @@ class GroupService(BaseService):
             group_rtc_token=secrets.token_hex(10)
         )
         new_group = self.model.add()
-        new_token = self.register_webrtc_token(new_group.group_rtc_token)
-
-        group_janus_room_url = self.create_rtc_group(new_group.id,new_token)
-        new_group.group_janus_room_url=group_janus_room_url
-        new_group.update()
 
         res_obj = group_pb2.GroupObjectResponse(
             group_id=new_group.id,
@@ -85,6 +80,7 @@ class GroupService(BaseService):
         return res_obj
 
     def register_webrtc_token(self, token):
+        self.token = token
         payload = {
             "janus": 'add_token',
             "token": token,
@@ -99,26 +95,6 @@ class GroupService(BaseService):
             return token
         else:
             raise
-
-    def check_rtc_room(self, room_id, janus_check_room_url ,rtc_token):
-        data_message = {
-            "janus": 'message',
-            "body": {
-                "request": "exists",
-                "room" : room_id
-            },
-            "token": rtc_token,
-            "transaction" : rtc_token
-        }
-        # check room
-        response = requests.post(janus_check_room_url, data=json.dumps(data_message))
-        json_response = json.loads(response.text)
-        if json_response.get("janus") == 'success':
-            return room_id
-        else:
-            return None
-
-        return True
 
     def create_rtc_group(self, group_id, rtc_token):
         # create Janus
@@ -143,8 +119,15 @@ class GroupService(BaseService):
         else:
             raise
 
-        # create room
+        # check room
         janus.set_janus_create_room_url(janus.janus_plugin)
+        response = requests.post(janus.janus_create_room_url, data=json.dumps(janus.check_janus_create_room(group_id)))
+        json_response = json.loads(response.text)
+        if json_response.get("janus") == 'success':
+            if json_response.get("plugindata").get('data').get('error_code') == 427:
+                return group_id
+
+        # create room
         response = requests.post(janus.janus_create_room_url, data=json.dumps(janus.get_janus_create_room(group_id)))
         json_response = json.loads(response.text)
         if json_response.get("janus") == 'success':
@@ -152,12 +135,10 @@ class GroupService(BaseService):
         else:
             raise
 
-        return janus.janus_create_room_url
+        return janus.janus_room
 
-    def get_url_janus_create_room(self, group_id):
-        group = self.model.get(group_id)
-        if group is not None:
-            return group.GroupChat.group_janus_room_url
+    def get_group_obj(self, group_id):
+        return self.model.get(group_id).GroupChat
 
     def get_group(self, group_id):
         group = self.model.get(group_id)
