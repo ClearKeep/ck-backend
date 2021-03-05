@@ -70,7 +70,7 @@ class MessageService(BaseService):
             obj_res = message_pb2.MessageObjectResponse(
                 id=obj.id,
                 group_id=obj.group_id,
-                group_type=group_type,
+                group_type=group_type.group_type,
                 from_client_id=obj.from_client_id,
                 message=obj.message,
                 created_at=int(obj.created_at.timestamp() * 1000)

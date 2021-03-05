@@ -19,8 +19,8 @@ class VideoCallStub(object):
                 request_serializer=protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
                 response_deserializer=protos_dot_video__call__pb2.ServerResponse.FromString,
                 )
-        self.cancel_call = channel.unary_unary(
-                '/video_call.VideoCall/cancel_call',
+        self.cancel_request_call = channel.unary_unary(
+                '/video_call.VideoCall/cancel_request_call',
                 request_serializer=protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
                 response_deserializer=protos_dot_video__call__pb2.BaseResponse.FromString,
                 )
@@ -35,7 +35,7 @@ class VideoCallServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def cancel_call(self, request, context):
+    def cancel_request_call(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -49,8 +49,8 @@ def add_VideoCallServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_video__call__pb2.VideoCallRequest.FromString,
                     response_serializer=protos_dot_video__call__pb2.ServerResponse.SerializeToString,
             ),
-            'cancel_call': grpc.unary_unary_rpc_method_handler(
-                    servicer.cancel_call,
+            'cancel_request_call': grpc.unary_unary_rpc_method_handler(
+                    servicer.cancel_request_call,
                     request_deserializer=protos_dot_video__call__pb2.VideoCallRequest.FromString,
                     response_serializer=protos_dot_video__call__pb2.BaseResponse.SerializeToString,
             ),
@@ -82,7 +82,7 @@ class VideoCall(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def cancel_call(request,
+    def cancel_request_call(request,
             target,
             options=(),
             channel_credentials=None,
@@ -92,7 +92,7 @@ class VideoCall(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/cancel_call',
+        return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/cancel_request_call',
             protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
             protos_dot_video__call__pb2.BaseResponse.FromString,
             options, channel_credentials,
