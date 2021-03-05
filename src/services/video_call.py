@@ -61,7 +61,7 @@ class VideoCallService:
 
         webrtc_token = secrets.token_hex(10)
         rtc_token = GroupService().register_webrtc_token(webrtc_token)
-        group_janus_room_url = GroupService.get_url_janus_create_room(group_id=group_id)
+        group_janus_room_url = GroupService().get_url_janus_create_room(group_id=group_id)
         # check create room
         room_rtc = GroupService().check_rtc_room(room_id=group_id,janus_check_room_url=group_janus_room_url,rtc_token=rtc_token)
         if room_rtc == None:
