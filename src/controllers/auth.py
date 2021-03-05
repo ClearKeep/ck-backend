@@ -17,6 +17,7 @@ class AuthController(BaseController):
             token = self.service.token(request.email, request.password)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if token:
+                self.user_service.update_last_login(user_id=introspect_token['sub'])
                 return auth_messages.AuthRes(
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],

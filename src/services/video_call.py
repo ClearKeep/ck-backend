@@ -13,7 +13,7 @@ from utils.logger import *
 
 class VideoCallService:
     def __init__(self):
-        pass
+        self.service_group = GroupService()
 
     def add_client_token(self, token):
         webrtc_config = get_system_config()["janus_webrtc"]
@@ -60,8 +60,15 @@ class VideoCallService:
         server_info = ServerInfoService().get_server_info()
 
         webrtc_token = secrets.token_hex(10)
-        GroupService().register_webrtc_token(webrtc_token)
-        logger.info('janus webrtc token=', webrtc_token)
+
+        group_ojb = self.service_group.get_group_obj(group_id=group_id)
+        group_ojb.group_rtc_token = webrtc_token
+        group_ojb.update()
+        # register webrtc
+        self.service_group.register_webrtc_token(webrtc_token)
+        #  create room
+        self.service_group.create_rtc_group(group_id, webrtc_token)
+        logger.info('janus webrtc token={}'.format(webrtc_token))
 
         if len(other_clients_in_group) > 0:
             # push notification voip for other clients in group
@@ -77,7 +84,7 @@ class VideoCallService:
                 'stun_server': server_info.stun_server,
                 'turn_server': server_info.turn_server
             }
-            push_service.push_voip_clients(other_clients_in_group, push_payload)
+            push_service.push_voip_clients(other_clients_in_group, push_payload,from_client_id)
 
         stun_server_obj = json.loads(server_info.stun_server)
         stun_server = video_call_pb2.StunServer(
@@ -98,6 +105,31 @@ class VideoCallService:
             group_rtc_token=webrtc_token
         )
 
+    def cancel_request_call(self, group_id, from_client_id, client_id):
+        from_client_username = ""
+        # send push notification to all member of group
+        lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
+        # list token for each device type
+        other_clients_in_group = []
+        for client in lst_client_in_groups:
+            if client.User.id == from_client_id:
+                from_client_username = client.User.display_name
+            else:
+                other_clients_in_group.append(client.User.id)
 
-
+        if len(other_clients_in_group) > 0:
+            # push notification voip for other clients in group
+            push_service = NotifyPushService()
+            push_payload = {
+                'notify_type': 'cancel_request_call',
+                'group_id': str(group_id),
+                'from_client_id': from_client_id,
+                'from_client_name': from_client_username,
+                'from_client_avatar': '',
+                'client_id': client_id
+            }
+            push_service.push_voip_clients(other_clients_in_group, push_payload, from_client_id)
+        return video_call_pb2.BaseResponse(
+            success=True
+        )
 
