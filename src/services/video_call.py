@@ -60,8 +60,13 @@ class VideoCallService:
         server_info = ServerInfoService().get_server_info()
 
         webrtc_token = secrets.token_hex(10)
-        GroupService().register_webrtc_token(webrtc_token)
-        logger.info('janus webrtc token=', webrtc_token)
+        rtc_token = GroupService().register_webrtc_token(webrtc_token)
+        group_janus_room_url = GroupService.get_url_janus_create_room(group_id=group_id)
+        # check create room
+        room_rtc = GroupService().check_rtc_room(room_id=group_id,janus_check_room_url=group_janus_room_url,rtc_token=rtc_token)
+        if room_rtc == None:
+            GroupService().create_rtc_group(group_id, rtc_token)
+        logger.info('janus webrtc token={}'.format(webrtc_token))
 
         if len(other_clients_in_group) > 0:
             # push notification voip for other clients in group

@@ -13,6 +13,7 @@ class GroupChat(Database.get().Model):
     group_type = Database.get().Column(Database.get().String(36), unique=False, nullable=True)
     group_clients = Database.get().Column(Database.get().Text, unique=False, nullable=True)
     group_rtc_token = Database.get().Column(Database.get().Text, unique=False, nullable=True)
+    group_janus_room_url = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     created_by = Database.get().Column(Database.get().String(36), unique=False, nullable=True)
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_by = Database.get().Column(Database.get().String(36), unique=False, nullable=True)

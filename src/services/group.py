@@ -45,7 +45,10 @@ class GroupService(BaseService):
         new_group = self.model.add()
         new_token = self.register_webrtc_token(new_group.group_rtc_token)
 
-        self.create_rtc_group(new_group.id,new_token)
+        group_janus_room_url = self.create_rtc_group(new_group.id,new_token)
+        new_group.group_janus_room_url=group_janus_room_url
+        new_group.update()
+
         res_obj = group_pb2.GroupObjectResponse(
             group_id=new_group.id,
             group_name=new_group.group_name,
@@ -97,6 +100,26 @@ class GroupService(BaseService):
         else:
             raise
 
+    def check_rtc_room(self, room_id, janus_check_room_url ,rtc_token):
+        data_message = {
+            "janus": 'message',
+            "body": {
+                "request": "exists",
+                "room" : room_id
+            },
+            "token": rtc_token,
+            "transaction" : rtc_token
+        }
+        # check room
+        response = requests.post(janus_check_room_url, data=json.dumps(data_message))
+        json_response = json.loads(response.text)
+        if json_response.get("janus") == 'success':
+            return room_id
+        else:
+            return None
+
+        return True
+
     def create_rtc_group(self, group_id, rtc_token):
         # create Janus
         janus = JanusService(janus_url=get_system_config()['janus_webrtc'].get('client_url'),
@@ -129,7 +152,12 @@ class GroupService(BaseService):
         else:
             raise
 
-        return janus.janus_room
+        return janus.janus_create_room_url
+
+    def get_url_janus_create_room(self, group_id):
+        group = self.model.get(group_id)
+        if group is not None:
+            return group.GroupChat.group_janus_room_url
 
     def get_group(self, group_id):
         group = self.model.get(group_id)
