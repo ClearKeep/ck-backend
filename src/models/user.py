@@ -17,7 +17,7 @@ class User(Database.get().Model):
     auth_source = Database.get().Column(Database.get().String(50), unique=False, nullable=True)
     active = Database.get().Column(Database.get().Boolean, unique=False, nullable=True, default=True)
     last_active_at = Database.get().Column(Database.get().DateTime, nullable=True)
-    last_login_at = Database.get().Column(Database.get().DateTime, nullable=True)
+    last_login_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
     tokens = relationship('NotifyToken', back_populates='user')
