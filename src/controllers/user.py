@@ -6,12 +6,13 @@ from middlewares.request_logged import *
 from utils.logger import *
 from utils.config import get_system_domain, get_ip_domain
 from client.client_user import *
+from grpc import aio
 
-class UserController(BaseController):
+class UserController(BaseController, user_pb2_grpc.UserServicer):
     def __init__(self, *kwargs):
         self.service = UserService()
     
-    @auth_required
+    #@auth_required
     async def change_password(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -27,7 +28,7 @@ class UserController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
 
-    @auth_required
+    #@auth_required
     # @request_logged
     async def get_profile(self, request, context):
         print("user get_profile api")
@@ -51,7 +52,7 @@ class UserController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    @auth_required
+    #@auth_required
     async def update_profile(self, request, context):
         print("user update_profile api")
         try:
@@ -68,7 +69,7 @@ class UserController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    @auth_required
+    #@auth_required
     # @request_logged
     async def get_user_info(self, request, context):
         print("user get_user_info api")

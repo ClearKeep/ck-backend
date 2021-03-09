@@ -95,7 +95,7 @@ class AuthController(BaseController):
                 )
             )
 
-    @auth_required
+    #@auth_required
     def logout(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())

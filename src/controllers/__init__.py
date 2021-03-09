@@ -1,6 +1,18 @@
 from flask import Flask
 from utils.config import get_system_config
 from src.controllers.turn_server import Server
+# import asyncio
+# import threading
+
+# message_loop = asyncio.new_event_loop()
+#
+# def start_loop(loop):
+#     asyncio.set_event_loop(loop)
+#     loop.run_forever()
+#
+# t = threading.Thread(target=start_loop,args=(message_loop,))
+# t.start()
+
 from src.models.base import db
 import threading
 
@@ -30,6 +42,7 @@ with app.app_context():
 def turn_server():
     server = Server()
     return server.get()
+
 
 @app.route('/thread', methods=['GET'])
 def thread_server():

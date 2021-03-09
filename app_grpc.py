@@ -1,6 +1,5 @@
-from concurrent import futures
+#from concurrent import futures
 import grpc
-from src.models.base import Database
 from utils.config import get_system_config
 import protos.user_pb2_grpc as user_service
 import protos.auth_pb2_grpc as auth_service
@@ -46,7 +45,7 @@ async def start_server():
     video_call_service.add_VideoCallServicer_to_server(VideoCallController(), server)
     server_info_service.add_ServerInfoServicer_to_server(ServerInfoController(), server)
     # create all table in database
-    #Database.get().create_all()
+    # Database.get().create_all()
     # init log
     create_timed_rotating_log('logs/logfile.log')
 
@@ -61,17 +60,17 @@ async def start_server():
 
     # set cronjob
     env = os.getenv("ENV")
-    if env == 'stagging' :
+    if env == 'stagging':
         cron_tab_update_turn_server()
 
     # log total thread
-    #get_thread()
+    # get_thread()
 
-    # start http api
-    http_port = get_system_config()['http_port']
-    print("HTTP listening on port {}..".format(http_port))
-    logger.info("HTTP listening on port {}..".format(http_port))
-    app.run(host="0.0.0.0", port=str(http_port), threaded=False, processes=3, debug=False)
+    # # start http api
+    # http_port = get_system_config()['http_port']
+    # print("HTTP listening on port {}..".format(http_port))
+    # logger.info("HTTP listening on port {}..".format(http_port))
+    # app.run(host="0.0.0.0", port=str(http_port), threaded=False, processes=3, debug=False)
 
     try:
         await server.wait_for_termination()
@@ -82,7 +81,7 @@ async def start_server():
 def get_thread():
     total = threading.activeCount()
     logger.info("Total thread= {}".format(total))
-    time.sleep(1800)
+    time.sleep(10)
     get_thread()
 
 
@@ -95,7 +94,7 @@ def cron_tab_update_turn_server():
         cron.remove_all()
         job = cron.new(command='ENV=stagging python3 -m client.client_nts')
         job.hour.on(1)
-        #job.minute.every(30)
+        # job.minute.every(30)
         cron.write()
         logger.info("Cronjob cron_tab_update_turn_server set")
 
@@ -104,5 +103,4 @@ def cron_tab_update_turn_server():
 
 
 if __name__ == '__main__':
-    # start_server()
     asyncio.run(start_server())
