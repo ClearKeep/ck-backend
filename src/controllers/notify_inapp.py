@@ -49,7 +49,7 @@ class NotifyInAppController(BaseController):
                             created_at=int(notify_response.created_at.timestamp() * 1000)
                         )
                     await context.write(notify_stream_response)
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.5)
             except:
                 logger.info('Client notify {} is disconnected'.format(client_id))
                 listening = False

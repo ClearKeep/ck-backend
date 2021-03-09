@@ -88,7 +88,7 @@ class MessageController(BaseController):
                     if client_message_queue[message_channel].qsize() > 0:
                         message_response = client_message_queue[message_channel].get(True)
                         await context.write(message_response)
-                await asyncio.sleep(1)
+                await asyncio.sleep(0.5)
             except:
                 logger.info('Client {} is disconnected'.format(client_id))
                 listening = False
