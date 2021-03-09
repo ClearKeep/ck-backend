@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x18protos/server_info.proto\x12\x0bserver_info\"*\n\x0cUpdateNTSReq\x12\x0c\n\x04stun\x18\x01 \x01(\t\x12\x0c\n\x04turn\x18\x02 \x01(\t\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32R\n\nServerInfo\x12\x44\n\nupdate_nts\x12\x19.server_info.UpdateNTSReq\x1a\x19.server_info.BaseResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x18protos/server_info.proto\x12\x0bserver_info\"*\n\x0cUpdateNTSReq\x12\x0c\n\x04stun\x18\x01 \x01(\t\x12\x0c\n\x04turn\x18\x02 \x01(\t\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"\x07\n\x05\x45mpty\"\"\n\x11GetThreadResponse\x12\r\n\x05total\x18\x01 \x01(\x03\x32\x98\x01\n\nServerInfo\x12\x44\n\nupdate_nts\x12\x19.server_info.UpdateNTSReq\x1a\x19.server_info.BaseResponse\"\x00\x12\x44\n\x0ctotal_thread\x12\x12.server_info.Empty\x1a\x1e.server_info.GetThreadResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -95,8 +95,67 @@ _BASERESPONSE = _descriptor.Descriptor(
   serialized_end=116,
 )
 
+
+_EMPTY = _descriptor.Descriptor(
+  name='Empty',
+  full_name='server_info.Empty',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=118,
+  serialized_end=125,
+)
+
+
+_GETTHREADRESPONSE = _descriptor.Descriptor(
+  name='GetThreadResponse',
+  full_name='server_info.GetThreadResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='total', full_name='server_info.GetThreadResponse.total', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=127,
+  serialized_end=161,
+)
+
 DESCRIPTOR.message_types_by_name['UpdateNTSReq'] = _UPDATENTSREQ
 DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
+DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
+DESCRIPTOR.message_types_by_name['GetThreadResponse'] = _GETTHREADRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 UpdateNTSReq = _reflection.GeneratedProtocolMessageType('UpdateNTSReq', (_message.Message,), {
@@ -113,6 +172,20 @@ BaseResponse = _reflection.GeneratedProtocolMessageType('BaseResponse', (_messag
   })
 _sym_db.RegisterMessage(BaseResponse)
 
+Empty = _reflection.GeneratedProtocolMessageType('Empty', (_message.Message,), {
+  'DESCRIPTOR' : _EMPTY,
+  '__module__' : 'protos.server_info_pb2'
+  # @@protoc_insertion_point(class_scope:server_info.Empty)
+  })
+_sym_db.RegisterMessage(Empty)
+
+GetThreadResponse = _reflection.GeneratedProtocolMessageType('GetThreadResponse', (_message.Message,), {
+  'DESCRIPTOR' : _GETTHREADRESPONSE,
+  '__module__' : 'protos.server_info_pb2'
+  # @@protoc_insertion_point(class_scope:server_info.GetThreadResponse)
+  })
+_sym_db.RegisterMessage(GetThreadResponse)
+
 
 
 _SERVERINFO = _descriptor.ServiceDescriptor(
@@ -122,8 +195,8 @@ _SERVERINFO = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=118,
-  serialized_end=200,
+  serialized_start=164,
+  serialized_end=316,
   methods=[
   _descriptor.MethodDescriptor(
     name='update_nts',
@@ -132,6 +205,16 @@ _SERVERINFO = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_UPDATENTSREQ,
     output_type=_BASERESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='total_thread',
+    full_name='server_info.ServerInfo.total_thread',
+    index=1,
+    containing_service=None,
+    input_type=_EMPTY,
+    output_type=_GETTHREADRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

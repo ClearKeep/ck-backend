@@ -1,6 +1,4 @@
-from concurrent import futures
 import grpc
-from src.models.base import Database
 from utils.config import get_system_config
 import protos.user_pb2_grpc as user_service
 import protos.auth_pb2_grpc as auth_service
@@ -24,15 +22,17 @@ from utils.logger import *
 # from middlewares.auth_interceptor import AuthInterceptor
 import threading
 import time
-from src.controllers import app
 from crontab import CronTab
 import os
+import asyncio
+from grpc import aio
 
 
-def start_server():
+async def start_server():
     grpc_port = get_system_config()['grpc_port']
+    server = grpc.aio.server()
     # server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), interceptors=(AuthInterceptor(),))
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=200))
+    # server = grpc.server(futures.ThreadPoolExecutor(max_workers=200))
     user_service.add_UserServicer_to_server(UserController(), server)
     auth_service.add_AuthServicer_to_server(AuthController(), server)
     signal_service.add_SignalKeyDistributionServicer_to_server(SignalController(), server)
@@ -42,40 +42,31 @@ def start_server():
     notify_push_service.add_NotifyPushServicer_to_server(NotifyPushController(), server)
     video_call_service.add_VideoCallServicer_to_server(VideoCallController(), server)
     server_info_service.add_ServerInfoServicer_to_server(ServerInfoController(), server)
-    # create all table in database
-    Database.get().create_all()
     # init log
     create_timed_rotating_log('logs/logfile.log')
 
     # start grpc api
     grpc_add = "0.0.0.0:{}".format(grpc_port)
     server.add_insecure_port(grpc_add)
-    server.start()
+    await server.start()
     print("gRPC listening on port {}..".format(grpc_port))
     logger.info("gRPC listening on port {}..".format(grpc_port))
 
     # set cronjob
     env = os.getenv("ENV")
-    if env == 'stagging' :
+    if env == 'stagging':
         cron_tab_update_turn_server()
 
-    # log total thread
-    #get_thread()
-
-    # start http api
-    http_port = get_system_config()['http_port']
-    print("HTTP listening on port {}..".format(http_port))
-    logger.info("HTTP listening on port {}..".format(http_port))
-    app.run(host="0.0.0.0", port=str(http_port), threaded=False, processes=3, debug=False)
-
-    server.wait_for_termination()
-
+    try:
+        await server.wait_for_termination()
+    except KeyboardInterrupt:
+        await server.stop(0)
 
 
 def get_thread():
     total = threading.activeCount()
     logger.info("Total thread= {}".format(total))
-    time.sleep(1800)
+    time.sleep(10)
     get_thread()
 
 
@@ -88,7 +79,7 @@ def cron_tab_update_turn_server():
         cron.remove_all()
         job = cron.new(command='ENV=stagging python3 -m client.client_nts')
         job.hour.on(1)
-        #job.minute.every(30)
+        # job.minute.every(30)
         cron.write()
         logger.info("Cronjob cron_tab_update_turn_server set")
 
@@ -97,4 +88,4 @@ def cron_tab_update_turn_server():
 
 
 if __name__ == '__main__':
-    start_server()
+    asyncio.run(start_server())

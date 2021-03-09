@@ -1,7 +1,6 @@
 from protos import notify_push_pb2
 from src.controllers.base import *
 from middlewares.permission import *
-from utils.logger import *
 from middlewares.request_logged import *
 from src.services.notify_push import NotifyPushService
 
@@ -11,7 +10,7 @@ class NotifyPushController(BaseController):
         self.service = NotifyPushService()
 
     @request_logged
-    def register_token(self, request, context):
+    async def register_token(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
