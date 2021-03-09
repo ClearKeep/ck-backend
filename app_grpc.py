@@ -1,4 +1,3 @@
-#from concurrent import futures
 import grpc
 from utils.config import get_system_config
 import protos.user_pb2_grpc as user_service
@@ -23,7 +22,6 @@ from utils.logger import *
 # from middlewares.auth_interceptor import AuthInterceptor
 import threading
 import time
-from src.controllers import app
 from crontab import CronTab
 import os
 import asyncio
@@ -44,15 +42,11 @@ async def start_server():
     notify_push_service.add_NotifyPushServicer_to_server(NotifyPushController(), server)
     video_call_service.add_VideoCallServicer_to_server(VideoCallController(), server)
     server_info_service.add_ServerInfoServicer_to_server(ServerInfoController(), server)
-    # create all table in database
-    # Database.get().create_all()
     # init log
     create_timed_rotating_log('logs/logfile.log')
 
     # start grpc api
     grpc_add = "0.0.0.0:{}".format(grpc_port)
-    # server.add_insecure_port(grpc_add)
-    # server.start()
     server.add_insecure_port(grpc_add)
     await server.start()
     print("gRPC listening on port {}..".format(grpc_port))
@@ -62,15 +56,6 @@ async def start_server():
     env = os.getenv("ENV")
     if env == 'stagging':
         cron_tab_update_turn_server()
-
-    # log total thread
-    # get_thread()
-
-    # # start http api
-    # http_port = get_system_config()['http_port']
-    # print("HTTP listening on port {}..".format(http_port))
-    # logger.info("HTTP listening on port {}..".format(http_port))
-    # app.run(host="0.0.0.0", port=str(http_port), threaded=False, processes=3, debug=False)
 
     try:
         await server.wait_for_termination()

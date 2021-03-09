@@ -19,12 +19,23 @@ class ServerInfoStub(object):
                 request_serializer=protos_dot_server__info__pb2.UpdateNTSReq.SerializeToString,
                 response_deserializer=protos_dot_server__info__pb2.BaseResponse.FromString,
                 )
+        self.total_thread = channel.unary_unary(
+                '/server_info.ServerInfo/total_thread',
+                request_serializer=protos_dot_server__info__pb2.Empty.SerializeToString,
+                response_deserializer=protos_dot_server__info__pb2.GetThreadResponse.FromString,
+                )
 
 
 class ServerInfoServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def update_nts(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def total_thread(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -37,6 +48,11 @@ def add_ServerInfoServicer_to_server(servicer, server):
                     servicer.update_nts,
                     request_deserializer=protos_dot_server__info__pb2.UpdateNTSReq.FromString,
                     response_serializer=protos_dot_server__info__pb2.BaseResponse.SerializeToString,
+            ),
+            'total_thread': grpc.unary_unary_rpc_method_handler(
+                    servicer.total_thread,
+                    request_deserializer=protos_dot_server__info__pb2.Empty.FromString,
+                    response_serializer=protos_dot_server__info__pb2.GetThreadResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -62,5 +78,22 @@ class ServerInfo(object):
         return grpc.experimental.unary_unary(request, target, '/server_info.ServerInfo/update_nts',
             protos_dot_server__info__pb2.UpdateNTSReq.SerializeToString,
             protos_dot_server__info__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def total_thread(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/server_info.ServerInfo/total_thread',
+            protos_dot_server__info__pb2.Empty.SerializeToString,
+            protos_dot_server__info__pb2.GetThreadResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -30,14 +30,14 @@ class NotifyInAppController(BaseController):
 
     # @request_logged
     async def listen(self, request, context):
-        print("notify_inapp listen api")
         client_id = request.client_id
         notify_channel = "{}/notify".format(client_id)
-        while True:
-            while notify_channel in client_notify_queue:
-                try:
-                    if notify_channel in client_notify_queue:
-                        notify_response = client_notify_queue[notify_channel].get(timeout=0.1)
+        listening = True
+        while listening:
+            try:
+                if notify_channel in client_notify_queue:
+                    if client_notify_queue[notify_channel].qsize() > 0:
+                        notify_response = client_notify_queue[notify_channel].get(True)
                         notify_stream_response = notify_pb2.NotifyObjectResponse(
                             id=notify_response.id,
                             client_id=notify_response.client_id,
@@ -50,13 +50,13 @@ class NotifyInAppController(BaseController):
                             read_flg=notify_response.read_flg,
                             created_at=int(notify_response.created_at.timestamp() * 1000)
                         )
-                        yield notify_stream_response
-                    await asyncio.sleep(0.1)
-                except Exception as e:
-                    logger.error(e)
-                    # print(ex)
-                    context.cancel()
-                    client_notify_queue[notify_channel] = None
+                    await context.write(notify_stream_response)
+                await asyncio.sleep(1)
+            except:
+                logger.info('Client notify {} is disconnected'.format(client_id))
+                listening = False
+                client_notify_queue[notify_channel] = None
+                del client_notify_queue[notify_channel]
 
     @request_logged
     async def subscribe(self, request, context):

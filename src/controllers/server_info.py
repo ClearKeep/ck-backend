@@ -4,6 +4,8 @@ from utils.logger import *
 from middlewares.request_logged import *
 from src.services.server_info import ServerInfoService
 from protos import server_info_pb2
+import threading
+
 
 class ServerInfoController(BaseController):
     def __init__(self, *kwargs):
@@ -23,3 +25,11 @@ class ServerInfoController(BaseController):
             return server_info_pb2.BaseResponse(
                 success=False
             )
+
+    async def total_thread(self, request, context):
+        try:
+            return server_info_pb2.GetThreadResponse(
+                total=threading.activeCount()
+            )
+        except Exception as e:
+            logger.error(e)
