@@ -3,16 +3,6 @@ from utils.logger import *
 import json
 import copy
 
-# def request_logged(f):
-#     @wraps(f)
-#     def wrap(*args, **kwargs):
-#         request = args[1]
-#         print("Request Object Type=", type(request))
-#         print("Request Object=", request)
-#         strRequest = json.dumps(request, default=lambda o: o.__dict__)
-#         logger.info(strRequest)
-#         return
-#     return wrap
 
 def request_logged(func):
     async def deco(*args, **kwargs):
@@ -23,7 +13,9 @@ def request_logged(func):
         # strRequest = json.dumps(args[1])
         return await func(*args, **kwargs)
         # return rtn
+
     return deco
+
 
 class Logger(object):
     def __getattribute__(self, name):

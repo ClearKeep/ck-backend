@@ -27,7 +27,7 @@ class VideoCallController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def cancel_request_call(self, request, context):
+    async def cancel_request_call(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
