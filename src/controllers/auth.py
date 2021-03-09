@@ -12,7 +12,9 @@ class AuthController(BaseController):
         self.service = AuthService()
         self.user_service = UserService()
 
-    def login(self, request, context):
+    @request_logged
+    async def login(self, request, context):
+        print("auth login api")
         try:
             token = self.service.token(request.email, request.password)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
@@ -44,7 +46,8 @@ class AuthController(BaseController):
                     )
                 ))
 
-    def register(self, request, context):
+    @request_logged
+    async def register(self, request, context):
         # check exist user
         try:
             exists_user = self.service.get_user_id_by_email(request.email)
@@ -76,7 +79,8 @@ class AuthController(BaseController):
                     )
                 ))
 
-    def fogot_password(self, request, context):
+    @request_logged
+    async def fogot_password(self, request, context):
         try:
             self.service.send_forgot_password(request.email)
             return auth_messages.BaseResponse(
@@ -94,7 +98,8 @@ class AuthController(BaseController):
             )
 
     @auth_required
-    def logout(self, request, context):
+    @request_logged
+    async def logout(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])

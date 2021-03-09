@@ -1,16 +1,16 @@
 from src.controllers.base import *
-from middlewares.permission import *
-from utils.logger import *
 from middlewares.request_logged import *
 from src.services.server_info import ServerInfoService
 from protos import server_info_pb2
+import threading
+
 
 class ServerInfoController(BaseController):
     def __init__(self, *kwargs):
         self.service = ServerInfoService()
 
     @request_logged
-    def update_nts(self, request, context):
+    async def update_nts(self, request, context):
         try:
             stun = request.stun
             turn = request.turn
@@ -23,3 +23,11 @@ class ServerInfoController(BaseController):
             return server_info_pb2.BaseResponse(
                 success=False
             )
+
+    async def total_thread(self, request, context):
+        try:
+            return server_info_pb2.GetThreadResponse(
+                total=threading.activeCount()
+            )
+        except Exception as e:
+            logger.error(e)

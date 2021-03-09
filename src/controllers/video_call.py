@@ -1,16 +1,15 @@
 from src.controllers.base import *
 from middlewares.permission import *
-from utils.logger import *
 from middlewares.request_logged import *
 from src.services.video_call import VideoCallService
-from src.services.server_info import ServerInfoService
+
 
 class VideoCallController(BaseController):
     def __init__(self, *kwargs):
         self.service = VideoCallService()
 
     @request_logged
-    def video_call(self, request, context):
+    async def video_call(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -28,7 +27,7 @@ class VideoCallController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def cancel_request_call(self, request, context):
+    async def cancel_request_call(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])

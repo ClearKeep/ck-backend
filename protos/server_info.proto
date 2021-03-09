@@ -11,6 +11,16 @@ message BaseResponse {
     bool success = 1;
 }
 
+
+// Request: get total thread
+message Empty {
+}
+// Response: GetNotifiesResponse
+message GetThreadResponse {
+  int64 total = 1;
+}
+
 service ServerInfo {
     rpc update_nts(UpdateNTSReq) returns (BaseResponse) {};
+    rpc total_thread(Empty) returns (GetThreadResponse) {};
 }

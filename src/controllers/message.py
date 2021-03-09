@@ -1,10 +1,12 @@
-from protos import message_pb2
 from src.controllers.base import *
 from middlewares.permission import *
 from middlewares.request_logged import *
 from src.services.message import MessageService, client_message_queue
 from src.models.signal_group_key import GroupClientKey
 from src.services.notify_push import NotifyPushService
+from protos import message_pb2
+import grpc
+import asyncio
 
 
 class MessageController(BaseController):
@@ -12,7 +14,7 @@ class MessageController(BaseController):
         self.service = MessageService()
 
     @request_logged
-    def get_messages_in_group(self, request, context):
+    async def get_messages_in_group(self, request, context):
         try:
             group_id = request.group_id
             off_set = request.off_set
@@ -27,7 +29,7 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def Publish(self, request, context):
+    async def Publish(self, request, context):
         try:
             group_id = request.groupId
             client_id = request.clientId
@@ -47,10 +49,10 @@ class MessageController(BaseController):
                 if message_channel in client_message_queue:
                     client_message_queue[message_channel].put(new_message)
                 else:
-                    #push text notification for client
+                    # push text notification for client
                     other_clients_in_group.append(client_id)
             else:
-                #push for other people in group
+                # push for other people in group
                 lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
                 for client in lst_client_in_groups:
                     if client.User.id != request.fromClientId:
@@ -63,7 +65,7 @@ class MessageController(BaseController):
             if len(other_clients_in_group) > 0:
                 push_service = NotifyPushService()
                 push_service.push_text_to_clients(other_clients_in_group, title="",
-                                                  body="You have a new message",from_client_id=request.fromClientId)
+                                                  body="You have a new message", from_client_id=request.fromClientId)
 
             return new_message
 
@@ -74,27 +76,26 @@ class MessageController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    @request_logged
-    def Listen(self, request, context):
+    # @request_logged
+    async def Listen(self, request, context):
         client_id = request.clientId
         message_channel = "{}/message".format(client_id)
-
-        while context.is_active():
-            print(' context.is_active()=',  context.is_active())
+        listening = True
+        while listening:
+            #print(' client=', client_id)
             try:
                 if message_channel in client_message_queue:
-                    message_response = client_message_queue[message_channel].get()
-                    if message_response is None:
-                        break
-                    yield message_response
+                    if client_message_queue[message_channel].qsize() > 0:
+                        message_response = client_message_queue[message_channel].get(True)
+                        await context.write(message_response)
+                await asyncio.sleep(0.5)
             except:
                 logger.info('Client {} is disconnected'.format(client_id))
-                context.cancel()
-                print(' context.is_active()=', context.is_active())
-                print('len queue before=', len(client_message_queue))
+                listening = False
+                #print('len queue before=', len(client_message_queue))
                 client_message_queue[message_channel] = None
                 del client_message_queue[message_channel]
-                print('len queue after=', len(client_message_queue))
+                #print('len queue after=', len(client_message_queue))
                 # push text notification for client
                 push_service = NotifyPushService()
                 push_service.push_text_to_clients(
@@ -102,7 +103,8 @@ class MessageController(BaseController):
                     from_client_id=client_id)
 
     @request_logged
-    def Subscribe(self, request, context):
+    async def Subscribe(self, request, context):
+        print("message Subscribe api")
         try:
             self.service.subscribe(request.clientId)
             return message_pb2.BaseResponse(success=True)
@@ -114,7 +116,7 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def UnSubscribe(self, request, context):
+    async def UnSubscribe(self, request, context):
         try:
             self.service.un_subscribe(request.clientId)
             return message_pb2.BaseResponse(success=True)
@@ -124,4 +126,3 @@ class MessageController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-
