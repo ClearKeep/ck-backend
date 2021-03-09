@@ -1,3 +1,5 @@
+import asyncio
+
 from src.services.base import BaseService
 from src.models.message import Message
 from src.models.group import GroupChat
@@ -88,7 +90,8 @@ class MessageService(BaseService):
 
     def subscribe(self, client_id):
         message_channel = "{}/message".format(client_id)
-        client_message_queue[message_channel] = Queue()
+        producers = [asyncio.create_task(produce(n, q)) for n in range(nprod)]
+        client_message_queue[message_channel] = asyncio.Queue()
 
     def un_subscribe(self, client_id):
         message_channel = "{}/message".format(client_id)

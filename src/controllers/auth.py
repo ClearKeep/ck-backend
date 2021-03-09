@@ -12,7 +12,9 @@ class AuthController(BaseController):
         self.service = AuthService()
         self.user_service = UserService()
 
-    def login(self, request, context):
+    @request_logged
+    async def login(self, request, context):
+        print("auth login api")
         try:
             token = self.service.token(request.email, request.password)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])

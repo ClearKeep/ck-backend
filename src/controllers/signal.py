@@ -12,7 +12,8 @@ class SignalController(BaseController):
         self.service = SignalService()
 
     @request_logged
-    def PeerRegisterClientKey(self, request, context):
+    async def PeerRegisterClientKey(self, request, context):
+        print("signal PeerRegisterClientKey api")
         try:
             self.service.peer_register_client_key(request)
             return signal_pb2.BaseResponse(success=True)
@@ -23,7 +24,9 @@ class SignalController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    def PeerGetClientKey(self, request, context):
+    @request_logged
+    async def PeerGetClientKey(self, request, context):
+        print("signal PeerGetClientKey api")
         client_id = request.clientId
         obj_resp = self.service.peer_get_client_key(client_id)
         if obj_resp is not None:
@@ -46,9 +49,10 @@ class SignalController(BaseController):
         context.set_code(grpc.StatusCode.NOT_FOUND)
 
     @request_logged
-    def GroupRegisterClientKey(self, request, context):
+    async def GroupRegisterClientKey(self, request, context):
         print('***** CLIENT REGISTER KEY GROUP *****')
         print(request)
+        print("signal GroupRegisterClientKey api")
         try:
             self.service.group_register_client_key(request)
             return signal_pb2.BaseResponse(success=True)
@@ -60,7 +64,8 @@ class SignalController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def GroupGetClientKey(self, request, context):
+    async def GroupGetClientKey(self, request, context):
+        print("signal GroupGetClientKey api")
         group_id = request.groupId
         client_id = request.clientId
         obj_resp = self.service.group_get_client_key(group_id, client_id)
@@ -81,7 +86,8 @@ class SignalController(BaseController):
         context.set_code(grpc.StatusCode.NOT_FOUND)
 
     @request_logged
-    def GroupGetAllClientKey(self, request, context):
+    async def GroupGetAllClientKey(self, request, context):
+        print("signal GroupGetAllClientKey api")
         group_id = request.groupId
         lst_client = self.service.group_get_all_client_key(group_id)
         lst_client_key = []

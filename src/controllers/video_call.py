@@ -10,7 +10,7 @@ class VideoCallController(BaseController):
         self.service = VideoCallService()
 
     @request_logged
-    def video_call(self, request, context):
+    async def video_call(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])

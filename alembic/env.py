@@ -1,4 +1,7 @@
 import sys
+
+from src.controllers import app
+
 sys.path.append('.')
 from logging.config import fileConfig
 
@@ -8,7 +11,6 @@ from sqlalchemy import pool
 from alembic import context
 
 from src.models.base import db
-from src.models.base import app
 from utils.config import get_system_config
 from src.models.user import User
 from src.models.message import Message
@@ -18,6 +20,7 @@ from src.models.signal_peer_key import PeerClientKey
 from src.models.signal_group_key import GroupClientKey
 from src.models.group import GroupChat
 from src.models.server_info import ServerInfo
+from src.models.base import Database
 
 db_config = get_system_config()['db']
 db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(

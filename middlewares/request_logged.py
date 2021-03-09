@@ -15,16 +15,15 @@ import copy
 #     return wrap
 
 def request_logged(func):
-    def deco(*args, **kwargs):
+    async def deco(*args, **kwargs):
         # Before request handlers
         print("Request Object Type=", type(args[1]))
         print(args[1])
         # data = json.dumps(args[1], default=lambda o: o.__dict__, sort_keys=True, indent=2)
         # strRequest = json.dumps(args[1])
-        rtn = func(*args, **kwargs)
-        return rtn
+        return await func(*args, **kwargs)
+        # return rtn
     return deco
-
 
 class Logger(object):
     def __getattribute__(self, name):

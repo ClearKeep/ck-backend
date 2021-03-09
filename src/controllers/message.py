@@ -5,14 +5,17 @@ from middlewares.request_logged import *
 from src.services.message import MessageService, client_message_queue
 from src.models.signal_group_key import GroupClientKey
 from src.services.notify_push import NotifyPushService
-
+# from grpclib.server import Server, Stream
+# from grpclib.utils import graceful_exit
+# from protos.message_pb2 import ListenRequest, MessageObjectResponse
+# import time
 
 class MessageController(BaseController):
     def __init__(self, *kwargs):
         self.service = MessageService()
 
     @request_logged
-    def get_messages_in_group(self, request, context):
+    async def get_messages_in_group(self, request, context):
         try:
             group_id = request.group_id
             off_set = request.off_set
@@ -27,7 +30,7 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def Publish(self, request, context):
+    async def Publish(self, request, context):
         try:
             group_id = request.groupId
             client_id = request.clientId
@@ -74,8 +77,9 @@ class MessageController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    @request_logged
-    def Listen(self, request, context):
+    # @request_logged
+    async def Listen(self, request, context):
+        print("message Listen api")
         client_id = request.clientId
         message_channel = "{}/message".format(client_id)
 
@@ -102,7 +106,8 @@ class MessageController(BaseController):
                     from_client_id=client_id)
 
     @request_logged
-    def Subscribe(self, request, context):
+    async def Subscribe(self, request, context):
+        print("message Subscribe api")
         try:
             self.service.subscribe(request.clientId)
             return message_pb2.BaseResponse(success=True)
@@ -114,7 +119,7 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def UnSubscribe(self, request, context):
+    async def UnSubscribe(self, request, context):
         try:
             self.service.un_subscribe(request.clientId)
             return message_pb2.BaseResponse(success=True)
