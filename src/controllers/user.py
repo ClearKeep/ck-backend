@@ -6,13 +6,13 @@ from middlewares.request_logged import *
 from utils.logger import *
 from utils.config import get_system_domain, get_ip_domain
 from client.client_user import *
-from grpc import aio
+
 
 class UserController(BaseController, user_pb2_grpc.UserServicer):
     def __init__(self, *kwargs):
         self.service = UserService()
-    
-    #@auth_required
+
+    # @auth_required
     async def change_password(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -27,8 +27,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-
-    #@auth_required
+    # @auth_required
     # @request_logged
     async def get_profile(self, request, context):
         print("user get_profile api")
@@ -52,7 +51,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    #@auth_required
+    # @auth_required
     async def update_profile(self, request, context):
         print("user update_profile api")
         try:
@@ -69,7 +68,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    #@auth_required
+    # @auth_required
     # @request_logged
     async def get_user_info(self, request, context):
         print("user get_user_info api")
@@ -78,12 +77,12 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             client_id = request.client_id
             domain_client = request.domain
             domain_local = get_system_domain()
-            if domain_local== domain_client :
+            if domain_local == domain_client:
                 user_info = self.service.get_user_info(client_id)
             else:
                 server_ip = get_ip_domain(domain_client)
                 client = ClientUser(server_ip, get_system_config()['port'])
-                user_info = client.get_user_info(client_id=client_id,domain=domain_client)
+                user_info = client.get_user_info(client_id=client_id, domain=domain_client)
             if user_info is not None:
                 return user_info
             else:

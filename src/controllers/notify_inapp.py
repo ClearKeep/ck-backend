@@ -1,9 +1,7 @@
 import asyncio
-
 from protos import notify_pb2
 from src.controllers.base import *
 from middlewares.permission import *
-from utils.logger import *
 from middlewares.request_logged import *
 from src.services.notify_inapp import NotifyInAppService, client_notify_queue
 

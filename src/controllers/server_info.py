@@ -1,6 +1,4 @@
 from src.controllers.base import *
-from middlewares.permission import *
-from utils.logger import *
 from middlewares.request_logged import *
 from src.services.server_info import ServerInfoService
 from protos import server_info_pb2

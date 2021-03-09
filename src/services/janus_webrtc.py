@@ -22,7 +22,7 @@ class JanusService(object):
             "janus": 'create',
             "id": group_id,
             "token": self.token,
-            "transaction" : self.token
+            "transaction" : self.transaction
         }
 
     def get_janus_data_plugin(self):
@@ -30,7 +30,7 @@ class JanusService(object):
             "janus": 'attach',
             "plugin": "janus.plugin.videoroom",
             "token": self.token,
-            "transaction" : self.token
+            "transaction" : self.transaction
         }
 
     def get_janus_create_room(self,group_id):
@@ -41,5 +41,16 @@ class JanusService(object):
                 "room" : group_id
             },
             "token": self.token,
-            "transaction" : self.token
+            "transaction" : self.transaction
+        }
+
+    def check_janus_create_room(self,group_id):
+        return {
+            "janus": 'message',
+            "body": {
+                "request": "create",
+                "room" : group_id
+            },
+            "token": self.token,
+            "transaction" : self.transaction
         }

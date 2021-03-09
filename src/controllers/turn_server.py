@@ -1,4 +1,3 @@
-from aiohttp import web
 import json
 from src.services.server_info import ServerInfoService
 

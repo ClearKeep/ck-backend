@@ -1,9 +1,8 @@
 from src.controllers.base import *
 from middlewares.permission import *
-from utils.logger import *
 from middlewares.request_logged import *
 from src.services.video_call import VideoCallService
-from src.services.server_info import ServerInfoService
+
 
 class VideoCallController(BaseController):
     def __init__(self, *kwargs):

@@ -1,12 +1,10 @@
-from protos import message_pb2
-# from src.controllers import message_loop
 from src.controllers.base import *
 from middlewares.permission import *
 from middlewares.request_logged import *
 from src.services.message import MessageService, client_message_queue
 from src.models.signal_group_key import GroupClientKey
 from src.services.notify_push import NotifyPushService
-from protos import message_pb2, message_pb2_grpc
+from protos import message_pb2
 import grpc
 import asyncio
 

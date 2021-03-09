@@ -1,8 +1,5 @@
-from protos import group_pb2
 from src.controllers.base import *
-from src.services.signal import SignalService, client_queue
 from middlewares.permission import *
-from utils.logger import *
 from middlewares.request_logged import *
 from src.services.group import GroupService
 
