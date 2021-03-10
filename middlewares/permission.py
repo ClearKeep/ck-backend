@@ -7,16 +7,16 @@ import json
 
 
 def auth_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
+    # @wraps(f)
+    async def wrap(*args, **kwargs):
         context = args[2]
         metadata = dict(context.invocation_metadata())
         # client request with access_token
         if 'access_token' in metadata and _token_check(metadata['access_token']):
-            return f(*args, **kwargs)
+            return await f(*args, **kwargs)
         # server request with domain.
         if 'request_domain' in metadata and _fd_server_check(metadata['request_domain'], context.peer()):
-            return f(*args, **kwargs)
+            return await f(*args, **kwargs)
         # return error
         errors = [Message.get_error_object(Message.UNAUTHENTICATED)]
         context.set_details(json.dumps(errors, default=lambda x: x.__dict__))
