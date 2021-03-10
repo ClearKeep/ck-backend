@@ -1,8 +1,18 @@
 from flask import Flask
 from utils.config import get_system_config
 from src.controllers.turn_server import Server
-from src.models.base import db
+from src.models.base import *
 import threading
+
+# need to import for create all table
+from src.models.group import GroupChat
+from src.models.message import Message
+from src.models.notify import Notify
+from src.models.notify_token import NotifyToken
+from src.models.server_info import ServerInfo
+from src.models.signal_group_key import GroupClientKey
+from src.models.signal_peer_key import PeerClientKey
+from src.models.user import User
 
 db_config = get_system_config()['db']
 db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(

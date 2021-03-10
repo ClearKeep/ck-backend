@@ -1,8 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from utils.config import get_system_config
+# from src.models.base import db
 
-
+#db = SQLAlchemy()
 
 db_config = get_system_config()['db']
 db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(
@@ -27,7 +28,6 @@ with app.app_context():
     db.create_all()
 
 
-
 class Database:
     __instance = None
 
@@ -42,6 +42,3 @@ class Database:
         if Database.get().session is None:
             Database.get().session = Database.get().create_scoped_session()
         return Database.get().session
-
-
-

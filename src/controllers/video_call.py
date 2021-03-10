@@ -16,7 +16,7 @@ class VideoCallController(BaseController):
             from_client_id = introspect_token['sub']
             group_id = request.group_id
             client_id = request.client_id
-            obj_res = self.service.request_call(group_id, from_client_id, client_id)
+            obj_res = await self.service.request_call(group_id, from_client_id, client_id)
 
             return obj_res
         except Exception as e:
@@ -34,7 +34,7 @@ class VideoCallController(BaseController):
             from_client_id = introspect_token['sub']
             group_id = request.group_id
             client_id = request.client_id
-            obj_res = self.service.cancel_request_call(group_id, from_client_id, client_id)
+            obj_res = await self.service.cancel_request_call(group_id, from_client_id, client_id)
 
             return obj_res
         except Exception as e:
