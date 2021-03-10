@@ -34,7 +34,7 @@ class NotifyPushService(BaseService):
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.UNAUTHENTICATED)
 
-    def push_text_to_clients(self, lst_client, title, body, from_client_id):
+    async def push_text_to_clients(self, lst_client, title, body, from_client_id):
         ios_tokens = []
         android_tokens = []
         client_device_push_tokens = self.model.get_clients(lst_client)
@@ -52,9 +52,9 @@ class NotifyPushService(BaseService):
             android_text_notifications(android_tokens, payload)
         if len(ios_tokens) > 0:
             payload_alert = PayloadAlert(title=title, body=body)
-            ios_text_notifications(ios_tokens, payload_alert)
+            await ios_text_notifications(ios_tokens, payload_alert)
 
-    def push_voip_clients(self, lst_client, payload, from_client_id):
+    async def push_voip_clients(self, lst_client, payload, from_client_id):
         ios_tokens = []
         android_tokens = []
         from_client_devices = self.model.get_client(from_client_id)
@@ -72,4 +72,4 @@ class NotifyPushService(BaseService):
         if len(android_tokens) > 0:
             android_data_notification(android_tokens, payload)
         if len(ios_tokens) > 0:
-            ios_data_notification(ios_tokens, payload)
+            await ios_data_notification(ios_tokens, payload)
