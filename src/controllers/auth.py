@@ -2,6 +2,8 @@ import protos.auth_pb2 as auth_messages
 from src.controllers.base import BaseController
 from src.services.auth import AuthService
 from src.services.user import UserService
+from src.services.message import MessageService
+from src.services.notify_inapp import NotifyInAppService
 from utils.encrypt import EncryptUtils
 from middlewares.permission import *
 from middlewares.request_logged import *
@@ -108,6 +110,9 @@ class AuthController(BaseController):
             refresh_token = request.refresh_token
             self.service.logout(refresh_token)
             self.service.remove_token(client_id=client_id, device_id=device_id)
+            MessageService().un_subscribe(client_id)
+            NotifyInAppService().un_subscribe(client_id)
+
             return auth_messages.BaseResponse(
                 success=True
             )
