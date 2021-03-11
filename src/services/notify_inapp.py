@@ -49,12 +49,16 @@ class NotifyInAppService(BaseService):
 
     def subscribe(self, client_id):
         notify_channel = "{}/notify".format(client_id)
-        client_notify_queue[notify_channel] = Queue()
+        if notify_channel not in client_notify_queue:
+            client_notify_queue[notify_channel] = Queue()
+            logger.info('queue size  {}'.format(len(client_notify_queue)))
+            print("client_notify_queue")
 
     def un_subscribe(self, client_id):
         notify_channel = "{}/notify".format(client_id)
-        client_notify_queue[notify_channel] = None
-        del client_notify_queue[notify_channel]
+        if notify_channel in client_notify_queue:
+            client_notify_queue[notify_channel] = None
+            del client_notify_queue[notify_channel]
 
     def read_notify(self, notify_id):
         self.model = Notify(id=notify_id, read_flg=True)

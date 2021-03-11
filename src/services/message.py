@@ -6,7 +6,6 @@ from threading import Thread
 from datetime import datetime
 from queue import Queue
 import uuid
-import asyncio
 
 client_message_queue = {}
 
@@ -89,16 +88,13 @@ class MessageService(BaseService):
 
     def subscribe(self, client_id):
         message_channel = "{}/message".format(client_id)
-        client_message_queue[message_channel] = Queue()
+        if message_channel not in client_message_queue:
+            client_message_queue[message_channel] = Queue()
 
     def un_subscribe(self, client_id):
         message_channel = "{}/message".format(client_id)
-        client_message_queue[message_channel] = None
-        del client_message_queue[message_channel]
-
-
-
-
-
+        if message_channel in client_message_queue:
+            client_message_queue[message_channel] = None
+            del client_message_queue[message_channel]
 
 
