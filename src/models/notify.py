@@ -20,10 +20,17 @@ class Notify(Database.get().Model):
         try:
             Database.get_session().add(self)
             Database.get_session().commit()
-            return self
+            return self.get(self.id)
         except:
             Database.get_session().rollback()
             raise
+
+    def get(self, notify_id):
+        notify = Database.get_session().query(Notify) \
+            .filter(Notify.id == notify_id) \
+            .one_or_none()
+        Database.get().session.remove()
+        return notify
 
 
     def get_unread_notifies(self, client_id):
