@@ -55,7 +55,11 @@ async def start_server():
     # set cronjob
     env = os.getenv("ENV")
     if env == 'stagging':
-        cron_tab_update_turn_server()
+        try:
+            logger.info("Setting cronjob...")
+            cron_tab_update_turn_server()
+        except Exception as e:
+            logger.error(e)
 
     try:
         await server.wait_for_termination()
