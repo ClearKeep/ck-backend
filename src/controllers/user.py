@@ -7,12 +7,13 @@ from utils.logger import *
 from utils.config import get_system_domain, get_ip_domain
 from client.client_user import *
 
-class UserController(BaseController):
+
+class UserController(BaseController, user_pb2_grpc.UserServicer):
     def __init__(self, *kwargs):
         self.service = UserService()
-    
-    @auth_required
-    def change_password(self, request, context):
+
+    # @auth_required
+    async def change_password(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -26,10 +27,10 @@ class UserController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-
-    @auth_required
-    @request_logged
-    def get_profile(self, request, context):
+    # @auth_required
+    # @request_logged
+    async def get_profile(self, request, context):
+        print("user get_profile api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -50,8 +51,9 @@ class UserController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    @auth_required
-    def update_profile(self, request, context):
+    # @auth_required
+    async def update_profile(self, request, context):
+        print("user update_profile api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -66,19 +68,21 @@ class UserController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    @auth_required
-    @request_logged
-    def get_user_info(self, request, context):
+    # @auth_required
+    # @request_logged
+    async def get_user_info(self, request, context):
+        print("user get_user_info api")
         try:
+            print("user get_user_info api")
             client_id = request.client_id
             domain_client = request.domain
             domain_local = get_system_domain()
-            if domain_local== domain_client :
+            if domain_local == domain_client:
                 user_info = self.service.get_user_info(client_id)
             else:
                 server_ip = get_ip_domain(domain_client)
                 client = ClientUser(server_ip, get_system_config()['port'])
-                user_info = client.get_user_info(client_id=client_id,domain=domain_client)
+                user_info = client.get_user_info(client_id=client_id, domain=domain_client)
             if user_info is not None:
                 return user_info
             else:
@@ -94,7 +98,8 @@ class UserController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def search_user(self, request, context):
+    async def search_user(self, request, context):
+        print("user search_user api")
         try:
             keyword = request.keyword
             header_data = dict(context.invocation_metadata())
@@ -111,7 +116,8 @@ class UserController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def get_users(self, request, context):
+    async def get_users(self, request, context):
+        print("user get_users api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -127,7 +133,7 @@ class UserController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    def get_user_domain(self, request, context):
+    async def get_user_domain(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             domain = "server.domain2"

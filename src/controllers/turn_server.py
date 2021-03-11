@@ -1,12 +1,9 @@
-from flask_restful import Resource
 import json
-class Server(Resource):
+from src.services.server_info import ServerInfoService
 
-    def post(self, args):
-        return "ok"
 
+class Server():
     def get(self):
-        from src.services.server_info import ServerInfoService
         server_info = ServerInfoService().get_server_info()
         turn_server = json.loads(server_info.turn_server)
         uri = "turn:{}:{}?transport={}"
@@ -15,7 +12,7 @@ class Server(Resource):
             "password": turn_server.get('pwd'),
             "ttl": 86400,
             "uris": [
-                uri.format(turn_server.get("server"),turn_server.get("port"),turn_server.get("type"))
+                uri.format(turn_server.get("server"), turn_server.get("port"), turn_server.get("type"))
             ]
         }
-        return response, 200
+        return response

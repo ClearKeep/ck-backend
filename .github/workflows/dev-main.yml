@@ -64,7 +64,7 @@ jobs:
           git pull
           pip3 install -r requirement.txt
           python3 -m grpc_tools.protoc -I=. protos/*.proto --python_out=. --grpc_python_out=.
-          sudo systemctl restart clearkeep-dev
+          sudo systemctl restart clk328-http-dev.service clk328-grpc-dev.service
 
         #  docker restart clearkeep
         # ./restart-service.sh

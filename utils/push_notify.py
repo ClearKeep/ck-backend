@@ -24,20 +24,21 @@ client_ios_text = APNsClient(
 )
 
 
-def ios_data_notification(registration_tokens, payload):
+async def ios_data_notification(registration_tokens, payload):
     for token in registration_tokens:
         try:
-            res = client_ios_voip.send_message(token, payload)
+            res = await client_ios_voip._send_message(token, payload)
             logger.info("Push iOS data notify success with token: {}".format(token))
         except Exception as e:
             logger.error(e)
 
 
-def ios_text_notifications(registration_tokens, payload):
+async def ios_text_notifications(registration_tokens, payload):
     alert = Payload(alert=payload, badge=1, sound="default")
     for token in registration_tokens:
         try:
-            res = client_ios_text.send_message(token, alert)
+            #res = client_ios_text.send_message(token, alert)
+            res = await client_ios_text._send_message(token, alert)
             logger.info("Push iOS text notify success with token: {}".format(token))
         except Exception as e:
             logger.error(e)

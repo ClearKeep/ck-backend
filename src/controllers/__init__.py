@@ -1,7 +1,18 @@
 from flask import Flask
 from utils.config import get_system_config
-from flask_restful import Resource, Api
 from src.controllers.turn_server import Server
+from src.models.base import *
+import threading
+
+# need to import for create all table
+from src.models.group import GroupChat
+from src.models.message import Message
+from src.models.notify import Notify
+from src.models.notify_token import NotifyToken
+from src.models.server_info import ServerInfo
+from src.models.signal_group_key import GroupClientKey
+from src.models.signal_peer_key import PeerClientKey
+from src.models.user import User
 
 db_config = get_system_config()['db']
 db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(
@@ -20,8 +31,23 @@ app.config["SQLALCHEMY_POOL_SIZE"] = 30
 app.config["SQLALCHEMY_POOL_TIMEOUT"] = 300
 app.config["SQLALCHEMY_MAX_OVERFLOW"] = -1
 
-api = Api(app)
-api.add_resource(Server, '/turn-server')
+db.init_app(app)
+with app.app_context():
+    db.create_all()
+
+
+@app.route('/turn-server', methods=['GET'])
+def turn_server():
+    server = Server()
+    return server.get()
+
+
+@app.route('/thread', methods=['GET'])
+def thread_server():
+    response = {
+        "total": threading.activeCount()
+    }
+    return response
 
 
 @app.after_request
