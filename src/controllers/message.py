@@ -41,6 +41,12 @@ class MessageController(BaseController):
                 client_id=client_id,
                 message=request.message
             )
+            push_message = {
+                "group_id":str(group_id),
+                "from_client_id":request.fromClientId,
+                "client_id":client_id,
+                "message":request.message
+            }
 
             # push notification for other client
             other_clients_in_group = []
@@ -65,7 +71,9 @@ class MessageController(BaseController):
             if len(other_clients_in_group) > 0:
                 push_service = NotifyPushService()
                 await push_service.push_text_to_clients(other_clients_in_group, title="",
-                                                  body="You have a new message", from_client_id=request.fromClientId)
+                                                body="You have a new message",
+                                                from_client_id=request.fromClientId,
+                                                message=push_message)
 
             return new_message
 
