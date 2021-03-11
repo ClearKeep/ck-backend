@@ -41,6 +41,7 @@ class MessageController(BaseController):
                 client_id=client_id,
                 message=request.message
             )
+            push_message = MessageService().convert_message_to_json(message_id=new_message.id)
 
             # push notification for other client
             other_clients_in_group = []
@@ -65,7 +66,9 @@ class MessageController(BaseController):
             if len(other_clients_in_group) > 0:
                 push_service = NotifyPushService()
                 await push_service.push_text_to_clients(other_clients_in_group, title="",
-                                                  body="You have a new message", from_client_id=request.fromClientId)
+                                                body="You have a new message",
+                                                from_client_id=request.fromClientId,
+                                                message=push_message)
 
             return new_message
 
@@ -81,6 +84,7 @@ class MessageController(BaseController):
         client_id = request.clientId
         message_channel = "{}/message".format(client_id)
         listening = True
+        message_response = None
         while listening:
             #print(' client=', client_id)
             try:
@@ -98,9 +102,11 @@ class MessageController(BaseController):
                 #print('len queue after=', len(client_message_queue))
                 # push text notification for client
                 push_service = NotifyPushService()
+                push_message = MessageService().convert_message_to_json(message_id=message_response.id)
                 await push_service.push_text_to_clients(
                     [client_id], title="", body="You have a new message",
-                    from_client_id=client_id)
+                    from_client_id=client_id,
+                    message=push_message)
 
     @request_logged
     async def Subscribe(self, request, context):

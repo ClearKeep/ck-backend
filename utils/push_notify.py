@@ -33,8 +33,8 @@ async def ios_data_notification(registration_tokens, payload):
             logger.error(e)
 
 
-async def ios_text_notifications(registration_tokens, payload):
-    alert = Payload(alert=payload, badge=1, sound="default")
+async def ios_text_notifications(registration_tokens, payload, data=None):
+    alert = Payload(alert=payload, badge=1, sound="default", custom=data)
     for token in registration_tokens:
         try:
             #res = client_ios_text.send_message(token, alert)
@@ -49,10 +49,12 @@ cred = credentials.Certificate(get_system_config()["device_android"].get("fire_b
 default_app = firebase_admin.initialize_app(cred)
 
 
-def android_text_notifications(registration_tokens, payload):
+def android_text_notifications(registration_tokens, payload, data=None):
     message = messaging.MulticastMessage(
         tokens=registration_tokens,
-        notification=payload
+        notification=payload,
+        data=data
+
     )
     response = messaging.send_multicast(message)
     logger.info('{0} messages were sent successfully'.format(response.success_count))

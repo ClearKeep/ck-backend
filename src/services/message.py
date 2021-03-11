@@ -96,6 +96,18 @@ class MessageService(BaseService):
         client_message_queue[message_channel] = None
         del client_message_queue[message_channel]
 
+    def convert_message_to_json(self, message_id):
+        message = self.model.get(message_id)
+        result = {
+            "id": message.id,
+            "group_id": str(message.group_id),
+            "from_client_id": message.from_client_id,
+            "client_id": message.client_id,
+            "message": message.message,
+            "created_at": str(message.created_at),
+            "updated_at": str(message.updated_at)
+        }
+        return result
 
 
 
