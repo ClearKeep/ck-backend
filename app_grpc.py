@@ -20,10 +20,6 @@ from src.controllers.video_call import VideoCallController
 from src.controllers.server_info import ServerInfoController
 from utils.logger import *
 # from middlewares.auth_interceptor import AuthInterceptor
-import threading
-import time
-from crontab import CronTab
-import os
 import asyncio
 from grpc import aio
 
@@ -52,43 +48,10 @@ async def start_server():
     print("gRPC listening on port {}..".format(grpc_port))
     logger.info("gRPC listening on port {}..".format(grpc_port))
 
-    # set cronjob
-    env = os.getenv("ENV")
-    if env == 'stagging':
-        try:
-            logger.info("Setting cronjob...")
-            cron_tab_update_turn_server()
-        except Exception as e:
-            logger.error(e)
-
     try:
         await server.wait_for_termination()
     except KeyboardInterrupt:
         await server.stop(0)
-
-
-def get_thread():
-    total = threading.activeCount()
-    logger.info("Total thread= {}".format(total))
-    time.sleep(10)
-    get_thread()
-
-
-def cron_tab_update_turn_server():
-    try:
-        # run in the first time
-        os.system('ENV=stagging python3 -m client.client_nts')
-        # set cronjob in next time
-        cron = CronTab(user='ubuntu')
-        cron.remove_all()
-        job = cron.new(command='ENV=stagging python3 -m client.client_nts')
-        job.hour.on(1)
-        # job.minute.every(30)
-        cron.write()
-        logger.info("Cronjob cron_tab_update_turn_server set")
-
-    except Exception as e:
-        logger.error(e)
 
 
 if __name__ == '__main__':
