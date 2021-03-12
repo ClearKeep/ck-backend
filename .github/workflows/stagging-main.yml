@@ -64,7 +64,10 @@ jobs:
           git pull
           pip3 install -r requirement.txt
           python3 -m grpc_tools.protoc -I=. protos/*.proto --python_out=. --grpc_python_out=.
-          sudo systemctl restart clk328-http-stagging.service clk328-grpc-stagging.service
-
+          sudo systemctl restart clk328-http-stagging.service
+          sleep 10
+          sudo systemctl restart clk328-grpc-stagging.service
+          sleep 15
+          python3 cron_tab.py
         #  docker restart clearkeep
         # ./restart-service.sh
