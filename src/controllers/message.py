@@ -6,6 +6,7 @@ from src.models.signal_group_key import GroupClientKey
 from src.services.notify_push import NotifyPushService
 from protos import message_pb2
 import grpc
+from grpc import aio
 import asyncio
 
 
@@ -77,36 +78,34 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     # @request_logged
-    async def Listen(self, request, context):
+    async def Listen(self, request, context: grpc.aio.ServicerContext):
         client_id = request.clientId
         message_channel = "{}/message".format(client_id)
-        listening = True
-        while listening:
-            #print(' client=', client_id)
+
+        while message_channel in client_message_queue:
+            print('client listening=', client_id)
             try:
-                if message_channel in client_message_queue:
-                    if client_message_queue[message_channel].qsize() > 0:
-                        message_response = client_message_queue[message_channel].get(True)
-                        await context.write(message_response)
+                if client_message_queue[message_channel].qsize() > 0:
+                    message_response = client_message_queue[message_channel].get(True)
+                    await context.write(message_response)
                 await asyncio.sleep(0.5)
             except:
                 logger.info('Client {} is disconnected'.format(client_id))
-                listening = False
-                #print('len queue before=', len(client_message_queue))
                 client_message_queue[message_channel] = None
                 del client_message_queue[message_channel]
-                #print('len queue after=', len(client_message_queue))
+                print('len queue after=', len(client_message_queue))
                 # push text notification for client
                 push_service = NotifyPushService()
                 await push_service.push_text_to_clients(
                     [client_id], title="", body="You have a new message",
                     from_client_id=client_id)
 
+
     @request_logged
     async def Subscribe(self, request, context):
         print("message Subscribe api")
         try:
-            self.service.subscribe(request.clientId)
+            await self.service.subscribe(request.clientId)
             return message_pb2.BaseResponse(success=True)
         except Exception as e:
             logger.error(e)
