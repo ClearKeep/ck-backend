@@ -3,6 +3,7 @@ from src.models.notify import Notify
 from protos import notify_pb2
 from queue import Queue
 from middlewares.request_logged import *
+import asyncio
 
 # notify type
 NEW_PEER = "new-peer"
@@ -47,12 +48,14 @@ class NotifyInAppService(BaseService):
         )
         return response
 
-    def subscribe(self, client_id):
+    async def subscribe(self, client_id):
         notify_channel = "{}/notify".format(client_id)
-        if notify_channel not in client_notify_queue:
-            client_notify_queue[notify_channel] = Queue()
-            logger.info('queue size  {}'.format(len(client_notify_queue)))
-            print("client_notify_queue")
+        if notify_channel in client_notify_queue:
+            client_notify_queue[notify_channel] = None
+            del client_notify_queue[notify_channel]
+            await asyncio.sleep(1)
+        client_notify_queue[notify_channel] = Queue()
+
 
     def un_subscribe(self, client_id):
         notify_channel = "{}/notify".format(client_id)
