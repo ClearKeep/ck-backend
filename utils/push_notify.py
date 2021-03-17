@@ -4,6 +4,7 @@ import firebase_admin
 from firebase_admin import credentials, messaging
 from utils.logger import logger
 from kalyke.payload import PayloadAlert, Payload
+import time
 
 
 # init push service for iOS
@@ -27,7 +28,8 @@ client_ios_text = APNsClient(
 async def ios_data_notification(registration_tokens, payload):
     for token in registration_tokens:
         try:
-            res = await client_ios_voip._send_message(token, payload)
+            expiration = int(time.time()) + 10
+            res = await client_ios_voip._send_message(token, payload, expiration=expiration)
             logger.info("Push iOS data notify success with token: {}".format(token))
         except Exception as e:
             logger.error(e)
@@ -37,8 +39,8 @@ async def ios_text_notifications(registration_tokens, payload):
     alert = Payload(alert=payload, badge=1, sound="default")
     for token in registration_tokens:
         try:
-            #res = client_ios_text.send_message(token, alert)
-            res = await client_ios_text._send_message(token, alert)
+            expiration = int(time.time()) + 10
+            res = await client_ios_text._send_message(token, alert, expiration=expiration)
             logger.info("Push iOS text notify success with token: {}".format(token))
         except Exception as e:
             logger.error(e)
@@ -52,7 +54,11 @@ default_app = firebase_admin.initialize_app(cred)
 def android_text_notifications(registration_tokens, payload):
     message = messaging.MulticastMessage(
         tokens=registration_tokens,
-        notification=payload
+        notification=payload,
+        android=messaging.AndroidConfig(
+            priority="normal",
+            ttl=10
+        )
     )
     response = messaging.send_multicast(message)
     logger.info('{0} messages were sent successfully'.format(response.success_count))
@@ -71,7 +77,8 @@ def android_data_notification(registration_tokens, payload):
         tokens=registration_tokens,
         data=payload,
         android=messaging.AndroidConfig(
-            priority="high"
+            priority="high",
+            ttl=10
         )
     )
     response = messaging.send_multicast(message)

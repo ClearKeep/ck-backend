@@ -19,5 +19,6 @@ def cron_tab_update_turn_server():
     except Exception as e:
         logger.error(e)
 
+
 if __name__ == '__main__':
     cron_tab_update_turn_server()
