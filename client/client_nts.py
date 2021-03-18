@@ -58,6 +58,7 @@ def update_stun_turn_credential():
 
         request2 = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
         response2 = stub2.update_nts(request2)
+        print('Set cronjob succesful')
 
     except Exception as e:
         logger.error(e)
