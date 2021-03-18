@@ -1,4 +1,5 @@
 from src.models.base import Database
+from datetime import datetime
 
 
 class ServerInfo(Database.get().Model):
@@ -6,6 +7,8 @@ class ServerInfo(Database.get().Model):
     id = Database.get().Column(Database.get().Integer, primary_key=True)
     stun_server = Database.get().Column(Database.get().String(500), nullable=True)
     turn_server = Database.get().Column(Database.get().String(500), nullable=True)
+    created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
+    updated_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
 
     def add(self):
         try:
