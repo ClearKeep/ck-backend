@@ -64,6 +64,15 @@ class GroupChat(Database.get().Model):
         Database.get().session.remove()
         return result
 
+    # def get_joined_type_peer(self, client_id):
+    #     result = Database.get_session().query(GroupChat, Message) \
+    #         .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \
+    #         .filter(GroupClientKey.client_id == client_id) \
+    #         .filter(GroupChat.group_type == "peer") \
+    #         .all()
+    #     Database.get().session.remove()
+    #     return result
+
     def get_joined_group_type(self, client_id, group_type):
         result = Database.get_session().query(GroupChat, GroupClientKey.id, GroupChat.group_clients) \
             .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \
