@@ -4,12 +4,14 @@ from protos import notify_pb2
 from queue import Queue
 from middlewares.request_logged import *
 import asyncio
+from datetime import datetime
 
 # notify type
 NEW_PEER = "new-peer"
 IN_PEER = "in-peer"
 NEW_GROUP = "new-group"
 IN_GROUP = "in-group"
+PEER_UPDATE_SIGNAL_KEY = "peer-update-key"
 
 client_notify_queue = {}
 
@@ -105,6 +107,26 @@ class NotifyInAppService(BaseService):
         if notify_channel in client_notify_queue:
             try:
                 client_notify_queue[notify_channel].put(new_group)
+            except Exception as e:
+                logger.error(e)
+
+    def notify_client_update_peer_key(self, client_id, ref_client_id, ref_group_id):
+        notify_channel = "{}/notify".format(client_id)
+        if notify_channel in client_notify_queue:
+            try:
+                notify = Notify(
+                    id=0,
+                    client_id=client_id,
+                    ref_client_id=ref_client_id,
+                    ref_group_id=ref_group_id,
+                    notify_type=PEER_UPDATE_SIGNAL_KEY,
+                    notify_image=None,
+                    notify_title="",
+                    notify_content="",
+                    read_flg=False,
+                    created_at=datetime.now()
+                )
+                client_notify_queue[notify_channel].put(notify)
             except Exception as e:
                 logger.error(e)
 
