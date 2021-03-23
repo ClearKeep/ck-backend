@@ -48,10 +48,11 @@ class User(Database.get().Model):
 
     def search(self, keyword, client_id):
         search = "%{}%".format(keyword)
-        user = self.query \
+        user = Database.get_session().query(User) \
             .filter(User.id != client_id) \
-            .filter(User.display_name.like(search)) \
+            .filter(User.display_name.ilike(search)) \
             .all()
+        Database.get().session.remove()
         return user
 
     def get_users(self, client_id):
