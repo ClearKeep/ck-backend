@@ -73,7 +73,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def get_user_info(self, request, context):
         print("user get_user_info api")
         try:
-            print("user get_user_info api")
             client_id = request.client_id
             domain_client = request.domain
             domain_local = get_system_domain()

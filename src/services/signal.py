@@ -1,7 +1,6 @@
 from src.models.signal_peer_key import PeerClientKey
 from src.models.signal_group_key import GroupClientKey
 from src.services.base import BaseService
-from queue import Queue
 from src.services.message import client_message_queue
 from src.services.notify_inapp import NotifyInAppService
 from src.models.group import GroupChat

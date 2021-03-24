@@ -4,7 +4,6 @@ from utils.config import get_system_config
 import uuid
 from src.models.signal_group_key import GroupClientKey
 from src.services.notify_push import NotifyPushService
-from src.models.group import GroupChat
 from src.services.server_info import ServerInfoService
 from src.services.notify_inapp import NotifyInAppService
 from protos import video_call_pb2
