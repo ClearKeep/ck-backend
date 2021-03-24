@@ -31,6 +31,7 @@ class Message:
     #email
     USER_NOT_VERIFY_EMAIL = 1026
     CLIENT_CANCEL_REQUEST_CALL_FAILED = 1027
+    CLIENT_UPDATE_CALL_FAILED = 1028
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -61,6 +62,7 @@ class Message:
         CLIENT_REGISTER_NOTIFY_TOKEN_FAILED: "Client register notification token failed. Please try again",
         CLIENT_REQUEST_CALL_FAILED: "Client request call failed. Please try again",
         CLIENT_CANCEL_REQUEST_CALL_FAILED: "Cancel Request Call failed, Please try again",
+        CLIENT_UPDATE_CALL_FAILED: "Update call failed. Please try again"
     }
 
     @staticmethod

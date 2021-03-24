@@ -1,5 +1,3 @@
-import sys
-
 class JanusService(object):
     def __init__(self, janus_url, token, stransaction):
         self.token = token

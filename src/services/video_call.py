@@ -4,12 +4,13 @@ from utils.config import get_system_config
 import uuid
 from src.models.signal_group_key import GroupClientKey
 from src.services.notify_push import NotifyPushService
-from src.models.group import GroupChat
 from src.services.server_info import ServerInfoService
+from src.services.notify_inapp import NotifyInAppService
 from protos import video_call_pb2
 from src.services.group import GroupService
 import secrets
 from utils.logger import *
+
 
 class VideoCallService:
     def __init__(self):
@@ -45,7 +46,7 @@ class VideoCallService:
         else:
             return False
 
-    async def request_call(self, group_id, from_client_id, client_id):
+    async def request_call(self, call_type, group_id, from_client_id, client_id):
         from_client_username = ""
         # send push notification to all member of group
         lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
@@ -75,6 +76,7 @@ class VideoCallService:
             push_service = NotifyPushService()
             push_payload = {
                 'notify_type': 'request_call',
+                'call_type': call_type,
                 'group_id': str(group_id),
                 'group_rtc_token': webrtc_token,
                 'from_client_id': from_client_id,
@@ -84,7 +86,7 @@ class VideoCallService:
                 'stun_server': server_info.stun_server,
                 'turn_server': server_info.turn_server
             }
-            await push_service.push_voip_clients(other_clients_in_group, push_payload,from_client_id)
+            await push_service.push_voip_clients(other_clients_in_group, push_payload, from_client_id)
 
         stun_server_obj = json.loads(server_info.stun_server)
         stun_server = video_call_pb2.StunServer(
@@ -133,3 +135,13 @@ class VideoCallService:
             success=True
         )
 
+    def update_call(self, update_type, group_id, from_client_id):
+        lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
+        notify_inapp_service = NotifyInAppService()
+        for client in lst_client_in_groups:
+            if client.User.id != from_client_id:
+                notify_inapp_service.notify_client_update_call(update_type, client.User.id, from_client_id, group_id)
+
+        return video_call_pb2.BaseResponse(
+            success=True
+        )

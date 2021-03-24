@@ -8,6 +8,7 @@ from utils.logger import *
 from msg.message import Message
 import datetime
 
+
 class UserService(BaseService):
     def __init__(self):
         super().__init__(User())
@@ -148,7 +149,7 @@ class UserService(BaseService):
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.GET_USER_INFO_FAILED)
 
-    def update_last_login(self,user_id):
+    def update_last_login(self, user_id):
         try:
             user_info = self.model.get(user_id)
             user_info.last_login_at = datetime.datetime.now()

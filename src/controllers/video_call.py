@@ -16,7 +16,8 @@ class VideoCallController(BaseController):
             from_client_id = introspect_token['sub']
             group_id = request.group_id
             client_id = request.client_id
-            obj_res = await self.service.request_call(group_id, from_client_id, client_id)
+            call_type = request.call_type
+            obj_res = await self.service.request_call(call_type, group_id, from_client_id, client_id)
 
             return obj_res
         except Exception as e:
@@ -40,6 +41,26 @@ class VideoCallController(BaseController):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(Message.CLIENT_CANCEL_REQUEST_CALL_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+
+    @request_logged
+    async def update_call(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            from_client_id = introspect_token['sub']
+            group_id = request.group_id
+            #client_id = request.client_id
+            update_type = request.update_type
+            obj_res = self.service.update_call(update_type, group_id, from_client_id)
+
+            return obj_res
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.CLIENT_UPDATE_CALL_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)

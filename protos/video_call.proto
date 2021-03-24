@@ -35,10 +35,20 @@ message TurnServer {
 message VideoCallRequest {
   string client_id = 1;
   int64 group_id = 2;
+  string call_type = 3; //audio or video
+}
+//response: BaseResponse
+
+
+// Request: call update
+message UpdateCallRequest {
+  int64 group_id = 1;
+  string update_type = 2;
 }
 //response: BaseResponse
 
 service VideoCall {
     rpc video_call(VideoCallRequest) returns (ServerResponse) {};
     rpc cancel_request_call(VideoCallRequest) returns (BaseResponse) {};
+    rpc update_call(UpdateCallRequest) returns (BaseResponse) {};
 }

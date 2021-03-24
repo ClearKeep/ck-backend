@@ -1,7 +1,6 @@
 from msg.message import Message
 from utils.keycloak import KeyCloakUtils
 from utils.logger import *
-from src.models.notify_token import NotifyToken
 from src.services.notify_push import NotifyPushService
 import json
 
@@ -80,7 +79,6 @@ class AuthService:
                 KeyCloakUtils.send_forgot_password(user_id=user_id, email=email)
                 return user_id
             else:
-                # logger.info(bytes(str(e), encoding='utf-8'))
                 raise Exception(Message.USER_NOT_FOUND)
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
