@@ -135,12 +135,12 @@ class VideoCallService:
             success=True
         )
 
-    def update_call(self, type, group_id, from_client_id, client_id):
+    def update_call(self, update_type, group_id, from_client_id):
         lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
         notify_inapp_service = NotifyInAppService()
         for client in lst_client_in_groups:
             if client.User.id != from_client_id:
-                notify_inapp_service.notify_client_update_call(type, client_id, from_client_id, group_id)
+                notify_inapp_service.notify_client_update_call(update_type, client.User.id, from_client_id, group_id)
 
         return video_call_pb2.BaseResponse(
             success=True
