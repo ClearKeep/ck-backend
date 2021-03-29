@@ -1,6 +1,7 @@
 from datetime import datetime
 from src.models.base import Database
 
+
 class MessageUserRead(Database.get().Model):
     __tablename__ = 'message_user_read'
     id = Database.get().Column(Database.get().Integer, primary_key=True)
@@ -12,3 +13,6 @@ class MessageUserRead(Database.get().Model):
         Database.get_session().add(self)
         Database.get_session().commit()
         return self
+
+    def add_all(self, lst_message):
+        Database.get_session().add_all(lst_message)

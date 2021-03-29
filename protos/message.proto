@@ -64,6 +64,13 @@ message ListenRequest {
 }
 //response: BaseResponse or MessageObjectResponse stream
 
+// Request: read message
+message ReadMessagesRequest {
+  repeated string lst_message_id = 4;
+}
+// Response: groupObjectResponse
+
+
 // Method
 service Message {
     rpc get_messages_in_group(GetMessagesInGroupRequest) returns (GetMessagesInGroupResponse) {};
@@ -72,4 +79,5 @@ service Message {
     rpc UnSubscribe (UnSubscribeRequest) returns (BaseResponse);
     rpc Listen (ListenRequest) returns (stream MessageObjectResponse);
     rpc Publish (PublishRequest) returns (MessageObjectResponse);
+    rpc read_messages (ReadMessagesRequest) returns (BaseResponse);
 }
