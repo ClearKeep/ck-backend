@@ -93,7 +93,7 @@ class AuthService:
         try:
             verify_id_token_url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + google_id_token
             req = requests.get(url=verify_id_token_url)
-            if req.status_code != "200":
+            if req.status_code != 200:
                 raise Exception(Message.GOOGLE_AUTH_ID_TOKEN_INVALID)
             google_token_info = req.json()
 

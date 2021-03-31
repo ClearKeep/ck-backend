@@ -78,7 +78,7 @@ class KeyCloakUtils:
                                    'password': config_keycloak_admin['password'],
                                    'client_secret': config_keycloak_admin['client_secret_key']}
         req = requests.post(url=exchange_token_url, data=impersonator_token_data)
-        if req.status_code != "200":
+        if req.status_code != 200:
             return None
         impersonator_token = req.json()
 
@@ -89,7 +89,7 @@ class KeyCloakUtils:
                                   'subject_token': impersonator_token["access_token"],
                                   'client_secret': config_keycloak_admin['client_secret_key']}
         req = requests.post(url=exchange_token_url, data=target_user_token_data)
-        if req.status_code == "200":
+        if req.status_code == 200:
             user_token_info = req.json()
             print(user_token_info)
             return user_token_info
