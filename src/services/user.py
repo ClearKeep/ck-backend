@@ -14,19 +14,19 @@ class UserService(BaseService):
         super().__init__(User())
         self.domain = get_system_domain()
 
-    def create_new_user(self, id, record, auth_source):
+    def create_new_user(self, id, email, password, first_name, last_name, display_name, auth_source):
         try:
             self.model = User(
                 id=id,
-                display_name=record.display_name,
+                display_name=display_name,
                 auth_source=auth_source
             )
-            if record.email:
-                self.model.email = EncryptUtils.encrypt_data(record.email, record.password, id)
-            if record.first_name:
-                self.model.first_name = EncryptUtils.encrypt_data(record.first_name, record.password, id)
-            if record.last_name:
-                self.model.last_name = EncryptUtils.encrypt_data(record.last_name, record.password, id)
+            if email:
+                self.model.email = EncryptUtils.encrypt_data(email, password, id)
+            if first_name:
+                self.model.first_name = EncryptUtils.encrypt_data(first_name, password, id)
+            if last_name:
+                self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
 
             return self.model.add()
         except Exception as e:

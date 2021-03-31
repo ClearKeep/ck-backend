@@ -49,6 +49,40 @@ class AuthController(BaseController):
                 ))
 
     @request_logged
+    async def login_google(self, request, context):
+        print("auth login google api")
+        try:
+            token = self.service.google_login(request.id_token)
+            introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+            if token:
+                self.user_service.update_last_login(user_id=introspect_token['sub'])
+                return auth_messages.AuthRes(
+                    access_token=token['access_token'],
+                    expires_in=token['expires_in'],
+                    refresh_expires_in=token['refresh_expires_in'],
+                    refresh_token=token['refresh_token'],
+                    token_type=token['token_type'],
+                    session_state=token['session_state'],
+                    scope=token['scope'],
+                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
+                    base_response=auth_messages.BaseResponse(success=True)
+                )
+            else:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(e.args[0])]
+            return auth_messages.AuthRes(
+                base_response=auth_messages.BaseResponse(
+                    success=False,
+                    errors=auth_messages.ErrorRes(
+                        code=errors[0].code,
+                        message=errors[0].message
+                    )
+                ))
+
+    @request_logged
     async def register(self, request, context):
         # check exist user
         try:
@@ -61,7 +95,7 @@ class AuthController(BaseController):
 
             if new_user:
                 # create new user in database
-                UserService().create_new_user(new_user, request, 'account')
+                UserService().create_new_user(new_user, request.email, request.password, request.first_name, request.last_name, request.display_name,  'account')
                 return auth_messages.RegisterRes(
                     base_response=auth_messages.BaseResponse(
                         success=True
