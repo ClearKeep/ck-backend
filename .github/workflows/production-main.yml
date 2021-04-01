@@ -65,9 +65,9 @@ jobs:
           git pull
           pip3 install -r requirement.txt
           python3 -m grpc_tools.protoc -I=. protos/*.proto --python_out=. --grpc_python_out=.
-          sudo systemctl restart clk328-http-prod.service
+          sudo systemctl restart prod-http-clk328.service
           sleep 10
-          sudo systemctl restart clk328-grpc-prod.service
+          sudo systemctl restart prod-grpc-clk328.service
           sleep 20
           python3 cron_tab.py
         #  docker restart clearkeep
