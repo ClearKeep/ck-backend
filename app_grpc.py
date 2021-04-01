@@ -22,6 +22,7 @@ from utils.logger import *
 # from middlewares.auth_interceptor import AuthInterceptor
 import asyncio
 from grpc import aio
+from utils.keycloak import KeyCloakUtils
 
 
 async def start_server():

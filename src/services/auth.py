@@ -3,6 +3,10 @@ from utils.keycloak import KeyCloakUtils
 from utils.logger import *
 from src.services.notify_push import NotifyPushService
 import json
+import requests
+from src.services.user import UserService
+from utils.config import get_system_config
+
 
 class AuthService:
     def __init__(self):
@@ -83,3 +87,31 @@ class AuthService:
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.USER_NOT_FOUND)
+
+    # login google
+    def google_login(self, google_id_token):
+        try:
+            verify_id_token_url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + google_id_token
+            req = requests.get(url=verify_id_token_url)
+            if req.status_code != 200:
+                raise Exception(Message.GOOGLE_AUTH_ID_TOKEN_INVALID)
+            google_token_info = req.json()
+
+            # check google_token_info["aud"] matching with google app id
+            google_app_id = get_system_config()["google_app_id"]
+            if google_token_info["aud"] != google_app_id["ios"] and google_token_info["aud"] != google_app_id["android"]:
+                raise Exception(Message.GOOGLE_AUTH_FAILED)
+
+            google_email = google_token_info["email"]
+            # check account exits
+            user_id = KeyCloakUtils.get_user_id_by_email(google_email)
+            if not user_id:
+                # create new user
+                new_user_id = KeyCloakUtils.create_user_with_email(google_email)
+                UserService().create_new_user(id=new_user_id, email=google_email,password=None,first_name=None, last_name=None, display_name=google_token_info["name"], auth_source='google')
+            # generate token
+            token = KeyCloakUtils.exchange_token(user_id)
+            return token
+        except Exception as e:
+            logger.info(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.GOOGLE_AUTH_FAILED)
