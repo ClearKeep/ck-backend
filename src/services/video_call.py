@@ -62,9 +62,9 @@ class VideoCallService:
 
         webrtc_token = secrets.token_hex(10)
 
-        group_ojb = self.service_group.get_group_obj(group_id=group_id)
-        group_ojb.group_rtc_token = webrtc_token
-        group_ojb.update()
+        group_obj = self.service_group.get_group_obj(group_id=group_id)
+        group_obj.group_rtc_token = webrtc_token
+        group_obj.update()
         # register webrtc
         self.service_group.register_webrtc_token(webrtc_token)
         #  create room
@@ -78,6 +78,8 @@ class VideoCallService:
                 'notify_type': 'request_call',
                 'call_type': call_type,
                 'group_id': str(group_id),
+                'group_name': group_obj.group_name if group_obj.group_name else '',
+                'group_type': group_obj.group_type if group_obj.group_type else '',
                 'group_rtc_token': webrtc_token,
                 'from_client_id': from_client_id,
                 'from_client_name': from_client_username,
@@ -86,6 +88,7 @@ class VideoCallService:
                 'stun_server': server_info.stun_server,
                 'turn_server': server_info.turn_server
             }
+
             await push_service.push_voip_clients(other_clients_in_group, push_payload, from_client_id)
 
         stun_server_obj = json.loads(server_info.stun_server)
