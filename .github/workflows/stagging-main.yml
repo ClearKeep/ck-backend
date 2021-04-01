@@ -59,7 +59,7 @@ jobs:
         hosts: ${{ secrets.USERNAME }}@${{ secrets.HOST }}
         privateKey: ${{ secrets.KEY }}
         command: |
-          cd /home/ubuntu/ck-backend
+          cd /home/ubuntu/stagging-clk328/ck-backend
           git checkout stagging
           git pull
           pip3 install -r requirement.txt

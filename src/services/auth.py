@@ -98,18 +98,17 @@ class AuthService:
             google_token_info = req.json()
 
             # check google_token_info["aud"] matching with google app id
-            google_app_id = get_system_config["google_app_id"]
+            google_app_id = get_system_config()["google_app_id"]
             if google_token_info["aud"] != google_app_id["ios"] and google_token_info["aud"] != google_app_id["android"]:
                 raise Exception(Message.GOOGLE_AUTH_FAILED)
 
             google_email = google_token_info["email"]
             # check account exits
-            user_id = KeyCloakUtils.get_user_id_by_email()
+            user_id = KeyCloakUtils.get_user_id_by_email(google_email)
             if not user_id:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_with_email(google_email)
-                UserService().create_new_user(new_user_id, google_email, new_user_id, google_token_info["given_name"],
-                                              google_token_info["family_name"], google_token_info["name"], 'google')
+                UserService().create_new_user(id=new_user_id, email=google_email,password=None,first_name=None, last_name=None, display_name=google_token_info["name"], auth_source='google')
             # generate token
             token = KeyCloakUtils.exchange_token(user_id)
             return token

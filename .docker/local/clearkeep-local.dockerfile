@@ -1,5 +1,5 @@
 FROM python:3
-COPY . /clearkeep-backend
+COPY .. /clearkeep-backend
 WORKDIR /clearkeep-backend
 # setup library
 RUN pip install --upgrade pip

@@ -91,7 +91,6 @@ class KeyCloakUtils:
         req = requests.post(url=exchange_token_url, data=target_user_token_data)
         if req.status_code == 200:
             user_token_info = req.json()
-            print(user_token_info)
             return user_token_info
         else:
             return None

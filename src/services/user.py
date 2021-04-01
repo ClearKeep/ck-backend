@@ -18,15 +18,16 @@ class UserService(BaseService):
         try:
             self.model = User(
                 id=id,
+                email=email,
                 display_name=display_name,
                 auth_source=auth_source
             )
-            if email:
-                self.model.email = EncryptUtils.encrypt_data(email, password, id)
-            if first_name:
-                self.model.first_name = EncryptUtils.encrypt_data(first_name, password, id)
-            if last_name:
-                self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
+            # if email:
+            #     self.model.email = EncryptUtils.encrypt_data(email, password, id)
+            # if first_name:
+            #     self.model.first_name = EncryptUtils.encrypt_data(first_name, password, id)
+            # if last_name:
+            #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
 
             return self.model.add()
         except Exception as e:
@@ -36,18 +37,16 @@ class UserService(BaseService):
     def change_password(self, request, old_pass, new_pass, user_id):
         try:
             user_info = self.model.get(user_id)
-
             response = KeyCloakUtils.set_user_password(user_id, new_pass)
-
-            if user_info.email:
-                email = EncryptUtils.decrypt_data(user_info.email, old_pass, user_id)
-                user_info.email = EncryptUtils.encrypt_data(email, new_pass, user_id)
-            if user_info.first_name:
-                first_name = EncryptUtils.decrypt_data(user_info.first_name, old_pass, user_id)
-                user_info.first_name = EncryptUtils.encrypt_data(first_name, new_pass, user_id)
-            if user_info.last_name:
-                last_name = EncryptUtils.decrypt_data(user_info.last_name, old_pass, user_id)
-                user_info.last_name = EncryptUtils.encrypt_data(last_name, new_pass, user_id)
+            # if user_info.email:
+            #     email = EncryptUtils.decrypt_data(user_info.email, old_pass, user_id)
+            #     user_info.email = EncryptUtils.encrypt_data(email, new_pass, user_id)
+            # if user_info.first_name:
+            #     first_name = EncryptUtils.decrypt_data(user_info.first_name, old_pass, user_id)
+            #     user_info.first_name = EncryptUtils.encrypt_data(first_name, new_pass, user_id)
+            # if user_info.last_name:
+            #     last_name = EncryptUtils.decrypt_data(user_info.last_name, old_pass, user_id)
+            #     user_info.last_name = EncryptUtils.encrypt_data(last_name, new_pass, user_id)
 
             return user_info.update()
         except Exception as e:
@@ -60,14 +59,15 @@ class UserService(BaseService):
             if user_info is not None:
                 obj_res = user_pb2.UserProfileResponse(
                     id=user_info.id,
+                    email=user_info.email,
                     display_name=user_info.display_name
                 )
-                if user_info.email:
-                    obj_res.email = EncryptUtils.decrypt_with_hash(user_info.email, hash_key)
-                if user_info.first_name:
-                    obj_res.first_name = EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key),
-                if user_info.last_name:
-                    obj_res.last_name = EncryptUtils.decrypt_with_hash(user_info.last_name, hash_key),
+                # if user_info.email:
+                #     obj_res.email = EncryptUtils.decrypt_with_hash(user_info.email, hash_key)
+                # if user_info.first_name:
+                #     obj_res.first_name = EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key),
+                # if user_info.last_name:
+                #     obj_res.last_name = EncryptUtils.decrypt_with_hash(user_info.last_name, hash_key),
 
                 return obj_res
             else:
@@ -82,14 +82,13 @@ class UserService(BaseService):
             if request.display_name:
                 user_info.display_name = request.display_name
 
-            if request.email:
-                user_info.email = EncryptUtils.encrypt_with_hash(request.email, hash_key)
-
-            if request.first_name:
-                user_info.first_name = EncryptUtils.encrypt_with_hash(request.first_name, hash_key)
-
-            if request.last_name:
-                user_info.last_name = EncryptUtils.encrypt_with_hash(request.last_name, hash_key)
+            # if request.email:
+            #     user_info.email = EncryptUtils.encrypt_with_hash(request.email, hash_key)
+            # if request.first_name:
+            #     user_info.first_name = EncryptUtils.encrypt_with_hash(request.first_name, hash_key)
+            #
+            # if request.last_name:
+            #     user_info.last_name = EncryptUtils.encrypt_with_hash(request.last_name, hash_key)
 
             return user_info.update()
         except Exception as e:
