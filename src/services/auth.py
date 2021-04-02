@@ -3,7 +3,6 @@ from utils.keycloak import KeyCloakUtils
 from utils.logger import *
 from src.services.notify_push import NotifyPushService
 import json
-import requests
 from src.services.user import UserService
 from utils.config import get_system_config
 import aiohttp
