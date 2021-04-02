@@ -1,10 +1,7 @@
 # ref https://pypi.org/project/python-keycloak/
-
 from keycloak import KeycloakOpenID, KeycloakAdmin
 from utils.config import get_system_config
 import json
-import requests
-import aiohttp
 
 # keycloak client
 config_keycloak_client = get_system_config()['keycloak_account']

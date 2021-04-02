@@ -48,7 +48,8 @@ class JanusService(object):
             "janus": 'message',
             "body": {
                 "request": "create",
-                "room": group_id
+                "room": group_id,
+                "publishers": 6
             },
             "token": self.token,
             "transaction": self.transaction
