@@ -70,5 +70,8 @@ jobs:
           sudo systemctl restart prod-grpc-clk328.service
           sleep 20
           python3 cron_tab.py
+          sleep 20
+          sudo systemctl restart dev-http-clk328.service
+          sudo systemctl restart stagging-http-clk328.service
         #  docker restart clearkeep
         # ./restart-service.sh

@@ -95,7 +95,7 @@ class AuthController(BaseController):
 
             if new_user:
                 # create new user in database
-                UserService().create_new_user(new_user, request.email, request.password, request.first_name, request.last_name, request.display_name,  'account')
+                UserService().create_new_user(new_user, request.email, request.display_name,  'account')
                 return auth_messages.RegisterRes(
                     base_response=auth_messages.BaseResponse(
                         success=True
