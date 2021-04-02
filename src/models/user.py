@@ -45,7 +45,6 @@ class User(Database.get().Model):
         Database.get().session.remove()
         return user
 
-
     def search(self, keyword, client_id):
         search = "%{}%".format(keyword)
         user = Database.get_session().query(User) \
@@ -72,7 +71,6 @@ class User(Database.get().Model):
             .first()
         Database.get().session.remove()
         return result
-
 
     def __repr__(self):
         return '<Item(id=%s, display_name=%s, email=%s)>' % (self.id, self.display_name, self.email)
