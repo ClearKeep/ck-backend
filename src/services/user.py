@@ -14,7 +14,8 @@ class UserService(BaseService):
         super().__init__(User())
         self.domain = get_system_domain()
 
-    def create_new_user(self, id, email, password, first_name, last_name, display_name, auth_source):
+    def create_new_user(self, id, email, display_name, auth_source):
+        # password, first_name, last_name,
         try:
             self.model = User(
                 id=id,
@@ -28,8 +29,7 @@ class UserService(BaseService):
             #     self.model.first_name = EncryptUtils.encrypt_data(first_name, password, id)
             # if last_name:
             #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
-
-            return self.model.add()
+            self.model.add()
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.REGISTER_USER_FAILED)

@@ -6,6 +6,7 @@ import json
 from src.services.user import UserService
 from utils.config import get_system_config
 import aiohttp
+import asyncio
 
 
 class AuthService:
@@ -107,16 +108,17 @@ class AuthService:
                     google_email = google_token_info["email"]
                     # check account exits
                     user_id = KeyCloakUtils.get_user_id_by_email(google_email)
-                    if not user_id:
+
+                    if user_id:
+                        token = await self.exchange_token(user_id)
+                        return token
+                    else:
                         # create new user
                         new_user_id = KeyCloakUtils.create_user_with_email(google_email)
-                        UserService().create_new_user(id=new_user_id, email=google_email, password=None, first_name=None,
-                                                      last_name=None, display_name=google_token_info["name"],
+                        token = await self.exchange_token(new_user_id)
+                        UserService().create_new_user(id=new_user_id, email=google_email, display_name=google_token_info["name"],
                                                       auth_source='google')
-                    # generate token
-                    token = await self.exchange_token(user_id)
-                    return token
-
+                        return token
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.GOOGLE_AUTH_FAILED)
