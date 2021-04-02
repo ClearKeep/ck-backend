@@ -4,6 +4,7 @@ from keycloak import KeycloakOpenID, KeycloakAdmin
 from utils.config import get_system_config
 import json
 import requests
+import aiohttp
 
 # keycloak client
 config_keycloak_client = get_system_config()['keycloak_account']
@@ -65,35 +66,6 @@ class KeyCloakUtils:
                                            "lastName": "",
                                            "emailVerified": True
                                            })
-
-    @staticmethod
-    def exchange_token(user_id):
-        exchange_token_url = "{auth_server_url}realms/{realm_name}/protocol/openid-connect/token".format(
-            auth_server_url=config_keycloak_admin['server_url'], realm_name=config_keycloak_admin['realm_name'])
-
-        # generate token for impersonator
-        impersonator_token_data = {'grant_type': 'password',
-                                   'client_id': config_keycloak_admin['client_id'],
-                                   'username': config_keycloak_admin['username'],
-                                   'password': config_keycloak_admin['password'],
-                                   'client_secret': config_keycloak_admin['client_secret_key']}
-        req = requests.post(url=exchange_token_url, data=impersonator_token_data)
-        if req.status_code != 200:
-            return None
-        impersonator_token = req.json()
-
-        # exchange token for specific user
-        target_user_token_data = {'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
-                                  'client_id': "admin-cli",
-                                  'requested_subject': user_id,
-                                  'subject_token': impersonator_token["access_token"],
-                                  'client_secret': config_keycloak_admin['client_secret_key']}
-        req = requests.post(url=exchange_token_url, data=target_user_token_data)
-        if req.status_code == 200:
-            user_token_info = req.json()
-            return user_token_info
-        else:
-            return None
 
     @staticmethod
     def get_user_id_by_email(email):

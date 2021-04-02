@@ -52,7 +52,7 @@ class AuthController(BaseController):
     async def login_google(self, request, context):
         print("auth login google api")
         try:
-            token = self.service.google_login(request.id_token)
+            token = await self.service.google_login(request.id_token)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if token:
                 self.user_service.update_last_login(user_id=introspect_token['sub'])
