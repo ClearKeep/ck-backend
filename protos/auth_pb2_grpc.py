@@ -19,6 +19,16 @@ class AuthStub(object):
                 request_serializer=protos_dot_auth__pb2.AuthReq.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
                 )
+        self.login_google = channel.unary_unary(
+                '/auth.Auth/login_google',
+                request_serializer=protos_dot_auth__pb2.GoogleLoginReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
+                )
+        self.login_office = channel.unary_unary(
+                '/auth.Auth/login_office',
+                request_serializer=protos_dot_auth__pb2.OfficeLoginReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
+                )
         self.register = channel.unary_unary(
                 '/auth.Auth/register',
                 request_serializer=protos_dot_auth__pb2.RegisterReq.SerializeToString,
@@ -40,6 +50,18 @@ class AuthServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def login(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def login_google(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def login_office(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -69,6 +91,16 @@ def add_AuthServicer_to_server(servicer, server):
             'login': grpc.unary_unary_rpc_method_handler(
                     servicer.login,
                     request_deserializer=protos_dot_auth__pb2.AuthReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
+            ),
+            'login_google': grpc.unary_unary_rpc_method_handler(
+                    servicer.login_google,
+                    request_deserializer=protos_dot_auth__pb2.GoogleLoginReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
+            ),
+            'login_office': grpc.unary_unary_rpc_method_handler(
+                    servicer.login_office,
+                    request_deserializer=protos_dot_auth__pb2.OfficeLoginReq.FromString,
                     response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
             ),
             'register': grpc.unary_unary_rpc_method_handler(
@@ -109,6 +141,40 @@ class Auth(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/login',
             protos_dot_auth__pb2.AuthReq.SerializeToString,
+            protos_dot_auth__pb2.AuthRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def login_google(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_google',
+            protos_dot_auth__pb2.GoogleLoginReq.SerializeToString,
+            protos_dot_auth__pb2.AuthRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def login_office(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_office',
+            protos_dot_auth__pb2.OfficeLoginReq.SerializeToString,
             protos_dot_auth__pb2.AuthRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

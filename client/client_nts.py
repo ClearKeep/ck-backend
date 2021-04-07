@@ -46,18 +46,25 @@ def update_stun_turn_credential():
         stun, turn = generate_stun_turn_credential(data)
         host = data['server_domain']
         port = data['grpc_port']
+
+        # update for production branch
         channel = grpc.insecure_channel(host + ':' + str(port))
         stub = server_info_pb2_grpc.ServerInfoStub(channel)
-
         request = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
-        response = stub.update_nts(request)
-        #update for development branch
+        stub.update_nts(request)
 
+        #update for stagging branch
         channel2 = grpc.insecure_channel(host + ':1' + str(port))
         stub2 = server_info_pb2_grpc.ServerInfoStub(channel2)
-
         request2 = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
-        response2 = stub2.update_nts(request2)
+        stub2.update_nts(request2)
+
+        # update for dev branch
+        channel3 = grpc.insecure_channel(host + ':2' + str(port))
+        stub3 = server_info_pb2_grpc.ServerInfoStub(channel3)
+        request3 = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
+        stub3.update_nts(request3)
+
         print('Set cronjob succesful')
 
     except Exception as e:

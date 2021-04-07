@@ -59,13 +59,13 @@ jobs:
         hosts: ${{ secrets.USERNAME }}@${{ secrets.HOST }}
         privateKey: ${{ secrets.KEY }}
         command: |
-          cd /home/ubuntu/ck-backend-dev/ck-backend
+          cd /home/ubuntu/dev-clk328/ck-backend
           git checkout development
           git pull
           pip3 install -r requirement.txt
           python3 -m grpc_tools.protoc -I=. protos/*.proto --python_out=. --grpc_python_out=.
-          sudo systemctl restart clk328-http-dev.service
+          sudo systemctl restart dev-http-clk328.service
           sleep 10
-          sudo systemctl restart clk328-grpc-dev.service
+          sudo systemctl restart dev-grpc-clk328.service
         #  docker restart clearkeep
         # ./restart-service.sh

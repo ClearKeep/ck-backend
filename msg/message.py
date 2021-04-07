@@ -1,4 +1,6 @@
 from src.controllers.base import ErrorResponse
+
+
 class Message:
     UNAUTHENTICATED = 1000
     AUTH_USER_NOT_FOUND = 1001
@@ -21,17 +23,26 @@ class Message:
     GET_GROUP_CHAT_FAILED = 1018
     SEARCH_GROUP_CHAT_FAILED = 1019
     CLIENT_QUEUE_NOT_FOUND = 1020
-    #notify
+
+    # notify
     GET_CLIENT_NOTIFIES_FAILED = 1021
     CLIENT_READ_NOTIFY_FAILED = 1022
     CLIENT_REGISTER_NOTIFY_TOKEN_FAILED = 1023
 
-    #call
+    # call
     CLIENT_REQUEST_CALL_FAILED = 1025
-    #email
+    # email
     USER_NOT_VERIFY_EMAIL = 1026
     CLIENT_CANCEL_REQUEST_CALL_FAILED = 1027
     CLIENT_UPDATE_CALL_FAILED = 1028
+
+    #google login
+    GOOGLE_AUTH_ID_TOKEN_INVALID = 1030
+    GOOGLE_AUTH_FAILED = 1031
+    # google login
+    OFFICE_ACCESS_TOKEN_INVALID = 1032
+    OFFICE_AUTH_FAILED = 1033
+
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -62,7 +73,11 @@ class Message:
         CLIENT_REGISTER_NOTIFY_TOKEN_FAILED: "Client register notification token failed. Please try again",
         CLIENT_REQUEST_CALL_FAILED: "Client request call failed. Please try again",
         CLIENT_CANCEL_REQUEST_CALL_FAILED: "Cancel Request Call failed, Please try again",
-        CLIENT_UPDATE_CALL_FAILED: "Update call failed. Please try again"
+        CLIENT_UPDATE_CALL_FAILED: "Update call failed. Please try again",
+        GOOGLE_AUTH_ID_TOKEN_INVALID: "Login google failed. Please try again",
+        GOOGLE_AUTH_FAILED: "Login google failed. Please try again",
+        OFFICE_ACCESS_TOKEN_INVALID: "Login Office 365 failed. Please try again",
+        OFFICE_AUTH_FAILED: "Login Office 365 failed. Please try again",
     }
 
     @staticmethod
@@ -72,5 +87,3 @@ class Message:
     @staticmethod
     def get_error_object(code):
         return ErrorResponse(code, Message.msg_dict[code])
-
-
