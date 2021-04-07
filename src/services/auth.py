@@ -116,9 +116,40 @@ class AuthService:
                         # create new user
                         new_user_id = KeyCloakUtils.create_user_with_email(google_email)
                         token = await self.exchange_token(new_user_id)
-                        UserService().create_new_user(id=new_user_id, email=google_email, display_name=google_token_info["name"],
+                        UserService().create_new_user(id=new_user_id, email=google_email,
+                                                      display_name=google_token_info["name"],
                                                       auth_source='google')
 
+                        return token
+        except Exception as e:
+            logger.info(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.GOOGLE_AUTH_FAILED)
+
+    # login office
+    async def office_login(self, office_access_token):
+        try:
+            verify_token_url = "https://graph.microsoft.com/v1.0/me"
+            headers = {'Authorization': 'Bearer ' + office_access_token}
+            async with aiohttp.ClientSession() as session:
+                async with session.get(verify_token_url, headers=headers) as resp:
+                    if resp.status != 200:
+                        raise Exception(Message.OFFICE_ACCESS_TOKEN_INVALID)
+                    office_token_info = await resp.json()
+
+                    office_email = office_token_info["mail"]
+                    # check account exits
+                    user_id = KeyCloakUtils.get_user_id_by_email(office_email)
+
+                    if user_id:
+                        token = await self.exchange_token(user_id)
+                        return token
+                    else:
+                        # create new user
+                        new_user_id = KeyCloakUtils.create_user_with_email(office_email)
+                        token = await self.exchange_token(new_user_id)
+                        UserService().create_new_user(id=new_user_id, email=office_email,
+                                                      display_name=office_token_info["displayName"],
+                                                      auth_source='office')
                         return token
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
