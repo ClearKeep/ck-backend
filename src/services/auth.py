@@ -118,6 +118,7 @@ class AuthService:
                         token = await self.exchange_token(new_user_id)
                         UserService().create_new_user(id=new_user_id, email=google_email, display_name=google_token_info["name"],
                                                       auth_source='google')
+
                         return token
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
@@ -149,10 +150,10 @@ class AuthService:
                                           'subject_token': impersonator_token["access_token"],
                                           'client_secret': config_keycloak_admin['client_secret_key']}
 
-                async with aiohttp.ClientSession() as session:
-                    async with session.post(exchange_token_url, data=target_user_token_data, headers=headers) as resp1:
-                        if resp1.status == 200:
-                            user_token_info = await resp1.json()
-                            return user_token_info
-                        else:
-                            return None
+                # async with aiohttp.ClientSession() as session:
+                async with session.post(exchange_token_url, data=target_user_token_data, headers=headers) as resp1:
+                    if resp1.status == 200:
+                        user_token_info = await resp1.json()
+                        return user_token_info
+                    else:
+                        return None
