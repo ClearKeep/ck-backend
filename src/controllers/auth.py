@@ -138,7 +138,7 @@ class AuthController(BaseController):
                 raise Exception(Message.REGISTER_USER_ALREADY_EXISTS)
 
             # register new user
-            new_user = self.service.register_user(request.email, request.password)
+            new_user = self.service.register_user(request.email, request.password, request.display_name)
 
             if new_user:
                 # create new user in database
