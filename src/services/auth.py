@@ -5,7 +5,6 @@ from src.services.notify_push import NotifyPushService
 import json
 from src.services.user import UserService
 from utils.config import get_system_config
-import aiohttp
 import requests
 
 
@@ -133,18 +132,32 @@ class AuthService:
             if req.status_code != 200:
                 raise Exception(Message.OFFICE_ACCESS_TOKEN_INVALID)
             office_token_info = req.json()
-            office_email = office_token_info["mail"]
+            office_id = office_token_info["id"]
             # check account exits
-            user_id = KeyCloakUtils.get_user_id_by_email(office_email)
+            user_id = KeyCloakUtils.get_user_id_by_email(office_id)
             if user_id:
                 token = self.exchange_token(user_id)
                 return token
             else:
                 # create new user
-                new_user_id = KeyCloakUtils.create_user_with_email(office_email)
+                new_user_id = KeyCloakUtils.create_user_with_username(office_id)
                 token = self.exchange_token(new_user_id)
-                UserService().create_new_user(id=new_user_id, email=office_email,
-                                              display_name=office_token_info["displayName"],
+
+                display_name = ""
+                if office_token_info["surname"]:
+                    display_name = office_token_info["surname"]
+                if office_token_info["givenName"]:
+                    display_name = office_token_info["givenName"]
+                if office_token_info["displayName"]:
+                    display_name = office_token_info["displayName"]
+
+                if display_name == "" and office_token_info["userPrincipalName"]:
+                    user_principal_name = office_token_info["userPrincipalName"].split("@")
+                    if len(user_principal_name) > 0:
+                        display_name = user_principal_name[0]
+
+                UserService().create_new_user(id=new_user_id, email=office_token_info["mail"],
+                                              display_name=display_name,
                                               auth_source='office')
                 return token
         except Exception as e:
