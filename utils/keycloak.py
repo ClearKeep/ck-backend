@@ -65,6 +65,16 @@ class KeyCloakUtils:
                                            })
 
     @staticmethod
+    def create_user_with_username(username):
+        return keycloak_admin.create_user({"email": "",
+                                           "username": username,
+                                           "enabled": True,
+                                           "firstName": "",
+                                           "lastName": "",
+                                           "emailVerified": True
+                                           })
+
+    @staticmethod
     def get_user_id_by_email(email):
         return keycloak_admin.get_user_id(email)
 

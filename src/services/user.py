@@ -59,11 +59,10 @@ class UserService(BaseService):
             if user_info is not None:
                 obj_res = user_pb2.UserProfileResponse(
                     id=user_info.id,
-                    email=user_info.email,
                     display_name=user_info.display_name
                 )
-                # if user_info.email:
-                #     obj_res.email = EncryptUtils.decrypt_with_hash(user_info.email, hash_key)
+                if user_info.email:
+                    obj_res.email = user_info.email
                 # if user_info.first_name:
                 #     obj_res.first_name = EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key),
                 # if user_info.last_name:

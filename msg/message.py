@@ -39,6 +39,9 @@ class Message:
     #google login
     GOOGLE_AUTH_ID_TOKEN_INVALID = 1030
     GOOGLE_AUTH_FAILED = 1031
+    # google login
+    OFFICE_ACCESS_TOKEN_INVALID = 1032
+    OFFICE_AUTH_FAILED = 1033
 
 
     msg_dict = {
@@ -73,6 +76,8 @@ class Message:
         CLIENT_UPDATE_CALL_FAILED: "Update call failed. Please try again",
         GOOGLE_AUTH_ID_TOKEN_INVALID: "Login google failed. Please try again",
         GOOGLE_AUTH_FAILED: "Login google failed. Please try again",
+        OFFICE_ACCESS_TOKEN_INVALID: "Login Office 365 failed. Please try again",
+        OFFICE_AUTH_FAILED: "Login Office 365 failed. Please try again",
     }
 
     @staticmethod

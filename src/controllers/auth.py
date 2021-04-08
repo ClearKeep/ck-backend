@@ -16,7 +16,6 @@ class AuthController(BaseController):
 
     @request_logged
     async def login(self, request, context):
-        print("auth login api")
         try:
             token = self.service.token(request.email, request.password)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
@@ -50,9 +49,49 @@ class AuthController(BaseController):
 
     @request_logged
     async def login_google(self, request, context):
-        print("auth login google api")
         try:
-            token = await self.service.google_login(request.id_token)
+            token = self.service.google_login(request.id_token)
+            introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+            if token:
+                self.user_service.update_last_login(user_id=introspect_token['sub'])
+
+                auth_response = auth_messages.AuthRes(
+                    access_token=token['access_token'],
+                    expires_in=token['expires_in'],
+                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
+                    base_response=auth_messages.BaseResponse(success=True)
+                )
+                if token['refresh_token']:
+                    auth_response.refresh_token = token['refresh_token']
+                if token['refresh_expires_in']:
+                    auth_response.refresh_expires_in = token['refresh_expires_in']
+                if token['token_type']:
+                    auth_response.token_type = token['token_type']
+                if token['session_state']:
+                    auth_response.session_state = token['session_state']
+                if token['scope']:
+                    auth_response.scope = token['scope']
+
+                return auth_response
+            else:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(e.args[0])]
+            return auth_messages.AuthRes(
+                base_response=auth_messages.BaseResponse(
+                    success=False,
+                    errors=auth_messages.ErrorRes(
+                        code=errors[0].code,
+                        message=errors[0].message
+                    )
+                ))
+
+    @request_logged
+    async def login_office(self, request, context):
+        try:
+            token = self.service.office_login(request.access_token)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if token:
                 self.user_service.update_last_login(user_id=introspect_token['sub'])
