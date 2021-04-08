@@ -1,6 +1,7 @@
 from src.services.base import BaseService
 from src.models.message import Message
 from src.models.group import GroupChat
+from src.models.message_user_read import MessageUserRead
 from protos import message_pb2
 from threading import Thread
 from datetime import datetime
@@ -15,6 +16,7 @@ class MessageService(BaseService):
     def __init__(self):
         super().__init__(Message())
         self.service_group = GroupChat()
+        self.message_read_model = MessageUserRead()
 
     def store_message(self, group_id, from_client_id, client_id, message):
         # store message to database
@@ -57,7 +59,6 @@ class MessageService(BaseService):
 
         return res_obj
 
-
     def add_message(self, group_id, from_client_id, client_id, message):
         thread = Thread(target=self.store_message, args=(group_id, from_client_id, client_id, message))
         thread.start()
@@ -95,11 +96,14 @@ class MessageService(BaseService):
             await asyncio.sleep(1)
         client_message_queue[message_channel] = Queue()
 
-
     def un_subscribe(self, client_id):
         message_channel = "{}/message".format(client_id)
         if message_channel in client_message_queue:
             client_message_queue[message_channel] = None
             del client_message_queue[message_channel]
 
-
+    def read_messages(self, client_id, lst_message_id):
+        lst_message_read = []
+        for mess_id in lst_message_id:
+            lst_message_read.append(MessageUserRead(message_id=mess_id, client_id=client_id))
+        self.message_read_model.add_all(client_id, lst_message_id)

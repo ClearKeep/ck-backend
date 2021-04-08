@@ -8,9 +8,18 @@ message MessageObjectResponse {
   string from_client_id = 4;
   string client_id = 5;
   bytes message = 6;
-  int64 created_at = 7;
-  int64 updated_at = 8;
+  repeated ClientReadObject lst_client_read = 7;
+  int64 created_at = 8;
+  int64 updated_at = 9;
 }
+
+message ClientReadObject {
+  string id = 1;
+  string name = 2;
+  string avatar = 3;
+  int64 read_at = 4;
+}
+
 
 //errors response
 message ErrorRes {
@@ -64,6 +73,13 @@ message ListenRequest {
 }
 //response: BaseResponse or MessageObjectResponse stream
 
+// Request: read message
+message ReadMessagesRequest {
+  repeated string lst_message_id = 4;
+}
+// Response: groupObjectResponse
+
+
 // Method
 service Message {
     rpc get_messages_in_group(GetMessagesInGroupRequest) returns (GetMessagesInGroupResponse) {};
@@ -72,4 +88,5 @@ service Message {
     rpc UnSubscribe (UnSubscribeRequest) returns (BaseResponse);
     rpc Listen (ListenRequest) returns (stream MessageObjectResponse);
     rpc Publish (PublishRequest) returns (MessageObjectResponse);
+    rpc read_messages (ReadMessagesRequest) returns (BaseResponse);
 }

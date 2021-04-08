@@ -50,7 +50,7 @@ class AuthController(BaseController):
     @request_logged
     async def login_google(self, request, context):
         try:
-            token = await self.service.google_login(request.id_token)
+            token = self.service.google_login(request.id_token)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if token:
                 self.user_service.update_last_login(user_id=introspect_token['sub'])
@@ -91,7 +91,7 @@ class AuthController(BaseController):
     @request_logged
     async def login_office(self, request, context):
         try:
-            token = await self.service.office_login(request.access_token)
+            token = self.service.office_login(request.access_token)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if token:
                 self.user_service.update_last_login(user_id=introspect_token['sub'])
