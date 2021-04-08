@@ -51,9 +51,9 @@ class AuthService:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.UNAUTHENTICATED)
 
-    def register_user(self, email, password):
+    def register_user(self, email, password, display_name):
         try:
-            user_id = KeyCloakUtils.create_user(email, password)
+            user_id = KeyCloakUtils.create_user(email, password, "", display_name)
             KeyCloakUtils.send_verify_email(user_id)
             if user_id:
                 return user_id
@@ -97,6 +97,9 @@ class AuthService:
                 raise Exception(Message.GOOGLE_AUTH_ID_TOKEN_INVALID)
             google_token_info = req.json()
 
+            logger.info("Google login token spec:")
+            logger.info(google_token_info)
+
             # check google_token_info["aud"] matching with google app id
             google_app_id = get_system_config()["google_app_id"]
             if google_token_info["aud"] != google_app_id["ios"] and google_token_info["aud"] != google_app_id[
@@ -111,7 +114,7 @@ class AuthService:
                 return token
             else:
                 # create new user
-                new_user_id = KeyCloakUtils.create_user_with_email(google_email)
+                new_user_id = KeyCloakUtils.create_user_with_email(google_email, "", google_token_info["name"])
                 token = self.exchange_token(new_user_id)
                 UserService().create_new_user(id=new_user_id, email=google_email,
                                               display_name=google_token_info["name"],
@@ -133,6 +136,7 @@ class AuthService:
                 raise Exception(Message.OFFICE_ACCESS_TOKEN_INVALID)
             office_token_info = req.json()
 
+            logger.info("Office login token spec:")
             logger.info(office_token_info)
 
             office_id = office_token_info["id"]
@@ -142,17 +146,15 @@ class AuthService:
                 token = self.exchange_token(user_id)
                 return token
             else:
-                # create new user
-                new_user_id = KeyCloakUtils.create_user_with_username(office_id)
-                token = self.exchange_token(new_user_id)
-
                 display_name = office_token_info["displayName"]
                 if not display_name:
                     if office_token_info["userPrincipalName"]:
                         user_principal_name = office_token_info["userPrincipalName"].split("@")
                         if len(user_principal_name) > 0:
                             display_name = user_principal_name[0]
-
+                # create new user
+                new_user_id = KeyCloakUtils.create_user_with_username(office_id, "", display_name)
+                token = self.exchange_token(new_user_id)
                 UserService().create_new_user(id=new_user_id, email=office_token_info["mail"],
                                               display_name=display_name,
                                               auth_source='office')
