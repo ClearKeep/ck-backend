@@ -53,8 +53,7 @@ class AuthController(BaseController):
             token = self.service.google_login(request.id_token)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if token:
-                self.user_service.update_last_login(user_id=introspect_token['sub'])
-
+                #self.user_service.update_last_login(user_id=introspect_token['sub'])
                 auth_response = auth_messages.AuthRes(
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
@@ -94,8 +93,7 @@ class AuthController(BaseController):
             token = self.service.office_login(request.access_token)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if token:
-                self.user_service.update_last_login(user_id=introspect_token['sub'])
-
+                #self.user_service.update_last_login(user_id=introspect_token['sub'])
                 auth_response = auth_messages.AuthRes(
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],

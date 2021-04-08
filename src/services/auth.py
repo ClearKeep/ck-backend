@@ -116,9 +116,9 @@ class AuthService:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_with_email(google_email, "", google_token_info["name"])
                 token = self.exchange_token(new_user_id)
-                UserService().create_new_user(id=new_user_id, email=google_email,
-                                              display_name=google_token_info["name"],
-                                              auth_source='google')
+                UserService().create_user_with_last_login(id=new_user_id, email=google_email,
+                                                          display_name=google_token_info["name"],
+                                                          auth_source='google')
                 return token
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
@@ -155,9 +155,9 @@ class AuthService:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_with_username(office_id, "", display_name)
                 token = self.exchange_token(new_user_id)
-                UserService().create_new_user(id=new_user_id, email=office_token_info["mail"],
-                                              display_name=display_name,
-                                              auth_source='office')
+                UserService().create_user_with_last_login(id=new_user_id, email=office_token_info["mail"],
+                                                          display_name=display_name,
+                                                          auth_source='office')
                 return token
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
