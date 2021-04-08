@@ -132,6 +132,9 @@ class AuthService:
             if req.status_code != 200:
                 raise Exception(Message.OFFICE_ACCESS_TOKEN_INVALID)
             office_token_info = req.json()
+
+            logger.info(office_token_info)
+
             office_id = office_token_info["id"]
             # check account exits
             user_id = KeyCloakUtils.get_user_id_by_email(office_id)
@@ -144,8 +147,8 @@ class AuthService:
                 token = self.exchange_token(new_user_id)
 
                 display_name = ""
-                if office_token_info["surname"]:
-                    display_name = office_token_info["surname"]
+                # if office_token_info["surname"]:
+                #     display_name = office_token_info["surname"]
                 if office_token_info["givenName"]:
                     display_name = office_token_info["givenName"]
                 if office_token_info["displayName"]:
