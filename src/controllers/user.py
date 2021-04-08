@@ -30,7 +30,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     # @auth_required
     # @request_logged
     async def get_profile(self, request, context):
-        print("user get_profile api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
