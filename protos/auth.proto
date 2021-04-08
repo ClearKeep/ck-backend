@@ -62,9 +62,15 @@ message GoogleLoginReq {
     string id_token = 1;
 }
 
+//Login Office365 message struct
+message OfficeLoginReq {
+    string access_token = 1;
+}
+
 service Auth {
     rpc login(AuthReq) returns (AuthRes) {};
     rpc login_google(GoogleLoginReq) returns (AuthRes) {};
+    rpc login_office(OfficeLoginReq) returns (AuthRes) {};
     rpc register(RegisterReq) returns (RegisterRes) {};
     rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
     rpc logout(LogoutReq) returns (BaseResponse) {};

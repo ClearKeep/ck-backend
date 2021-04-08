@@ -5,8 +5,7 @@ from src.services.notify_push import NotifyPushService
 import json
 from src.services.user import UserService
 from utils.config import get_system_config
-import aiohttp
-import asyncio
+import requests
 
 
 class AuthService:
@@ -52,9 +51,9 @@ class AuthService:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.UNAUTHENTICATED)
 
-    def register_user(self, email, password):
+    def register_user(self, email, password, display_name):
         try:
-            user_id = KeyCloakUtils.create_user(email, password)
+            user_id = KeyCloakUtils.create_user(email, password, "", display_name)
             KeyCloakUtils.send_verify_email(user_id)
             if user_id:
                 return user_id
@@ -90,41 +89,81 @@ class AuthService:
             raise Exception(Message.USER_NOT_FOUND)
 
     # login google
-    async def google_login(self, google_id_token):
+    def google_login(self, google_id_token):
         try:
             verify_id_token_url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + google_id_token
-            async with aiohttp.ClientSession() as session:
-                async with session.get(verify_id_token_url) as resp:
-                    if resp.status != 200:
-                        raise Exception(Message.GOOGLE_AUTH_ID_TOKEN_INVALID)
-                    google_token_info = await resp.json()
+            req = requests.get(url=verify_id_token_url)
+            if req.status_code != 200:
+                raise Exception(Message.GOOGLE_AUTH_ID_TOKEN_INVALID)
+            google_token_info = req.json()
 
-                    # check google_token_info["aud"] matching with google app id
-                    google_app_id = get_system_config()["google_app_id"]
-                    if google_token_info["aud"] != google_app_id["ios"] and google_token_info["aud"] != google_app_id[
-                        "android"]:
-                        raise Exception(Message.GOOGLE_AUTH_FAILED)
+            logger.info("Google login token spec:")
+            logger.info(google_token_info)
 
-                    google_email = google_token_info["email"]
-                    # check account exits
-                    user_id = KeyCloakUtils.get_user_id_by_email(google_email)
+            # check google_token_info["aud"] matching with google app id
+            google_app_id = get_system_config()["google_app_id"]
+            if google_token_info["aud"] != google_app_id["ios"] and google_token_info["aud"] != google_app_id[
+                "android"]:
+                raise Exception(Message.GOOGLE_AUTH_FAILED)
 
-                    if user_id:
-                        token = await self.exchange_token(user_id)
-                        return token
-                    else:
-                        # create new user
-                        new_user_id = KeyCloakUtils.create_user_with_email(google_email)
-                        token = await self.exchange_token(new_user_id)
-                        UserService().create_new_user(id=new_user_id, email=google_email, display_name=google_token_info["name"],
-                                                      auth_source='google')
-
-                        return token
+            google_email = google_token_info["email"]
+            # check account exits
+            user_id = KeyCloakUtils.get_user_id_by_email(google_email)
+            if user_id:
+                token = self.exchange_token(user_id)
+                return token
+            else:
+                # create new user
+                new_user_id = KeyCloakUtils.create_user_with_email(google_email, "", google_token_info["name"])
+                token = self.exchange_token(new_user_id)
+                UserService().create_new_user(id=new_user_id, email=google_email,
+                                              display_name=google_token_info["name"],
+                                              auth_source='google')
+                return token
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.GOOGLE_AUTH_FAILED)
 
-    async def exchange_token(self, user_id):
+    # login office
+    def office_login(self, office_access_token):
+        try:
+            verify_token_url = "https://graph.microsoft.com/v1.0/me"
+            bearer = 'Bearer ' + office_access_token
+            headers = {'Authorization': bearer}
+
+            req = requests.get(url=verify_token_url, headers=headers)
+            if req.status_code != 200:
+                raise Exception(Message.OFFICE_ACCESS_TOKEN_INVALID)
+            office_token_info = req.json()
+
+            logger.info("Office login token spec:")
+            logger.info(office_token_info)
+
+            office_id = office_token_info["id"]
+            # check account exits
+            user_id = KeyCloakUtils.get_user_id_by_email(office_id)
+            if user_id:
+                token = self.exchange_token(user_id)
+                return token
+            else:
+                display_name = office_token_info["displayName"]
+                if not display_name:
+                    if office_token_info["userPrincipalName"]:
+                        user_principal_name = office_token_info["userPrincipalName"].split("@")
+                        if len(user_principal_name) > 0:
+                            display_name = user_principal_name[0]
+                # create new user
+                new_user_id = KeyCloakUtils.create_user_with_username(office_id, "", display_name)
+                token = self.exchange_token(new_user_id)
+                UserService().create_new_user(id=new_user_id, email=office_token_info["mail"],
+                                              display_name=display_name,
+                                              auth_source='office')
+                return token
+        except Exception as e:
+            logger.info(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.OFFICE_AUTH_FAILED)
+
+    def exchange_token(self, user_id):
         config_keycloak_admin = get_system_config()['keycloak_admin']
         exchange_token_url = "{auth_server_url}realms/{realm_name}/protocol/openid-connect/token".format(
             auth_server_url=config_keycloak_admin['server_url'], realm_name=config_keycloak_admin['realm_name'])
@@ -135,25 +174,20 @@ class AuthService:
                                    'username': config_keycloak_admin['username'],
                                    'password': config_keycloak_admin['password'],
                                    'client_secret': config_keycloak_admin['client_secret_key']}
+        req = requests.post(url=exchange_token_url, data=impersonator_token_data)
+        if req.status_code != 200:
+            return None
+        impersonator_token = req.json()
 
-        headers = {'Content-type': 'application/x-www-form-urlencoded'}
-
-        async with aiohttp.ClientSession() as session:
-            async with session.post(exchange_token_url, data=impersonator_token_data, headers=headers) as resp:
-                if resp.status != 200:
-                    return None
-                impersonator_token = await resp.json()
-                # exchange token for specific user
-                target_user_token_data = {'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
-                                          'client_id': "admin-cli",
-                                          'requested_subject': user_id,
-                                          'subject_token': impersonator_token["access_token"],
-                                          'client_secret': config_keycloak_admin['client_secret_key']}
-
-                # async with aiohttp.ClientSession() as session:
-                async with session.post(exchange_token_url, data=target_user_token_data, headers=headers) as resp1:
-                    if resp1.status == 200:
-                        user_token_info = await resp1.json()
-                        return user_token_info
-                    else:
-                        return None
+        # exchange token for specific user
+        target_user_token_data = {'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
+                                  'client_id': "admin-cli",
+                                  'requested_subject': user_id,
+                                  'subject_token': impersonator_token["access_token"],
+                                  'client_secret': config_keycloak_admin['client_secret_key']}
+        req = requests.post(url=exchange_token_url, data=target_user_token_data)
+        if req.status_code == 200:
+            user_token_info = req.json()
+            return user_token_info
+        else:
+            return None

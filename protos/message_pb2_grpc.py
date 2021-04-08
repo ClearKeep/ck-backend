@@ -40,6 +40,11 @@ class MessageStub(object):
                 request_serializer=protos_dot_message__pb2.PublishRequest.SerializeToString,
                 response_deserializer=protos_dot_message__pb2.MessageObjectResponse.FromString,
                 )
+        self.read_messages = channel.unary_unary(
+                '/message.Message/read_messages',
+                request_serializer=protos_dot_message__pb2.ReadMessagesRequest.SerializeToString,
+                response_deserializer=protos_dot_message__pb2.BaseResponse.FromString,
+                )
 
 
 class MessageServicer(object):
@@ -77,6 +82,12 @@ class MessageServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def read_messages(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MessageServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -104,6 +115,11 @@ def add_MessageServicer_to_server(servicer, server):
                     servicer.Publish,
                     request_deserializer=protos_dot_message__pb2.PublishRequest.FromString,
                     response_serializer=protos_dot_message__pb2.MessageObjectResponse.SerializeToString,
+            ),
+            'read_messages': grpc.unary_unary_rpc_method_handler(
+                    servicer.read_messages,
+                    request_deserializer=protos_dot_message__pb2.ReadMessagesRequest.FromString,
+                    response_serializer=protos_dot_message__pb2.BaseResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -198,5 +214,22 @@ class Message(object):
         return grpc.experimental.unary_unary(request, target, '/message.Message/Publish',
             protos_dot_message__pb2.PublishRequest.SerializeToString,
             protos_dot_message__pb2.MessageObjectResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def read_messages(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/message.Message/read_messages',
+            protos_dot_message__pb2.ReadMessagesRequest.SerializeToString,
+            protos_dot_message__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -2,6 +2,8 @@ from datetime import datetime
 
 from src.models.base import Database
 from utils.config import get_system_config
+from src.models.message_user_read import MessageUserRead
+from src.models.user import User
 
 
 class Message(Database.get().Model):
@@ -29,7 +31,9 @@ class Message(Database.get().Model):
         return message
 
     def get_message_in_group(self, group_id, offset, from_time):
-        client = Database.get_session().query(Message) \
+        client = Database.get_session().query(Message, User) \
+            .join(MessageUserRead, Message.id == MessageUserRead.message_id) \
+            .join(User, User.id == MessageUserRead.client_id) \
             .filter(Message.group_id == group_id)
 
         if from_time != 0:
