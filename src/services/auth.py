@@ -146,18 +146,12 @@ class AuthService:
                 new_user_id = KeyCloakUtils.create_user_with_username(office_id)
                 token = self.exchange_token(new_user_id)
 
-                display_name = ""
-                # if office_token_info["surname"]:
-                #     display_name = office_token_info["surname"]
-                if office_token_info["givenName"]:
-                    display_name = office_token_info["givenName"]
-                if office_token_info["displayName"]:
-                    display_name = office_token_info["displayName"]
-
-                if display_name == "" and office_token_info["userPrincipalName"]:
-                    user_principal_name = office_token_info["userPrincipalName"].split("@")
-                    if len(user_principal_name) > 0:
-                        display_name = user_principal_name[0]
+                display_name = office_token_info["displayName"]
+                if not display_name:
+                    if office_token_info["userPrincipalName"]:
+                        user_principal_name = office_token_info["userPrincipalName"].split("@")
+                        if len(user_principal_name) > 0:
+                            display_name = user_principal_name[0]
 
                 UserService().create_new_user(id=new_user_id, email=office_token_info["mail"],
                                               display_name=display_name,
