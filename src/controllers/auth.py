@@ -187,10 +187,10 @@ class AuthController(BaseController):
             client_id = introspect_token['sub']
             device_id = request.device_id
             refresh_token = request.refresh_token
-            self.service.logout(refresh_token)
             self.service.remove_token(client_id=client_id, device_id=device_id)
             MessageService().un_subscribe(client_id)
             NotifyInAppService().un_subscribe(client_id)
+            self.service.logout(refresh_token)
 
             return auth_messages.BaseResponse(
                 success=True

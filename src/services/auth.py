@@ -42,7 +42,7 @@ class AuthService:
             KeyCloakUtils.logout(refresh_token)
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
-            raise Exception(Message.UNAUTHENTICATED)
+            #raise Exception(Message.UNAUTHENTICATED)
 
     def remove_token(self, client_id, device_id):
         try:
