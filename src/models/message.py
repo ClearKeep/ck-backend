@@ -2,6 +2,8 @@ from datetime import datetime
 
 from src.models.base import Database
 from utils.config import get_system_config
+from src.models.message_user_read import MessageUserRead
+from src.models.user import User
 
 
 class Message(Database.get().Model):
@@ -29,7 +31,9 @@ class Message(Database.get().Model):
         return message
 
     def get_message_in_group(self, group_id, offset, from_time):
-        client = Database.get_session().query(Message) \
+        client = Database.get_session().query(Message.id, Message, User) \
+            .join(MessageUserRead, Message.id == MessageUserRead.message_id, isouter=True) \
+            .join(User, User.id == MessageUserRead.client_id, isouter=True) \
             .filter(Message.group_id == group_id)
 
         if from_time != 0:
@@ -37,10 +41,13 @@ class Message(Database.get().Model):
             client = client.filter(Message.created_at > dt)
 
         client = client.order_by(Message.created_at.desc())
+        client.group_by(Message)
 
-        if offset != 0:
-            limit = get_system_config()['page_limit']
-            client = client.offset(offset).limit(limit)
+        # if offset != 0:
+        #     limit = get_system_config()['page_limit']
+        #     client = client.offset(offset).limit(limit)
+
+
 
         result = client.all()
 

@@ -66,7 +66,8 @@ class MessageController(BaseController):
             if len(other_clients_in_group) > 0:
                 push_service = NotifyPushService()
                 await push_service.push_text_to_clients(other_clients_in_group, title="",
-                                                  body="You have a new message", from_client_id=request.fromClientId)
+                                                        body="You have a new message",
+                                                        from_client_id=request.fromClientId)
 
             return new_message
 
@@ -100,7 +101,6 @@ class MessageController(BaseController):
                     [client_id], title="", body="You have a new message",
                     from_client_id=client_id)
 
-
     @request_logged
     async def Subscribe(self, request, context):
         print("message Subscribe api")
@@ -118,6 +118,23 @@ class MessageController(BaseController):
     async def UnSubscribe(self, request, context):
         try:
             self.service.un_subscribe(request.clientId)
+            return message_pb2.BaseResponse(success=True)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def read_messages(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            lst_message_id = request.lst_message_id
+            self.service.read_messages(client_id, lst_message_id)
+
             return message_pb2.BaseResponse(success=True)
         except Exception as e:
             logger.error(e)

@@ -34,6 +34,26 @@ class UserService(BaseService):
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.REGISTER_USER_FAILED)
 
+    def create_user_with_last_login(self, id, email, display_name, auth_source):
+        try:
+            self.model = User(
+                id=id,
+                email=email,
+                display_name=display_name,
+                auth_source=auth_source,
+                last_login_at=datetime.datetime.now()
+            )
+            # if email:
+            #     self.model.email = EncryptUtils.encrypt_data(email, password, id)
+            # if first_name:
+            #     self.model.first_name = EncryptUtils.encrypt_data(first_name, password, id)
+            # if last_name:
+            #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
+            self.model.add()
+        except Exception as e:
+            logger.info(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.REGISTER_USER_FAILED)
+
     def change_password(self, request, old_pass, new_pass, user_id):
         try:
             user_info = self.model.get(user_id)
@@ -59,11 +79,10 @@ class UserService(BaseService):
             if user_info is not None:
                 obj_res = user_pb2.UserProfileResponse(
                     id=user_info.id,
-                    email=user_info.email,
                     display_name=user_info.display_name
                 )
-                # if user_info.email:
-                #     obj_res.email = EncryptUtils.decrypt_with_hash(user_info.email, hash_key)
+                if user_info.email:
+                    obj_res.email = user_info.email
                 # if user_info.first_name:
                 #     obj_res.first_name = EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key),
                 # if user_info.last_name:

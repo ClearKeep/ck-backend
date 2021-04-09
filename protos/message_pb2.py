@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x14protos/message.proto\x12\x07message\"\xad\x01\n\x15MessageObjectResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x12\n\ngroup_type\x18\x03 \x01(\t\x12\x16\n\x0e\x66rom_client_id\x18\x04 \x01(\t\x12\x11\n\tclient_id\x18\x05 \x01(\t\x12\x0f\n\x07message\x18\x06 \x01(\x0c\x12\x12\n\ncreated_at\x18\x07 \x01(\x03\x12\x12\n\nupdated_at\x18\x08 \x01(\x03\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"B\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12!\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x11.message.ErrorRes\"W\n\x19GetMessagesInGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x0f\n\x07off_set\x18\x02 \x01(\x05\x12\x17\n\x0flast_message_at\x18\x03 \x01(\x03\"Q\n\x1aGetMessagesInGroupResponse\x12\x33\n\x0blst_message\x18\x01 \x03(\x0b\x32\x1e.message.MessageObjectResponse\"m\n\x0ePublishRequest\x12\x14\n\x0c\x66romClientId\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x0f\n\x07groupId\x18\x03 \x01(\x03\x12\x11\n\tgroupType\x18\x04 \x01(\t\x12\x0f\n\x07message\x18\x05 \x01(\x0c\"$\n\x10SubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"&\n\x12UnSubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"!\n\rListenRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t2\xf7\x02\n\x07Message\x12\x62\n\x15get_messages_in_group\x12\".message.GetMessagesInGroupRequest\x1a#.message.GetMessagesInGroupResponse\"\x00\x12=\n\tSubscribe\x12\x19.message.SubscribeRequest\x1a\x15.message.BaseResponse\x12\x41\n\x0bUnSubscribe\x12\x1b.message.UnSubscribeRequest\x1a\x15.message.BaseResponse\x12\x42\n\x06Listen\x12\x16.message.ListenRequest\x1a\x1e.message.MessageObjectResponse0\x01\x12\x42\n\x07Publish\x12\x17.message.PublishRequest\x1a\x1e.message.MessageObjectResponseb\x06proto3'
+  serialized_pb=b'\n\x14protos/message.proto\x12\x07message\"\xe1\x01\n\x15MessageObjectResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x12\n\ngroup_type\x18\x03 \x01(\t\x12\x16\n\x0e\x66rom_client_id\x18\x04 \x01(\t\x12\x11\n\tclient_id\x18\x05 \x01(\t\x12\x0f\n\x07message\x18\x06 \x01(\x0c\x12\x32\n\x0flst_client_read\x18\x07 \x03(\x0b\x32\x19.message.ClientReadObject\x12\x12\n\ncreated_at\x18\x08 \x01(\x03\x12\x12\n\nupdated_at\x18\t \x01(\x03\"D\n\x10\x43lientReadObject\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x03 \x01(\t\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"B\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12!\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x11.message.ErrorRes\"W\n\x19GetMessagesInGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x0f\n\x07off_set\x18\x02 \x01(\x05\x12\x17\n\x0flast_message_at\x18\x03 \x01(\x03\"Q\n\x1aGetMessagesInGroupResponse\x12\x33\n\x0blst_message\x18\x01 \x03(\x0b\x32\x1e.message.MessageObjectResponse\"m\n\x0ePublishRequest\x12\x14\n\x0c\x66romClientId\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x0f\n\x07groupId\x18\x03 \x01(\x03\x12\x11\n\tgroupType\x18\x04 \x01(\t\x12\x0f\n\x07message\x18\x05 \x01(\x0c\"$\n\x10SubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"&\n\x12UnSubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"!\n\rListenRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"-\n\x13ReadMessagesRequest\x12\x16\n\x0elst_message_id\x18\x04 \x03(\t2\xbd\x03\n\x07Message\x12\x62\n\x15get_messages_in_group\x12\".message.GetMessagesInGroupRequest\x1a#.message.GetMessagesInGroupResponse\"\x00\x12=\n\tSubscribe\x12\x19.message.SubscribeRequest\x1a\x15.message.BaseResponse\x12\x41\n\x0bUnSubscribe\x12\x1b.message.UnSubscribeRequest\x1a\x15.message.BaseResponse\x12\x42\n\x06Listen\x12\x16.message.ListenRequest\x1a\x1e.message.MessageObjectResponse0\x01\x12\x42\n\x07Publish\x12\x17.message.PublishRequest\x1a\x1e.message.MessageObjectResponse\x12\x44\n\rread_messages\x12\x1c.message.ReadMessagesRequest\x1a\x15.message.BaseResponseb\x06proto3'
 )
 
 
@@ -76,15 +76,22 @@ _MESSAGEOBJECTRESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='created_at', full_name='message.MessageObjectResponse.created_at', index=6,
-      number=7, type=3, cpp_type=2, label=1,
+      name='lst_client_read', full_name='message.MessageObjectResponse.lst_client_read', index=6,
+      number=7, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='created_at', full_name='message.MessageObjectResponse.created_at', index=7,
+      number=8, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='updated_at', full_name='message.MessageObjectResponse.updated_at', index=7,
-      number=8, type=3, cpp_type=2, label=1,
+      name='updated_at', full_name='message.MessageObjectResponse.updated_at', index=8,
+      number=9, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -102,7 +109,53 @@ _MESSAGEOBJECTRESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=34,
-  serialized_end=207,
+  serialized_end=259,
+)
+
+
+_CLIENTREADOBJECT = _descriptor.Descriptor(
+  name='ClientReadObject',
+  full_name='message.ClientReadObject',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='message.ClientReadObject.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='display_name', full_name='message.ClientReadObject.display_name', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='avatar', full_name='message.ClientReadObject.avatar', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=261,
+  serialized_end=329,
 )
 
 
@@ -140,8 +193,8 @@ _ERRORRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=209,
-  serialized_end=250,
+  serialized_start=331,
+  serialized_end=372,
 )
 
 
@@ -179,8 +232,8 @@ _BASERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=252,
-  serialized_end=318,
+  serialized_start=374,
+  serialized_end=440,
 )
 
 
@@ -225,8 +278,8 @@ _GETMESSAGESINGROUPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=320,
-  serialized_end=407,
+  serialized_start=442,
+  serialized_end=529,
 )
 
 
@@ -257,8 +310,8 @@ _GETMESSAGESINGROUPRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=409,
-  serialized_end=490,
+  serialized_start=531,
+  serialized_end=612,
 )
 
 
@@ -317,8 +370,8 @@ _PUBLISHREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=492,
-  serialized_end=601,
+  serialized_start=614,
+  serialized_end=723,
 )
 
 
@@ -349,8 +402,8 @@ _SUBSCRIBEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=603,
-  serialized_end=639,
+  serialized_start=725,
+  serialized_end=761,
 )
 
 
@@ -381,8 +434,8 @@ _UNSUBSCRIBEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=641,
-  serialized_end=679,
+  serialized_start=763,
+  serialized_end=801,
 )
 
 
@@ -413,13 +466,47 @@ _LISTENREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=681,
-  serialized_end=714,
+  serialized_start=803,
+  serialized_end=836,
 )
 
+
+_READMESSAGESREQUEST = _descriptor.Descriptor(
+  name='ReadMessagesRequest',
+  full_name='message.ReadMessagesRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='lst_message_id', full_name='message.ReadMessagesRequest.lst_message_id', index=0,
+      number=4, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=838,
+  serialized_end=883,
+)
+
+_MESSAGEOBJECTRESPONSE.fields_by_name['lst_client_read'].message_type = _CLIENTREADOBJECT
 _BASERESPONSE.fields_by_name['errors'].message_type = _ERRORRES
 _GETMESSAGESINGROUPRESPONSE.fields_by_name['lst_message'].message_type = _MESSAGEOBJECTRESPONSE
 DESCRIPTOR.message_types_by_name['MessageObjectResponse'] = _MESSAGEOBJECTRESPONSE
+DESCRIPTOR.message_types_by_name['ClientReadObject'] = _CLIENTREADOBJECT
 DESCRIPTOR.message_types_by_name['ErrorRes'] = _ERRORRES
 DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
 DESCRIPTOR.message_types_by_name['GetMessagesInGroupRequest'] = _GETMESSAGESINGROUPREQUEST
@@ -428,6 +515,7 @@ DESCRIPTOR.message_types_by_name['PublishRequest'] = _PUBLISHREQUEST
 DESCRIPTOR.message_types_by_name['SubscribeRequest'] = _SUBSCRIBEREQUEST
 DESCRIPTOR.message_types_by_name['UnSubscribeRequest'] = _UNSUBSCRIBEREQUEST
 DESCRIPTOR.message_types_by_name['ListenRequest'] = _LISTENREQUEST
+DESCRIPTOR.message_types_by_name['ReadMessagesRequest'] = _READMESSAGESREQUEST
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 MessageObjectResponse = _reflection.GeneratedProtocolMessageType('MessageObjectResponse', (_message.Message,), {
@@ -436,6 +524,13 @@ MessageObjectResponse = _reflection.GeneratedProtocolMessageType('MessageObjectR
   # @@protoc_insertion_point(class_scope:message.MessageObjectResponse)
   })
 _sym_db.RegisterMessage(MessageObjectResponse)
+
+ClientReadObject = _reflection.GeneratedProtocolMessageType('ClientReadObject', (_message.Message,), {
+  'DESCRIPTOR' : _CLIENTREADOBJECT,
+  '__module__' : 'protos.message_pb2'
+  # @@protoc_insertion_point(class_scope:message.ClientReadObject)
+  })
+_sym_db.RegisterMessage(ClientReadObject)
 
 ErrorRes = _reflection.GeneratedProtocolMessageType('ErrorRes', (_message.Message,), {
   'DESCRIPTOR' : _ERRORRES,
@@ -493,6 +588,13 @@ ListenRequest = _reflection.GeneratedProtocolMessageType('ListenRequest', (_mess
   })
 _sym_db.RegisterMessage(ListenRequest)
 
+ReadMessagesRequest = _reflection.GeneratedProtocolMessageType('ReadMessagesRequest', (_message.Message,), {
+  'DESCRIPTOR' : _READMESSAGESREQUEST,
+  '__module__' : 'protos.message_pb2'
+  # @@protoc_insertion_point(class_scope:message.ReadMessagesRequest)
+  })
+_sym_db.RegisterMessage(ReadMessagesRequest)
+
 
 
 _MESSAGE = _descriptor.ServiceDescriptor(
@@ -502,8 +604,8 @@ _MESSAGE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=717,
-  serialized_end=1092,
+  serialized_start=886,
+  serialized_end=1331,
   methods=[
   _descriptor.MethodDescriptor(
     name='get_messages_in_group',
@@ -552,6 +654,16 @@ _MESSAGE = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_PUBLISHREQUEST,
     output_type=_MESSAGEOBJECTRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='read_messages',
+    full_name='message.Message.read_messages',
+    index=5,
+    containing_service=None,
+    input_type=_READMESSAGESREQUEST,
+    output_type=_BASERESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
