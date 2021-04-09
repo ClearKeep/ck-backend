@@ -14,5 +14,5 @@ class MessageUserRead(Database.get().Model):
         Database.get_session().commit()
         return self
 
-    def add_all(self, lst_message):
-        Database.get_session().add_all(lst_message)
+    # def add_all(self, lst_message):
+    #     Database.get_session().add_all(lst_message)
