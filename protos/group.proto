@@ -16,9 +16,8 @@ message MessageObjectResponse {
 
 message ClientReadObject {
   string id = 1;
-  string name = 2;
+  string display_name = 2;
   string avatar = 3;
-  int64 read_at = 4;
 }
 
 message ClientInGroupResponse {
