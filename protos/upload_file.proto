@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package upload_file;
+
+//errors response
+message ErrorRes {
+    int64 code = 1;
+    string message = 2;
+}
+
+message BaseResponse {
+    bool success = 1;
+    ErrorRes errors = 2;
+}
+
+message UploadFilesRequest {
+  repeated FileUploadObject lst_file = 1;
+}
+
+message FileUploadObject {
+  bytes file_content = 1;
+  int64 file_type = 2;
+  string file_hash = 3;
+}
+
+message UploadFilesResponse {
+  repeated string lst_file_url = 1;
+}
+
+
+service UploadFile {
+    rpc upload_images(UploadFilesRequest) returns (UploadFilesResponse) {};
+    rpc upload_files(UploadFilesRequest) returns (UploadFilesResponse) {};
+    rpc upload_chunked_file(UploadFilesRequest) returns (UploadFilesResponse) {};
+}
