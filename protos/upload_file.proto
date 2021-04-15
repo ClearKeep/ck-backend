@@ -15,16 +15,17 @@ message BaseResponse {
 
 message FileUploadRequest {
   string file_name = 1;
-  string file_type = 2;
+  string file_content_type = 2;
   bytes file_data = 3;
   string file_hash = 4;
 }
 
 message FileDataBlockRequest {
     string file_name = 1;
-    bytes file_data_block = 2;
-    string file_data_block_hash = 3;
-    string file_hash = 4;
+    string file_content_type = 2;
+    bytes file_data_block = 3;
+    string file_data_block_hash = 4;
+    string file_hash = 5;
 }
 
 message UploadFilesResponse {

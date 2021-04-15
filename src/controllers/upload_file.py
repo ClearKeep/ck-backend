@@ -12,10 +12,11 @@ class UploadFileController(BaseController):
     @request_logged
     async def upload_image(self, request, context):
         try:
+            file_name = request.file_name
             file_content = request.file_content
-            file_type = request.file_type
+            file_content_type = request.file_content_type
             file_hash = request.file_hash
-            obj_res = self.service.upload_image(file_content, file_type, file_hash)
+            obj_res = self.service.upload_image(file_name, file_content, file_content_type, file_hash)
 
             return obj_res
         except Exception as e:
@@ -28,10 +29,11 @@ class UploadFileController(BaseController):
     @request_logged
     async def upload_file(self, request, context):
         try:
+            file_name = request.file_name
             file_content = request.file_content
-            file_type = request.file_type
+            file_content_type = request.file_content_type
             file_hash = request.file_hash
-            obj_res = self.service.upload_file(file_content, file_type, file_hash)
+            obj_res = self.service.upload_file(file_name, file_content, file_content_type, file_hash)
             return obj_res
         except Exception as e:
             logger.error(e)

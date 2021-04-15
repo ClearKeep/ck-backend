@@ -1,34 +1,39 @@
 from src.services.base import BaseService
-from protos import upload_file_pb2
 from utils.config import get_system_config
-import requests
-import json
-import secrets
-import datetime
 import hashlib
 from src.models.message import Message
+import boto3
+import os
+import time
 
 
 class UploadFileService(BaseService):
     def __init__(self):
         super().__init__(None)
 
-    def upload_image(self, file_content, file_type, file_hash):
+    def upload_image(self, file_name, file_content, file_type, file_hash):
         m = hashlib.new('md5', file_content).hexdigest()
         if m != file_hash:
             raise Exception(Message.UPLOAD_FILE_DATA_LOSS)
         # start upload to s3 and resize if needed
+        tmp_file_name, file_ext = os.path.splitext(file_name)
+        new_file_name = tmp_file_name + str(round(time.time() * 1000)) + file_ext
+        uploaded_file_url = self.upload_to_s3(new_file_name, file_content, file_type)
 
-    def upload_file(self, file_content, file_type, file_hash):
+    def upload_file(self, file_name, file_content, file_type, file_hash):
         m = hashlib.new('md5', file_content).hexdigest()
         if m != file_hash:
             raise Exception(Message.UPLOAD_FILE_DATA_LOSS)
         # start upload to s3
+        tmp_file_name, file_ext = os.path.splitext(file_name)
+        new_file_name = tmp_file_name + str(round(time.time() * 1000)) + file_ext
+        uploaded_file_url = self.upload_to_s3(new_file_name, file_content, file_type)
 
     def upload_chunked_file(self, request_iterator):
         data_blocks = []
         file_hash = None
         file_name = None
+        file_content_type = None
         for request in request_iterator:
             m = hashlib.new('md5', request.file_data_block).hexdigest()
             if m != request.file_data_block_hash:
@@ -38,6 +43,7 @@ class UploadFileService(BaseService):
             if not file_hash:
                 file_hash = request.file_hash
                 file_name = request.file_name
+                file_content_type = request.file_content_type
 
         file_data = b''.join(data_blocks)
         m = hashlib.new('md5', file_data).hexdigest()
@@ -45,4 +51,13 @@ class UploadFileService(BaseService):
             raise Exception(Message.UPLOAD_FILE_DATA_LOSS)
 
         # start upload to s3
+        tmp_file_name, file_ext = os.path.splitext(file_name)
+        new_file_name = tmp_file_name + str(round(time.time() * 1000)) + file_ext
+        uploaded_file_url = self.upload_to_s3(new_file_name, file_data, file_content_type)
 
+    def upload_to_s3(self, file_name, file_data, content_type):
+        s3_config = get_system_config()['storage_s3']
+        s3_client = boto3.client('s3', aws_access_key_id=s3_config.get('access_key_id'), aws_secret_access_key=s3_config.get('access_key_secret'))
+        s3_client.put_object(Body=file_data, Bucket=s3_config.get('bucket'), Key=file_name, ContentType=content_type)
+        uploaded_file_url = os.path.join(s3_config.get('bucket') , file_name)
+        return uploaded_file_url
