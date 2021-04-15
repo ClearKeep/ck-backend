@@ -14,19 +14,19 @@ class UploadFileStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.upload_images = channel.unary_unary(
-                '/upload_file.UploadFile/upload_images',
-                request_serializer=protos_dot_upload__file__pb2.UploadFilesRequest.SerializeToString,
+        self.upload_image = channel.unary_unary(
+                '/upload_file.UploadFile/upload_image',
+                request_serializer=protos_dot_upload__file__pb2.FileUploadRequest.SerializeToString,
                 response_deserializer=protos_dot_upload__file__pb2.UploadFilesResponse.FromString,
                 )
-        self.upload_files = channel.unary_unary(
-                '/upload_file.UploadFile/upload_files',
-                request_serializer=protos_dot_upload__file__pb2.UploadFilesRequest.SerializeToString,
+        self.upload_file = channel.unary_unary(
+                '/upload_file.UploadFile/upload_file',
+                request_serializer=protos_dot_upload__file__pb2.FileUploadRequest.SerializeToString,
                 response_deserializer=protos_dot_upload__file__pb2.UploadFilesResponse.FromString,
                 )
-        self.upload_chunked_file = channel.unary_unary(
+        self.upload_chunked_file = channel.stream_unary(
                 '/upload_file.UploadFile/upload_chunked_file',
-                request_serializer=protos_dot_upload__file__pb2.UploadFilesRequest.SerializeToString,
+                request_serializer=protos_dot_upload__file__pb2.FileDataBlockRequest.SerializeToString,
                 response_deserializer=protos_dot_upload__file__pb2.UploadFilesResponse.FromString,
                 )
 
@@ -34,19 +34,19 @@ class UploadFileStub(object):
 class UploadFileServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def upload_images(self, request, context):
+    def upload_image(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def upload_files(self, request, context):
+    def upload_file(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def upload_chunked_file(self, request, context):
+    def upload_chunked_file(self, request_iterator, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -55,19 +55,19 @@ class UploadFileServicer(object):
 
 def add_UploadFileServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'upload_images': grpc.unary_unary_rpc_method_handler(
-                    servicer.upload_images,
-                    request_deserializer=protos_dot_upload__file__pb2.UploadFilesRequest.FromString,
+            'upload_image': grpc.unary_unary_rpc_method_handler(
+                    servicer.upload_image,
+                    request_deserializer=protos_dot_upload__file__pb2.FileUploadRequest.FromString,
                     response_serializer=protos_dot_upload__file__pb2.UploadFilesResponse.SerializeToString,
             ),
-            'upload_files': grpc.unary_unary_rpc_method_handler(
-                    servicer.upload_files,
-                    request_deserializer=protos_dot_upload__file__pb2.UploadFilesRequest.FromString,
+            'upload_file': grpc.unary_unary_rpc_method_handler(
+                    servicer.upload_file,
+                    request_deserializer=protos_dot_upload__file__pb2.FileUploadRequest.FromString,
                     response_serializer=protos_dot_upload__file__pb2.UploadFilesResponse.SerializeToString,
             ),
-            'upload_chunked_file': grpc.unary_unary_rpc_method_handler(
+            'upload_chunked_file': grpc.stream_unary_rpc_method_handler(
                     servicer.upload_chunked_file,
-                    request_deserializer=protos_dot_upload__file__pb2.UploadFilesRequest.FromString,
+                    request_deserializer=protos_dot_upload__file__pb2.FileDataBlockRequest.FromString,
                     response_serializer=protos_dot_upload__file__pb2.UploadFilesResponse.SerializeToString,
             ),
     }
@@ -81,7 +81,7 @@ class UploadFile(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def upload_images(request,
+    def upload_image(request,
             target,
             options=(),
             channel_credentials=None,
@@ -91,14 +91,14 @@ class UploadFile(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/upload_file.UploadFile/upload_images',
-            protos_dot_upload__file__pb2.UploadFilesRequest.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/upload_file.UploadFile/upload_image',
+            protos_dot_upload__file__pb2.FileUploadRequest.SerializeToString,
             protos_dot_upload__file__pb2.UploadFilesResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def upload_files(request,
+    def upload_file(request,
             target,
             options=(),
             channel_credentials=None,
@@ -108,14 +108,14 @@ class UploadFile(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/upload_file.UploadFile/upload_files',
-            protos_dot_upload__file__pb2.UploadFilesRequest.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/upload_file.UploadFile/upload_file',
+            protos_dot_upload__file__pb2.FileUploadRequest.SerializeToString,
             protos_dot_upload__file__pb2.UploadFilesResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def upload_chunked_file(request,
+    def upload_chunked_file(request_iterator,
             target,
             options=(),
             channel_credentials=None,
@@ -125,8 +125,8 @@ class UploadFile(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/upload_file.UploadFile/upload_chunked_file',
-            protos_dot_upload__file__pb2.UploadFilesRequest.SerializeToString,
+        return grpc.experimental.stream_unary(request_iterator, target, '/upload_file.UploadFile/upload_chunked_file',
+            protos_dot_upload__file__pb2.FileDataBlockRequest.SerializeToString,
             protos_dot_upload__file__pb2.UploadFilesResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

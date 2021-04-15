@@ -13,23 +13,26 @@ message BaseResponse {
     ErrorRes errors = 2;
 }
 
-message UploadFilesRequest {
-  repeated FileUploadObject lst_file = 1;
+message FileUploadRequest {
+  string file_name = 1;
+  string file_type = 2;
+  bytes file_data = 3;
+  string file_hash = 4;
 }
 
-message FileUploadObject {
-  bytes file_content = 1;
-  int64 file_type = 2;
-  string file_hash = 3;
+message FileDataBlockRequest {
+    string file_name = 1;
+    bytes file_data_block = 2;
+    string file_data_block_hash = 3;
+    string file_hash = 4;
 }
 
 message UploadFilesResponse {
-  repeated string lst_file_url = 1;
+  string file_url = 1;
 }
 
-
 service UploadFile {
-    rpc upload_images(UploadFilesRequest) returns (UploadFilesResponse) {};
-    rpc upload_files(UploadFilesRequest) returns (UploadFilesResponse) {};
-    rpc upload_chunked_file(UploadFilesRequest) returns (UploadFilesResponse) {};
+    rpc upload_image(FileUploadRequest) returns (UploadFilesResponse) {};
+    rpc upload_file(FileUploadRequest) returns (UploadFilesResponse) {};
+    rpc upload_chunked_file(stream FileDataBlockRequest) returns (UploadFilesResponse) {};
 }

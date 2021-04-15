@@ -43,6 +43,10 @@ class Message:
     OFFICE_ACCESS_TOKEN_INVALID = 1032
     OFFICE_AUTH_FAILED = 1033
 
+    #upload file
+    UPLOAD_FILE_DATA_LOSS = 1040
+    UPLOAD_FILE_FAILED = 1041
+
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -78,6 +82,9 @@ class Message:
         GOOGLE_AUTH_FAILED: "Login google failed. Please try again",
         OFFICE_ACCESS_TOKEN_INVALID: "Login Office 365 failed. Please try again",
         OFFICE_AUTH_FAILED: "Login Office 365 failed. Please try again",
+
+        UPLOAD_FILE_DATA_LOSS: "Upload file failed. Data is corrupted",
+        UPLOAD_FILE_FAILED: "Upload file failed. Please try again",
     }
 
     @staticmethod
