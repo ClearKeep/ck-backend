@@ -5,6 +5,7 @@ from src.models.message import Message
 import boto3
 import os
 import time
+from protos import upload_file_pb2
 
 
 class UploadFileService(BaseService):
@@ -17,8 +18,12 @@ class UploadFileService(BaseService):
             raise Exception(Message.UPLOAD_FILE_DATA_LOSS)
         # start upload to s3 and resize if needed
         tmp_file_name, file_ext = os.path.splitext(file_name)
-        new_file_name = tmp_file_name + str(round(time.time() * 1000)) + file_ext
+        new_file_name = tmp_file_name + "_" +  str(round(time.time() * 1000)) + file_ext
         uploaded_file_url = self.upload_to_s3(new_file_name, file_content, file_type)
+        obj_res = upload_file_pb2.UploadFilesResponse(
+            file_url=uploaded_file_url
+        )
+        return obj_res
 
     def upload_file(self, file_name, file_content, file_type, file_hash):
         m = hashlib.new('md5', file_content).hexdigest()
@@ -26,8 +31,13 @@ class UploadFileService(BaseService):
             raise Exception(Message.UPLOAD_FILE_DATA_LOSS)
         # start upload to s3
         tmp_file_name, file_ext = os.path.splitext(file_name)
-        new_file_name = tmp_file_name + str(round(time.time() * 1000)) + file_ext
+        new_file_name = tmp_file_name + "_" +  str(round(time.time() * 1000)) + file_ext
         uploaded_file_url = self.upload_to_s3(new_file_name, file_content, file_type)
+
+        obj_res = upload_file_pb2.UploadFilesResponse(
+            file_url=uploaded_file_url
+        )
+        return obj_res
 
     def upload_chunked_file(self, request_iterator):
         data_blocks = []
@@ -52,12 +62,19 @@ class UploadFileService(BaseService):
 
         # start upload to s3
         tmp_file_name, file_ext = os.path.splitext(file_name)
-        new_file_name = tmp_file_name + str(round(time.time() * 1000)) + file_ext
+        new_file_name = tmp_file_name + "_" + str(round(time.time() * 1000)) + file_ext
         uploaded_file_url = self.upload_to_s3(new_file_name, file_data, file_content_type)
+
+        obj_res = upload_file_pb2.UploadFilesResponse(
+            file_url=uploaded_file_url
+        )
+        return obj_res
 
     def upload_to_s3(self, file_name, file_data, content_type):
         s3_config = get_system_config()['storage_s3']
+        file_path = os.path.join(s3_config.get('folder'), file_name)
         s3_client = boto3.client('s3', aws_access_key_id=s3_config.get('access_key_id'), aws_secret_access_key=s3_config.get('access_key_secret'))
-        s3_client.put_object(Body=file_data, Bucket=s3_config.get('bucket'), Key=file_name, ContentType=content_type)
-        uploaded_file_url = os.path.join(s3_config.get('bucket') , file_name)
+        s3_client.put_object(Body=file_data, Bucket=s3_config.get('bucket'), Key=file_path, ContentType=content_type, ACL='public-read')
+        uploaded_file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)
+        print("Uploaded file url=", uploaded_file_url)
         return uploaded_file_url

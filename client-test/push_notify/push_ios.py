@@ -1,16 +1,6 @@
-from concurrent import futures
-import grpc
-from src.models.base import db
-from utils.config import get_system_config
-from middlewares.auth_interceptor import AuthInterceptor
-import requests
 import time
 from kalyke.client import VoIPClient, APNsClient
 from kalyke.payload import PayloadAlert, Payload
-# from kalyke.client import APNsClient
-# from kalyke.payload import PayloadAlert, Payload
-
-
 
 
 def ios_data_notification():
