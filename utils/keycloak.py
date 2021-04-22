@@ -46,33 +46,34 @@ class KeyCloakUtils:
         keycloak_openid.logout(refresh_token)
 
     @staticmethod
-    def create_user(email, password, firstname, lastname):
+    def create_user(email, username, password, firstname, lastname):
         return keycloak_admin.create_user({"email": email,
-                                           "username": email,
+                                           "username": username,
                                            "enabled": True,
                                            "firstName": firstname,
                                            "lastName": lastname,
                                            "credentials": [{"value": password, "type": "password", }]})
 
     @staticmethod
-    def create_user_with_email(email, firstname, lastname):
+    def create_user_without_password(email, username, firstname, lastname):
         return keycloak_admin.create_user({"email": email,
-                                           "username": email,
-                                           "enabled": True,
-                                           "firstName": firstname,
-                                           "lastName": lastname,
-                                           "emailVerified": True
-                                           })
-
-    @staticmethod
-    def create_user_with_username(username, firstname, lastname):
-        return keycloak_admin.create_user({"email": "",
                                            "username": username,
                                            "enabled": True,
                                            "firstName": firstname,
                                            "lastName": lastname,
                                            "emailVerified": True
                                            })
+
+    # @staticmethod
+    # def create_user_with_username(username, firstname, lastname):
+    #     return keycloak_admin.create_user({"email": "",
+    #                                        "username": username,
+    #                                        "enabled": True,
+    #                                        "firstName": firstname,
+    #                                        "lastName": lastname,
+    #                                        "emailVerified": True
+    #                                        })
+    #
 
     @staticmethod
     def get_user_id_by_email(email):

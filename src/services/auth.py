@@ -42,7 +42,7 @@ class AuthService:
             KeyCloakUtils.logout(refresh_token)
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
-            #raise Exception(Message.UNAUTHENTICATED)
+            # raise Exception(Message.UNAUTHENTICATED)
 
     def remove_token(self, client_id, device_id):
         try:
@@ -114,7 +114,7 @@ class AuthService:
                 return token
             else:
                 # create new user
-                new_user_id = KeyCloakUtils.create_user_with_email(google_email, "", google_token_info["name"])
+                new_user_id = KeyCloakUtils.create_user_without_password(google_email, "", google_token_info["name"])
                 token = self.exchange_token(new_user_id)
                 UserService().create_user_with_last_login(id=new_user_id, email=google_email,
                                                           display_name=google_token_info["name"],
@@ -147,13 +147,15 @@ class AuthService:
                 return token
             else:
                 display_name = office_token_info["displayName"]
+                email = ""
                 if not display_name:
                     if office_token_info["userPrincipalName"]:
                         user_principal_name = office_token_info["userPrincipalName"].split("@")
                         if len(user_principal_name) > 0:
                             display_name = user_principal_name[0]
+                            email = office_token_info["userPrincipalName"]
                 # create new user
-                new_user_id = KeyCloakUtils.create_user_with_username(office_id, "", display_name)
+                new_user_id = KeyCloakUtils.create_user_without_password(email, office_id, "", display_name)
                 token = self.exchange_token(new_user_id)
                 UserService().create_user_with_last_login(id=new_user_id, email=office_token_info["mail"],
                                                           display_name=display_name,
@@ -162,6 +164,50 @@ class AuthService:
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.OFFICE_AUTH_FAILED)
+
+    # login facebook
+    def facebook_login(self, facebook_access_token):
+        try:
+            # validate access_token
+            facebook_app_id = get_system_config()["facebook_app"]
+            verify_token_app_id = "https://graph.facebook.com/debug_token?input_token={}&access_token={}|{}".format(facebook_access_token, facebook_app_id["app_id"],  facebook_app_id["app_secret"])
+            req = requests.get(url=verify_token_app_id)
+            if req.status_code != 200:
+                raise Exception(Message.FACEBOOK_ACCESS_TOKEN_INVALID)
+            facebook_token_app_id_info = req.json()
+            facebook_token_app_id = facebook_token_app_id_info["data"]["app_id"]
+            if facebook_token_app_id != facebook_app_id["app_id"]:
+                raise Exception(Message.FACEBOOK_ACCESS_TOKEN_INVALID)
+
+            verify_token_url = "https://graph.facebook.com/me?fields=id,name,email&access_token=" + facebook_access_token
+            req = requests.get(url=verify_token_url)
+
+            if req.status_code != 200:
+                raise Exception(Message.FACEBOOK_ACCESS_TOKEN_INVALID)
+            facebook_token_info = req.json()
+
+            logger.info("Facebook login token spec:")
+            logger.info(facebook_token_info)
+
+            facebook_id = facebook_token_info["id"]
+            facebook_email = facebook_token_info["email"]
+            facebook_name = facebook_token_info["name"]
+            # check account exits
+            user_id = KeyCloakUtils.get_user_id_by_email(facebook_id)
+            if user_id:
+                token = self.exchange_token(user_id)
+                return token
+            else:
+                # create new user
+                new_user_id = KeyCloakUtils.create_user_without_password(facebook_email, facebook_id, "", facebook_name)
+                token = self.exchange_token(new_user_id)
+                UserService().create_user_with_last_login(id=new_user_id, email=facebook_email,
+                                                          display_name=facebook_name,
+                                                          auth_source='facebook')
+                return token
+        except Exception as e:
+            logger.info(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.FACEBOOK_AUTH_FAILED)
 
     def exchange_token(self, user_id):
         config_keycloak_admin = get_system_config()['keycloak_admin']
