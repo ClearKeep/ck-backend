@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package upload_file;
+
+//errors response
+message ErrorRes {
+    int64 code = 1;
+    string message = 2;
+}
+
+message BaseResponse {
+    bool success = 1;
+    ErrorRes errors = 2;
+}
+
+message FileUploadRequest {
+  string file_name = 1;
+  string file_content_type = 2;
+  bytes file_data = 3;
+  string file_hash = 4;
+}
+
+message FileDataBlockRequest {
+    string file_name = 1;
+    string file_content_type = 2;
+    bytes file_data_block = 3;
+    string file_data_block_hash = 4;
+    string file_hash = 5;
+}
+
+message UploadFilesResponse {
+  string file_url = 1;
+}
+
+service UploadFile {
+    rpc upload_image(FileUploadRequest) returns (UploadFilesResponse) {};
+    rpc upload_file(FileUploadRequest) returns (UploadFilesResponse) {};
+    rpc upload_chunked_file(stream FileDataBlockRequest) returns (UploadFilesResponse) {};
+}
