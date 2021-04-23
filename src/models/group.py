@@ -3,6 +3,8 @@ import secrets
 from src.models.base import Database
 from src.models.message import Message
 from src.models.signal_group_key import GroupClientKey
+from sqlalchemy.orm import joinedload
+from src.models.message_user_read import MessageUserRead
 
 
 class GroupChat(Database.get().Model):
@@ -59,6 +61,7 @@ class GroupChat(Database.get().Model):
         result = Database.get_session().query(GroupChat, Message) \
             .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \
             .join(Message, GroupChat.last_message_id == Message.id, isouter=True) \
+            .options(joinedload(Message.users_read).joinedload(MessageUserRead.user)) \
             .filter(GroupClientKey.client_id == client_id) \
             .all()
         Database.get().session.remove()

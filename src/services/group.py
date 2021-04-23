@@ -305,6 +305,14 @@ class GroupService(BaseService):
                 else:
                     obj_res.last_message.group_type = "group"
 
+                for client_read_item in last_message.users_read:
+                    client_read = group_pb2.ClientReadObject(
+                        id=client_read_item.user.id,
+                        display_name=client_read_item.user.display_name,
+                        avatar=client_read_item.user.avatar
+                    )
+                    obj_res.last_message.lst_client_read.append(client_read)
+
             lst_obj_res.append(obj_res)
 
         response = group_pb2.GetJoinedGroupsResponse(
