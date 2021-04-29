@@ -113,7 +113,7 @@ class AuthService:
                 return token
             else:
                 # create new user
-                new_user_id = KeyCloakUtils.create_user_without_password(google_email, "", google_token_info["name"])
+                new_user_id = KeyCloakUtils.create_user_without_password(google_email, google_email, "", google_token_info["name"])
                 token = self.exchange_token(new_user_id)
                 UserService().create_user_with_last_login(id=new_user_id, email=google_email,
                                                           display_name=google_token_info["name"],
