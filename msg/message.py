@@ -50,6 +50,9 @@ class Message:
     UPLOAD_FILE_DATA_LOSS = 1040
     UPLOAD_FILE_FAILED = 1041
 
+    #workspace
+    JOIN_WORKSPACE_FAILED = 1045
+
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -90,6 +93,8 @@ class Message:
 
         UPLOAD_FILE_DATA_LOSS: "Upload file failed. Data is corrupted",
         UPLOAD_FILE_FAILED: "Upload file failed. Please try again",
+
+        JOIN_WORKSPACE_FAILED: "Join workspace failed. Please try again"
     }
 
     @staticmethod

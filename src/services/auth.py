@@ -102,8 +102,7 @@ class AuthService:
 
             # check google_token_info["aud"] matching with google app id
             google_app_id = get_system_config()["google_app_id"]
-            if google_token_info["aud"] != google_app_id["ios"] and google_token_info["aud"] != google_app_id[
-                "android"]:
+            if google_token_info["aud"] != google_app_id["ios"] and google_token_info["aud"] != google_app_id["android"]:
                 raise Exception(Message.GOOGLE_AUTH_FAILED)
 
             google_email = google_token_info["email"]
@@ -114,7 +113,7 @@ class AuthService:
                 return token
             else:
                 # create new user
-                new_user_id = KeyCloakUtils.create_user_without_password(google_email, "", google_token_info["name"])
+                new_user_id = KeyCloakUtils.create_user_without_password(google_email, google_email, "", google_token_info["name"])
                 token = self.exchange_token(new_user_id)
                 UserService().create_user_with_last_login(id=new_user_id, email=google_email,
                                                           display_name=google_token_info["name"],
@@ -170,7 +169,8 @@ class AuthService:
         try:
             # validate access_token
             facebook_app_id = get_system_config()["facebook_app"]
-            verify_token_app_id = "https://graph.facebook.com/debug_token?input_token={}&access_token={}|{}".format(facebook_access_token, facebook_app_id["app_id"],  facebook_app_id["app_secret"])
+            verify_token_app_id = "https://graph.facebook.com/debug_token?input_token={}&access_token={}|{}".format(
+                facebook_access_token, facebook_app_id["app_id"], facebook_app_id["app_secret"])
             req = requests.get(url=verify_token_app_id)
             if req.status_code != 200:
                 raise Exception(Message.FACEBOOK_ACCESS_TOKEN_INVALID)
