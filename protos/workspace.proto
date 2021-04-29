@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package workspace;
+
+//errors response
+message ErrorRes {
+    int64 code = 1;
+    string message = 2;
+}
+
+message BaseResponse {
+    bool success = 1;
+    ErrorRes errors = 2;
+}
+
+message WorkspaceObjectResponse {
+  string workspace_id = 1;
+  string workspace_domain = 2;
+  bool is_default_workspace = 3;
+  bool is_own_workspace = 4;
+}
+
+// Request: join group
+message JoinWorkspaceRequest {
+  string client_id = 1;
+  string workspace_domain = 2;
+}
+// Response: BaseResponse
+
+// Request: get joined groups
+message GetJoinedWorkspacesRequest {
+  string client_id = 1;
+}
+// Response
+message GetJoinedWorkspacesResponse {
+  repeated WorkspaceObjectResponse lst_workspace = 1;
+}
+
+// Request: get joined groups
+message LeaveWorkspacesRequest {
+  string client_id = 1;
+  string workspace_id = 2;
+}
+
+service Workspace {
+    rpc join_workspace(JoinWorkspaceRequest) returns (BaseResponse) {};
+    rpc get_joined_workspaces(GetJoinedWorkspacesRequest) returns (GetJoinedWorkspacesResponse) {};
+    rpc leave_workspace(LeaveWorkspacesRequest) returns (BaseResponse) {};
+}

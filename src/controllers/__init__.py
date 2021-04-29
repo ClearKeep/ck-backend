@@ -14,6 +14,7 @@ from src.models.signal_group_key import GroupClientKey
 from src.models.signal_peer_key import PeerClientKey
 from src.models.user import User
 from src.models.message_user_read import MessageUserRead
+from src.models.workspace import Workspace
 
 db_config = get_system_config()['db']
 db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(
