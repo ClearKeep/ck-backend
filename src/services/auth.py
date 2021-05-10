@@ -107,15 +107,15 @@ class AuthService:
 
             google_email = google_token_info["email"]
             # check account exits
-            user_id = KeyCloakUtils.get_user_id_by_email(google_email)
-            if user_id:
-                token = self.exchange_token(user_id)
+            user_exist = UserService().get_google_user(google_email, "google")
+            if user_exist:
+                token = self.exchange_token(user_exist.id)
                 return token
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(google_email, google_email, "", google_token_info["name"])
                 token = self.exchange_token(new_user_id)
-                UserService().create_user_with_last_login(id=new_user_id, email=google_email,
+                UserService().create_user_social(id=new_user_id, email=google_email,
                                                           display_name=google_token_info["name"],
                                                           auth_source='google')
                 return token
@@ -156,7 +156,7 @@ class AuthService:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(email, office_id, "", display_name)
                 token = self.exchange_token(new_user_id)
-                UserService().create_user_with_last_login(id=new_user_id, email=office_token_info["mail"],
+                UserService().create_user_social(id=new_user_id, email=office_token_info["mail"],
                                                           display_name=display_name,
                                                           auth_source='office')
                 return token
@@ -201,7 +201,7 @@ class AuthService:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(facebook_email, facebook_id, "", facebook_name)
                 token = self.exchange_token(new_user_id)
-                UserService().create_user_with_last_login(id=new_user_id, email=facebook_email,
+                UserService().create_user_social(id=new_user_id, email=facebook_email,
                                                           display_name=facebook_name,
                                                           auth_source='facebook')
                 return token
