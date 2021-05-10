@@ -78,15 +78,19 @@ class SignalController(BaseController):
         else:
             obj_resp = self.service.group_get_client_key(group_id, client_id)
             if obj_resp is not None:
-                response = signal_pb2.GroupGetClientKeyResponse(
-                    groupId=obj_resp.group_id,
-                    clientKey=signal_pb2.GroupClientKeyObject(
-                        clientId=obj_resp.client_id,
-                        deviceId=obj_resp.device_id,
-                        clientKeyDistribution=obj_resp.client_key
+                if obj_resp.client_workspace_domain and obj_resp.client_workspace_domain != owner_workspace_domain:
+                    obj_resp = ClientSignal(obj_resp.client_workspace_domain).group_get_client_key(obj_resp.client_workspace_group_id, obj_resp.client_id)
+                    return obj_resp
+                else:
+                    response = signal_pb2.GroupGetClientKeyResponse(
+                        groupId=obj_resp.group_id,
+                        clientKey=signal_pb2.GroupClientKeyObject(
+                            clientId=obj_resp.client_id,
+                            deviceId=obj_resp.device_id,
+                            clientKeyDistribution=obj_resp.client_key
+                        )
                     )
-                )
-                return response
+                    return response
 
             errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
             context.set_details(json.dumps(
@@ -95,7 +99,6 @@ class SignalController(BaseController):
 
     @request_logged
     async def GroupGetAllClientKey(self, request, context):
-        print("signal GroupGetAllClientKey api")
         group_id = request.groupId
         lst_client = self.service.group_get_all_client_key(group_id)
         lst_client_key = []
