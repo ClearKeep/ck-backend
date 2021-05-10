@@ -34,7 +34,7 @@ class UserService(BaseService):
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.REGISTER_USER_FAILED)
 
-    def create_user_with_last_login(self, id, email, display_name, auth_source):
+    def create_user_social(self, id, email, display_name, auth_source):
         try:
             self.model = User(
                 id=id,
@@ -53,6 +53,11 @@ class UserService(BaseService):
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.REGISTER_USER_FAILED)
+
+    def get_google_user(self, email, auth_source):
+        user_info = self.model.get_google_user(email, auth_source)
+        return user_info
+
 
     def change_password(self, request, old_pass, new_pass, user_id):
         try:
