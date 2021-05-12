@@ -110,7 +110,7 @@ class AuthService:
             user_exist = self.get_user_by_email(email=google_email) #UserService().get_google_user(google_email, "google")
             #active_user
             if user_exist:
-                if not user_exist.emailVerified:
+                if not user_exist["emailVerified"]:
                     KeyCloakUtils.active_user(user_exist["id"])
                 token = self.exchange_token(user_exist["id"])
                 return token
