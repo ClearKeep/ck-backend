@@ -76,8 +76,13 @@ class KeyCloakUtils:
     #
 
     @staticmethod
-    def get_user_id_by_email(email):
-        return keycloak_admin.get_user_id(email)
+    def get_user_by_email(email):
+        try:
+            user_id = keycloak_admin.get_user_id(email)
+            user = keycloak_admin.get_user(user_id)
+            return user
+        except Exception as e:
+            return None
 
     @staticmethod
     def set_user_password(user_id, password):
@@ -96,3 +101,9 @@ class KeyCloakUtils:
         return keycloak_admin.send_update_account(
             user_id=user_id,
             payload=json.dumps(['UPDATE_PASSWORD']))
+
+    @staticmethod
+    def active_user(user_id):
+        return keycloak_admin.update_user(user_id=user_id, payload={'emailVerified': True})
+
+

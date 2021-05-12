@@ -171,7 +171,7 @@ class AuthController(BaseController):
     async def register(self, request, context):
         # check exist user
         try:
-            exists_user = self.service.get_user_id_by_email(request.email)
+            exists_user = self.service.get_user_by_email(request.email)
             if exists_user:
                 raise Exception(Message.REGISTER_USER_ALREADY_EXISTS)
 
