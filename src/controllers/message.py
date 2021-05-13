@@ -8,6 +8,7 @@ from protos import message_pb2
 import grpc
 from grpc import aio
 import asyncio
+import codecs
 
 
 class MessageController(BaseController):
@@ -65,9 +66,19 @@ class MessageController(BaseController):
 
             if len(other_clients_in_group) > 0:
                 push_service = NotifyPushService()
+                message = {
+                    'id': new_message.id,
+                    'client_id': new_message.client_id,
+                    'created_at': new_message.created_at,
+                    'from_client_id': new_message.from_client_id,
+                    'group_id': new_message.group_id,
+                    'group_type': new_message.group_type,
+                    'message': str(new_message.message)
+                }
                 await push_service.push_text_to_clients(other_clients_in_group, title="",
                                                         body="You have a new message",
-                                                        from_client_id=request.fromClientId, data=json.dumps(new_message))
+                                                        from_client_id=request.fromClientId,
+                                                        data=json.dumps(message))
 
             return new_message
 
@@ -98,9 +109,18 @@ class MessageController(BaseController):
                 # push text notification for client
                 push_service = NotifyPushService()
                 if message_response:
+                    message = {
+                        'id': message_response.id,
+                        'client_id': message_response.client_id,
+                        'created_at': message_response.created_at,
+                        'from_client_id': message_response.from_client_id,
+                        'group_id': message_response.group_id,
+                        'group_type': message_response.group_type,
+                        'message': str(message_response.message)
+                    }
                     await push_service.push_text_to_clients(
                         [client_id], title="", body="You have a new message",
-                        from_client_id=client_id, data=json.dumps(message_response))
+                        from_client_id=client_id, data=json.dumps(message))
 
     @request_logged
     async def Subscribe(self, request, context):
