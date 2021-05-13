@@ -67,7 +67,7 @@ class MessageController(BaseController):
                 push_service = NotifyPushService()
                 await push_service.push_text_to_clients(other_clients_in_group, title="",
                                                         body="You have a new message",
-                                                        from_client_id=request.fromClientId)
+                                                        from_client_id=request.fromClientId, data=json.dumps(new_message))
 
             return new_message
 
@@ -82,7 +82,7 @@ class MessageController(BaseController):
     async def Listen(self, request, context: grpc.aio.ServicerContext):
         client_id = request.clientId
         message_channel = "{}/message".format(client_id)
-
+        message_response = None
         while message_channel in client_message_queue:
             print('client listening=', client_id)
             try:
@@ -97,9 +97,10 @@ class MessageController(BaseController):
                 print('len queue after=', len(client_message_queue))
                 # push text notification for client
                 push_service = NotifyPushService()
-                await push_service.push_text_to_clients(
-                    [client_id], title="", body="You have a new message",
-                    from_client_id=client_id)
+                if message_response:
+                    await push_service.push_text_to_clients(
+                        [client_id], title="", body="You have a new message",
+                        from_client_id=client_id, data=json.dumps(message_response))
 
     @request_logged
     async def Subscribe(self, request, context):
