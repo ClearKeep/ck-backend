@@ -34,7 +34,7 @@ class NotifyPushService(BaseService):
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.UNAUTHENTICATED)
 
-    async def push_text_to_clients(self, lst_client, title, body, from_client_id):
+    async def push_text_to_clients(self, lst_client, title, body, from_client_id, custom_data):
         # ios_tokens = []
         # android_tokens = []
         client_device_push_tokens = self.model.get_clients(lst_client)
@@ -45,10 +45,11 @@ class NotifyPushService(BaseService):
                     'title': title,
                     'body': body,
                     'client_id': client_token.client_id,
+                    'data': custom_data
                 }
                 if client_token.device_type == DeviceType.android:
                     #android_tokens.append(client_token.push_token)
-                    android_data_notification(client_token.push_token,push_payload)
+                    android_data_notification(client_token.push_token, push_payload)
                 elif client_token.device_type == DeviceType.ios:
                     arr_token = client_token.push_token.split(',')
                     await ios_data_notification(arr_token[-1], push_payload)
@@ -67,6 +68,7 @@ class NotifyPushService(BaseService):
         client_device_push_tokens = self.model.get_clients(lst_client)
         for client_token in client_device_push_tokens:
             if client_token.device_id != from_client_devices[0].device_id:
+                payload['client_id'] = client_token.client_id
                 if client_token.device_type == DeviceType.android:
                     #android_tokens.append(client_token.push_token)
                     android_data_notification(client_token.push_token, payload)
