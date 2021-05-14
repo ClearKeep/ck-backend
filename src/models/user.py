@@ -59,6 +59,7 @@ class User(Database.get().Model):
         user = Database.get_session().query(User) \
             .filter(User.id != client_id) \
             .filter(User.display_name.ilike(search)) \
+            .filter(User.last_login_at != None) \
             .all()
         Database.get().session.remove()
         return user
@@ -69,9 +70,6 @@ class User(Database.get().Model):
             .filter(User.last_login_at != None) \
             .all()
         Database.get().session.remove()
-        # user = self.query \
-        #     .filter(User.id != client_id) \
-        #     .all()
         return user
 
     def get_client_id_with_push_token(self, id):
