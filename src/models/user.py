@@ -46,11 +46,20 @@ class User(Database.get().Model):
         Database.get().session.remove()
         return user
 
+    def get_google_user(self, email, auth_source):
+        user = Database.get_session().query(User) \
+            .filter(User.email == email) \
+            .filter(User.auth_source == auth_source) \
+            .one_or_none()
+        Database.get().session.remove()
+        return user
+
     def search(self, keyword, client_id):
         search = "%{}%".format(keyword)
         user = Database.get_session().query(User) \
             .filter(User.id != client_id) \
             .filter(User.display_name.ilike(search)) \
+            .filter(User.last_login_at != None) \
             .all()
         Database.get().session.remove()
         return user
@@ -61,9 +70,6 @@ class User(Database.get().Model):
             .filter(User.last_login_at != None) \
             .all()
         Database.get().session.remove()
-        # user = self.query \
-        #     .filter(User.id != client_id) \
-        #     .all()
         return user
 
     def get_client_id_with_push_token(self, id):

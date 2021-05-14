@@ -54,7 +54,7 @@ class AuthService:
     def register_user(self, email, password, display_name):
         try:
             user_id = KeyCloakUtils.create_user(email, email, password, "", display_name)
-            KeyCloakUtils.send_verify_email(user_id)
+            a = KeyCloakUtils.send_verify_email(user_id)
             if user_id:
                 return user_id
         except Exception as e:
@@ -68,20 +68,20 @@ class AuthService:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.UNAUTHENTICATED)
 
-    # param: name or email
-    def get_user_id_by_email(self, email):
+
+    def get_user_by_email(self, email):
         try:
-            return KeyCloakUtils.get_user_id_by_email(email)
+            return KeyCloakUtils.get_user_by_email(email)
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.USER_NOT_FOUND)
 
     def send_forgot_password(self, email):
         try:
-            user_id = self.get_user_id_by_email(email=email)
-            if user_id:
-                KeyCloakUtils.send_forgot_password(user_id=user_id, email=email)
-                return user_id
+            user = self.get_user_by_email(email=email)
+            if user:
+                KeyCloakUtils.send_forgot_password(user_id=user["id"], email=email)
+                return user.id
             else:
                 raise Exception(Message.USER_NOT_FOUND)
         except Exception as e:
@@ -107,15 +107,18 @@ class AuthService:
 
             google_email = google_token_info["email"]
             # check account exits
-            user_id = KeyCloakUtils.get_user_id_by_email(google_email)
-            if user_id:
-                token = self.exchange_token(user_id)
+            user_exist = self.get_user_by_email(email=google_email) #UserService().get_google_user(google_email, "google")
+            #active_user
+            if user_exist:
+                if not user_exist["emailVerified"]:
+                    KeyCloakUtils.active_user(user_exist["id"])
+                token = self.exchange_token(user_exist["id"])
                 return token
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(google_email, google_email, "", google_token_info["name"])
                 token = self.exchange_token(new_user_id)
-                UserService().create_user_with_last_login(id=new_user_id, email=google_email,
+                UserService().create_user_social(id=new_user_id, email=google_email,
                                                           display_name=google_token_info["name"],
                                                           auth_source='google')
                 return token
@@ -140,9 +143,9 @@ class AuthService:
 
             office_id = office_token_info["id"]
             # check account exits
-            user_id = KeyCloakUtils.get_user_id_by_email(office_id)
-            if user_id:
-                token = self.exchange_token(user_id)
+            user = KeyCloakUtils.get_user_by_email(office_id)
+            if user:
+                token = self.exchange_token(user["id"])
                 return token
             else:
                 display_name = office_token_info["displayName"]
@@ -156,7 +159,7 @@ class AuthService:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(email, office_id, "", display_name)
                 token = self.exchange_token(new_user_id)
-                UserService().create_user_with_last_login(id=new_user_id, email=office_token_info["mail"],
+                UserService().create_user_social(id=new_user_id, email=office_token_info["mail"],
                                                           display_name=display_name,
                                                           auth_source='office')
                 return token
@@ -193,15 +196,15 @@ class AuthService:
             facebook_email = facebook_token_info["email"]
             facebook_name = facebook_token_info["name"]
             # check account exits
-            user_id = KeyCloakUtils.get_user_id_by_email(facebook_id)
-            if user_id:
-                token = self.exchange_token(user_id)
+            user = KeyCloakUtils.get_user_by_email(facebook_id)
+            if user:
+                token = self.exchange_token(user["id"])
                 return token
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(facebook_email, facebook_id, "", facebook_name)
                 token = self.exchange_token(new_user_id)
-                UserService().create_user_with_last_login(id=new_user_id, email=facebook_email,
+                UserService().create_user_social(id=new_user_id, email=facebook_email,
                                                           display_name=facebook_name,
                                                           auth_source='facebook')
                 return token
