@@ -54,7 +54,7 @@ class AuthService:
     def register_user(self, email, password, display_name):
         try:
             user_id = KeyCloakUtils.create_user(email, email, password, "", display_name)
-            KeyCloakUtils.send_verify_email(user_id)
+            a = KeyCloakUtils.send_verify_email(user_id)
             if user_id:
                 return user_id
         except Exception as e:
