@@ -44,15 +44,14 @@ async def ios_data_notification(registration_token, payload):
         logger.error(e)
 
 
-# async def ios_text_notifications(registration_tokens, payload):
-#     alert = Payload(alert=payload, badge=1, sound="default")
-#     for token in registration_tokens:
-#         try:
-#             expiration = int(time.time()) + 10
-#             res = await client_ios_text._send_message(token, alert, expiration=expiration)
-#             logger.info("Push iOS text notify success with token: {}".format(token))
-#         except Exception as e:
-#             logger.error(e)
+async def ios_text_notifications(registration_token, payload):
+    alert = Payload(alert=payload, badge=1, sound="default")
+    try:
+        expiration = int(time.time()) + 10
+        res = await client_ios_text._send_message(registration_token, alert, expiration=expiration)
+        logger.info("Push iOS text notify success with token: {}".format(registration_token))
+    except Exception as e:
+        logger.error(e)
 
 
 # init push service for Android

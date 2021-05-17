@@ -66,9 +66,6 @@ class MessageController(BaseController):
 
             if len(other_clients_in_group) > 0:
                 push_service = NotifyPushService()
-                # c = base64.b64encode(new_message.message).decode('utf-8')
-                # d = c.encode('utf-8')
-                # e = base64.b64decode(d)
                 message = {
                     'id': new_message.id,
                     'client_id': new_message.client_id,
