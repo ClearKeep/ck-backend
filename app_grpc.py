@@ -47,7 +47,6 @@ async def start_server():
     workspace_service.add_WorkspaceServicer_to_server(WorkspaceController(), server)
     # init log
     create_timed_rotating_log('logs/logfile.log')
-
     # start grpc api
     grpc_add = "0.0.0.0:{}".format(grpc_port)
     server.add_insecure_port(grpc_add)
