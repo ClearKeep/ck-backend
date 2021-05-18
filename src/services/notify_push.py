@@ -57,7 +57,8 @@ class NotifyPushService(BaseService):
                         }
                         await ios_text_notifications(arr_token[-1], push_payload)
                 except Exception as e:
-                    self.delete_token(client_token.client_id, client_token.device_id)
+                    client_token.delete()
+                    #self.delete_token(client_token.client_id, client_token.device_id)
                     continue
 
     async def push_voip_clients(self, lst_client, payload, from_client_id):
@@ -75,5 +76,6 @@ class NotifyPushService(BaseService):
                         arr_token = client_token.push_token.split(',')
                         await ios_data_notification(arr_token[0], payload)
                 except Exception as e:
-                    self.delete_token(client_token.client_id, client_token.device_id)
+                    client_token.delete()
+                    #self.delete_token(client_token.client_id, client_token.device_id)
                     continue
