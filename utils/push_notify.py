@@ -36,6 +36,7 @@ async def ios_data_notification(registration_token, payload):
         logger.info(res_obj)
     except Exception as e:
         logger.error(e)
+        raise Exception(e)
 
 
 async def ios_text_notifications(registration_token, payload):
@@ -47,20 +48,25 @@ async def ios_text_notifications(registration_token, payload):
         logger.info(res)
     except Exception as e:
         logger.error(e)
+        raise Exception(e)
 
 
 def android_data_notification(registration_token, payload):
-    message = messaging.Message(
-        token=registration_token,
-        data=payload,
-        android=messaging.AndroidConfig(
-            priority="high",
-            ttl=10
+    try:
+        message = messaging.Message(
+            token=registration_token,
+            data=payload,
+            android=messaging.AndroidConfig(
+                priority="high",
+                ttl=10
+            )
         )
-    )
-    response = messaging.send(message)
-    logger.info('Android data notification')
-    logger.info(response)
+        response = messaging.send(message)
+        logger.info('Android data notification')
+        logger.info(response)
+    except Exception as e:
+        logger.error(e)
+        raise Exception(e)
 
 # async def ios_data_multi_notification(registration_tokens, payload):
 #     for token in registration_tokens:
