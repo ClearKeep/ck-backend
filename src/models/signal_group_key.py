@@ -1,9 +1,8 @@
 from datetime import datetime
-
 from sqlalchemy import ForeignKey
-
 from src.models.base import Database
 from src.models.user import User
+from utils.logger import *
 
 
 class GroupClientKey(Database.get().Model):
@@ -32,9 +31,9 @@ class GroupClientKey(Database.get().Model):
             try:
                 Database.get_session().add(self)
                 Database.get_session().commit()
-            except:
+            except Exception as e:
                 Database.get_session().rollback()
-                raise
+                logger.error(e)
 
     def get(self, group_id, client_id):
         #client = self.query.filter_by(group_id=group_id, client_id=client_id).one_or_none()
@@ -85,6 +84,6 @@ class GroupClientKey(Database.get().Model):
         try:
             Database.get_session().merge(self)
             Database.get_session().commit()
-        except:
+        except Exception as e:
             Database.get_session().rollback()
-            raise
+            logger.error(e)
