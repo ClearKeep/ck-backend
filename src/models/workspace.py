@@ -1,5 +1,6 @@
 from datetime import datetime
 from src.models.base import Database
+from utils.logger import *
 
 
 class Workspace(Database.get().Model):
@@ -31,7 +32,6 @@ class Workspace(Database.get().Model):
             Database.get_session().merge(self)
             Database.get_session().commit()
             # Database.get().session.remove()
-        except:
+        except Exception as e:
             Database.get_session().rollback()
-            # Database.get().session.remove()
-            raise
+            logger.error(e)

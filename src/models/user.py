@@ -1,8 +1,7 @@
 from datetime import datetime
-
 from sqlalchemy.orm import relationship
-
 from src.models.base import Database
+from utils.logger import *
 
 
 class User(Database.get().Model):
@@ -35,9 +34,9 @@ class User(Database.get().Model):
         try:
             Database.get_session().merge(self)
             Database.get_session().commit()
-        except:
+        except Exception as e:
             Database.get_session().rollback()
-            raise
+            logger.error(e)
 
     def get(self, client_id):
         user = Database.get_session().query(User) \
