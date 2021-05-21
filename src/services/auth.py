@@ -81,7 +81,7 @@ class AuthService:
             user = self.get_user_by_email(email=email)
             if user:
                 KeyCloakUtils.send_forgot_password(user_id=user["id"], email=email)
-                return user.id
+                return user['id']
             else:
                 raise Exception(Message.USER_NOT_FOUND)
         except Exception as e:
