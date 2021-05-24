@@ -98,6 +98,7 @@ class SignalController(BaseController):
             context.set_code(grpc.StatusCode.NOT_FOUND)
 
     @request_logged
+    #not use for now
     async def GroupGetAllClientKey(self, request, context):
         group_id = request.groupId
         lst_client = self.service.group_get_all_client_key(group_id)

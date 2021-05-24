@@ -6,11 +6,13 @@ message MessageObjectResponse {
   int64 group_id = 2;
   string group_type = 3;
   string from_client_id = 4;
-  string client_id = 5;
-  bytes message = 6;
-  repeated ClientReadObject lst_client_read = 7;
-  int64 created_at = 8;
-  int64 updated_at = 9;
+  string from_client_workspace_domain = 5;
+  string client_id = 6;
+  string client_workspace_domain = 7;
+  bytes message = 8;
+  repeated ClientReadObject lst_client_read = 9;
+  int64 created_at = 10;
+  int64 updated_at = 11;
 }
 
 message ClientReadObject {
@@ -46,10 +48,12 @@ message GetMessagesInGroupResponse {
 // Request: publish a message
 message PublishRequest {
   string fromClientId = 1;
-  string clientId = 2;
-  int64 groupId = 3;
-  string groupType = 4;
-  bytes message = 5;
+  string fromClientWorkspaceDomain = 2;
+  string clientId = 3;
+  string clientWorkspaceDomain = 4;
+  int64 groupId = 5;
+  string groupType = 6;
+  bytes message = 7;
 }
 //response: BaseResponse
 

@@ -278,13 +278,13 @@ class GroupService(BaseService):
             if obj.last_message_at:
                 obj_res.last_message_at = int(obj.last_message_at.timestamp() * 1000)
 
-            for client in lst_client_in_groups:
-                if client.group_id == obj.id:
-                    client_in = group_pb2.ClientInGroupResponse(
-                        id=client.User.id,
-                        display_name=client.User.display_name
-                    )
-                    obj_res.lst_client.append(client_in)
+            # for client in lst_client_in_groups:
+            #     if client.group_id == obj.id:
+            #         client_in = group_pb2.ClientInGroupResponse(
+            #             id=client.User.id,
+            #             display_name=client.User.display_name
+            #         )
+            #         obj_res.lst_client.append(client_in)
 
             # get last message
             if item.Message:
