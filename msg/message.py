@@ -53,6 +53,7 @@ class Message:
     #workspace
     JOIN_WORKSPACE_FAILED = 1045
 
+    EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN = 1046
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -94,7 +95,10 @@ class Message:
         UPLOAD_FILE_DATA_LOSS: "Upload file failed. Data is corrupted",
         UPLOAD_FILE_FAILED: "Upload file failed. Please try again",
 
-        JOIN_WORKSPACE_FAILED: "Join workspace failed. Please try again"
+        JOIN_WORKSPACE_FAILED: "Join workspace failed. Please try again",
+        EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN: "This email is already used for "
+            "signing in as a social account. Please go to the sign-in screen "
+            "and sign in using the social sign-in option"
     }
 
     @staticmethod
