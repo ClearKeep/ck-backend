@@ -96,9 +96,8 @@ class Message:
         UPLOAD_FILE_FAILED: "Upload file failed. Please try again",
 
         JOIN_WORKSPACE_FAILED: "Join workspace failed. Please try again",
-        EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN: "This email is already used for "
-            "signing in as a social account. Please go to the sign-in screen "
-            "and sign in using the social sign-in option"
+        EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN: "The account with this email "
+            "does not exist. Please try again",
     }
 
     @staticmethod
