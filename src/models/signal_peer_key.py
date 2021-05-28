@@ -1,9 +1,7 @@
 from datetime import datetime
-
 from sqlalchemy import ForeignKey
-
 from src.models.base import Database
-
+from utils.logger import *
 
 class PeerClientKey(Database.get().Model):
     __tablename__ = 'peer_client_key'
@@ -42,9 +40,9 @@ class PeerClientKey(Database.get().Model):
             try:
                 Database.get_session().add(self)
                 Database.get_session().commit()
-            except:
+            except Exception as e:
                 Database.get_session().rollback()
-                raise
+                logger.error(e)
 
     def get_by_client_id(self, client_id):
         client = Database.get_session().query(PeerClientKey) \
@@ -57,6 +55,6 @@ class PeerClientKey(Database.get().Model):
         try:
             Database.get_session().merge(self)
             Database.get_session().commit()
-        except:
+        except Exception as e:
             Database.get_session().rollback()
-            raise
+            logger.error(e)

@@ -1,5 +1,6 @@
 from src.models.base import Database
 from datetime import datetime
+from utils.logger import *
 
 
 class ServerInfo(Database.get().Model):
@@ -15,9 +16,9 @@ class ServerInfo(Database.get().Model):
             Database.get_session().add(self)
             Database.get_session().commit()
             return self
-        except:
+        except Exception as e:
             Database.get_session().rollback()
-            raise
+            logger.error(e)
 
     def get(self):
         server_info = Database.get_session().query(ServerInfo) \
@@ -33,9 +34,9 @@ class ServerInfo(Database.get().Model):
             try:
                 Database.get_session().merge(self)
                 Database.get_session().commit()
-            except:
+            except Exception as e:
                 Database.get_session().rollback()
-                raise
+                logger.error(e)
         else:
             self.add()
         return True

@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy import desc
-
+from utils.logger import *
 from src.models.base import Database
 
 
@@ -29,13 +29,12 @@ class NotifyToken(Database.get().Model):
             try:
                 Database.get_session().add(self)
                 Database.get_session().commit()
-            except:
+            except Exception as e:
                 Database.get_session().rollback()
-                raise
+                logger.error(e)
         return self
 
     def get(self, client_id, device_id):
-        #client_device = self.query.filter_by(client_id=client_id, device_id=device_id).one_or_none()
         client_device = Database.get_session().query(NotifyToken) \
             .filter(NotifyToken.client_id == client_id, NotifyToken.device_id == device_id) \
             .one_or_none()
@@ -43,7 +42,6 @@ class NotifyToken(Database.get().Model):
         return client_device
 
     def get_client(self, client_id):
-        #client_tokens = self.query.filter_by(client_id=client_id).all()
         client_tokens = Database.get_session().query(NotifyToken) \
             .filter(NotifyToken.client_id == client_id) \
             .order_by(desc(NotifyToken.created_at)) \
@@ -53,7 +51,6 @@ class NotifyToken(Database.get().Model):
         return client_tokens
 
     def get_clients(self, client_ids):
-        #client_tokens = self.query.filter(NotifyToken.client_id.in_(client_ids)).all()
         client_tokens = Database.get_session().query(NotifyToken) \
             .filter(NotifyToken.client_id.in_(client_ids)) \
             .all()
@@ -64,14 +61,14 @@ class NotifyToken(Database.get().Model):
         try:
             Database.get_session().merge(self)
             Database.get_session().commit()
-        except:
+        except Exception as e:
             Database.get_session().rollback()
-            raise
+            logger.error(e)
 
     def delete(self):
         try:
             Database.get_session().delete(self)
             Database.get_session().commit()
-        except:
+        except Exception as e:
             Database.get_session().rollback()
-            raise
+            logger.error(e)
