@@ -1,8 +1,7 @@
 from datetime import datetime
-
 from sqlalchemy.orm import relationship
-
 from src.models.base import Database
+from utils.logger import *
 
 
 class User(Database.get().Model):
@@ -35,13 +34,21 @@ class User(Database.get().Model):
         try:
             Database.get_session().merge(self)
             Database.get_session().commit()
-        except:
+        except Exception as e:
             Database.get_session().rollback()
-            raise
+            logger.error(e)
 
     def get(self, client_id):
         user = Database.get_session().query(User) \
             .filter(User.id == client_id) \
+            .one_or_none()
+        Database.get().session.remove()
+        return user
+
+    def get_google_user(self, email, auth_source):
+        user = Database.get_session().query(User) \
+            .filter(User.email == email) \
+            .filter(User.auth_source == auth_source) \
             .one_or_none()
         Database.get().session.remove()
         return user
@@ -51,6 +58,7 @@ class User(Database.get().Model):
         user = Database.get_session().query(User) \
             .filter(User.id != client_id) \
             .filter(User.display_name.ilike(search)) \
+            .filter(User.last_login_at != None) \
             .all()
         Database.get().session.remove()
         return user
@@ -61,9 +69,6 @@ class User(Database.get().Model):
             .filter(User.last_login_at != None) \
             .all()
         Database.get().session.remove()
-        # user = self.query \
-        #     .filter(User.id != client_id) \
-        #     .all()
         return user
 
     def get_client_id_with_push_token(self, id):

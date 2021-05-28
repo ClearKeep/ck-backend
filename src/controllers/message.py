@@ -10,6 +10,7 @@ from client.client_message import *
 import grpc
 from grpc import aio
 import asyncio
+import base64
 
 
 
@@ -109,9 +110,20 @@ class MessageController(BaseController):
 
             if len(other_clients_in_group) > 0:
                 push_service = NotifyPushService()
+                message = {
+                    'id': new_message.id,
+                    'client_id': new_message.client_id,
+                    'created_at': new_message.created_at,
+                    'from_client_id': new_message.from_client_id,
+                    'group_id': new_message.group_id,
+                    'group_type': new_message.group_type,
+                    'message': base64.b64encode(new_message.message).decode('utf-8')
+                }
                 await push_service.push_text_to_clients(other_clients_in_group, title="",
                                                         body="You have a new message",
-                                                        from_client_id=request.fromClientId)
+                                                        from_client_id=request.fromClientId,
+                                                        notify_type="new_message",
+                                                        data=json.dumps(message))
 
             return new_message
 
@@ -126,7 +138,7 @@ class MessageController(BaseController):
     async def Listen(self, request, context: grpc.aio.ServicerContext):
         client_id = request.clientId
         message_channel = "{}/message".format(client_id)
-
+        message_response = None
         while message_channel in client_message_queue:
             print('client listening=', client_id)
             try:
@@ -141,9 +153,19 @@ class MessageController(BaseController):
                 print('len queue after=', len(client_message_queue))
                 # push text notification for client
                 push_service = NotifyPushService()
-                await push_service.push_text_to_clients(
-                    [client_id], title="", body="You have a new message",
-                    from_client_id=client_id)
+                if message_response:
+                    message = {
+                        'id': message_response.id,
+                        'client_id': message_response.client_id,
+                        'created_at': message_response.created_at,
+                        'from_client_id': message_response.from_client_id,
+                        'group_id': message_response.group_id,
+                        'group_type': message_response.group_type,
+                        'message': base64.b64encode(message_response.message).decode('utf-8')
+                    }
+                    await push_service.push_text_to_clients(
+                        [client_id], title="", body="You have a new message",
+                        from_client_id=client_id, notify_type="new_message", data=json.dumps(message))
 
     @request_logged
     async def Subscribe(self, request, context):

@@ -5,6 +5,7 @@ from src.models.message import Message
 from src.models.signal_group_key import GroupClientKey
 from sqlalchemy.orm import joinedload
 from src.models.message_user_read import MessageUserRead
+from utils.logger import *
 
 
 class GroupChat(Database.get().Model):
@@ -31,9 +32,9 @@ class GroupChat(Database.get().Model):
             Database.get_session().add(self)
             Database.get_session().commit()
             return self
-        except:
+        except Exception as e:
             Database.get_session().rollback()
-            raise
+            logger.error(e)
 
     def get(self, group_id):
         group = Database.get_session().query(GroupChat, Message) \
@@ -84,9 +85,9 @@ class GroupChat(Database.get().Model):
         try:
             Database.get_session().merge(self)
             Database.get_session().commit()
-        except:
+        except Exception as e:
             Database.get_session().rollback()
-            raise
+            logger.error(e)
 
     def get_group_rtc_token(self, group_id):
         result = Database.get_session().query(GroupChat.group_rtc_token) \

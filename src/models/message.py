@@ -3,6 +3,7 @@ from datetime import datetime
 from src.models.base import Database
 from src.models.message_user_read import MessageUserRead
 from sqlalchemy.orm import relationship, joinedload
+from utils.logger import *
 
 
 class Message(Database.get().Model):
@@ -54,7 +55,6 @@ class Message(Database.get().Model):
             Database.get_session().merge(self)
             Database.get_session().commit()
             # Database.get().session.remove()
-        except:
+        except Exception as e:
             Database.get_session().rollback()
-            # Database.get().session.remove()
-            raise
+            logger.error(e)
