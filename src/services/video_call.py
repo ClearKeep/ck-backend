@@ -138,30 +138,7 @@ class VideoCallService:
             success=True
         )
 
-    async def sender_cancel_call(self, group_id, from_client_id, client_id):
-        from_client_username = ""
-        # send push notification to all member of group
-        lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
-        # list token for each device type
-        other_clients_in_group = []
-        for client in lst_client_in_groups:
-            if client.User.id == from_client_id:
-                from_client_username = client.User.display_name
-            else:
-                other_clients_in_group.append(client.User.id)
-
-        if len(other_clients_in_group) > 0:
-            # push notification voip for other clients in group
-            push_service = NotifyPushService()
-            push_payload = {
-                'notify_type': 'sender_cancel_call',
-                'group_id': str(group_id),
-                'from_client_id': from_client_id,
-                'from_client_name': from_client_username,
-                'from_client_avatar': '',
-                'client_id': client_id
-            }
-            await push_service.push_voip_clients(other_clients_in_group, push_payload, from_client_id)
+    async def miss_call(self, group_id, from_client_id, client_id):
         return video_call_pb2.BaseResponse(
             success=True
         )
