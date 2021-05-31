@@ -32,10 +32,13 @@ class MessageController(BaseController):
             if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
                 request.group_id = group.owner_group_id
                 lst_message = ClientMessage(group.owner_workspace_domain).publish_message(request)
+                if lst_message:
+                    return lst_message
+                else:
+                    raise
+            else:
+                lst_message = self.service.get_message_in_group(group_id, off_set, last_message_at)
                 return lst_message
-
-            lst_message = self.service.get_message_in_group(group_id, off_set, last_message_at)
-            return lst_message
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
@@ -61,7 +64,6 @@ class MessageController(BaseController):
                     return message_res_object
                 else:
                     raise
-
             # store message here
             new_message = MessageService().store_message(
                 group_id=group_id,

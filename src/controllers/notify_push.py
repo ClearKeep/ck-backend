@@ -28,3 +28,44 @@ class NotifyPushController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def push_text(self, request, context):
+        try:
+            # header_data = dict(context.invocation_metadata())
+            # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # client_id = introspect_token['sub']
+            title = request.title
+            body = request.body
+            notify_type = request.notify_type
+            custom_data = request.custom_data
+            to_client_id = request.to_client_id
+            self.service.push_text_to_client(to_client_id=to_client_id, title=title, body=body, notify_type=notify_type, data=custom_data)
+            return notify_push_pb2.BaseResponse(success=True)
+
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.CLIENT_REGISTER_NOTIFY_TOKEN_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def push_voip_clients(self, request, context):
+        try:
+            # header_data = dict(context.invocation_metadata())
+            # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # client_id = introspect_token['sub']
+            str_payload = request.payload
+            payload = json.loads(str_payload)
+            to_client_id = request.to_client_id
+
+            self.service.push_voip_client(to_client_id=to_client_id, payload=payload)
+            return notify_push_pb2.BaseResponse(success=True)
+
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.CLIENT_REGISTER_NOTIFY_TOKEN_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
