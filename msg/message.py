@@ -54,7 +54,7 @@ class Message:
     JOIN_WORKSPACE_FAILED = 1045
 
     EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN = 1046
-    SENDER_CANCEL_CALL_FAILED = 1047
+    CLIENT_MISS_CALL_FAILED = 1047
     CLIENT_EDIT_MESSAGE_FAILED = 1050
 
     msg_dict = {
@@ -86,7 +86,6 @@ class Message:
         CLIENT_REGISTER_NOTIFY_TOKEN_FAILED: "Client register notification token failed. Please try again",
         CLIENT_REQUEST_CALL_FAILED: "Client request call failed. Please try again",
         CLIENT_CANCEL_REQUEST_CALL_FAILED: "Cancel Request Call failed, Please try again",
-        SENDER_CANCEL_CALL_FAILED: "Sender Cancel Call failed, Please try again",
         CLIENT_UPDATE_CALL_FAILED: "Update call failed. Please try again",
         GOOGLE_AUTH_ID_TOKEN_INVALID: "Login google failed. Please try again",
         GOOGLE_AUTH_FAILED: "Login google failed. Please try again",
@@ -102,6 +101,7 @@ class Message:
         EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN: "The account with this email "
             "does not exist. Please try again",
         CLIENT_EDIT_MESSAGE_FAILED: "Edit message failed. Please try again",
+        CLIENT_MISS_CALL_FAILED: "Miss Call failed, Please try again",
     }
 
     @staticmethod

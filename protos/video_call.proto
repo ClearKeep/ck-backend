@@ -50,6 +50,6 @@ message UpdateCallRequest {
 service VideoCall {
     rpc video_call(VideoCallRequest) returns (ServerResponse) {};
     rpc cancel_request_call(VideoCallRequest) returns (BaseResponse) {};
-    rpc sender_cancel_call(VideoCallRequest) returns (BaseResponse) {};
+    rpc miss_call(VideoCallRequest) returns (BaseResponse) {};
     rpc update_call(UpdateCallRequest) returns (BaseResponse) {};
 }
