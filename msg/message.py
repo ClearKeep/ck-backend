@@ -56,6 +56,7 @@ class Message:
     EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN = 1046
     CLIENT_MISS_CALL_FAILED = 1047
     CLIENT_DECLINE_CALL_FAILED = 1048
+    CLIENT_END_CALL_FAILED = 1049
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
