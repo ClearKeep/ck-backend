@@ -15,9 +15,10 @@ message BaseResponse {
 
 //Login message struct
 message AuthReq {
-    string email = 1;
-    string password = 2;
-    int64 auth_type = 3;
+    string workspace_domain = 1;
+    string email = 2;
+    string password = 3;
+    int64 auth_type = 4;
 }
 
 message LogoutReq {
@@ -31,25 +32,28 @@ message FogotPassWord {
 }
 
 message AuthRes {
-    string access_token = 1;
-    int64 expires_in = 2;
-    int64 refresh_expires_in = 3;
-    string refresh_token = 4;
-    string token_type = 5;
-    string session_state = 6;
-    string scope = 7;
-    string hash_key = 8;
-    BaseResponse base_response = 9;
+    string workspace_domain = 1;
+    string access_token = 2;
+    int64 expires_in = 3;
+    int64 refresh_expires_in = 4;
+    string refresh_token = 5;
+    string token_type = 6;
+    string session_state = 7;
+    string scope = 8;
+    string hash_key = 9;
+
+    BaseResponse base_response = 10;
 }
 
 //Register message struct
 message RegisterReq {
-    string email = 1;
-    string display_name = 2;
-    string password = 3;
-    int64 auth_type = 4;
-    string first_name = 5;
-    string last_name = 6;
+    string workspace_domain = 1;
+    string email = 2;
+    string display_name = 3;
+    string password = 4;
+    int64 auth_type = 5;
+    string first_name = 6;
+    string last_name = 7;
 }
 
 message RegisterRes {
@@ -59,17 +63,20 @@ message RegisterRes {
 
 //Login Google message struct
 message GoogleLoginReq {
-    string id_token = 1;
+    string workspace_domain = 1;
+    string id_token = 2;
 }
 
 //Login Office365 message struct
 message OfficeLoginReq {
-    string access_token = 1;
+    string workspace_domain = 1;
+    string access_token = 2;
 }
 
 //Login Facebook message struct
 message FacebookLoginReq {
-    string access_token = 1;
+    string workspace_domain = 1;
+    string access_token = 2;
 }
 
 

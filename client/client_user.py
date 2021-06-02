@@ -9,9 +9,17 @@ class ClientUser:
     def __init__(self, host, port):
         self.stub = self.grpc_stub(host, port)
 
-    def get_user_info(self,client_id,domain):
+    def get_user_info(self, client_id, domain):
         try:
-            request = user_pb2.GetUserRequest(client_id=client_id,domain=domain)
+            request = user_pb2.GetUserRequest(client_id=client_id, domain=domain)
+            response = self.stub.get_user_info(request)
+            return response
+        except:
+            return None
+
+    def get_user_signal_key(self, client_id, domain):
+        try:
+            request = user_pb2.GetUserRequest(client_id=client_id, domain=domain)
             response = self.stub.get_user_info(request)
             return response
         except:

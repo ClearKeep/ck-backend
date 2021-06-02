@@ -2,13 +2,16 @@ from src.controllers.base import *
 from middlewares.permission import *
 from middlewares.request_logged import *
 from src.services.message import MessageService, client_message_queue
+from src.services.group import GroupService
 from src.models.signal_group_key import GroupClientKey
 from src.services.notify_push import NotifyPushService
 from protos import message_pb2
+from client.client_message import *
 import grpc
 from grpc import aio
 import asyncio
 import base64
+
 
 
 class MessageController(BaseController):
@@ -21,8 +24,21 @@ class MessageController(BaseController):
             group_id = request.group_id
             off_set = request.off_set
             last_message_at = request.last_message_at
-            lst_message = self.service.get_message_in_group(group_id, off_set, last_message_at)
-            return lst_message
+
+            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
+                                                    get_system_config()['grpc_port'])
+
+            group = GroupService().get_group(group_id)
+            if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
+                request.group_id = group.owner_group_id
+                lst_message = ClientMessage(group.owner_workspace_domain).publish_message(request)
+                if lst_message:
+                    return lst_message
+                else:
+                    raise
+            else:
+                lst_message = self.service.get_message_in_group(group_id, off_set, last_message_at)
+                return lst_message
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
@@ -35,7 +51,19 @@ class MessageController(BaseController):
         try:
             group_id = request.groupId
             client_id = request.clientId
+            client_workspace_domain = request.clientId
 
+            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
+                                                    get_system_config()['grpc_port'])
+            group = GroupService().get_group(group_id)
+            if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
+                # call to other server
+                request.groupId = group.owner_group_id
+                message_res_object = ClientMessage(client_workspace_domain).publish_message(request)
+                if message_res_object:
+                    return message_res_object
+                else:
+                    raise
             # store message here
             new_message = MessageService().store_message(
                 group_id=group_id,
@@ -46,23 +74,41 @@ class MessageController(BaseController):
 
             # push notification for other client
             other_clients_in_group = []
+
             if client_id:
-                message_channel = "{}/message".format(client_id)
-                if message_channel in client_message_queue:
-                    client_message_queue[message_channel].put(new_message)
+                #if peer chat, send directly for another
+                if client_workspace_domain == owner_workspace_domain:
+                    message_channel = "{}/message".format(client_id)
+                    if message_channel in client_message_queue:
+                        client_message_queue[message_channel].put(new_message)
+                    else:
+                        # push text notification for client
+                        other_clients_in_group.append(client_id)
                 else:
-                    # push text notification for client
-                    other_clients_in_group.append(client_id)
+                    #call to other server
+                    message_res_object = ClientMessage(client_workspace_domain).publish_message(request)
+                    if message_res_object:
+                        return message_res_object
+                    else:
+                        raise
             else:
-                # push for other people in group
+                # get client in group and push message
                 lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
                 for client in lst_client_in_groups:
                     if client.User.id != request.fromClientId:
-                        message_channel = "{}/message".format(client.User.id)
-                        if message_channel in client_message_queue:
-                            client_message_queue[message_channel].put(new_message)
+                        if client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+                            message_channel = "{}/message".format(client.User.id)
+                            if message_channel in client_message_queue:
+                                client_message_queue[message_channel].put(new_message)
+                            else:
+                                other_clients_in_group.append(client.User.id)
                         else:
-                            other_clients_in_group.append(client.User.id)
+                            # call to other server
+                            message_res_object = ClientMessage(client_workspace_domain).publish_message(request)
+                            if message_res_object:
+                                return message_res_object
+                            else:
+                                logger.error("send message to client failed")
 
             if len(other_clients_in_group) > 0:
                 push_service = NotifyPushService()

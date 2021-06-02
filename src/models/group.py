@@ -11,11 +11,14 @@ from utils.logger import *
 class GroupChat(Database.get().Model):
     __tablename__ = 'group_chat'
     id = Database.get().Column(Database.get().Integer, primary_key=True)
+    owner_group_id = Database.get().Column(Database.get().Integer, nullable=True)
+    owner_workspace_domain = Database.get().Column(Database.get().String(255), nullable=True, default=True)
     group_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     group_avatar = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     group_type = Database.get().Column(Database.get().String(36), unique=False, nullable=True)
     group_clients = Database.get().Column(Database.get().Text, unique=False, nullable=True)
     group_rtc_token = Database.get().Column(Database.get().Text, unique=False, nullable=True)
+    total_member = Database.get().Column(Database.get().Integer, nullable=True)
     created_by = Database.get().Column(Database.get().String(36), unique=False, nullable=True)
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_by = Database.get().Column(Database.get().String(36), unique=False, nullable=True)

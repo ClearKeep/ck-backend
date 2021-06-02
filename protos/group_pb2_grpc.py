@@ -20,6 +20,11 @@ class GroupStub(object):
                 request_serializer=protos_dot_group__pb2.CreateGroupRequest.SerializeToString,
                 response_deserializer=protos_dot_group__pb2.GroupObjectResponse.FromString,
                 )
+        self.create_group_workspace = channel.unary_unary(
+                '/group.Group/create_group_workspace',
+                request_serializer=protos_dot_group__pb2.CreateGroupWorkspaceRequest.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.CreateGroupWorkspaceResponse.FromString,
+                )
         self.get_group = channel.unary_unary(
                 '/group.Group/get_group',
                 request_serializer=protos_dot_group__pb2.GetGroupRequest.SerializeToString,
@@ -52,6 +57,12 @@ class GroupServicer(object):
     """
 
     def create_group(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def create_group_workspace(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -94,6 +105,11 @@ def add_GroupServicer_to_server(servicer, server):
                     servicer.create_group,
                     request_deserializer=protos_dot_group__pb2.CreateGroupRequest.FromString,
                     response_serializer=protos_dot_group__pb2.GroupObjectResponse.SerializeToString,
+            ),
+            'create_group_workspace': grpc.unary_unary_rpc_method_handler(
+                    servicer.create_group_workspace,
+                    request_deserializer=protos_dot_group__pb2.CreateGroupWorkspaceRequest.FromString,
+                    response_serializer=protos_dot_group__pb2.CreateGroupWorkspaceResponse.SerializeToString,
             ),
             'get_group': grpc.unary_unary_rpc_method_handler(
                     servicer.get_group,
@@ -145,6 +161,23 @@ class Group(object):
         return grpc.experimental.unary_unary(request, target, '/group.Group/create_group',
             protos_dot_group__pb2.CreateGroupRequest.SerializeToString,
             protos_dot_group__pb2.GroupObjectResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def create_group_workspace(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/group.Group/create_group_workspace',
+            protos_dot_group__pb2.CreateGroupWorkspaceRequest.SerializeToString,
+            protos_dot_group__pb2.CreateGroupWorkspaceResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

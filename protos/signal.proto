@@ -34,23 +34,25 @@ message PeerRegisterClientKeyRequest {
 
 // Request: Get client key via clientId
 message PeerGetClientKeyRequest {
-  string clientId = 1;
+  string workspace_domain = 1;
+  string clientId = 2;
 }
 // Response
 message PeerGetClientKeyResponse {
     string clientId = 1;
-    int32 registrationId = 2;
-    int32 deviceId = 3;
+    string workspace_domain = 2;
+    int32 registrationId = 3;
+    int32 deviceId = 4;
 
-    bytes identityKeyPublic = 4;
+    bytes identityKeyPublic = 5;
 
-    int32 preKeyId = 5;
-    bytes preKey = 6;
+    int32 preKeyId = 6;
+    bytes preKey = 7;
 
-    int32 signedPreKeyId = 7;
-    bytes signedPreKey = 8;
+    int32 signedPreKeyId = 8;
+    bytes signedPreKey = 9;
 
-    bytes signedPreKeySignature = 9;
+    bytes signedPreKeySignature = 10;
 }
 
 // ----- SIGNAL GROUP KEY -----
@@ -66,6 +68,7 @@ message GroupRegisterClientKeyRequest {
 
 //object
 message GroupClientKeyObject {
+    string  workspace_domain = 1;
     string clientId = 2;
     int32 deviceId = 3;
     bytes clientKeyDistribution = 4;
