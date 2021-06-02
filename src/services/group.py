@@ -36,14 +36,16 @@ class GroupService(BaseService):
                 )
                 return res_obj
 
-        str_list_client = json.dumps(lst_client)
+        tmp_list_client = []
+        for obj in lst_client:
+            tmp_list_client.append({"id": obj.id, "workspace_domain":obj.workspace_domain})
 
         self.model = GroupChat(
             group_name=group_name,
             group_type=group_type,
             created_by=created_by,
             updated_at=datetime.datetime.now(),
-            group_clients=str_list_client,
+            group_clients=json.dumps(tmp_list_client),
             group_rtc_token=secrets.token_hex(10)
         )
         new_group = self.model.add()
@@ -113,7 +115,7 @@ class GroupService(BaseService):
         )
         new_group = self.model.add()
         # add to signal group key
-        client_group_key = GroupClientKey().set_key(new_group.id, client_id, None, None, None)
+        client_group_key = GroupClientKey().set_key(new_group.id, client_id, None, None, None, None)
         client_group_key.add()
         # notify to client
         if group_type == "peer":

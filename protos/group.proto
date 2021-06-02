@@ -126,12 +126,12 @@ message CreateGroupWorkspaceRequest {
   string group_name = 1;
   string group_type = 2;
   string client_id = 3;
-  string owner_group_id = 4;
+  int64 owner_group_id = 4;
   string owner_workspace_domain = 5;
 }
 
 message CreateGroupWorkspaceResponse {
-  string group_id = 1;
+  int64 group_id = 1;
   string client_id = 2;
   string client_name = 3;
   string client_workspace_domain = 4;
