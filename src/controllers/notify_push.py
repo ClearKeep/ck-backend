@@ -51,7 +51,7 @@ class NotifyPushController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    async def push_voip_clients(self, request, context):
+    async def push_voip(self, request, context):
         try:
             # header_data = dict(context.invocation_metadata())
             # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
