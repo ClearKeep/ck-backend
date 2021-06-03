@@ -104,8 +104,8 @@ class Message:
             "does not exist. Please try again",
         CLIENT_EDIT_MESSAGE_FAILED: "Edit message failed. Please try again",
         CLIENT_MISS_CALL_FAILED: "Miss Call failed, Please try again",
-        CLIENT_DECLINE_CALL_FAILED = "Decline Call failed, Please try again",
-        CLIENT_END_CALL_FAILED = "End Call failed, Please try again",
+        CLIENT_DECLINE_CALL_FAILED: "Decline Call failed, Please try again",
+        CLIENT_END_CALL_FAILED: "End Call failed, Please try again",
     }
 
     @staticmethod
