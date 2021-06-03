@@ -102,8 +102,8 @@ class Message:
         EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN: "The account with this email "
             "does not exist. Please try again",
         CLIENT_MISS_CALL_FAILED: "Miss Call failed, Please try again",
-        CLIENT_DECLINE_CALL_FAILED = "Decline Call failed, Please try again",
-        CLIENT_END_CALL_FAILED = "End Call failed, Please try again",
+        CLIENT_DECLINE_CALL_FAILED: "Decline Call failed, Please try again",
+        CLIENT_END_CALL_FAILED: "End Call failed, Please try again",
     }
 
     @staticmethod
