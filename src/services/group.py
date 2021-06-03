@@ -95,7 +95,7 @@ class GroupService(BaseService):
         # list client in group
         lst_client_in_group = GroupClientKey().get_clients_in_group(new_group.id)
         for client in lst_client_in_group:
-            if client.client_workspace_domain is None:
+            if client.GroupClientKey.client_workspace_domain is None:
                 client_in = group_pb2.ClientInGroupResponse(
                     id=client.User.id,
                     display_name=client.User.display_name,
@@ -215,7 +215,7 @@ class GroupService(BaseService):
             # list client in group
             lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
             for client in lst_client_in_group:
-                if client.client_workspace_domain is None:
+                if client.GroupClientKey.client_workspace_domain is None:
                     client_in = group_pb2.ClientInGroupResponse(
                         id=client.User.id,
                         display_name=client.User.display_name,
