@@ -52,8 +52,15 @@ class NotifyPushService(BaseService):
                     elif client_token.device_type == DeviceType.ios:
                         arr_token = client_token.push_token.split(',')
                         push_payload = {
-                            'title': title,
-                            'body': body
+                            'aps': {
+                                'alert': {
+                                    'title': title,
+                                    'body': body,
+                                },
+                                'badge': 1,
+                                'sound': 'default',
+                            },
+                            'publication': data
                         }
                         await ios_text_notifications(arr_token[-1], push_payload)
                 except Exception as e:
