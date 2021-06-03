@@ -24,6 +24,21 @@ class VideoCallStub(object):
                 request_serializer=protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
                 response_deserializer=protos_dot_video__call__pb2.BaseResponse.FromString,
                 )
+        self.miss_call = channel.unary_unary(
+                '/video_call.VideoCall/miss_call',
+                request_serializer=protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
+                response_deserializer=protos_dot_video__call__pb2.BaseResponse.FromString,
+                )
+        self.decline_call = channel.unary_unary(
+                '/video_call.VideoCall/decline_call',
+                request_serializer=protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
+                response_deserializer=protos_dot_video__call__pb2.BaseResponse.FromString,
+                )
+        self.end_call = channel.unary_unary(
+                '/video_call.VideoCall/end_call',
+                request_serializer=protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
+                response_deserializer=protos_dot_video__call__pb2.BaseResponse.FromString,
+                )
         self.update_call = channel.unary_unary(
                 '/video_call.VideoCall/update_call',
                 request_serializer=protos_dot_video__call__pb2.UpdateCallRequest.SerializeToString,
@@ -46,6 +61,24 @@ class VideoCallServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def miss_call(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def decline_call(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def end_call(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def update_call(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -62,6 +95,21 @@ def add_VideoCallServicer_to_server(servicer, server):
             ),
             'cancel_request_call': grpc.unary_unary_rpc_method_handler(
                     servicer.cancel_request_call,
+                    request_deserializer=protos_dot_video__call__pb2.VideoCallRequest.FromString,
+                    response_serializer=protos_dot_video__call__pb2.BaseResponse.SerializeToString,
+            ),
+            'miss_call': grpc.unary_unary_rpc_method_handler(
+                    servicer.miss_call,
+                    request_deserializer=protos_dot_video__call__pb2.VideoCallRequest.FromString,
+                    response_serializer=protos_dot_video__call__pb2.BaseResponse.SerializeToString,
+            ),
+            'decline_call': grpc.unary_unary_rpc_method_handler(
+                    servicer.decline_call,
+                    request_deserializer=protos_dot_video__call__pb2.VideoCallRequest.FromString,
+                    response_serializer=protos_dot_video__call__pb2.BaseResponse.SerializeToString,
+            ),
+            'end_call': grpc.unary_unary_rpc_method_handler(
+                    servicer.end_call,
                     request_deserializer=protos_dot_video__call__pb2.VideoCallRequest.FromString,
                     response_serializer=protos_dot_video__call__pb2.BaseResponse.SerializeToString,
             ),
@@ -109,6 +157,57 @@ class VideoCall(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/cancel_request_call',
+            protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
+            protos_dot_video__call__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def miss_call(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/miss_call',
+            protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
+            protos_dot_video__call__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def decline_call(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/decline_call',
+            protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
+            protos_dot_video__call__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def end_call(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/end_call',
             protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
             protos_dot_video__call__pb2.BaseResponse.FromString,
             options, channel_credentials,
