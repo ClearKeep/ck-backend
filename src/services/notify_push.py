@@ -51,19 +51,12 @@ class NotifyPushService(BaseService):
                         android_data_notification(client_token.push_token, push_payload)
                     elif client_token.device_type == DeviceType.ios:
                         arr_token = client_token.push_token.split(',')
-                        push_payload = {
-                            'aps': {
-                                'alert': {
-                                    'title': title,
-                                    'body': body,
-                                },
-                                'badge': 1,
-                                'sound': 'default',
-                                'mutable-content': 1,
-                            },
-                            'publication': data
+                        alert = {
+                            'title': title,
+                            'body': body
                         }
-                        await ios_text_notifications(arr_token[-1], push_payload)
+                        await ios_text_notifications(arr_token[-1],
+                                                     alert, data)
                 except Exception as e:
                     #client_token.delete()
                     continue
