@@ -39,11 +39,17 @@ async def ios_data_notification(registration_token, payload):
         raise Exception(e)
 
 
-async def ios_text_notifications(registration_token, payload):
-    alert = Payload(alert=payload, badge=1, sound="default")
+async def ios_text_notifications(registration_token, alert, data):
+    payload = Payload(
+        alert=alert,
+        badge=1,
+        sound="default",
+        mutable_content=1,
+        custom={'publication': data}
+    )
     try:
         expiration = int(time.time()) + 10
-        res = await client_ios_text._send_message(registration_token, alert, expiration=expiration)
+        res = await client_ios_text._send_message(registration_token, payload, expiration=expiration)
         logger.info("Push iOS text notify success with token: {}".format(registration_token))
         logger.info(res)
     except Exception as e:
