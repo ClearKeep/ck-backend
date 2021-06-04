@@ -72,14 +72,15 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def get_user_info(self, request, context):
         try:
             client_id = request.client_id
-            domain_client = request.domain
-            domain_local = get_system_domain()
-            if domain_local == domain_client:
-                user_info = self.service.get_user_info(client_id)
+            client_workspace_domain = request.workspace_domain
+            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
+                                                    get_system_config()['grpc_port'])
+            if client_workspace_domain == owner_workspace_domain:
+                user_info = self.service.get_user_info(client_id, owner_workspace_domain)
             else:
-                server_ip = get_ip_domain(domain_client)
-                client = ClientUser(server_ip, get_system_config()['port'])
-                user_info = client.get_user_info(client_id=client_id, domain=domain_client)
+                client = ClientUser(client_workspace_domain)
+                user_info = client.get_user_info(client_id=client_id, workspace_domain=client_workspace_domain)
+
             if user_info is not None:
                 return user_info
             else:
@@ -120,7 +121,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
 
-            obj_res = self.service.get_users(client_id)
+            obj_res = self.service.get_users(client_id, owner_get)
             return obj_res
         except Exception as e:
             logger.error(e)

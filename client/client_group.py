@@ -13,10 +13,10 @@ class ClientGroup:
         channel = grpc.insecure_channel(workspace_domain)
         return group_pb2_grpc.GroupStub(channel)
 
-    def create_group_workspace(self, group_name, group_type, client_id, owner_group_id, owner_workspace_domain):
+    def create_group_workspace(self, group_name, group_type, client_id, lst_client, owner_group_id, owner_workspace_domain):
         try:
             request = group_pb2.CreateGroupWorkspaceRequest(group_name=group_name, group_type=group_type,
-                                                            client_id=client_id, owner_group_id=owner_group_id,
+                                                            client_id=client_id, lst_client=lst_client, owner_group_id=owner_group_id,
                                                             owner_workspace_domain=owner_workspace_domain)
             response = self.stub.create_group_workspace(request)
             return response

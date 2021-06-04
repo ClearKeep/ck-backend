@@ -35,9 +35,10 @@ class GroupController(BaseController):
             group_name = request.group_name
             group_type = request.group_type
             client_id = request.client_id
+            lst_client = request.lst_client
             owner_group_id = request.owner_group_id
             owner_workspace_domain = request.owner_workspace_domain
-            obj_res = self.service.add_group_workspace(group_name, group_type, client_id, owner_group_id, owner_workspace_domain)
+            obj_res = self.service.add_group_workspace(group_name, group_type, client_id, lst_client, owner_group_id, owner_workspace_domain)
 
             return obj_res
         except Exception as e:

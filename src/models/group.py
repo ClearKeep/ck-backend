@@ -12,7 +12,7 @@ class GroupChat(Database.get().Model):
     __tablename__ = 'group_chat'
     id = Database.get().Column(Database.get().Integer, primary_key=True)
     owner_group_id = Database.get().Column(Database.get().Integer, nullable=True)
-    owner_workspace_domain = Database.get().Column(Database.get().String(255), nullable=True, default=True)
+    owner_workspace_domain = Database.get().Column(Database.get().String(255), nullable=True)
     group_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     group_avatar = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     group_type = Database.get().Column(Database.get().String(36), unique=False, nullable=True)
