@@ -59,6 +59,7 @@ class NotifyPushService(BaseService):
                                 },
                                 'badge': 1,
                                 'sound': 'default',
+                                'mutable-content': 1,
                             },
                             'publication': data
                         }
