@@ -164,3 +164,58 @@ class MessageController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def edit_message(self, request, context):
+        try:
+            group_id = request.groupId
+            client_id = request.clientId
+
+            # store message here
+            new_message = MessageService().update_message(
+                group_id=group_id,
+                from_client_id=request.fromClientId,
+                client_id=client_id,
+                message=request.message,
+                message_id=request.id
+            )
+
+            # push notification for other client
+            other_clients_in_group = []
+            if client_id:
+                message_channel = "{}/message".format(client_id)
+                if message_channel in client_message_queue:
+                    client_message_queue[message_channel].put(new_message)
+                else:
+                    # push text notification for client
+                    other_clients_in_group.append(client_id)
+            else:
+                # push for other people in group
+                lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
+                for client in lst_client_in_groups:
+                    if client.User.id != request.fromClientId:
+                        message_channel = "{}/message".format(client.User.id)
+                        if message_channel in client_message_queue:
+                            client_message_queue[message_channel].put(new_message)
+                        else:
+                            other_clients_in_group.append(client.User.id)
+
+            if len(other_clients_in_group) > 0:
+                push_service = NotifyPushService()
+                message = {
+                    'id': new_message.id,
+                    'client_id': new_message.client_id,
+                    'created_at': new_message.created_at,
+                    'updated_at': new_message.updated_at
+                    'from_client_id': new_message.from_client_id,
+                    'group_id': new_message.group_id,
+                    'group_type': new_message.group_type,
+                    'message': base64.b64encode(new_message.message).decode('utf-8')
+                }
+                await push_service.push_text_to_clients(other_clients_in_group, title="",
+                                                        body="A message has been updated",
+                                                        from_client_id=request.fromClientId,
+                                                        notify_type="edit_message",
+                                                        data=json.dumps(message))
+
+            return new_message
