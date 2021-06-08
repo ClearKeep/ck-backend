@@ -6,27 +6,23 @@ from protos import message_pb2, message_pb2_grpc
 
 
 class ClientMessage:
-    def __init__(self, host, port):
-        self.stub = self.grpc_stub(host, port)
+    def __init__(self, workspace_domain):
+        self.stub = self.grpc_stub(workspace_domain)
 
-    def grpc_stub(self, host, port):
-        channel = grpc.insecure_channel(host + ':' + str(port))
+    def grpc_stub(self, workspace_domain):
+        channel = grpc.insecure_channel(workspace_domain)
         return message_pb2_grpc.MessageStub(channel)
 
     def publish_message(self, request):
-        # from_client_id, from_client_workspace_domain, client_id, client_workspace_domain,
-        # group_id, group_type, message
         try:
-            # request = message_pb2.PublishRequest(
-            #     fromClientId=from_client_id,
-            #     fromClientWorkspaceDomain=from_client_workspace_domain,
-            #     clientId=client_id,
-            #     clientWorkspaceDomain=client_workspace_domain,
-            #     groupId=group_id,
-            #     groupType=group_type,
-            #     message=message
-            # )
             response = self.stub.Publish(request)
+            return response
+        except:
+            return None
+
+    def workspace_publish_message(self, request):
+        try:
+            response = self.stub.workspace_publish(request)
             return response
         except:
             return None

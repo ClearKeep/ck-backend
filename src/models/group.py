@@ -45,6 +45,13 @@ class GroupChat(Database.get().Model):
 
         return group
 
+    def get_group(self, group_id):
+        group = Database.get_session().query(GroupChat) \
+            .filter(GroupChat.id == group_id) \
+            .one_or_none()
+        Database.get().session.remove()
+        return group
+
     def get_group_type(self, group_id):
         group = Database.get_session().query(GroupChat.group_type) \
             .filter(GroupChat.id == group_id) \

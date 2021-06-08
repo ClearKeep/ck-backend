@@ -407,3 +407,10 @@ class GroupService(BaseService):
                         if member_id in lst_group_client_id:
                             return group_joined.GroupChat
         return None
+
+    def get_group_info(self, group_id):
+        return self.model.get_group(group_id)
+
+    def get_clients_in_group(self, group_id):
+        return GroupClientKey().get_clients_in_group(group_id)
+

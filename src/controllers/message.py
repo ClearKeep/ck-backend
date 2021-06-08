@@ -11,7 +11,7 @@ import grpc
 from grpc import aio
 import asyncio
 import base64
-
+from src.models.message import Message
 
 
 class MessageController(BaseController):
@@ -51,15 +51,14 @@ class MessageController(BaseController):
         try:
             group_id = request.groupId
             client_id = request.clientId
-            client_workspace_domain = request.clientId
 
             owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
                                                     get_system_config()['grpc_port'])
-            group = GroupService().get_group(group_id)
+            group = GroupService().get_group_info(group_id)
             if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
                 # call to other server
                 request.groupId = group.owner_group_id
-                message_res_object = ClientMessage(client_workspace_domain).publish_message(request)
+                message_res_object = ClientMessage(group.owner_workspace_domain).publish_message(request)
                 if message_res_object:
                     return message_res_object
                 else:
@@ -67,6 +66,7 @@ class MessageController(BaseController):
             # store message here
             new_message = MessageService().store_message(
                 group_id=group_id,
+                group_type=group.group_type,
                 from_client_id=request.fromClientId,
                 client_id=client_id,
                 message=request.message
@@ -74,41 +74,33 @@ class MessageController(BaseController):
 
             # push notification for other client
             other_clients_in_group = []
+            lst_client = GroupService().get_clients_in_group(group.id)
 
-            if client_id:
-                #if peer chat, send directly for another
-                if client_workspace_domain == owner_workspace_domain:
-                    message_channel = "{}/message".format(client_id)
-                    if message_channel in client_message_queue:
-                        client_message_queue[message_channel].put(new_message)
-                    else:
-                        # push text notification for client
-                        other_clients_in_group.append(client_id)
-                else:
-                    #call to other server
-                    message_res_object = ClientMessage(client_workspace_domain).publish_message(request)
-                    if message_res_object:
-                        return message_res_object
-                    else:
-                        raise
-            else:
-                # get client in group and push message
-                lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
-                for client in lst_client_in_groups:
-                    if client.User.id != request.fromClientId:
-                        if client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
-                            message_channel = "{}/message".format(client.User.id)
-                            if message_channel in client_message_queue:
-                                client_message_queue[message_channel].put(new_message)
-                            else:
-                                other_clients_in_group.append(client.User.id)
+            for client in lst_client:
+                if client.GroupClientKey.client_id != request.fromClientId:
+                    if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+                        message_channel = "{}/message".format(client.GroupClientKey.client_id)
+                        if message_channel in client_message_queue:
+                            client_message_queue[message_channel].put(new_message)
                         else:
-                            # call to other server
-                            message_res_object = ClientMessage(client_workspace_domain).publish_message(request)
-                            if message_res_object:
-                                return message_res_object
-                            else:
-                                logger.error("send message to client failed")
+                            other_clients_in_group.append(client.GroupClientKey.client_id)
+                    else:
+                        # call to other server
+                        request = message_pb2.WorkspacePublishRequest(
+                            from_client_id=new_message.from_client_id,
+                            client_id=new_message.client_id,
+                            group_id=client.GroupClientKey.client_workspace_group_id,
+                            message_id=new_message.id,
+                            message=new_message.message,
+                            created_at=new_message.created_at,
+                            updated_at=new_message.updated_at,
+                        )
+                        message_res_object = ClientMessage(
+                            client.GroupClientKey.client_workspace_domain).workspace_publish_message(request)
+                        if message_res_object:
+                            return message_res_object
+                        else:
+                            logger.error("send message to client failed")
 
             if len(other_clients_in_group) > 0:
                 push_service = NotifyPushService()
@@ -124,6 +116,57 @@ class MessageController(BaseController):
                 await push_service.push_text_to_clients(other_clients_in_group, title="",
                                                         body="You have a new message",
                                                         from_client_id=request.fromClientId,
+                                                        notify_type="new_message",
+                                                        data=json.dumps(message))
+
+            return new_message
+
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.CLIENT_PUBLISH_MESSAGE_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def workspace_publish(self, request, context):
+        try:
+            new_message = MessageService().model
+            new_message.id = request.message_id
+            new_message.group_id = request.group_id
+            new_message.from_client_id = request.from_client_id
+            new_message.client_id = request.client_id
+            new_message.message = request.message
+            new_message.created_at = request.created_at
+            new_message.updated_at = request.updated_at
+
+            group = GroupService().get_group_info(request.group_id)
+            # push notification for other client
+            other_clients_in_group = []
+            lst_client = GroupService().get_clients_in_group(request.group_id)
+
+            for client in lst_client:
+                if client.GroupClientKey.client_id != request.from_client_id:
+                    message_channel = "{}/message".format(client.GroupClientKey.client_id)
+                    if message_channel in client_message_queue:
+                        client_message_queue[message_channel].put(new_message)
+                    else:
+                        other_clients_in_group.append(client.GroupClientKey.client_id)
+
+            if len(other_clients_in_group) > 0:
+                push_service = NotifyPushService()
+                message = {
+                    'id': new_message.id,
+                    'client_id': new_message.client_id,
+                    'created_at': new_message.created_at,
+                    'from_client_id': new_message.from_client_id,
+                    'group_id': new_message.group_id,
+                    'group_type': group.group_type,
+                    'message': base64.b64encode(new_message.message).decode('utf-8')
+                }
+                await push_service.push_text_to_clients(other_clients_in_group, title="",
+                                                        body="You have a new message",
+                                                        from_client_id=request.from_client_id,
                                                         notify_type="new_message",
                                                         data=json.dumps(message))
 

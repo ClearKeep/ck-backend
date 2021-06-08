@@ -9,9 +9,9 @@ class ClientSignal:
     def __init__(self, workspace_domain):
         self.stub = self.grpc_stub(workspace_domain)
 
-    def get_user_signal_key(self, client_id, domain):
+    def get_user_signal_key(self, client_id, workspace_domain):
         try:
-            request = signal_pb2.PeerGetClientKeyRequest(client_id=client_id, domain=domain)
+            request = signal_pb2.PeerGetClientKeyRequest(clientId=client_id, workspace_domain=workspace_domain)
             response = self.stub.PeerGetClientKey(request)
             return response
         except:

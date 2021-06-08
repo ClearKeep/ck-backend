@@ -18,7 +18,7 @@ class MessageService(BaseService):
         self.service_group = GroupChat()
         self.message_read_model = MessageUserRead()
 
-    def store_message(self, group_id, from_client_id, client_id, message):
+    def store_message(self, group_id, group_type, from_client_id, client_id, message):
         # store message to database
         message_id = str(uuid.uuid4())
         created_at = datetime.now()
@@ -43,6 +43,7 @@ class MessageService(BaseService):
         res_obj = message_pb2.MessageObjectResponse(
             id=new_message.id,
             group_id=new_message.group_id,
+            group_type=group_type,
             from_client_id=new_message.from_client_id,
             message=message,
             created_at=int(new_message.created_at.timestamp() * 1000)
@@ -51,11 +52,6 @@ class MessageService(BaseService):
             res_obj.client_id = new_message.client_id
         if new_message.updated_at:
             res_obj.updated_at = int(new_message.updated_at.timestamp() * 1000)
-
-        if client_id:
-            res_obj.group_type = "peer"
-        else:
-            res_obj.group_type = "group"
 
         return res_obj
 

@@ -61,7 +61,9 @@ class NotifyPushService(BaseService):
         client_device_push_tokens = self.model.get_clients(lst_client)
         from_client_devices = self.model.get_client(from_client_id)
         for client_token in client_device_push_tokens:
-            if client_token.device_id != from_client_devices[0].device_id:
+            if len(from_client_devices) > 0 and client_token.device_id == from_client_devices[0].device_id:
+                continue
+            else:
                 try:
                     if client_token.device_type == DeviceType.android:
                         push_payload = {
@@ -101,7 +103,9 @@ class NotifyPushService(BaseService):
         from_client_devices = self.model.get_client(from_client_id)
         client_device_push_tokens = self.model.get_clients(lst_client)
         for client_token in client_device_push_tokens:
-            if client_token.device_id != from_client_devices[0].device_id:
+            if len(from_client_devices) > 0 and client_token.device_id == from_client_devices[0].device_id:
+                continue
+            else:
                 try:
                     payload['client_id'] = client_token.client_id
                     if client_token.device_type == DeviceType.android:
