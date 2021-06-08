@@ -58,10 +58,11 @@ message WorkspacePublishRequest {
   string from_client_id = 1;
   string client_id = 2;
   int64 group_id = 3;
-  string message_id = 4;
-  bytes message = 5;
-  int64 created_at = 6;
-  int64 updated_at = 7;
+  string group_type = 4;
+  string message_id = 5;
+  bytes message = 6;
+  int64 created_at = 7;
+  int64 updated_at = 8;
 }
 
 // Request: subcribe

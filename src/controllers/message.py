@@ -11,7 +11,6 @@ import grpc
 from grpc import aio
 import asyncio
 import base64
-from src.models.message import Message
 
 
 class MessageController(BaseController):
@@ -90,6 +89,7 @@ class MessageController(BaseController):
                             from_client_id=new_message.from_client_id,
                             client_id=new_message.client_id,
                             group_id=client.GroupClientKey.client_workspace_group_id,
+                            group_type=new_message.group_type,
                             message_id=new_message.id,
                             message=new_message.message,
                             created_at=new_message.created_at,
@@ -131,16 +131,17 @@ class MessageController(BaseController):
     @request_logged
     async def workspace_publish(self, request, context):
         try:
-            new_message = MessageService().model
-            new_message.id = request.message_id
-            new_message.group_id = request.group_id
-            new_message.from_client_id = request.from_client_id
-            new_message.client_id = request.client_id
-            new_message.message = request.message
-            new_message.created_at = request.created_at
-            new_message.updated_at = request.updated_at
+            new_message = message_pb2.MessageObjectResponse(
+                id=request.message_id,
+                client_id=request.client_id,
+                group_id=request.group_id,
+                group_type=request.group_type,
+                from_client_id=request.from_client_id,
+                message=request.message,
+                created_at=request.created_at,
+                updated_at=request.updated_at
+            )
 
-            group = GroupService().get_group_info(request.group_id)
             # push notification for other client
             other_clients_in_group = []
             lst_client = GroupService().get_clients_in_group(request.group_id)
@@ -161,7 +162,7 @@ class MessageController(BaseController):
                     'created_at': new_message.created_at,
                     'from_client_id': new_message.from_client_id,
                     'group_id': new_message.group_id,
-                    'group_type': group.group_type,
+                    'group_type': request.group_type,
                     'message': base64.b64encode(new_message.message).decode('utf-8')
                 }
                 await push_service.push_text_to_clients(other_clients_in_group, title="",
