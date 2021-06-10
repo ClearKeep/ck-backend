@@ -206,7 +206,7 @@ class MessageController(BaseController):
                     'id': new_message.id,
                     'client_id': new_message.client_id,
                     'created_at': new_message.created_at,
-                    'updated_at': new_message.updated_at
+                    'updated_at': new_message.updated_at,
                     'from_client_id': new_message.from_client_id,
                     'group_id': new_message.group_id,
                     'group_type': new_message.group_type,
@@ -217,5 +217,12 @@ class MessageController(BaseController):
                                                         from_client_id=request.fromClientId,
                                                         notify_type="edit_message",
                                                         data=json.dumps(message))
-
             return new_message
+
+        except Exception as e:
+            logger.error(e)
+            errors =\
+                [Message.get_error_object(Message.CLIENT_EDIT_MESSAGE_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
