@@ -67,35 +67,36 @@ class SignalController(BaseController):
 
     @request_logged
     async def GroupGetClientKey(self, request, context):
+        print("GroupGetClientKey")
         group_id = request.groupId
         client_id = request.clientId
         # get group first
-        group = GroupService().get_group_obj(group_id)
+        #group = GroupService().get_group_obj(group_id)
         owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'], get_system_config()['grpc_port'])
-        if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
-            obj_resp = ClientSignal(group.owner_workspace_domain).group_get_client_key(group.owner_group_id, client_id)
-            return obj_resp
-        else:
-            obj_resp = self.service.group_get_client_key(group_id, client_id)
-            if obj_resp is not None:
-                if obj_resp.client_workspace_domain and obj_resp.client_workspace_domain != owner_workspace_domain:
-                    obj_resp = ClientSignal(obj_resp.client_workspace_domain).group_get_client_key(obj_resp.client_workspace_group_id, obj_resp.client_id)
-                    return obj_resp
-                else:
-                    response = signal_pb2.GroupGetClientKeyResponse(
-                        groupId=obj_resp.group_id,
-                        clientKey=signal_pb2.GroupClientKeyObject(
-                            clientId=obj_resp.client_id,
-                            deviceId=obj_resp.device_id,
-                            clientKeyDistribution=obj_resp.client_key
-                        )
+        # if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
+        #     obj_resp = ClientSignal(group.owner_workspace_domain).group_get_client_key(group.owner_group_id, client_id)
+        #     return obj_resp
+        # else:
+        obj_resp = self.service.group_get_client_key(group_id, client_id)
+        if obj_resp is not None:
+            if obj_resp.client_workspace_domain and obj_resp.client_workspace_domain != owner_workspace_domain:
+                obj_resp = ClientSignal(obj_resp.client_workspace_domain).group_get_client_key(obj_resp.client_workspace_group_id, obj_resp.client_id)
+                return obj_resp
+            else:
+                response = signal_pb2.GroupGetClientKeyResponse(
+                    groupId=obj_resp.group_id,
+                    clientKey=signal_pb2.GroupClientKeyObject(
+                        clientId=obj_resp.client_id,
+                        deviceId=obj_resp.device_id,
+                        clientKeyDistribution=obj_resp.client_key
                     )
-                    return response
+                )
+                return response
 
-            errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.NOT_FOUND)
+        errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
+        context.set_details(json.dumps(
+            errors, default=lambda x: x.__dict__))
+        context.set_code(grpc.StatusCode.NOT_FOUND)
 
     @request_logged
     #not use for now

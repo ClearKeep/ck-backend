@@ -47,6 +47,7 @@ class MessageController(BaseController):
 
     @request_logged
     async def Publish(self, request, context):
+        print("Publish")
         try:
             group_id = request.groupId
             client_id = request.clientId
@@ -130,6 +131,7 @@ class MessageController(BaseController):
 
     @request_logged
     async def workspace_publish(self, request, context):
+        print("workspace_publish")
         try:
             new_message = message_pb2.MessageObjectResponse(
                 id=request.message_id,
