@@ -34,8 +34,11 @@ class NotifyPushService(BaseService):
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.UNAUTHENTICATED)
 
-    async def push_text_to_client(self, to_client_id, title, body, notify_type, data):
+    async def push_text_to_client(self, to_client_id, title, body, from_client_id, notify_type, data):
         client_token = self.model.get_client(to_client_id)
+        from_client_devices = self.model.get_client(from_client_id)
+        if len(from_client_devices) > 0 and client_token.device_id == from_client_devices[0].device_id:
+            return
         try:
             if client_token.device_type == DeviceType.android:
                 push_payload = {

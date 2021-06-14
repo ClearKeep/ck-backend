@@ -59,7 +59,7 @@ class GroupClientKey(Database.get().Model):
         return client
 
     def get_clients_in_groups(self, group_ids):
-        result = Database.get_session().query(GroupClientKey.group_id, User) \
+        result = Database.get_session().query(GroupClientKey, User) \
             .join(User, GroupClientKey.client_id == User.id,  isouter=True) \
             .filter(GroupClientKey.group_id.in_(group_ids)) \
             .order_by(GroupClientKey.client_id.asc()) \

@@ -88,6 +88,13 @@ class GroupChat(Database.get().Model):
         Database.get().session.remove()
         return result
 
+    def get_by_group_owner(self, owner_group_id):
+        result = Database.get_session().query(GroupChat) \
+            .filter(GroupChat.owner_group_id == owner_group_id) \
+            .all()
+        Database.get().session.remove()
+        return result
+
     def update(self):
         try:
             Database.get_session().merge(self)

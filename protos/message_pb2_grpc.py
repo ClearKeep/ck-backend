@@ -48,7 +48,7 @@ class MessageStub(object):
         self.workspace_publish = channel.unary_unary(
                 '/message.Message/workspace_publish',
                 request_serializer=protos_dot_message__pb2.WorkspacePublishRequest.SerializeToString,
-                response_deserializer=protos_dot_message__pb2.BaseResponse.FromString,
+                response_deserializer=protos_dot_message__pb2.MessageObjectResponse.FromString,
                 )
 
 
@@ -136,7 +136,7 @@ def add_MessageServicer_to_server(servicer, server):
             'workspace_publish': grpc.unary_unary_rpc_method_handler(
                     servicer.workspace_publish,
                     request_deserializer=protos_dot_message__pb2.WorkspacePublishRequest.FromString,
-                    response_serializer=protos_dot_message__pb2.BaseResponse.SerializeToString,
+                    response_serializer=protos_dot_message__pb2.MessageObjectResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -264,6 +264,6 @@ class Message(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/message.Message/workspace_publish',
             protos_dot_message__pb2.WorkspacePublishRequest.SerializeToString,
-            protos_dot_message__pb2.BaseResponse.FromString,
+            protos_dot_message__pb2.MessageObjectResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

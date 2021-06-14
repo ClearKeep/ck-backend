@@ -18,10 +18,7 @@ class MessageService(BaseService):
         self.service_group = GroupChat()
         self.message_read_model = MessageUserRead()
 
-    def store_message(self, group_id, group_type, from_client_id, client_id, message):
-        # store message to database
-        message_id = str(uuid.uuid4())
-        created_at = datetime.now()
+    def store_message(self, message_id, created_at, group_id, group_type, from_client_id, client_id, message):
         # init new message
         self.model = Message(
             id=message_id,

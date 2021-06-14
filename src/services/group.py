@@ -414,3 +414,8 @@ class GroupService(BaseService):
     def get_clients_in_group(self, group_id):
         return GroupClientKey().get_clients_in_group(group_id)
 
+    def get_clients_in_group_owner(self, group_owner_id):
+        lst_group = self.model.get_by_group_owner(group_owner_id)
+        group_ids = (group.id for group in lst_group)
+        return GroupClientKey().get_clients_in_groups(group_ids)
+

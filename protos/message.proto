@@ -56,13 +56,14 @@ message PublishRequest {
 
 message WorkspacePublishRequest {
   string from_client_id = 1;
-  string client_id = 2;
-  int64 group_id = 3;
-  string group_type = 4;
-  string message_id = 5;
-  bytes message = 6;
-  int64 created_at = 7;
-  int64 updated_at = 8;
+  string from_client_workspace_domain = 2;
+  string client_id = 3;
+  int64 group_id = 4;
+  string group_type = 5;
+  string message_id = 6;
+  bytes message = 7;
+  int64 created_at = 8;
+  int64 updated_at = 9;
 }
 
 // Request: subcribe
@@ -100,5 +101,5 @@ service Message {
     rpc Publish (PublishRequest) returns (MessageObjectResponse);
     rpc read_messages (ReadMessagesRequest) returns (BaseResponse);
     //
-    rpc workspace_publish (WorkspacePublishRequest) returns (BaseResponse);
+    rpc workspace_publish (WorkspacePublishRequest) returns (MessageObjectResponse);
 }
