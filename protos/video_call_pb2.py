@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x17protos/video_call.proto\x12\nvideo_call\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"E\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12$\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x14.video_call.ErrorRes\"\x83\x01\n\x0eServerResponse\x12+\n\x0bstun_server\x18\x01 \x01(\x0b\x32\x16.video_call.StunServer\x12+\n\x0bturn_server\x18\x02 \x01(\x0b\x32\x16.video_call.TurnServer\x12\x17\n\x0fgroup_rtc_token\x18\x03 \x01(\t\"*\n\nStunServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\"S\n\nTurnServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\x12\x0c\n\x04type\x18\x03 \x01(\t\x12\x0c\n\x04user\x18\x04 \x01(\t\x12\x0b\n\x03pwd\x18\x05 \x01(\t\"J\n\x10VideoCallRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x11\n\tcall_type\x18\x03 \x01(\t\":\n\x11UpdateCallRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x13\n\x0bupdate_type\x18\x02 \x01(\t2\xc7\x03\n\tVideoCall\x12H\n\nvideo_call\x12\x1c.video_call.VideoCallRequest\x1a\x1a.video_call.ServerResponse\"\x00\x12O\n\x13\x63\x61ncel_request_call\x12\x1c.video_call.VideoCallRequest\x1a\x18.video_call.BaseResponse\"\x00\x12\x45\n\tmiss_call\x12\x1c.video_call.VideoCallRequest\x1a\x18.video_call.BaseResponse\"\x00\x12H\n\x0c\x64\x65\x63line_call\x12\x1c.video_call.VideoCallRequest\x1a\x18.video_call.BaseResponse\"\x00\x12\x44\n\x08\x65nd_call\x12\x1c.video_call.VideoCallRequest\x1a\x18.video_call.BaseResponse\"\x00\x12H\n\x0bupdate_call\x12\x1d.video_call.UpdateCallRequest\x1a\x18.video_call.BaseResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x17protos/video_call.proto\x12\nvideo_call\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"E\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12$\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x14.video_call.ErrorRes\"\xb5\x01\n\x0eServerResponse\x12+\n\x0bstun_server\x18\x01 \x01(\x0b\x32\x16.video_call.StunServer\x12+\n\x0bturn_server\x18\x02 \x01(\x0b\x32\x16.video_call.TurnServer\x12\x17\n\x0fgroup_rtc_token\x18\x03 \x01(\t\x12\x30\n\nvideo_call\x18\x04 \x01(\x0b\x32\x1c.video_call.VideoCallMessage\"\x94\x01\n\x10VideoCallMessage\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nmessage_id\x18\x02 \x01(\t\x12\x13\n\x0b\x63\x61ll_status\x18\x03 \x01(\t\x12\x11\n\tcall_type\x18\x04 \x01(\t\x12\x12\n\ncreated_at\x18\x05 \x01(\x03\x12\x12\n\nstarted_at\x18\x06 \x01(\x03\x12\x10\n\x08\x65nded_at\x18\x07 \x01(\x03\"*\n\nStunServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\"S\n\nTurnServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\x12\x0c\n\x04type\x18\x03 \x01(\t\x12\x0c\n\x04user\x18\x04 \x01(\t\x12\x0b\n\x03pwd\x18\x05 \x01(\t\"H\n\x10VideoCallRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x0f\n\x07\x63\x61ll_id\x18\x03 \x01(\t\":\n\x11UpdateCallRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x13\n\x0bupdate_type\x18\x02 \x01(\t\"\x82\x01\n\x11VideoCallResponse\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x16\n\x0e\x66rom_client_id\x18\x02 \x01(\t\x12\x11\n\tclient_id\x18\x03 \x01(\t\x12\x30\n\nvideo_call\x18\x04 \x01(\x0b\x32\x1c.video_call.VideoCallMessage2\xe0\x03\n\tVideoCall\x12H\n\nvideo_call\x12\x1c.video_call.VideoCallRequest\x1a\x1a.video_call.ServerResponse\"\x00\x12T\n\x13\x63\x61ncel_request_call\x12\x1c.video_call.VideoCallRequest\x1a\x1d.video_call.VideoCallResponse\"\x00\x12J\n\tmiss_call\x12\x1c.video_call.VideoCallRequest\x1a\x1d.video_call.VideoCallResponse\"\x00\x12M\n\x0c\x64\x65\x63line_call\x12\x1c.video_call.VideoCallRequest\x1a\x1d.video_call.VideoCallResponse\"\x00\x12I\n\x08\x65nd_call\x12\x1c.video_call.VideoCallRequest\x1a\x1d.video_call.VideoCallResponse\"\x00\x12M\n\x0bupdate_call\x12\x1d.video_call.UpdateCallRequest\x1a\x1d.video_call.VideoCallResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -132,6 +132,13 @@ _SERVERRESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='video_call', full_name='video_call.ServerResponse.video_call', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -145,7 +152,81 @@ _SERVERRESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=154,
-  serialized_end=285,
+  serialized_end=335,
+)
+
+
+_VIDEOCALLMESSAGE = _descriptor.Descriptor(
+  name='VideoCallMessage',
+  full_name='video_call.VideoCallMessage',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='video_call.VideoCallMessage.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='message_id', full_name='video_call.VideoCallMessage.message_id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='call_status', full_name='video_call.VideoCallMessage.call_status', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='call_type', full_name='video_call.VideoCallMessage.call_type', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='created_at', full_name='video_call.VideoCallMessage.created_at', index=4,
+      number=5, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='started_at', full_name='video_call.VideoCallMessage.started_at', index=5,
+      number=6, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='ended_at', full_name='video_call.VideoCallMessage.ended_at', index=6,
+      number=7, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=338,
+  serialized_end=486,
 )
 
 
@@ -183,8 +264,8 @@ _STUNSERVER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=287,
-  serialized_end=329,
+  serialized_start=488,
+  serialized_end=530,
 )
 
 
@@ -243,8 +324,8 @@ _TURNSERVER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=331,
-  serialized_end=414,
+  serialized_start=532,
+  serialized_end=615,
 )
 
 
@@ -271,7 +352,7 @@ _VIDEOCALLREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='call_type', full_name='video_call.VideoCallRequest.call_type', index=2,
+      name='call_id', full_name='video_call.VideoCallRequest.call_id', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -289,8 +370,8 @@ _VIDEOCALLREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=416,
-  serialized_end=490,
+  serialized_start=617,
+  serialized_end=689,
 )
 
 
@@ -328,20 +409,77 @@ _UPDATECALLREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=492,
-  serialized_end=550,
+  serialized_start=691,
+  serialized_end=749,
+)
+
+
+_VIDEOCALLRESPONSE = _descriptor.Descriptor(
+  name='VideoCallResponse',
+  full_name='video_call.VideoCallResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='group_id', full_name='video_call.VideoCallResponse.group_id', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='from_client_id', full_name='video_call.VideoCallResponse.from_client_id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_id', full_name='video_call.VideoCallResponse.client_id', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='video_call', full_name='video_call.VideoCallResponse.video_call', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=752,
+  serialized_end=882,
 )
 
 _BASERESPONSE.fields_by_name['errors'].message_type = _ERRORRES
 _SERVERRESPONSE.fields_by_name['stun_server'].message_type = _STUNSERVER
 _SERVERRESPONSE.fields_by_name['turn_server'].message_type = _TURNSERVER
+_SERVERRESPONSE.fields_by_name['video_call'].message_type = _VIDEOCALLMESSAGE
+_VIDEOCALLRESPONSE.fields_by_name['video_call'].message_type = _VIDEOCALLMESSAGE
 DESCRIPTOR.message_types_by_name['ErrorRes'] = _ERRORRES
 DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
 DESCRIPTOR.message_types_by_name['ServerResponse'] = _SERVERRESPONSE
+DESCRIPTOR.message_types_by_name['VideoCallMessage'] = _VIDEOCALLMESSAGE
 DESCRIPTOR.message_types_by_name['StunServer'] = _STUNSERVER
 DESCRIPTOR.message_types_by_name['TurnServer'] = _TURNSERVER
 DESCRIPTOR.message_types_by_name['VideoCallRequest'] = _VIDEOCALLREQUEST
 DESCRIPTOR.message_types_by_name['UpdateCallRequest'] = _UPDATECALLREQUEST
+DESCRIPTOR.message_types_by_name['VideoCallResponse'] = _VIDEOCALLRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 ErrorRes = _reflection.GeneratedProtocolMessageType('ErrorRes', (_message.Message,), {
@@ -364,6 +502,13 @@ ServerResponse = _reflection.GeneratedProtocolMessageType('ServerResponse', (_me
   # @@protoc_insertion_point(class_scope:video_call.ServerResponse)
   })
 _sym_db.RegisterMessage(ServerResponse)
+
+VideoCallMessage = _reflection.GeneratedProtocolMessageType('VideoCallMessage', (_message.Message,), {
+  'DESCRIPTOR' : _VIDEOCALLMESSAGE,
+  '__module__' : 'protos.video_call_pb2'
+  # @@protoc_insertion_point(class_scope:video_call.VideoCallMessage)
+  })
+_sym_db.RegisterMessage(VideoCallMessage)
 
 StunServer = _reflection.GeneratedProtocolMessageType('StunServer', (_message.Message,), {
   'DESCRIPTOR' : _STUNSERVER,
@@ -393,6 +538,13 @@ UpdateCallRequest = _reflection.GeneratedProtocolMessageType('UpdateCallRequest'
   })
 _sym_db.RegisterMessage(UpdateCallRequest)
 
+VideoCallResponse = _reflection.GeneratedProtocolMessageType('VideoCallResponse', (_message.Message,), {
+  'DESCRIPTOR' : _VIDEOCALLRESPONSE,
+  '__module__' : 'protos.video_call_pb2'
+  # @@protoc_insertion_point(class_scope:video_call.VideoCallResponse)
+  })
+_sym_db.RegisterMessage(VideoCallResponse)
+
 
 
 _VIDEOCALL = _descriptor.ServiceDescriptor(
@@ -402,8 +554,8 @@ _VIDEOCALL = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=553,
-  serialized_end=1008,
+  serialized_start=885,
+  serialized_end=1365,
   methods=[
   _descriptor.MethodDescriptor(
     name='video_call',
@@ -421,7 +573,7 @@ _VIDEOCALL = _descriptor.ServiceDescriptor(
     index=1,
     containing_service=None,
     input_type=_VIDEOCALLREQUEST,
-    output_type=_BASERESPONSE,
+    output_type=_VIDEOCALLRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
@@ -431,7 +583,7 @@ _VIDEOCALL = _descriptor.ServiceDescriptor(
     index=2,
     containing_service=None,
     input_type=_VIDEOCALLREQUEST,
-    output_type=_BASERESPONSE,
+    output_type=_VIDEOCALLRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
@@ -441,7 +593,7 @@ _VIDEOCALL = _descriptor.ServiceDescriptor(
     index=3,
     containing_service=None,
     input_type=_VIDEOCALLREQUEST,
-    output_type=_BASERESPONSE,
+    output_type=_VIDEOCALLRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
@@ -451,7 +603,7 @@ _VIDEOCALL = _descriptor.ServiceDescriptor(
     index=4,
     containing_service=None,
     input_type=_VIDEOCALLREQUEST,
-    output_type=_BASERESPONSE,
+    output_type=_VIDEOCALLRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
@@ -461,7 +613,7 @@ _VIDEOCALL = _descriptor.ServiceDescriptor(
     index=5,
     containing_service=None,
     input_type=_UPDATECALLREQUEST,
-    output_type=_BASERESPONSE,
+    output_type=_VIDEOCALLRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

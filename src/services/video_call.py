@@ -3,6 +3,8 @@ import json
 from utils.config import get_system_config
 import uuid
 from src.models.signal_group_key import GroupClientKey
+from src.models.video_call import VideoCall
+from src.models.message import Message
 from src.services.notify_push import NotifyPushService
 from src.services.server_info import ServerInfoService
 from src.services.notify_inapp import NotifyInAppService
@@ -71,6 +73,35 @@ class VideoCallService:
         self.service_group.create_rtc_group(group_id, webrtc_token)
         logger.info('janus webrtc token={}'.format(webrtc_token))
 
+        video_call = VideoCall(
+            id=str(uuid.uuid4()),
+            call_status='call_created',
+            call_type=call_type,
+            created_at=datetime.now()
+        )
+        if len(other_clients_in_group) > 2:
+            video_call.started_at = video_call.created_at
+        message = Message(
+            id=str(uuid.uuid4()),
+            group_id=group_id,
+            from_client_id=from_client_id,
+            client_id=client_id,
+            message=video_call.id,
+            message_type='call_status',
+            created_at=video_call.created_at
+        )
+        video_call.message_id=message.id
+        video_call.add()
+        res_obj = video_call_pb2.VideoCallMessage(
+            id=video_call.id,
+            message_id=message.id,
+            call_status=video_call.call_status,
+            call_type=video_call.call_type,
+            created_at=int(video_call.created_at.timestamp() * 1000),
+            started_at=int(video_call.started_at.timestamp() * 1000),
+            ended_at=int(video_call.ended_at.timestamp() * 1000)
+        )
+
         if len(other_clients_in_group) > 0:
             # push notification voip for other clients in group
             push_service = NotifyPushService()
@@ -107,10 +138,25 @@ class VideoCallService:
         return video_call_pb2.ServerResponse(
             stun_server=stun_server,
             turn_server=turn_server,
-            group_rtc_token=webrtc_token
+            group_rtc_token=webrtc_token,
+            video_call=res_obj
         )
 
-    async def cancel_request_call(self, group_id, from_client_id, client_id):
+    async def cancel_request_call(self, group_id, from_client_id, client_id,
+                                  call_id):
+        video_call = VideoCall().get(call_id=call_id)
+        video_call.call_status = 'call_missed'
+        video_call.ended_at = datetime.now()
+        res_obj = video_call_pb2.VideoCallMessage(
+            id=video_call.id,
+            message_id=video_call.message_id,
+            call_status=video_call.call_status,
+            call_type=video_call.call_type,
+            created_at=int(video_call.created_at.timestamp() * 1000),
+            started_at=int(video_call.started_at.timestamp() * 1000),
+            ended_at=int(video_call.ended_at.timestamp() * 1000)
+        )
+        video_call.update()
         from_client_username = ""
         # send push notification to all member of group
         lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
@@ -134,11 +180,27 @@ class VideoCallService:
                 'client_id': client_id
             }
             await push_service.push_voip_clients(other_clients_in_group, push_payload, from_client_id)
-        return video_call_pb2.BaseResponse(
-            success=True
+        return video_call_pb2.VideoCallResponse(
+            group_id=group_id,
+            from_client_id=from_client_id,
+            client_id=client_id,
+            video_call=res_obj
         )
 
-    async def miss_call(self, group_id, from_client_id, client_id):
+    async def miss_call(self, group_id, from_client_id, client_id, call_id):
+        video_call = VideoCall().get(call_id=call_id)
+        video_call.call_status = 'call_missed'
+        video_call.ended_at = datetime.now()
+        res_obj = video_call_pb2.VideoCallMessage(
+            id=video_call.id,
+            message_id=video_call.message_id,
+            call_status=video_call.call_status,
+            call_type=video_call.call_type,
+            created_at=int(video_call.created_at.timestamp() * 1000),
+            started_at=int(video_call.started_at.timestamp() * 1000),
+            ended_at=int(video_call.ended_at.timestamp() * 1000)
+        )
+        video_call.update()
         from_client_username = ""
         # send push notification to all member of group
         lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
@@ -162,11 +224,27 @@ class VideoCallService:
                 'client_id': client_id
             }
             await push_service.push_voip_clients(other_clients_in_group, push_payload, from_client_id)
-        return video_call_pb2.BaseResponse(
-            success=True
+        return video_call_pb2.VideoCallResponse(
+            group_id=group_id,
+            from_client_id=from_client_id,
+            client_id=client_id,
+            video_call=res_obj
         )
 
-    async def decline_call(self, group_id, from_client_id, client_id):
+    async def decline_call(self, group_id, from_client_id, client_id, call_id):
+        video_call = VideoCall().get(call_id=call_id)
+        video_call.call_status = 'call_declined'
+        video_call.ended_at = datetime.now()
+        res_obj = video_call_pb2.VideoCallMessage(
+            id=video_call.id,
+            message_id=video_call.message_id,
+            call_status=video_call.call_status,
+            call_type=video_call.call_type,
+            created_at=int(video_call.created_at.timestamp() * 1000),
+            started_at=int(video_call.started_at.timestamp() * 1000),
+            ended_at=int(video_call.ended_at.timestamp() * 1000)
+        )
+        video_call.update()
         from_client_username = ""
         # send push notification to all member of group
         lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
@@ -190,11 +268,26 @@ class VideoCallService:
                 'client_id': client_id
             }
             await push_service.push_voip_clients(other_clients_in_group, push_payload, from_client_id)
-        return video_call_pb2.BaseResponse(
-            success=True
+        return video_call_pb2.VideoCallResponse(
+            group_id=group_id,
+            from_client_id=from_client_id,
+            client_id=client_id,
+            video_call=res_obj
         )
 
-    async def end_call(self, group_id, from_client_id, client_id):
+    async def end_call(self, group_id, from_client_id, client_id, call_id):
+        video_call = VideoCall().get(call_id=call_id)
+        video_call.call_status = 'call_ended'
+        video_call.ended_at = datetime.now()
+        res_obj = video_call_pb2.VideoCallMessage(
+            id=video_call.id,
+            message_id=video_call.message_id,
+            call_status=video_call.call_status,
+            call_type=video_call.call_type,
+            created_at=int(video_call.created_at.timestamp() * 1000),
+            started_at=int(video_call.started_at.timestamp() * 1000),
+            ended_at=int(video_call.ended_at.timestamp() * 1000)
+        )
         from_client_username = ""
         # send push notification to all member of group
         lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
@@ -218,8 +311,11 @@ class VideoCallService:
                 'client_id': client_id
             }
             await push_service.push_voip_clients(other_clients_in_group, push_payload, from_client_id)
-        return video_call_pb2.BaseResponse(
-            success=True
+        return video_call_pb2.VideoCallResponse(
+            group_id=group_id,
+            from_client_id=from_client_id,
+            client_id=client_id,
+            video_call=res_obj
         )
 
     def update_call(self, update_type, group_id, from_client_id):
