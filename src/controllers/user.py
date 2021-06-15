@@ -120,8 +120,10 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
+            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
+                                                    get_system_config()['grpc_port'])
 
-            obj_res = self.service.get_users(client_id, owner_get)
+            obj_res = self.service.get_users(client_id, owner_workspace_domain)
             return obj_res
         except Exception as e:
             logger.error(e)

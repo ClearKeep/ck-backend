@@ -95,6 +95,14 @@ class GroupChat(Database.get().Model):
         Database.get().session.remove()
         return result
 
+    def get_client_key_by_owner_group(self, group_id, client_id):
+        client = Database.get_session().query(GroupClientKey) \
+            .join(GroupChat, GroupClientKey.group_id == GroupChat.id, isouter=True) \
+            .filter(GroupChat.owner_group_id == group_id, GroupClientKey.client_id == client_id) \
+            .one_or_none()
+        Database.get().session.remove()
+        return client
+
     def update(self):
         try:
             Database.get_session().merge(self)

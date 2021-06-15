@@ -13,6 +13,8 @@ import asyncio
 import base64
 import uuid
 from datetime import datetime
+from copy import copy, deepcopy
+
 
 
 class MessageController(BaseController):
@@ -219,16 +221,17 @@ class MessageController(BaseController):
         for client in lst_client:
             if client.GroupClientKey.client_id != request.fromClientId:
                 message_channel = "{}/message".format(client.GroupClientKey.client_id)
-                message_res_object.group_id = client.GroupClientKey.group_id
+                new_message_res_object = deepcopy(message_res_object)
+                new_message_res_object.group_id = client.GroupClientKey.group_id
                 if message_channel in client_message_queue:
-                    client_message_queue[message_channel].put(message_res_object)
+                    client_message_queue[message_channel].put(new_message_res_object)
                 else:
                     message = {
                         'id': message_res_object.id,
                         'client_id': message_res_object.client_id,
                         'created_at': message_res_object.created_at,
                         'from_client_id': message_res_object.from_client_id,
-                        'group_id': message_res_object.group_id,
+                        'group_id': client.GroupClientKey.group_id,
                         'group_type': message_res_object.group_type,
                         'message': base64.b64encode(message_res_object.message).decode('utf-8')
                     }
@@ -255,7 +258,7 @@ class MessageController(BaseController):
         if res_object is None:
             logger.error("send message to client failed")
 
-        message_res_object.group_id = group.id
+        #message_res_object.group_id = group.id
         return message_res_object
 
     # @request_logged

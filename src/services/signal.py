@@ -41,6 +41,12 @@ class SignalService(BaseService):
             return client_key
         return None
 
+    def group_by_owner_get_client_key(self, group_id, client_id):
+        client_key = self.group_chat_model.get_client_key_by_owner_group(group_id, client_id)
+        if client_key:
+            return client_key
+        return None
+
     def group_get_all_client_key(self, group_id):
         return self.group_client_key_model.get_all_in_group(group_id)
 

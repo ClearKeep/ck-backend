@@ -29,8 +29,9 @@ class ClientSignal:
         except:
             return None
 
-    def workspace_group_get_client_key(self, request):
+    def workspace_group_get_client_key(self, group_id, client_id):
         try:
+            request = signal_pb2.WorkspaceGroupGetClientKeyRequest(groupId=group_id, clientId=client_id)
             response = self.stub.WorkspaceGroupGetClientKey(request)
             return response
         except:
