@@ -22,27 +22,27 @@ class VideoCallStub(object):
         self.cancel_request_call = channel.unary_unary(
                 '/video_call.VideoCall/cancel_request_call',
                 request_serializer=protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
-                response_deserializer=protos_dot_video__call__pb2.BaseResponse.FromString,
+                response_deserializer=protos_dot_video__call__pb2.VideoCallResponse.FromString,
                 )
         self.miss_call = channel.unary_unary(
                 '/video_call.VideoCall/miss_call',
                 request_serializer=protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
-                response_deserializer=protos_dot_video__call__pb2.BaseResponse.FromString,
+                response_deserializer=protos_dot_video__call__pb2.VideoCallResponse.FromString,
                 )
         self.decline_call = channel.unary_unary(
                 '/video_call.VideoCall/decline_call',
                 request_serializer=protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
-                response_deserializer=protos_dot_video__call__pb2.BaseResponse.FromString,
+                response_deserializer=protos_dot_video__call__pb2.VideoCallResponse.FromString,
                 )
         self.end_call = channel.unary_unary(
                 '/video_call.VideoCall/end_call',
                 request_serializer=protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
-                response_deserializer=protos_dot_video__call__pb2.BaseResponse.FromString,
+                response_deserializer=protos_dot_video__call__pb2.VideoCallResponse.FromString,
                 )
         self.update_call = channel.unary_unary(
                 '/video_call.VideoCall/update_call',
                 request_serializer=protos_dot_video__call__pb2.UpdateCallRequest.SerializeToString,
-                response_deserializer=protos_dot_video__call__pb2.BaseResponse.FromString,
+                response_deserializer=protos_dot_video__call__pb2.VideoCallResponse.FromString,
                 )
 
 
@@ -96,27 +96,27 @@ def add_VideoCallServicer_to_server(servicer, server):
             'cancel_request_call': grpc.unary_unary_rpc_method_handler(
                     servicer.cancel_request_call,
                     request_deserializer=protos_dot_video__call__pb2.VideoCallRequest.FromString,
-                    response_serializer=protos_dot_video__call__pb2.BaseResponse.SerializeToString,
+                    response_serializer=protos_dot_video__call__pb2.VideoCallResponse.SerializeToString,
             ),
             'miss_call': grpc.unary_unary_rpc_method_handler(
                     servicer.miss_call,
                     request_deserializer=protos_dot_video__call__pb2.VideoCallRequest.FromString,
-                    response_serializer=protos_dot_video__call__pb2.BaseResponse.SerializeToString,
+                    response_serializer=protos_dot_video__call__pb2.VideoCallResponse.SerializeToString,
             ),
             'decline_call': grpc.unary_unary_rpc_method_handler(
                     servicer.decline_call,
                     request_deserializer=protos_dot_video__call__pb2.VideoCallRequest.FromString,
-                    response_serializer=protos_dot_video__call__pb2.BaseResponse.SerializeToString,
+                    response_serializer=protos_dot_video__call__pb2.VideoCallResponse.SerializeToString,
             ),
             'end_call': grpc.unary_unary_rpc_method_handler(
                     servicer.end_call,
                     request_deserializer=protos_dot_video__call__pb2.VideoCallRequest.FromString,
-                    response_serializer=protos_dot_video__call__pb2.BaseResponse.SerializeToString,
+                    response_serializer=protos_dot_video__call__pb2.VideoCallResponse.SerializeToString,
             ),
             'update_call': grpc.unary_unary_rpc_method_handler(
                     servicer.update_call,
                     request_deserializer=protos_dot_video__call__pb2.UpdateCallRequest.FromString,
-                    response_serializer=protos_dot_video__call__pb2.BaseResponse.SerializeToString,
+                    response_serializer=protos_dot_video__call__pb2.VideoCallResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -158,7 +158,7 @@ class VideoCall(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/cancel_request_call',
             protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
-            protos_dot_video__call__pb2.BaseResponse.FromString,
+            protos_dot_video__call__pb2.VideoCallResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -175,7 +175,7 @@ class VideoCall(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/miss_call',
             protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
-            protos_dot_video__call__pb2.BaseResponse.FromString,
+            protos_dot_video__call__pb2.VideoCallResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -192,7 +192,7 @@ class VideoCall(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/decline_call',
             protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
-            protos_dot_video__call__pb2.BaseResponse.FromString,
+            protos_dot_video__call__pb2.VideoCallResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -209,7 +209,7 @@ class VideoCall(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/end_call',
             protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
-            protos_dot_video__call__pb2.BaseResponse.FromString,
+            protos_dot_video__call__pb2.VideoCallResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -226,6 +226,6 @@ class VideoCall(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/update_call',
             protos_dot_video__call__pb2.UpdateCallRequest.SerializeToString,
-            protos_dot_video__call__pb2.BaseResponse.FromString,
+            protos_dot_video__call__pb2.VideoCallResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
