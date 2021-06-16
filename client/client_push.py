@@ -6,11 +6,11 @@ from protos import notify_push_pb2, notify_push_pb2_grpc
 
 
 class ClientPush:
-    def __init__(self, host, port):
-        self.stub = self.grpc_stub(host, port)
+    def __init__(self, workspace_domain):
+        self.stub = self.grpc_stub(workspace_domain)
 
-    def grpc_stub(self, host, port):
-        channel = grpc.insecure_channel(host + ':' + str(port))
+    def grpc_stub(self, workspace_domain):
+        channel = grpc.insecure_channel(workspace_domain)
         return notify_push_pb2_grpc.NotifyPushStub(channel)
 
     def push_text(self, request):
@@ -20,17 +20,17 @@ class ClientPush:
         except:
             return None
 
-    def push_voip(self, to_client_id, payload, from_client_id):
+    def push_voip(self, to_client_id, payload):
         try:
             request = notify_push_pb2.PushVoipRequest(
-                from_client_id=from_client_id,
-                payload=payload,
-                to_client_id=to_client_id
+                to_client_id=to_client_id,
+                payload=payload
             )
-            response = self.stub.push_voip(request)
-            return response
+            self.stub.push_voip(request)
+            #response =
+            #return response
         except:
-            return None
+            print('push notification call failed')
 
     def update_call(self, request):
         try:

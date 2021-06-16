@@ -46,7 +46,7 @@ async def start_server():
     upload_file_service.add_UploadFileServicer_to_server(UploadFileController(), server)
     workspace_service.add_WorkspaceServicer_to_server(WorkspaceController(), server)
     # init log
-    create_timed_rotating_log('logs/logfile.log')
+    create_timed_rotating_log('logs/logfile-' + str(grpc_port) + '.log')
     # start grpc api
     grpc_add = "0.0.0.0:{}".format(grpc_port)
     server.add_insecure_port(grpc_add)

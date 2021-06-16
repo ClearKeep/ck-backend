@@ -2,7 +2,7 @@ import os
 import json
 
 env = os.getenv("ENV")
-env_name = env if env else 'multiserver'
+env_name = env if env else 'multiserver2'
 with open(f'./configs/{env_name}.json') as json_data_file:
     data = json.load(json_data_file)
 print("Load config env=", env_name)

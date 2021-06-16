@@ -89,16 +89,18 @@ class NotifyPushService(BaseService):
                     continue
 
     async def push_voip_client(self, to_client_id, payload):
-        client_token = self.model.get_client(to_client_id)
-        try:
-            payload['client_id'] = client_token.client_id
-            if client_token.device_type == DeviceType.android:
-                android_data_notification(client_token.push_token, payload)
-            elif client_token.device_type == DeviceType.ios:
-                arr_token = client_token.push_token.split(',')
-                await ios_data_notification(arr_token[0], payload)
-        except Exception as e:
-            logger.error()
+        client_tokens = self.model.get_client(to_client_id)
+        if len(client_tokens) > 0:
+            client_token = client_tokens[0]
+            try:
+                payload['client_id'] = client_token.client_id
+                if client_token.device_type == DeviceType.android:
+                    android_data_notification(client_token.push_token, payload)
+                elif client_token.device_type == DeviceType.ios:
+                    arr_token = client_token.push_token.split(',')
+                    await ios_data_notification(arr_token[0], payload)
+            except Exception as e:
+                logger.error(e)
 
     async def push_voip_clients(self, lst_client, payload, from_client_id):
         # ios_tokens = []
