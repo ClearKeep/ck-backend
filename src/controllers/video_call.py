@@ -41,7 +41,7 @@ class VideoCallController(BaseController):
     @request_logged
     async def workspace_video_call(self, request, context):
         try:
-            from_client_id=request.from_client_id
+            from_client_id = request.from_client_id
             from_client_name = request.from_client_name
             group_id = request.group_id
             client_id = request.client_id
@@ -57,6 +57,7 @@ class VideoCallController(BaseController):
             #  create room
             self.service_group.create_rtc_group(group_id, webrtc_token)
             logger.info('janus webrtc token={}'.format(webrtc_token))
+            client_ws_url = get_system_config()['janus_webrtc'].get('client_ws_url')
 
             # send push notification to all member of group
             lst_client_in_groups = self.service_group.get_clients_in_group(group_id)
@@ -74,6 +75,8 @@ class VideoCallController(BaseController):
                         'group_name': group_obj.group_name if group_obj.group_name else '',
                         'group_type': group_obj.group_type if group_obj.group_type else '',
                         'group_rtc_token': webrtc_token,
+                        'group_rtc_url': client_ws_url,
+                        'group_rtc_id': str(group_id),
                         'from_client_id': from_client_id,
                         'from_client_name': from_client_name,
                         'from_client_avatar': '',
@@ -81,11 +84,11 @@ class VideoCallController(BaseController):
                         'stun_server': server_info.stun_server,
                         'turn_server': server_info.turn_server
                     }
-                    if client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
-                        await self.push_service.push_voip_clients(client.User.id, push_payload)
+                    if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+                        await NotifyPushService().push_voip_client(client.User.id, push_payload)
                     else:
                         ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.User.id,
-                                                                                            push_payload)
+                                                                                            json.dumps(push_payload))
 
             stun_server_obj = json.loads(server_info.stun_server)
             stun_server = video_call_pb2.StunServer(
@@ -101,16 +104,18 @@ class VideoCallController(BaseController):
                 pwd=turn_server_obj["pwd"]
             )
             return video_call_pb2.ServerResponse(
+                group_rtc_url=client_ws_url,
+                group_rtc_id=group_id,
+                group_rtc_token=webrtc_token,
                 stun_server=stun_server,
                 turn_server=turn_server,
-                group_rtc_token=webrtc_token
             )
         except Exception as e:
-                logger.error(e)
-                errors = [Message.get_error_object(Message.CLIENT_REQUEST_CALL_FAILED)]
-                context.set_details(json.dumps(
-                    errors, default=lambda x: x.__dict__))
-                context.set_code(grpc.StatusCode.INTERNAL)
+            logger.error(e)
+            errors = [Message.get_error_object(Message.CLIENT_REQUEST_CALL_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     async def call_to_group_owner(self, request, group_obj, from_client_id):
         from_client_username = ""
@@ -130,6 +135,8 @@ class VideoCallController(BaseController):
         self.service_group.create_rtc_group(group_id, webrtc_token)
         logger.info('janus webrtc token={}'.format(webrtc_token))
 
+        client_ws_url = get_system_config()['janus_webrtc'].get('client_ws_url')
+
         # send push notification to all member of group
         lst_client_in_groups = self.service_group.get_clients_in_group(group_id)
         # list token for each device type
@@ -138,7 +145,7 @@ class VideoCallController(BaseController):
             if client.User and client.User.id == from_client_id:
                 from_client_username = client.User.display_name
             else:
-                #if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
+                # if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
                 push_payload = {
                     'notify_type': 'request_call',
                     'call_type': request.call_type,
@@ -146,6 +153,8 @@ class VideoCallController(BaseController):
                     'group_name': group_obj.group_name if group_obj.group_name else '',
                     'group_type': group_obj.group_type if group_obj.group_type else '',
                     'group_rtc_token': webrtc_token,
+                    'group_rtc_url':  client_ws_url,
+                    'group_rtc_id': str(group_id),
                     'from_client_id': from_client_id,
                     'from_client_name': from_client_username,
                     'from_client_avatar': '',
@@ -156,7 +165,8 @@ class VideoCallController(BaseController):
                 if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                     await NotifyPushService().push_voip_client(client.User.id, push_payload)
                 else:
-                    ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,json.dumps(push_payload))
+                    ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
+                                                                                        json.dumps(push_payload))
 
         stun_server_obj = json.loads(server_info.stun_server)
         stun_server = video_call_pb2.StunServer(
@@ -172,9 +182,11 @@ class VideoCallController(BaseController):
             pwd=turn_server_obj["pwd"]
         )
         return video_call_pb2.ServerResponse(
+            group_rtc_url=client_ws_url,
+            group_rtc_id=group_id,
+            group_rtc_token=webrtc_token,
             stun_server=stun_server,
-            turn_server=turn_server,
-            group_rtc_token=webrtc_token
+            turn_server=turn_server
         )
 
     async def call_to_group_not_owner(self, request, group, from_client_id):
@@ -216,6 +228,8 @@ class VideoCallController(BaseController):
                     'group_name': group.group_name if group.group_name else '',
                     'group_type': group.group_type if group.group_type else '',
                     'group_rtc_token': obj_res.webrtc_token,
+                    'group_rtc_url': obj_res.group_rtc_url,
+                    'group_rtc_id': str(obj_res.group_rtc_id),
                     'from_client_id': from_client_id,
                     'from_client_name': from_client_username,
                     'from_client_avatar': '',
