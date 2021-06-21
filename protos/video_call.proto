@@ -51,20 +51,29 @@ message WorkspaceVideoCallRequest {
   string call_type = 7;
 }
 
-
-
 // Request: call update
 message UpdateCallRequest {
-  int64 group_id = 1;
-  string update_type = 2;
+  string client_id = 1;
+  int64 group_id = 2;
+  string update_type = 3;
 }
 //response: BaseResponse
 
+message WorkspaceUpdateCallRequest {
+  string from_client_id = 1;
+  string from_client_name = 2;
+  string from_client_avatar = 3;
+  string from_client_workspace_domain = 4;
+  string client_id = 5;
+  int64 group_id = 6;
+  string update_type = 7;
+}
+
+
 service VideoCall {
     rpc video_call(VideoCallRequest) returns (ServerResponse) {};
-    rpc cancel_request_call(VideoCallRequest) returns (BaseResponse) {};
     rpc update_call(UpdateCallRequest) returns (BaseResponse) {};
     //
     rpc workspace_video_call (WorkspaceVideoCallRequest) returns (ServerResponse);
-
+    rpc workspace_update_call(WorkspaceUpdateCallRequest) returns (BaseResponse) {};
 }

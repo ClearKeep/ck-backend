@@ -19,11 +19,6 @@ class VideoCallStub(object):
                 request_serializer=protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
                 response_deserializer=protos_dot_video__call__pb2.ServerResponse.FromString,
                 )
-        self.cancel_request_call = channel.unary_unary(
-                '/video_call.VideoCall/cancel_request_call',
-                request_serializer=protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
-                response_deserializer=protos_dot_video__call__pb2.BaseResponse.FromString,
-                )
         self.update_call = channel.unary_unary(
                 '/video_call.VideoCall/update_call',
                 request_serializer=protos_dot_video__call__pb2.UpdateCallRequest.SerializeToString,
@@ -34,18 +29,17 @@ class VideoCallStub(object):
                 request_serializer=protos_dot_video__call__pb2.WorkspaceVideoCallRequest.SerializeToString,
                 response_deserializer=protos_dot_video__call__pb2.ServerResponse.FromString,
                 )
+        self.workspace_update_call = channel.unary_unary(
+                '/video_call.VideoCall/workspace_update_call',
+                request_serializer=protos_dot_video__call__pb2.WorkspaceUpdateCallRequest.SerializeToString,
+                response_deserializer=protos_dot_video__call__pb2.BaseResponse.FromString,
+                )
 
 
 class VideoCallServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def video_call(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def cancel_request_call(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -64,6 +58,12 @@ class VideoCallServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def workspace_update_call(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_VideoCallServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -71,11 +71,6 @@ def add_VideoCallServicer_to_server(servicer, server):
                     servicer.video_call,
                     request_deserializer=protos_dot_video__call__pb2.VideoCallRequest.FromString,
                     response_serializer=protos_dot_video__call__pb2.ServerResponse.SerializeToString,
-            ),
-            'cancel_request_call': grpc.unary_unary_rpc_method_handler(
-                    servicer.cancel_request_call,
-                    request_deserializer=protos_dot_video__call__pb2.VideoCallRequest.FromString,
-                    response_serializer=protos_dot_video__call__pb2.BaseResponse.SerializeToString,
             ),
             'update_call': grpc.unary_unary_rpc_method_handler(
                     servicer.update_call,
@@ -86,6 +81,11 @@ def add_VideoCallServicer_to_server(servicer, server):
                     servicer.workspace_video_call,
                     request_deserializer=protos_dot_video__call__pb2.WorkspaceVideoCallRequest.FromString,
                     response_serializer=protos_dot_video__call__pb2.ServerResponse.SerializeToString,
+            ),
+            'workspace_update_call': grpc.unary_unary_rpc_method_handler(
+                    servicer.workspace_update_call,
+                    request_deserializer=protos_dot_video__call__pb2.WorkspaceUpdateCallRequest.FromString,
+                    response_serializer=protos_dot_video__call__pb2.BaseResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -111,23 +111,6 @@ class VideoCall(object):
         return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/video_call',
             protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
             protos_dot_video__call__pb2.ServerResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def cancel_request_call(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/cancel_request_call',
-            protos_dot_video__call__pb2.VideoCallRequest.SerializeToString,
-            protos_dot_video__call__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -162,5 +145,22 @@ class VideoCall(object):
         return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/workspace_video_call',
             protos_dot_video__call__pb2.WorkspaceVideoCallRequest.SerializeToString,
             protos_dot_video__call__pb2.ServerResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def workspace_update_call(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/video_call.VideoCall/workspace_update_call',
+            protos_dot_video__call__pb2.WorkspaceUpdateCallRequest.SerializeToString,
+            protos_dot_video__call__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

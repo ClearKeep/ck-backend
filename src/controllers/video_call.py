@@ -6,6 +6,7 @@ from src.services.video_call import VideoCallService
 from src.services.group import GroupService
 from src.services.server_info import ServerInfoService
 from src.services.notify_push import NotifyPushService
+from src.services.notify_inapp import NotifyInAppService
 from client.client_call import *
 import secrets
 
@@ -243,59 +244,143 @@ class VideoCallController(BaseController):
             raise
 
     @request_logged
-    async def cancel_request_call(self, request, context):
-        try:
-            header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            from_client_id = introspect_token['sub']
-            group_id = request.group_id
-            client_id = request.client_id
-            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                    get_system_config()['grpc_port'])
-            group = GroupService().get_group(group_id)
-            if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
-                request.group_id = group.owner_group_id
-                obj_res = ClientVideoCall(group.owner_workspace_domain).cancel_request_call(request)
-                if obj_res:
-                    return obj_res
-                else:
-                    raise
-            else:
-                obj_res = await self.service.cancel_request_call(group_id, from_client_id, client_id)
-                return obj_res
-        except Exception as e:
-            logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_CANCEL_REQUEST_CALL_FAILED)]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
-
-    @request_logged
     async def update_call(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             from_client_id = introspect_token['sub']
             group_id = request.group_id
-            # client_id = request.client_id
-            update_type = request.update_type
 
             owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
                                                     get_system_config()['grpc_port'])
-            group = GroupService().get_group(group_id)
+
+            group = GroupService().get_group_info(group_id)
             if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
-                request.group_id = group.owner_group_id
-                obj_res = ClientVideoCall(group.owner_workspace_domain).update_call(request)
-                if obj_res:
-                    return obj_res
-                else:
-                    raise
+                return await self.update_call_to_group_not_owner(request, group, from_client_id)
             else:
-                obj_res = self.service.update_call(update_type, group_id, from_client_id)
-                return obj_res
+                return await self.update_call_to_group_owner(request, from_client_id)
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(Message.CLIENT_UPDATE_CALL_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def workspace_update_call(self, request, context):
+        try:
+            from_client_id = request.from_client_id
+            from_client_name = request.from_client_name
+            group_id = request.group_id
+            client_id = request.client_id
+            update_type = request.update_type
+
+            # send push notification to all member of group
+            lst_client_in_groups = self.service_group.get_clients_in_group(group_id)
+            # list token for each device type
+            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
+                                                    get_system_config()['grpc_port'])
+
+            for client in lst_client_in_groups:
+                if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
+                    push_payload = {
+                        'notify_type': update_type,
+                        'group_id': str(client.GroupClientKey.group_id),
+                        'from_client_id': from_client_id,
+                        'from_client_name': from_client_name,
+                        'from_client_avatar': '',
+                        'client_id': client_id
+                    }
+                    if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+                        ret_val = NotifyInAppService().notify_client_update_call(update_type, client.GroupClientKey.client_id, from_client_id,
+                                                                                 client.GroupClientKey.group_id)
+                        if not ret_val:
+                            await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, push_payload)
+                    else:
+                        push_payload["group_id"] = str(client.GroupClientKey.client_workspace_group_id)
+                        ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
+                                                                                            json.dumps(push_payload))
+            return video_call_pb2.BaseResponse(
+                success=True
+            )
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.CLIENT_UPDATE_CALL_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    async def update_call_to_group_owner(self, request, from_client_id):
+        from_client_name = ""
+        owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
+                                                get_system_config()['grpc_port'])
+        group_id = request.group_id
+        client_id = request.client_id
+        update_type = request.update_type
+
+        # send push notification to all member of group
+        lst_client_in_groups = self.service_group.get_clients_in_group(group_id)
+
+        for client in lst_client_in_groups:
+            if client.User and client.User.id == from_client_id:
+                from_client_name = client.User.display_name
+            else:
+                push_payload = {
+                    'notify_type': update_type,
+                    'group_id': str(client.GroupClientKey.group_id),
+                    'from_client_id': from_client_id,
+                    'from_client_name': from_client_name,
+                    'from_client_avatar': '',
+                    'client_id': client_id
+                }
+                if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+                    ret_val = NotifyInAppService().notify_client_update_call(update_type, client.GroupClientKey.client_id, from_client_id,
+                                                                             client.GroupClientKey.group_id)
+                    if not ret_val:
+                        await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, push_payload)
+                else:
+                    push_payload["group_id"] = str(client.GroupClientKey.client_workspace_group_id)
+                    ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
+                                                                                        json.dumps(push_payload))
+        return video_call_pb2.BaseResponse(
+            success=True
+        )
+
+    async def update_call_to_group_not_owner(self, request, group, from_client_id):
+        client_id = request.client_id
+        update_type = request.update_type
+        from_client_username = ""
+        owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
+                                                get_system_config()['grpc_port'])
+        # update call to owner server, response ọbject push notification
+        lst_client = GroupService().get_clients_in_group_owner(group.owner_group_id)
+        for client in lst_client:
+            if client.User.id == from_client_id:
+                from_client_username = client.User.display_name
+            else:
+                ret_val = NotifyInAppService().notify_client_update_call(update_type, client.GroupClientKey.client_id, from_client_id, client.GroupClientKey.group_id)
+                if not ret_val:
+                    push_payload = {
+                        'notify_type': update_type,
+                        'group_id': str(client.GroupClientKey.group_id),
+                        'from_client_id': from_client_id,
+                        'from_client_name': from_client_username,
+                        'from_client_avatar': '',
+                        'client_id': client_id
+                    }
+                    await self.push_service.push_voip_client(client.GroupClientKey.client_id, push_payload)
+
+        request = video_call_pb2.WorkspaceUpdateCallRequest(
+            from_client_id=from_client_id,
+            from_client_name=from_client_username,
+            from_client_avatar="",
+            from_client_workspace_domain=owner_workspace_domain,
+            client_id=client_id,
+            group_id=group.owner_group_id,
+            update_type=update_type
+        )
+        obj_res = ClientVideoCall(group.owner_workspace_domain).workspace_update_call(request)
+        return video_call_pb2.BaseResponse(
+            success=True
+        )
+

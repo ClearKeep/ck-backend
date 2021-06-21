@@ -34,9 +34,9 @@ class ClientVideoCall:
         except:
             return None
 
-    def update_call(self, request):
+    def workspace_update_call(self, request):
         try:
-            response = self.stub.update_call(request)
+            response = self.stub.workspace_update_call(request)
             return response
         except:
             return None

@@ -12,6 +12,7 @@ IN_PEER = "in-peer"
 NEW_GROUP = "new-group"
 IN_GROUP = "in-group"
 PEER_UPDATE_SIGNAL_KEY = "peer-update-key"
+UPDATE_CALL = "update-call"
 
 client_notify_queue = {}
 
@@ -147,7 +148,11 @@ class NotifyInAppService(BaseService):
                     created_at=datetime.now()
                 )
                 client_notify_queue[notify_channel].put(notify)
+                return True
             except Exception as e:
                 logger.error(e)
+                return False
+        else:
+            return False
 
 
