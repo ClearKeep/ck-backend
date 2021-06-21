@@ -233,16 +233,16 @@ class AuthController(BaseController):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            client_id = introspect_token['sub']
+            user_id = introspect_token['sub']
             device_id = request.device_id
             refresh_token = request.refresh_token
-            self.service.remove_token(client_id=client_id, device_id=device_id)
-            MessageService().un_subscribe(client_id)
-            NotifyInAppService().un_subscribe(client_id)
+            self.service.remove_token(client_id=user_id, device_id=device_id)
+            MessageService().un_subscribe(user_id)
+            NotifyInAppService().un_subscribe(user_id)
             self.service.logout(refresh_token)
-            KeyCloakUtils.remove_session(
-                session_id=introspect_token['session_state']
-            )
+            # KeyCloakUtils.remove_session(
+            #     session_id=introspect_token['session_state']
+            # )
 
             return auth_messages.BaseResponse(
                 success=True
