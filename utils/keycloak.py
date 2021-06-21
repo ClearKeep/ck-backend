@@ -1,11 +1,12 @@
 # ref https://pypi.org/project/python-keycloak/
 from keycloak import KeycloakOpenID, KeycloakAdmin
 from keycloak import raise_error_from_response
+from keycloak import KeycloakGetError
 from utils.config import get_system_config
 import json
 
 URL_ADMIN_REMOVE_USER_SESSIONS = "admin/realms/{realm-name}/users/{id}/logout"
-URL_ADMIN_REMOVE_SESSION = "admin/realms/{realm}/sessions/{session}"
+URL_ADMIN_REMOVE_SESSION = "admin/realms/{realm-name}/sessions/{session}"
 
 # keycloak client
 config_keycloak_client = get_system_config()['keycloak_account']
