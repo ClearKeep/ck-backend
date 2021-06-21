@@ -19,8 +19,15 @@ class AuthController(BaseController):
         try:
             token = self.service.token(request.email, request.password)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+            user_id = introspect_token['sub']
+            user_sessions = KeyCloakUtils.get_sessions(user_id=user_id)
+            for user_session in user_sessions:
+                if user_session['id'] != introspect_token['session_state']:
+                    KeyCloakUtils.remove_session(
+                        session_id=user_session['id']
+                    )
             if token:
-                self.user_service.update_last_login(user_id=introspect_token['sub'])
+                self.user_service.update_last_login(user_id=user_id)
                 return auth_messages.AuthRes(
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
@@ -29,7 +36,9 @@ class AuthController(BaseController):
                     token_type=token['token_type'],
                     session_state=token['session_state'],
                     scope=token['scope'],
-                    hash_key=EncryptUtils.encoded_hash(request.password, introspect_token['sub']),
+                    hash_key=EncryptUtils.encoded_hash(
+                        request.password, user_id
+                    ),
                     base_response=auth_messages.BaseResponse(success=True)
                 )
             else:
@@ -224,13 +233,16 @@ class AuthController(BaseController):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            client_id = introspect_token['sub']
+            user_id = introspect_token['sub']
             device_id = request.device_id
             refresh_token = request.refresh_token
-            self.service.remove_token(client_id=client_id, device_id=device_id)
-            MessageService().un_subscribe(client_id)
-            NotifyInAppService().un_subscribe(client_id)
+            self.service.remove_token(client_id=user_id, device_id=device_id)
+            MessageService().un_subscribe(user_id)
+            NotifyInAppService().un_subscribe(user_id)
             self.service.logout(refresh_token)
+            # KeyCloakUtils.remove_session(
+            #     session_id=introspect_token['session_state']
+            # )
 
             return auth_messages.BaseResponse(
                 success=True
