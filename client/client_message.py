@@ -13,6 +13,14 @@ class ClientMessage:
         channel = grpc.insecure_channel(workspace_domain)
         return message_pb2_grpc.MessageStub(channel)
 
+
+    def get_messages_in_group(self, request):
+        try:
+            response = self.stub.get_messages_in_group(request)
+            return response
+        except:
+            return None
+
     def publish_message(self, request):
         try:
             response = self.stub.Publish(request)
