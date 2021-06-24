@@ -4,7 +4,7 @@ from src.services.user import UserService
 from middlewares.permission import *
 from middlewares.request_logged import *
 from utils.logger import *
-from utils.config import get_system_domain, get_ip_domain
+from utils.config import *
 from client.client_user import *
 
 
@@ -73,8 +73,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         try:
             client_id = request.client_id
             client_workspace_domain = request.workspace_domain
-            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                    get_system_config()['grpc_port'])
+            owner_workspace_domain = get_owner_workspace_domain()
+
             if client_workspace_domain == owner_workspace_domain:
                 user_info = self.service.get_user_info(client_id, owner_workspace_domain)
             else:
@@ -120,8 +120,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                    get_system_config()['grpc_port'])
+            owner_workspace_domain = get_owner_workspace_domain()
 
             obj_res = self.service.get_users(client_id, owner_workspace_domain)
             return obj_res

@@ -9,6 +9,7 @@ from src.services.notify_push import NotifyPushService
 from src.services.notify_inapp import NotifyInAppService
 from client.client_call import *
 import secrets
+from utils.config import *
 
 
 class VideoCallController(BaseController):
@@ -24,8 +25,7 @@ class VideoCallController(BaseController):
             from_client_id = introspect_token['sub']
             group_id = request.group_id
 
-            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                    get_system_config()['grpc_port'])
+            owner_workspace_domain = get_owner_workspace_domain()
 
             group = GroupService().get_group_info(group_id)
             if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
@@ -64,8 +64,7 @@ class VideoCallController(BaseController):
             lst_client_in_groups = self.service_group.get_clients_in_group(group_id)
             # list token for each device type
 
-            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                    get_system_config()['grpc_port'])
+            owner_workspace_domain = get_owner_workspace_domain()
 
             for client in lst_client_in_groups:
                 if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
@@ -120,8 +119,8 @@ class VideoCallController(BaseController):
 
     async def call_to_group_owner(self, request, group_obj, from_client_id):
         from_client_username = ""
-        owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                get_system_config()['grpc_port'])
+        owner_workspace_domain = get_owner_workspace_domain()
+
         group_id = request.group_id
         client_id = request.client_id
 
@@ -194,8 +193,8 @@ class VideoCallController(BaseController):
         client_id = request.client_id
         call_type = request.call_type
         from_client_username = ""
-        owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                get_system_config()['grpc_port'])
+        owner_workspace_domain = get_owner_workspace_domain()
+
         # request call to owner server, response ọbject push notification
         lst_client = GroupService().get_clients_in_group_owner(group.owner_group_id)
         other_client_in_this_workspace = []
@@ -251,8 +250,7 @@ class VideoCallController(BaseController):
             from_client_id = introspect_token['sub']
             group_id = request.group_id
 
-            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                    get_system_config()['grpc_port'])
+            owner_workspace_domain = get_owner_workspace_domain()
 
             group = GroupService().get_group_info(group_id)
             if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
@@ -278,8 +276,7 @@ class VideoCallController(BaseController):
             # send push notification to all member of group
             lst_client_in_groups = self.service_group.get_clients_in_group(group_id)
             # list token for each device type
-            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                    get_system_config()['grpc_port'])
+            owner_workspace_domain = get_owner_workspace_domain()
 
             for client in lst_client_in_groups:
                 if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
@@ -312,8 +309,8 @@ class VideoCallController(BaseController):
 
     async def update_call_to_group_owner(self, request, from_client_id):
         from_client_name = ""
-        owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                get_system_config()['grpc_port'])
+        owner_workspace_domain = get_owner_workspace_domain()
+
         group_id = request.group_id
         client_id = request.client_id
         update_type = request.update_type
@@ -350,8 +347,8 @@ class VideoCallController(BaseController):
         client_id = request.client_id
         update_type = request.update_type
         from_client_username = ""
-        owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                get_system_config()['grpc_port'])
+        owner_workspace_domain = get_owner_workspace_domain()
+
         # update call to owner server, response ọbject push notification
         lst_client = GroupService().get_clients_in_group_owner(group.owner_group_id)
         for client in lst_client:

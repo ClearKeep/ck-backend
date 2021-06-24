@@ -1,17 +1,15 @@
 from src.services.base import BaseService
 from src.models.group import GroupChat
 from src.models.user import User
-from protos import group_pb2
 from src.models.signal_group_key import GroupClientKey
 from src.services.notify_inapp import NotifyInAppService
 from src.services.janus_webrtc import JanusService
-from utils.config import get_system_config
 from client.client_group import *
 from client.client_user import *
 import requests
-import json
 import secrets
 import datetime
+from utils.config import *
 
 
 class GroupService(BaseService):
@@ -222,8 +220,7 @@ class GroupService(BaseService):
 
             # list client in group
             lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
-            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                    get_system_config()['grpc_port'])
+            owner_workspace_domain = get_owner_workspace_domain()
 
             for client in lst_client_in_group:
                 if client.GroupClientKey.client_workspace_domain is None:

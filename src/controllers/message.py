@@ -3,9 +3,7 @@ from middlewares.permission import *
 from middlewares.request_logged import *
 from src.services.message import MessageService, client_message_queue
 from src.services.group import GroupService
-from src.models.signal_group_key import GroupClientKey
 from src.services.notify_push import NotifyPushService
-from protos import message_pb2
 from client.client_message import *
 import grpc
 from grpc import aio
@@ -13,8 +11,8 @@ import asyncio
 import base64
 import uuid
 from datetime import datetime
-from copy import copy, deepcopy
-
+from copy import deepcopy
+from utils.config import *
 
 
 class MessageController(BaseController):
@@ -28,8 +26,7 @@ class MessageController(BaseController):
             off_set = request.off_set
             last_message_at = request.last_message_at
 
-            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                    get_system_config()['grpc_port'])
+            owner_workspace_domain = get_owner_workspace_domain()
 
             group = GroupService().get_group_info(group_id)
             if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
@@ -53,8 +50,7 @@ class MessageController(BaseController):
     async def Publish(self, request, context):
         print("Publish")
         try:
-            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                    get_system_config()['grpc_port'])
+            owner_workspace_domain = get_owner_workspace_domain()
             group = GroupService().get_group_info(request.groupId)
 
             if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
@@ -74,8 +70,7 @@ class MessageController(BaseController):
     async def workspace_publish(self, request, context):
         print("workspace_publish")
         try:
-            owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                    get_system_config()['grpc_port'])
+            owner_workspace_domain = get_owner_workspace_domain()
             group = GroupService().get_group_info(request.group_id)
             if group.owner_workspace_domain is None or group.owner_workspace_domain == owner_workspace_domain:
                 # store message here
@@ -100,7 +95,6 @@ class MessageController(BaseController):
                 updated_at=request.updated_at
             )
             # push notification for other client
-            other_clients_in_group = []
             lst_client = GroupService().get_clients_in_group(request.group_id)
 
             for client in lst_client:
@@ -157,8 +151,7 @@ class MessageController(BaseController):
         lst_client = GroupService().get_clients_in_group(group.id)
         push_service = NotifyPushService()
 
-        owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                get_system_config()['grpc_port'])
+        owner_workspace_domain = get_owner_workspace_domain()
 
         for client in lst_client:
             if client.GroupClientKey.client_id != request.fromClientId:
@@ -236,14 +229,13 @@ class MessageController(BaseController):
                         'message': base64.b64encode(message_res_object.message).decode('utf-8')
                     }
                     await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
-                                                    body="You have a new message",
-                                                    from_client_id=message_res_object.from_client_id,
-                                                    notify_type="new_message",
-                                                    data=json.dumps(message))
+                                                           body="You have a new message",
+                                                           from_client_id=message_res_object.from_client_id,
+                                                           notify_type="new_message",
+                                                           data=json.dumps(message))
 
-        #pubish message to owner server
-        owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
-                                                get_system_config()['grpc_port'])
+        # pubish message to owner server
+        owner_workspace_domain = get_owner_workspace_domain()
         request1 = message_pb2.WorkspacePublishRequest(
             from_client_id=request.fromClientId,
             from_client_workspace_domain=owner_workspace_domain,
@@ -258,7 +250,7 @@ class MessageController(BaseController):
         if res_object is None:
             logger.error("send message to client failed")
 
-        #message_res_object.group_id = group.id
+        # message_res_object.group_id = group.id
         return message_res_object
 
     # @request_logged
