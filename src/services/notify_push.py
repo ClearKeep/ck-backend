@@ -35,7 +35,10 @@ class NotifyPushService(BaseService):
             raise Exception(Message.UNAUTHENTICATED)
 
     async def push_text_to_client(self, to_client_id, title, body, from_client_id, notify_type, data):
-        client_token = self.model.get_client(to_client_id)
+        client_tokens = self.model.get_client(to_client_id)
+        if len(client_tokens) == 0:
+            return
+        client_token = client_tokens[0]
         from_client_devices = self.model.get_client(from_client_id)
         if len(from_client_devices) > 0 and client_token.device_id == from_client_devices[0].device_id:
             return

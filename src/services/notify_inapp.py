@@ -5,6 +5,7 @@ from queue import Queue
 from middlewares.request_logged import *
 import asyncio
 from datetime import datetime
+from utils.config import *
 
 # notify type
 NEW_PEER = "new-peer"
@@ -16,6 +17,7 @@ UPDATE_CALL = "update-call"
 
 client_notify_queue = {}
 
+
 class NotifyInAppService(BaseService):
     def __init__(self):
         super().__init__(Notify())
@@ -24,7 +26,7 @@ class NotifyInAppService(BaseService):
         lst_notify = self.model.get_unread_notifies(client_id)
         lst_obj_res = []
         for obj in lst_notify:
-            obj_res = notify_pb2.NotifyObjectResponse (
+            obj_res = notify_pb2.NotifyObjectResponse(
                 id=obj.id,
                 client_id=obj.client_id,
                 notify_type=obj.notify_type,
@@ -59,7 +61,6 @@ class NotifyInAppService(BaseService):
             await asyncio.sleep(1)
         client_notify_queue[notify_channel] = Queue()
 
-
     def un_subscribe(self, client_id):
         notify_channel = "{}/notify".format(client_id)
         if notify_channel in client_notify_queue:
@@ -71,11 +72,14 @@ class NotifyInAppService(BaseService):
         self.model.update()
 
     # add notify
-    def notify_invite_peer(self, client_id, ref_client_id, ref_group_id):
+    def notify_invite_peer(self, client_id, ref_client_id, ref_group_id, ref_workspace_domain, ref_subject_name):
         self.model = Notify(
             client_id=client_id,
             ref_client_id=ref_client_id,
+            client_workspace_domain=get_owner_workspace_domain(),
             ref_group_id=ref_group_id,
+            ref_subject_name=ref_subject_name,
+            ref_workspace_domain=ref_workspace_domain,
             notify_type=NEW_PEER,
             notify_image=None,
             notify_title="New message",
@@ -91,11 +95,14 @@ class NotifyInAppService(BaseService):
             except Exception as e:
                 logger.error(e)
 
-    def notify_invite_group(self, client_id, ref_client_id, ref_group_id):
+    def notify_invite_group(self, client_id, ref_client_id, ref_group_id, ref_workspace_domain, ref_subject_name):
         self.model = Notify(
             client_id=client_id,
+            client_workspace_domain=get_owner_workspace_domain(),
             ref_client_id=ref_client_id,
             ref_group_id=ref_group_id,
+            ref_subject_name=ref_subject_name,
+            ref_workspace_domain=ref_workspace_domain,
             notify_type=NEW_GROUP,
             notify_image=None,
             notify_title="Group Chat",
@@ -118,8 +125,11 @@ class NotifyInAppService(BaseService):
                 notify = Notify(
                     id=0,
                     client_id=client_id,
+                    client_workspace_domain=get_owner_workspace_domain(),
                     ref_client_id=ref_client_id,
                     ref_group_id=ref_group_id,
+                    ref_subject_name="",
+                    ref_workspace_domain="",
                     notify_type=PEER_UPDATE_SIGNAL_KEY,
                     notify_image=None,
                     notify_title="",
@@ -138,8 +148,11 @@ class NotifyInAppService(BaseService):
                 notify = Notify(
                     id=0,
                     client_id=client_id,
+                    client_workspace_domain=get_owner_workspace_domain(),
                     ref_client_id=ref_client_id,
                     ref_group_id=ref_group_id,
+                    ref_subject_name="",
+                    ref_workspace_domain="",
                     notify_type=notify_type,
                     notify_image=None,
                     notify_title="",
@@ -154,5 +167,3 @@ class NotifyInAppService(BaseService):
                 return False
         else:
             return False
-
-

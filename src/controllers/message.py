@@ -13,6 +13,7 @@ import uuid
 from datetime import datetime
 from copy import deepcopy
 from utils.config import *
+from protos import message_pb2
 
 
 class MessageController(BaseController):
@@ -48,7 +49,6 @@ class MessageController(BaseController):
 
     @request_logged
     async def Publish(self, request, context):
-        print("Publish")
         try:
             owner_workspace_domain = get_owner_workspace_domain()
             group = GroupService().get_group_info(request.groupId)
@@ -68,7 +68,6 @@ class MessageController(BaseController):
 
     @request_logged
     async def workspace_publish(self, request, context):
-        print("workspace_publish")
         try:
             owner_workspace_domain = get_owner_workspace_domain()
             group = GroupService().get_group_info(request.group_id)
@@ -125,7 +124,7 @@ class MessageController(BaseController):
                         res_object = ClientMessage(
                             client.GroupClientKey.client_workspace_domain).workspace_publish_message(request)
                         if res_object is None:
-                            logger.error("send message to client failed")
+                            logger.error("Workspace Publish Message to client failed")
             return new_message
 
         except Exception as e:
@@ -259,7 +258,6 @@ class MessageController(BaseController):
         message_channel = "{}/message".format(client_id)
         message_response = None
         while message_channel in client_message_queue:
-            print('client listening=', client_id)
             try:
                 if client_message_queue[message_channel].qsize() > 0:
                     message_response = client_message_queue[message_channel].get(True)
@@ -269,7 +267,6 @@ class MessageController(BaseController):
                 logger.info('Client {} is disconnected'.format(client_id))
                 client_message_queue[message_channel] = None
                 del client_message_queue[message_channel]
-                print('len queue after=', len(client_message_queue))
                 # push text notification for client
                 push_service = NotifyPushService()
                 if message_response:
@@ -288,7 +285,6 @@ class MessageController(BaseController):
 
     @request_logged
     async def Subscribe(self, request, context):
-        print("message Subscribe api")
         try:
             await self.service.subscribe(request.clientId)
             return message_pb2.BaseResponse(success=True)

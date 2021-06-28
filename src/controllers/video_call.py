@@ -10,6 +10,7 @@ from src.services.notify_inapp import NotifyInAppService
 from client.client_call import *
 import secrets
 from utils.config import *
+from protos import video_call_pb2
 
 
 class VideoCallController(BaseController):

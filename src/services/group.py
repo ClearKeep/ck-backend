@@ -36,7 +36,10 @@ class GroupService(BaseService):
         #         return res_obj
 
         tmp_list_client = []
+        created_by_user = None
         for obj in lst_client:
+            if obj.id == created_by:
+                created_by_user = obj
             tmp_list_client.append({"id": obj.id, "display_name": obj.display_name, "workspace_domain": obj.workspace_domain})
 
         self.model = GroupChat(
@@ -71,14 +74,18 @@ class GroupService(BaseService):
                 client_group_key.add()
                 # notify per client
                 if group_type == "peer":
-                    self.notify_service.notify_invite_peer(obj, created_by, new_group.id)
+                    self.notify_service.notify_invite_peer(obj.id, created_by, new_group.id, created_by_user.workspace_domain, created_by_user.display_name)
                 else:
-                    self.notify_service.notify_invite_group(obj, created_by, new_group.id)
+                    self.notify_service.notify_invite_group(obj.id, created_by, new_group.id, created_by_user.workspace_domain, created_by_user.display_name)
             else:
                 # need to call other workspace and create group key
-                group_res_object = ClientGroup(obj.workspace_domain).create_group_workspace(group_name, group_type,
-                                                                                            obj.id, new_group.group_clients,new_group.id,
-                                                                                            owner_workspace_domain)
+                request = group_pb2.CreateGroupWorkspaceRequest(group_name=group_name, group_type=group_type,
+                                                                from_client_id=created_by,
+                                                                client_id=obj.id, lst_client=new_group.group_clients,
+                                                                owner_group_id=new_group.id,
+                                                                owner_workspace_domain=owner_workspace_domain)
+
+                group_res_object = ClientGroup(obj.workspace_domain).create_group_workspace(request)
                 client_group_key = GroupClientKey().set_key(new_group.id, obj.id,
                                                             group_res_object.client_workspace_domain,
                                                             group_res_object.group_id, None, None)
@@ -104,7 +111,7 @@ class GroupService(BaseService):
 
         return res_obj
 
-    def add_group_workspace(self, group_name, group_type, client_id, lst_client, owner_group_id, owner_workspace_domain):
+    def add_group_workspace(self, group_name, group_type, from_client_id, client_id, lst_client, owner_group_id, owner_workspace_domain):
         self.model = GroupChat(
             group_name=group_name,
             group_type=group_type,
@@ -123,11 +130,18 @@ class GroupService(BaseService):
         if user_info:
             client_name = user_info.display_name
 
+        list_client_in_group = json.loads(lst_client)
+        created_by_user = None
+        for obj in list_client_in_group:
+            if obj['id'] == from_client_id:
+                created_by_user = obj
+
+
         # notify to client
         if group_type == "peer":
-            self.notify_service.notify_invite_peer(client_id, "", new_group.id)
+            self.notify_service.notify_invite_peer(client_id, from_client_id, new_group.id, owner_workspace_domain, created_by_user['display_name'])
         else:
-            self.notify_service.notify_invite_group(client_id, "", new_group.id)
+            self.notify_service.notify_invite_group(client_id,from_client_id, new_group.id, owner_workspace_domain, created_by_user['display_name'])
 
         client_workspace_domain = "{}:{}".format(get_system_config()['server_domain'], get_system_config()['grpc_port'])
         return group_pb2.CreateGroupWorkspaceResponse(

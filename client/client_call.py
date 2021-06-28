@@ -1,8 +1,7 @@
 from __future__ import print_function
-
 import grpc
-
-from protos import video_call_pb2, video_call_pb2_grpc
+from protos import video_call_pb2_grpc
+from utils.logger import *
 
 
 class ClientVideoCall:
@@ -17,26 +16,30 @@ class ClientVideoCall:
         try:
             response = self.stub.video_call(request)
             return response
-        except:
+        except Exception as e:
+            logger.error(e)
             return None
 
     def workspace_video_call(self, request):
         try:
             response = self.stub.workspace_video_call(request)
             return response
-        except:
+        except Exception as e:
+            logger.error(e)
             return None
 
     def cancel_request_call(self, request):
         try:
             response = self.stub.cancel_request_call(request)
             return response
-        except:
+        except Exception as e:
+            logger.error(e)
             return None
 
     def workspace_update_call(self, request):
         try:
             response = self.stub.workspace_update_call(request)
             return response
-        except:
+        except Exception as e:
+            logger.error(e)
             return None

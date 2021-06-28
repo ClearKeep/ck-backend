@@ -7,8 +7,11 @@ class Notify(Database.get().Model):
     __tablename__ = 'notify'
     id = Database.get().Column(Database.get().Integer, primary_key=True)
     client_id = Database.get().Column(Database.get().String(36), nullable=True)
+    client_workspace_domain = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     ref_client_id = Database.get().Column(Database.get().String(36), unique=False, nullable=True)
     ref_group_id = Database.get().Column(Database.get().Integer, unique=False, nullable=True)
+    ref_subject_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
+    ref_workspace_domain = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     notify_type = Database.get().Column(Database.get().String(36), unique=False, nullable=True)  # new-peer, in-peer, new-group, in-group
     notify_image = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     notify_title = Database.get().Column(Database.get().String(255), unique=False, nullable=True)

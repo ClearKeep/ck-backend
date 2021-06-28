@@ -67,7 +67,6 @@ class SignalController(BaseController):
 
     @request_logged
     async def GroupGetClientKey(self, request, context):
-        print("GroupGetClientKey")
         group_id = request.groupId
         client_id = request.clientId
         # get group first

@@ -1,8 +1,7 @@
 from __future__ import print_function
-
 import grpc
-
 from protos import notify_push_pb2, notify_push_pb2_grpc
+from utils.logger import *
 
 
 class ClientPush:
@@ -17,7 +16,8 @@ class ClientPush:
         try:
             response = self.stub.push_text(request)
             return response
-        except:
+        except Exception as e:
+            logger.error(e)
             return None
 
     def push_voip(self, to_client_id, payload):
@@ -27,14 +27,14 @@ class ClientPush:
                 payload=payload
             )
             self.stub.push_voip(request)
-            #response =
-            #return response
-        except:
-            print('push notification call failed')
+        except Exception as e:
+            logger.error(e)
+            return None
 
     def update_call(self, request):
         try:
             response = self.stub.update_call(request)
             return response
-        except:
+        except Exception as e:
+            logger.error(e)
             return None

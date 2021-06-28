@@ -1,8 +1,7 @@
 from __future__ import print_function
-
 import grpc
-
 from protos import signal_pb2, signal_pb2_grpc
+from utils.logger import *
 
 
 class ClientSignal:
@@ -18,7 +17,8 @@ class ClientSignal:
             request = signal_pb2.PeerGetClientKeyRequest(clientId=client_id, workspace_domain=workspace_domain)
             response = self.stub.PeerGetClientKey(request)
             return response
-        except:
+        except Exception as e:
+            logger.error(e)
             return None
 
     def group_get_client_key(self, group_id, client_id):
@@ -26,7 +26,8 @@ class ClientSignal:
             request = signal_pb2.GroupGetClientKeyRequest(groupId=group_id, clientId=client_id)
             response = self.stub.GroupGetClientKey(request)
             return response
-        except:
+        except Exception as e:
+            logger.error(e)
             return None
 
     def workspace_group_get_client_key(self, group_id, client_id):
@@ -34,7 +35,8 @@ class ClientSignal:
             request = signal_pb2.WorkspaceGroupGetClientKeyRequest(groupId=group_id, clientId=client_id)
             response = self.stub.WorkspaceGroupGetClientKey(request)
             return response
-        except:
+        except Exception as e:
+            logger.error(e)
             return None
 
 
