@@ -1,4 +1,9 @@
+import sys
+from pathlib import Path
+current_file_path = Path(__file__).resolve()
+sys.path.append(str(current_file_path.parent.parent.parent))
 from flask import Flask
+from flask_migrate import Migrate
 from utils.config import get_system_config
 from src.controllers.turn_server import Server
 from src.models.base import *
@@ -15,6 +20,7 @@ from src.models.signal_peer_key import PeerClientKey
 from src.models.user import User
 from src.models.message_user_read import MessageUserRead
 from src.models.workspace import Workspace
+from src.models.video_call import VideoCall
 
 db_config = get_system_config()['db']
 db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(
@@ -34,6 +40,7 @@ app.config["SQLALCHEMY_POOL_TIMEOUT"] = 300
 app.config["SQLALCHEMY_MAX_OVERFLOW"] = -1
 
 db.init_app(app)
+migrate = Migrate(app, db)
 with app.app_context():
     db.create_all()
 

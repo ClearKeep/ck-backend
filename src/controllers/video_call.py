@@ -35,7 +35,10 @@ class VideoCallController(BaseController):
             from_client_id = introspect_token['sub']
             group_id = request.group_id
             client_id = request.client_id
-            obj_res = await self.service.cancel_request_call(group_id, from_client_id, client_id)
+            call_id = request.call_id
+            obj_res = await self.service.cancel_request_call(group_id,
+                                                             from_client_id,
+                                                             client_id, call_id)
 
             return obj_res
         except Exception as e:
@@ -53,7 +56,9 @@ class VideoCallController(BaseController):
             from_client_id = introspect_token['sub']
             group_id = request.group_id
             client_id = request.client_id
-            obj_res = await self.service.miss_call(group_id, from_client_id, client_id)
+            call_id = request.call_id
+            obj_res = await self.service.miss_call(group_id, from_client_id,
+                                                   client_id, call_id)
 
             return obj_res
         except Exception as e:
@@ -71,7 +76,9 @@ class VideoCallController(BaseController):
             from_client_id = introspect_token['sub']
             group_id = request.group_id
             client_id = request.client_id
-            obj_res = await self.service.decline_call(group_id, from_client_id, client_id)
+            call_id = request.call_id
+            obj_res = await self.service.decline_call(group_id, from_client_id,
+                                                      client_id, call_id)
 
             return obj_res
         except Exception as e:
@@ -89,7 +96,9 @@ class VideoCallController(BaseController):
             from_client_id = introspect_token['sub']
             group_id = request.group_id
             client_id = request.client_id
-            obj_res = await self.service.end_call(group_id, from_client_id, client_id)
+            call_id = request.call_id
+            obj_res = await self.service.end_call(group_id, from_client_id,
+                                                  client_id, call_id)
 
             return obj_res
         except Exception as e:
