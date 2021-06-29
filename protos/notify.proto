@@ -12,7 +12,12 @@ message NotifyObjectResponse {
   string notify_content = 9;
   bool read_flg = 11;
   int64 created_at = 12;
+
+  string client_workspace_domain = 13;
+  string ref_subject_name = 14;
+  string ref_workspace_domain = 15;
 }
+
 
 //errors response
 message ErrorRes {

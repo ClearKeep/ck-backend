@@ -12,7 +12,7 @@ import datetime
 class UserService(BaseService):
     def __init__(self):
         super().__init__(User())
-        self.domain = get_system_domain()
+        #self.domain = get_system_domain()
 
     def create_new_user(self, id, email, display_name, auth_source):
         # password, first_name, last_name,
@@ -119,14 +119,14 @@ class UserService(BaseService):
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.UPDATE_PROFILE_FAILED)
 
-    def get_user_info(self, client_id):
+    def get_user_info(self, client_id, workspace_domain):
         try:
             user_info = self.model.get(client_id)
             if user_info is not None:
                 return user_pb2.UserInfoResponse(
                     id=user_info.id,
                     display_name=user_info.display_name,
-                    domain=self.domain
+                    workspace_domain=workspace_domain
                 )
             else:
                 raise Exception(Message.GET_USER_INFO_FAILED)
@@ -153,7 +153,7 @@ class UserService(BaseService):
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.SEARCH_USER_FAILED)
 
-    def get_users(self, client_id):
+    def get_users(self, client_id, workspace_domain):
         try:
             lst_user = self.model.get_users(client_id)
             lst_obj_res = []
@@ -161,6 +161,7 @@ class UserService(BaseService):
                 obj_res = user_pb2.UserInfoResponse(
                     id=obj.id,
                     display_name=obj.display_name,
+                    workspace_domain=workspace_domain,
                 )
                 lst_obj_res.append(obj_res)
 

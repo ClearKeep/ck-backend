@@ -11,11 +11,14 @@ from utils.logger import *
 class GroupChat(Database.get().Model):
     __tablename__ = 'group_chat'
     id = Database.get().Column(Database.get().Integer, primary_key=True)
+    owner_group_id = Database.get().Column(Database.get().Integer, nullable=True)
+    owner_workspace_domain = Database.get().Column(Database.get().String(255), nullable=True)
     group_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     group_avatar = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     group_type = Database.get().Column(Database.get().String(36), unique=False, nullable=True)
     group_clients = Database.get().Column(Database.get().Text, unique=False, nullable=True)
     group_rtc_token = Database.get().Column(Database.get().Text, unique=False, nullable=True)
+    total_member = Database.get().Column(Database.get().Integer, nullable=True)
     created_by = Database.get().Column(Database.get().String(36), unique=False, nullable=True)
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_by = Database.get().Column(Database.get().String(36), unique=False, nullable=True)
@@ -40,6 +43,13 @@ class GroupChat(Database.get().Model):
             .one_or_none()
         Database.get().session.remove()
 
+        return group
+
+    def get_group(self, group_id):
+        group = Database.get_session().query(GroupChat) \
+            .filter(GroupChat.id == group_id) \
+            .one_or_none()
+        Database.get().session.remove()
         return group
 
     def get_group_type(self, group_id):
@@ -77,6 +87,21 @@ class GroupChat(Database.get().Model):
             .all()
         Database.get().session.remove()
         return result
+
+    def get_by_group_owner(self, owner_group_id):
+        result = Database.get_session().query(GroupChat) \
+            .filter(GroupChat.owner_group_id == owner_group_id) \
+            .all()
+        Database.get().session.remove()
+        return result
+
+    def get_client_key_by_owner_group(self, group_id, client_id):
+        client = Database.get_session().query(GroupClientKey) \
+            .join(GroupChat, GroupClientKey.group_id == GroupChat.id, isouter=True) \
+            .filter(GroupChat.owner_group_id == group_id, GroupClientKey.client_id == client_id) \
+            .one_or_none()
+        Database.get().session.remove()
+        return client
 
     def update(self):
         try:

@@ -1,14 +1,15 @@
 from src.services.base import BaseService
 from src.models.group import GroupChat
-from protos import group_pb2
+from src.models.user import User
 from src.models.signal_group_key import GroupClientKey
 from src.services.notify_inapp import NotifyInAppService
 from src.services.janus_webrtc import JanusService
-from utils.config import get_system_config
+from client.client_group import *
+from client.client_user import *
 import requests
-import json
 import secrets
 import datetime
+from utils.config import *
 
 
 class GroupService(BaseService):
@@ -17,29 +18,36 @@ class GroupService(BaseService):
         self.notify_service = NotifyInAppService()
         self.transaction = 'ckbackendtransaction'
 
-    def add_group(self, group_name, group_type, lst_client_id, created_by):
+    def add_group(self, group_name, group_type, lst_client, created_by):
         # check duplicate with create group peer
-        if group_type == 'peer':
-            group_chat = self.check_joined(create_by=created_by, list_client_id=lst_client_id)
-            if group_chat:
-                res_obj = group_pb2.GroupObjectResponse(
-                    group_id=group_chat.id,
-                    group_name=group_chat.group_name,
-                    group_type=group_chat.group_type,
-                    group_avatar=group_chat.group_avatar,
-                    created_by_client_id=group_chat.created_by,
-                    created_at=int(group_chat.created_at.timestamp() * 1000),
-                    updated_by_client_id=group_chat.updated_by,
-                    group_rtc_token=group_chat.group_rtc_token
-                )
-                return res_obj
+        # if group_type == 'peer':
+        #     group_chat = self.check_joined(create_by=created_by, list_client=lst_client)
+        #     if group_chat:
+        #         res_obj = group_pb2.GroupObjectResponse(
+        #             group_id=group_chat.id,
+        #             group_name=group_chat.group_name,
+        #             group_type=group_chat.group_type,
+        #             group_avatar=group_chat.group_avatar,
+        #             created_by_client_id=group_chat.created_by,
+        #             created_at=int(group_chat.created_at.timestamp() * 1000),
+        #             updated_by_client_id=group_chat.updated_by,
+        #             group_rtc_token=group_chat.group_rtc_token
+        #         )
+        #         return res_obj
+
+        tmp_list_client = []
+        created_by_user = None
+        for obj in lst_client:
+            if obj.id == created_by:
+                created_by_user = obj
+            tmp_list_client.append({"id": obj.id, "display_name": obj.display_name, "workspace_domain": obj.workspace_domain})
 
         self.model = GroupChat(
             group_name=group_name,
             group_type=group_type,
             created_by=created_by,
             updated_at=datetime.datetime.now(),
-            group_clients=str(lst_client_id),
+            group_clients=json.dumps(tmp_list_client),
             group_rtc_token=secrets.token_hex(10)
         )
         new_group = self.model.add()
@@ -58,26 +66,90 @@ class GroupService(BaseService):
         if new_group.updated_at is not None:
             res_obj.updated_at = int(new_group.updated_at.timestamp() * 1000)
 
-        for obj in lst_client_id:
+        owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'], get_system_config()['grpc_port'])
+        for obj in lst_client:
             # add to signal group key
-            client_group_key = GroupClientKey().set_key(new_group.id, obj, None, None)
-            client_group_key.add()
-            # notify per client
-            if group_type == "peer":
-                self.notify_service.notify_invite_peer(obj, created_by, new_group.id)
+            if obj.workspace_domain == owner_workspace_domain:
+                client_group_key = GroupClientKey().set_key(new_group.id, obj.id, None, None, None, None)
+                client_group_key.add()
+                # notify per client
+                if group_type == "peer":
+                    self.notify_service.notify_invite_peer(obj.id, created_by, new_group.id, created_by_user.workspace_domain, created_by_user.display_name)
+                else:
+                    self.notify_service.notify_invite_group(obj.id, created_by, new_group.id, created_by_user.workspace_domain, created_by_user.display_name)
             else:
-                self.notify_service.notify_invite_group(obj, created_by, new_group.id)
+                # need to call other workspace and create group key
+                request = group_pb2.CreateGroupWorkspaceRequest(group_name=group_name, group_type=group_type,
+                                                                from_client_id=created_by,
+                                                                client_id=obj.id, lst_client=new_group.group_clients,
+                                                                owner_group_id=new_group.id,
+                                                                owner_workspace_domain=owner_workspace_domain)
+
+                group_res_object = ClientGroup(obj.workspace_domain).create_group_workspace(request)
+                client_group_key = GroupClientKey().set_key(new_group.id, obj.id,
+                                                            group_res_object.client_workspace_domain,
+                                                            group_res_object.group_id, None, None)
+                client_group_key.add()
+
+                client_in = group_pb2.ClientInGroupResponse(
+                    id=group_res_object.client_id,
+                    display_name=group_res_object.client_name,
+                    workspace_domain=group_res_object.client_workspace_domain
+                )
+                res_obj.lst_client.append(client_in)
 
         # list client in group
         lst_client_in_group = GroupClientKey().get_clients_in_group(new_group.id)
         for client in lst_client_in_group:
-            client_in = group_pb2.ClientInGroupResponse(
-                id=client.User.id,
-                display_name=client.User.display_name
-            )
-            res_obj.lst_client.append(client_in)
+            if client.GroupClientKey.client_workspace_domain is None:
+                client_in = group_pb2.ClientInGroupResponse(
+                    id=client.User.id,
+                    display_name=client.User.display_name,
+                    workspace_domain=owner_workspace_domain
+                )
+                res_obj.lst_client.append(client_in)
 
         return res_obj
+
+    def add_group_workspace(self, group_name, group_type, from_client_id, client_id, lst_client, owner_group_id, owner_workspace_domain):
+        self.model = GroupChat(
+            group_name=group_name,
+            group_type=group_type,
+            group_clients=lst_client,
+            owner_group_id=owner_group_id,
+            owner_workspace_domain=owner_workspace_domain,
+            updated_at=datetime.datetime.now()
+        )
+        new_group = self.model.add()
+        # add to signal group key
+        client_group_key = GroupClientKey().set_key(new_group.id, client_id, None, None, None, None)
+        client_group_key.add()
+
+        client_name = ""
+        user_info = User().get(client_id)
+        if user_info:
+            client_name = user_info.display_name
+
+        list_client_in_group = json.loads(lst_client)
+        created_by_user = None
+        for obj in list_client_in_group:
+            if obj['id'] == from_client_id:
+                created_by_user = obj
+
+
+        # notify to client
+        if group_type == "peer":
+            self.notify_service.notify_invite_peer(client_id, from_client_id, new_group.id, owner_workspace_domain, created_by_user['display_name'])
+        else:
+            self.notify_service.notify_invite_group(client_id,from_client_id, new_group.id, owner_workspace_domain, created_by_user['display_name'])
+
+        client_workspace_domain = "{}:{}".format(get_system_config()['server_domain'], get_system_config()['grpc_port'])
+        return group_pb2.CreateGroupWorkspaceResponse(
+            group_id=new_group.id,
+            client_id=client_id,
+            client_name=client_name,
+            client_workspace_domain=client_workspace_domain
+        )
 
     def register_webrtc_token(self, token):
         self.token = token
@@ -162,12 +234,25 @@ class GroupService(BaseService):
 
             # list client in group
             lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
+            owner_workspace_domain = get_owner_workspace_domain()
+
             for client in lst_client_in_group:
-                client_in = group_pb2.ClientInGroupResponse(
-                    id=client.User.id,
-                    display_name=client.User.display_name
-                )
-                res_obj.lst_client.append(client_in)
+                if client.GroupClientKey.client_workspace_domain is None:
+                    client_in = group_pb2.ClientInGroupResponse(
+                        id=client.User.id,
+                        display_name=client.User.display_name,
+                        workspace_domain=owner_workspace_domain,
+                    )
+                    res_obj.lst_client.append(client_in)
+                else:
+                    #call to other workspace domain to get client
+                    client_in_workspace = ClientUser(client.GroupClientKey.client_workspace_domain).get_user_info(client.GroupClientKey.client_id, client.GroupClientKey.client_workspace_domain )
+                    client_in = group_pb2.ClientInGroupResponse(
+                        id=client_in_workspace.id,
+                        display_name=client_in_workspace.display_name,
+                        workspace_domain=client.GroupClientKey.client_workspace_domain
+                    )
+                    res_obj.lst_client.append(client_in)
 
             if obj.last_message_at:
                 res_obj.last_message_at = int(obj.last_message_at.timestamp() * 1000)
@@ -210,7 +295,7 @@ class GroupService(BaseService):
                 created_by_client_id=obj.created_by,
                 created_at=int(obj.created_at.timestamp() * 1000),
                 updated_by_client_id=obj.updated_by,
-                group_rtc_token = obj.group_rtc_token
+                group_rtc_token=obj.group_rtc_token
             )
             if obj.updated_at is not None:
                 obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
@@ -218,13 +303,13 @@ class GroupService(BaseService):
             if obj.last_message_at:
                 obj_res.last_message_at = int(obj.last_message_at.timestamp() * 1000)
 
-            for client in lst_client_in_groups:
-                if client.group_id == obj.id:
-                    client_in = group_pb2.ClientInGroupResponse(
-                        id=client.User.id,
-                        display_name=client.User.display_name
-                    )
-                    obj_res.lst_client.append(client_in)
+            # for client in lst_client_in_groups:
+            #     if client.group_id == obj.id:
+            #         client_in = group_pb2.ClientInGroupResponse(
+            #             id=client.User.id,
+            #             display_name=client.User.display_name
+            #         )
+            #         obj_res.lst_client.append(client_in)
 
             # get last message
             if item.Message:
@@ -265,7 +350,7 @@ class GroupService(BaseService):
                 created_by_client_id=obj.created_by,
                 created_at=int(obj.created_at.timestamp() * 1000),
                 updated_by_client_id=obj.updated_by,
-                group_rtc_token = obj.group_rtc_token
+                group_rtc_token=obj.group_rtc_token
             )
             if obj.group_name:
                 obj_res.group_name = obj.group_name
@@ -276,13 +361,14 @@ class GroupService(BaseService):
             if obj.updated_at:
                 obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
 
-            for client in lst_client_in_groups:
-                if client.group_id == obj.id:
-                    client_in = group_pb2.ClientInGroupResponse(
-                        id=client.User.id,
-                        display_name=client.User.display_name
-                    )
-                    obj_res.lst_client.append(client_in)
+            group_clients = json.loads(obj.group_clients)
+            for client in group_clients:
+                client_in = group_pb2.ClientInGroupResponse(
+                    id=client['id'],
+                    display_name=client['display_name'],
+                    workspace_domain=client['workspace_domain'],
+                )
+                obj_res.lst_client.append(client_in)
 
             if obj.last_message_at:
                 obj_res.last_message_at = int(obj.last_message_at.timestamp() * 1000)
@@ -320,13 +406,27 @@ class GroupService(BaseService):
         )
         return response
 
-    def check_joined(self, create_by, list_client_id):
+    def check_joined(self, create_by, list_client):
         lst_group_peer = self.model.get_joined_group_type(client_id=create_by, group_type="peer")
-        for member_id in list_client_id:
+        for member in list_client:
+            member_id = member.id
             if member_id != create_by:
                 for group_joined in lst_group_peer:
                     if group_joined.group_clients:
-                        if member_id in group_joined.group_clients:
+                        lst_group_client = json.loads(group_joined.group_clients)
+                        lst_group_client_id = [item["id"] for item in lst_group_client]
+                        if member_id in lst_group_client_id:
                             return group_joined.GroupChat
         return None
+
+    def get_group_info(self, group_id):
+        return self.model.get_group(group_id)
+
+    def get_clients_in_group(self, group_id):
+        return GroupClientKey().get_clients_in_group(group_id)
+
+    def get_clients_in_group_owner(self, group_owner_id):
+        lst_group = self.model.get_by_group_owner(group_owner_id)
+        group_ids = (group.id for group in lst_group)
+        return GroupClientKey().get_clients_in_groups(group_ids)
 

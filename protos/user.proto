@@ -47,13 +47,13 @@ message ChangePasswordRequest {
 message UserInfoResponse {
     string id = 1;
     string display_name = 2;
-    string domain = 3;
+    string workspace_domain = 3;
 }
 
 //Request: get other user info
 message GetUserRequest {
     string client_id = 1;
-    string domain = 2;
+    string workspace_domain = 2;
 }
 
 // Response: UserObjectResponse

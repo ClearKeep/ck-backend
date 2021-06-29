@@ -10,15 +10,35 @@ class GroupController(BaseController):
 
     @request_logged
     async def create_group(self, request, context):
-        print("group create_group api")
         try:
             # header_data = dict(context.invocation_metadata())
             # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             # created_by_client_id = introspect_token['sub']
             group_name = request.group_name
             group_type = request.group_type
-            lst_client_id = request.lst_client_id
-            obj_res = self.service.add_group(group_name, group_type, lst_client_id, request.created_by_client_id)
+            lst_client = request.lst_client
+            obj_res = self.service.add_group(group_name, group_type, lst_client, request.created_by_client_id)
+
+            return obj_res
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def create_group_workspace(self, request, context):
+        try:
+            group_name = request.group_name
+            group_type = request.group_type
+            from_client_id = request.from_client_id
+            client_id = request.client_id
+            lst_client = request.lst_client
+            owner_group_id = request.owner_group_id
+            owner_workspace_domain = request.owner_workspace_domain
+            obj_res = self.service.add_group_workspace(group_name, group_type, from_client_id, client_id, lst_client, owner_group_id,
+                                                       owner_workspace_domain)
 
             return obj_res
         except Exception as e:
@@ -30,7 +50,6 @@ class GroupController(BaseController):
 
     @request_logged
     async def get_group(self, request, context):
-        print("group get_group api")
         try:
             group_id = request.group_id
             obj_res = self.service.get_group(group_id)
@@ -50,7 +69,6 @@ class GroupController(BaseController):
 
     @request_logged
     async def search_groups(self, request, context):
-        print("group search_groups api")
         try:
             keyword = request.keyword
             obj_res = self.service.search_group(keyword)
@@ -64,7 +82,6 @@ class GroupController(BaseController):
 
     @request_logged
     async def get_joined_groups(self, request, context):
-        print("group get_joined_groups api")
         try:
             # header_data = dict(context.invocation_metadata())
             # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -80,7 +97,6 @@ class GroupController(BaseController):
 
     @request_logged
     async def invite_to_group(self, request, context):
-        print("group invite_to_group api")
         try:
             pass
         except Exception as e:
@@ -92,7 +108,6 @@ class GroupController(BaseController):
 
     @request_logged
     async def join_group(self, request, context):
-        print("group join_group api")
         try:
             pass
         except Exception as e:
