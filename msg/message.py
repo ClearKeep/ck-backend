@@ -54,7 +54,9 @@ class Message:
     JOIN_WORKSPACE_FAILED = 1045
 
     EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN = 1046
-
+    CLIENT_MISS_CALL_FAILED = 1047
+    CLIENT_DECLINE_CALL_FAILED = 1048
+    CLIENT_END_CALL_FAILED = 1049
     CLIENT_EDIT_MESSAGE_FAILED = 1050
 
     msg_dict = {
@@ -101,6 +103,9 @@ class Message:
         EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN: "The account with this email "
             "does not exist. Please try again",
         CLIENT_EDIT_MESSAGE_FAILED: "Edit message failed. Please try again",
+        CLIENT_MISS_CALL_FAILED: "Miss Call failed, Please try again",
+        CLIENT_DECLINE_CALL_FAILED: "Decline Call failed, Please try again",
+        CLIENT_END_CALL_FAILED: "End Call failed, Please try again",
     }
 
     @staticmethod

@@ -37,7 +37,8 @@ message TurnServer {
 message VideoCallRequest {
   string client_id = 1;
   int64 group_id = 2;
-  string call_type = 3; //audio or video
+  /* string call_type = 3; //audio or video */
+  string call_id = 3;
 }
 //response: BaseResponse
 

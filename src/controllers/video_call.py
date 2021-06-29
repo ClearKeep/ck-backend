@@ -244,60 +244,6 @@ class VideoCallController(BaseController):
             raise
 
     @request_logged
-    async def miss_call(self, request, context):
-        try:
-            header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            from_client_id = introspect_token['sub']
-            group_id = request.group_id
-            client_id = request.client_id
-            obj_res = await self.service.miss_call(group_id, from_client_id, client_id)
-
-            return obj_res
-        except Exception as e:
-            logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_MISS_CALL_FAILED)]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
-
-    @request_logged
-    async def decline_call(self, request, context):
-        try:
-            header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            from_client_id = introspect_token['sub']
-            group_id = request.group_id
-            client_id = request.client_id
-            obj_res = await self.service.decline_call(group_id, from_client_id, client_id)
-
-            return obj_res
-        except Exception as e:
-            logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_DECLINE_CALL_FAILED)]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
-
-    @request_logged
-    async def end_call(self, request, context):
-        try:
-            header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            from_client_id = introspect_token['sub']
-            group_id = request.group_id
-            client_id = request.client_id
-            obj_res = await self.service.end_call(group_id, from_client_id, client_id)
-
-            return obj_res
-        except Exception as e:
-            logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_END_CALL_FAILED)]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
-
-    @request_logged
     async def update_call(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())

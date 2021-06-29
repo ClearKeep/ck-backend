@@ -3,6 +3,8 @@ import json
 from utils.config import get_system_config
 import uuid
 from src.models.signal_group_key import GroupClientKey
+from src.models.video_call import VideoCall
+from src.models.message import Message
 from src.services.notify_push import NotifyPushService
 from src.services.server_info import ServerInfoService
 from src.services.notify_inapp import NotifyInAppService
