@@ -228,7 +228,7 @@ class VideoCallController(BaseController):
                     'group_id': str(client["group_id"]),
                     'group_name': group.group_name if group.group_name else '',
                     'group_type': group.group_type if group.group_type else '',
-                    'group_rtc_token': obj_res.webrtc_token,
+                    'group_rtc_token': obj_res.group_rtc_token,
                     'group_rtc_url': obj_res.group_rtc_url,
                     'group_rtc_id': str(obj_res.group_rtc_id),
                     'from_client_id': from_client_id,
@@ -238,7 +238,7 @@ class VideoCallController(BaseController):
                     'stun_server': obj_res.stun_server,
                     'turn_server': obj_res.turn_server
                 }
-                await self.push_service.push_voip_clients(client.User.id, push_payload)
+                await NotifyPushService().push_voip_client(client["client_id"], push_payload)
             return obj_res
         else:
             raise
@@ -366,7 +366,7 @@ class VideoCallController(BaseController):
                         'from_client_avatar': '',
                         'client_id': client_id
                     }
-                    await self.push_service.push_voip_client(client.GroupClientKey.client_id, push_payload)
+                    await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, push_payload)
 
         request = video_call_pb2.WorkspaceUpdateCallRequest(
             from_client_id=from_client_id,
