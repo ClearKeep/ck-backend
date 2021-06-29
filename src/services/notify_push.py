@@ -105,6 +105,7 @@ class NotifyPushService(BaseService):
             except Exception as e:
                 logger.error(e)
 
+
     async def push_voip_clients(self, lst_client, payload, from_client_id):
         # ios_tokens = []
         # android_tokens = []

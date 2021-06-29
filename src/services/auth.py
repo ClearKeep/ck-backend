@@ -4,6 +4,8 @@ from utils.logger import *
 from src.services.notify_push import NotifyPushService
 import json
 from src.services.user import UserService
+from src.models.base import Database
+from src.models.user import User
 from utils.config import get_system_config
 import requests
 
@@ -79,14 +81,23 @@ class AuthService:
     def send_forgot_password(self, email):
         try:
             user = self.get_user_by_email(email=email)
-            if user:
-                KeyCloakUtils.send_forgot_password(user_id=user["id"], email=email)
-                return user.id
-            else:
+            if not user:
                 raise Exception(Message.USER_NOT_FOUND)
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.USER_NOT_FOUND)
+        else:
+            auth_source = Database.get_session().query(User) \
+                .filter(User.id == user['id']) \
+                .filter(User.last_login_at != None) \
+                .all()[0] \
+                .auth_source
+            Database.get().session.remove()
+            if auth_source == 'account':
+                KeyCloakUtils.send_forgot_password(user_id=user["id"], email=email)
+                return user['id']
+            else:
+                raise Exception(Message.EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN)
 
     # login google
     def google_login(self, google_id_token):

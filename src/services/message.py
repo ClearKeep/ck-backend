@@ -52,6 +52,37 @@ class MessageService(BaseService):
 
         return res_obj
 
+    def update_message(
+            self,
+            group_id,
+            from_client_id,
+            client_id,
+            message,
+            message_id):
+        self.model = Message().get(message_id)
+        updated_at = datetime.now()
+        self.model.updated_at = updated_at
+        self.model.update()
+        edited_message = self.model
+        res_obj = message_pb2.MessageObjectResponse(
+            id=edited_message.id,
+            group_id=edited_message.group_id,
+            from_client_id=edited_message.from_client_id,
+            message=message,
+            created_at=int(edited_message.created_at.timestamp() * 1000)
+        )
+        if edited_message.client_id:
+            res_obj.client_id = edited_message.client_id
+        if edited_message.updated_at:
+            res_obj.updated_at = int(edited_message.updated_at.timestamp() * 1000)
+
+        if client_id:
+            res_obj.group_type = "peer"
+        else:
+            res_obj.group_type = "group"
+
+        return res_obj
+
     def add_message(self, group_id, from_client_id, client_id, message):
         thread = Thread(target=self.store_message, args=(group_id, from_client_id, client_id, message))
         thread.start()

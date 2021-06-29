@@ -90,6 +90,14 @@ message ReadMessagesRequest {
 }
 // Response: groupObjectResponse
 
+message EditMessageRequest {
+  string fromClientId = 1;
+  string clientId = 2;
+  int64 groupId = 3;
+  string groupType = 4;
+  bytes message = 5;
+  string id = 6;
+}
 
 // Method
 service Message {
@@ -102,4 +110,5 @@ service Message {
     rpc read_messages (ReadMessagesRequest) returns (BaseResponse);
     //
     rpc workspace_publish (WorkspacePublishRequest) returns (MessageObjectResponse);
+    //rpc edit_message (EditMessageRequest) returns (MessageObjectResponse);
 }

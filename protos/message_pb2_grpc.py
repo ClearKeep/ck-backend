@@ -95,6 +95,7 @@ class MessageServicer(object):
 
     def workspace_publish(self, request, context):
         """
+        rpc edit_message (EditMessageRequest) returns (MessageObjectResponse);
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
