@@ -66,7 +66,7 @@ class GroupService(BaseService):
         if new_group.updated_at is not None:
             res_obj.updated_at = int(new_group.updated_at.timestamp() * 1000)
 
-        owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'], get_system_config()['grpc_port'])
+        owner_workspace_domain = get_owner_workspace_domain()
         for obj in lst_client:
             # add to signal group key
             if obj.workspace_domain == owner_workspace_domain:
@@ -143,7 +143,7 @@ class GroupService(BaseService):
         else:
             self.notify_service.notify_invite_group(client_id,from_client_id, new_group.id, owner_workspace_domain, created_by_user['display_name'])
 
-        client_workspace_domain = "{}:{}".format(get_system_config()['server_domain'], get_system_config()['grpc_port'])
+        client_workspace_domain = get_owner_workspace_domain()
         return group_pb2.CreateGroupWorkspaceResponse(
             group_id=new_group.id,
             client_id=client_id,

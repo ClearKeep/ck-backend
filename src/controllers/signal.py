@@ -5,6 +5,7 @@ from src.services.group import GroupService
 from middlewares.permission import *
 from middlewares.request_logged import *
 from client.client_signal import *
+from utils.config import get_owner_workspace_domain
 
 
 class SignalController(BaseController):
@@ -27,7 +28,7 @@ class SignalController(BaseController):
     async def PeerGetClientKey(self, request, context):
         client_id = request.clientId
         client_workspace_domain = request.workspace_domain
-        owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'], get_system_config()['grpc_port'])
+        owner_workspace_domain = get_owner_workspace_domain()
         if client_workspace_domain and client_workspace_domain != owner_workspace_domain:
             # get key from other server
             obj_resp = ClientSignal(client_workspace_domain).get_user_signal_key(client_id, client_workspace_domain)
@@ -71,7 +72,7 @@ class SignalController(BaseController):
         client_id = request.clientId
         # get group first
         group = GroupService().get_group_obj(group_id)
-        owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'], get_system_config()['grpc_port'])
+        owner_workspace_domain = get_owner_workspace_domain()
         if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
             owner_workspace_group_id = group.owner_group_id
             obj_resp = self.service.group_by_owner_get_client_key(owner_workspace_group_id, client_id)
