@@ -85,6 +85,7 @@ class VideoCallController(BaseController):
                         'stun_server': server_info.stun_server,
                         'turn_server': server_info.turn_server
                     }
+                    logger.info(push_payload)
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                         await NotifyPushService().push_voip_client(client.User.id, push_payload)
                     else:
@@ -163,6 +164,7 @@ class VideoCallController(BaseController):
                     'stun_server': server_info.stun_server,
                     'turn_server': server_info.turn_server
                 }
+                logger.info(push_payload)
                 if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                     await NotifyPushService().push_voip_client(client.User.id, push_payload)
                 else:
@@ -238,6 +240,7 @@ class VideoCallController(BaseController):
                     'stun_server': obj_res.stun_server,
                     'turn_server': obj_res.turn_server
                 }
+                logger.info(push_payload)
                 await NotifyPushService().push_voip_client(client["client_id"], push_payload)
             return obj_res
         else:
