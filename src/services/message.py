@@ -8,6 +8,7 @@ from datetime import datetime
 from queue import Queue
 import uuid
 import asyncio
+from utils.config import *
 
 client_message_queue = {}
 
@@ -49,6 +50,8 @@ class MessageService(BaseService):
             res_obj.client_id = new_message.client_id
         if new_message.updated_at:
             res_obj.updated_at = int(new_message.updated_at.timestamp() * 1000)
+
+        res_obj.client_workspace_domain = get_owner_workspace_domain()
 
         return res_obj
 

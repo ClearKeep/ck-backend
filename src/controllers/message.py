@@ -107,6 +107,7 @@ class MessageController(BaseController):
                             message = {
                                 'id': new_message.id,
                                 'client_id': new_message.client_id,
+                                'client_workspace_domain': get_owner_workspace_domain(),
                                 'created_at': new_message.created_at,
                                 'from_client_id': new_message.from_client_id,
                                 'group_id': new_message.group_id,
@@ -162,6 +163,7 @@ class MessageController(BaseController):
                         message = {
                             'id': message_res_object.id,
                             'client_id': message_res_object.client_id,
+                            'client_workspace_domain': get_owner_workspace_domain(),
                             'created_at': message_res_object.created_at,
                             'from_client_id': message_res_object.from_client_id,
                             'group_id': message_res_object.group_id,
@@ -209,6 +211,7 @@ class MessageController(BaseController):
         # publish message to user in this server first
         lst_client = GroupService().get_clients_in_group_owner(group.owner_group_id)
         push_service = NotifyPushService()
+        owner_workspace_domain = get_owner_workspace_domain()
 
         for client in lst_client:
             if client.GroupClientKey.client_id != request.fromClientId:
@@ -221,6 +224,7 @@ class MessageController(BaseController):
                     message = {
                         'id': message_res_object.id,
                         'client_id': message_res_object.client_id,
+                        'client_workspace_domain': owner_workspace_domain,
                         'created_at': message_res_object.created_at,
                         'from_client_id': message_res_object.from_client_id,
                         'group_id': client.GroupClientKey.group_id,
@@ -234,7 +238,6 @@ class MessageController(BaseController):
                                                            data=json.dumps(message))
 
         # pubish message to owner server
-        owner_workspace_domain = get_owner_workspace_domain()
         request1 = message_pb2.WorkspacePublishRequest(
             from_client_id=request.fromClientId,
             from_client_workspace_domain=owner_workspace_domain,
@@ -273,6 +276,7 @@ class MessageController(BaseController):
                     message = {
                         'id': message_response.id,
                         'client_id': message_response.client_id,
+                        'client_workspace_domain': get_owner_workspace_domain(),
                         'created_at': message_response.created_at,
                         'from_client_id': message_response.from_client_id,
                         'group_id': message_response.group_id,

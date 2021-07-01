@@ -43,7 +43,7 @@ class NotifyInAppController(BaseController):
                         ref_client_id=notify_response.ref_client_id,
                         ref_group_id=notify_response.ref_group_id,
                         ref_subject_name=notify_response.ref_subject_name,
-                        ref_workspace_domain = notify_response.ref_workspace_domain,
+                        ref_workspace_domain=notify_response.ref_workspace_domain,
                         notify_type=notify_response.notify_type,
                         notify_image=notify_response.notify_image,
                         notify_title=notify_response.notify_title,
