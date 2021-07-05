@@ -19,3 +19,19 @@ class ClientGroup:
         except Exception as e:
             logger.error(e)
             return None
+
+    def add_member_workspace(self, request):
+        try:
+            response = self.stub.add_member_workspace(request)
+            return response
+        except Exception as e:
+            logger.error(e)
+            return None
+
+    def add_member(self, request):
+        try:
+            response = self.stub.add_member(request)
+            return response
+        except Exception as e:
+            logger.error(e)
+            return None

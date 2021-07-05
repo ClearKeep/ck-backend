@@ -2,6 +2,8 @@ from src.controllers.base import *
 from middlewares.permission import *
 from middlewares.request_logged import *
 from src.services.group import GroupService
+from utils.config import get_owner_workspace_domain
+from protos import group_pb2
 
 
 class GroupController(BaseController):
@@ -96,12 +98,52 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    async def invite_to_group(self, request, context):
+    async def add_member(self, request, context):
         try:
-            pass
+            current_workspace_domain = get_owner_workspace_domain()
+            group = GroupService().get_group_info(request.group_id)
+            if (group.owner_workspace_domain and
+                    group.owner_workspace_domain != current_workspace_domain):
+                res_obj = self.service.add_member_to_group_not_owner(
+                    request, group)
+                return res_obj
+            else:
+                res_obj = self.service.add_member_to_group_owner(
+                    request, group)
+                return res_obj
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+            return group_pb2.BaseResponse(
+                success=False,
+                errors=group_pb2.ErrorRes(
+                    code=errors[0].code,
+                    message=errors[0].message
+                )
+            )
+
+    @request_logged
+    async def add_member_workspace(self, request, context):
+        try:
+            obj_res = self.service.add_member_workspace(
+                request.group_name,
+                request.group_type,
+                request.adding_member_id,
+                request.adding_member_display_name,
+                request.added_member_id,
+                request.clients,
+                request.owner_group_id,
+                request.owner_workspace_domain,
+                request.group_id,
+                request.added_member_workspace_domain
+            )
+            return obj_res
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)

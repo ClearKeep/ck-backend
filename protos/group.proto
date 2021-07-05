@@ -104,12 +104,19 @@ message SearchGroupsResponse {
   repeated GroupObjectResponse lst_group = 1;
 }
 
-// Request: invite to group
-message InviteToGroupRequest {
-  string from_client_id = 1;
-  string client_id = 2;
+// Request: add member to group
+message MemberInfo {
+  string id = 1;
+  string display_name = 2;
+  string workspace_domain = 3;
+}
+
+message AddMemberRequest {
+  MemberInfo added_member_info = 1;
+  string adding_member_id = 2;
   int64 group_id = 3;
 }
+
 // Response BaseResponse
 
 
@@ -140,6 +147,24 @@ message CreateGroupWorkspaceResponse {
   string client_workspace_domain = 4;
 }
 
+// Request: AddMemberWorkspaceRequest
+// Federation: server adds a group for an user in another workspace
+message AddMemberWorkspaceRequest {
+  string group_name = 1;
+  string group_type = 2;
+  string adding_member_id = 3;
+  string adding_member_display_name = 4;
+  string added_member_id = 5;
+  string clients = 6;
+  int64 owner_group_id = 7;
+  string owner_workspace_domain = 8;
+  int64 group_id = 9;
+  string added_member_workspace_domain = 10;
+}
+
+message AddMemberWorkspaceResponse {
+  int64 group_id = 1;
+}
 
 // Method
 service Group {
@@ -149,6 +174,7 @@ service Group {
     rpc get_group(GetGroupRequest) returns (GroupObjectResponse) {};
     rpc search_groups(SearchGroupsRequest) returns (SearchGroupsResponse) {};
     rpc get_joined_groups(GetJoinedGroupsRequest) returns (GetJoinedGroupsResponse) {};
-    rpc invite_to_group(InviteToGroupRequest) returns (BaseResponse) {};
+    rpc add_member(AddMemberRequest) returns (BaseResponse) {};
+    rpc add_member_workspace(AddMemberWorkspaceRequest) returns (AddMemberWorkspaceResponse) {};
     rpc join_group(JoinGroupRequest) returns (BaseResponse) {};
 }
