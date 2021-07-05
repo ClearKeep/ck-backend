@@ -120,7 +120,7 @@ class VideoCallController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     async def call_to_group_owner(self, request, group_obj, from_client_id):
-        from_client_username = ""
+        from_client_name = ""
         owner_workspace_domain = get_owner_workspace_domain()
 
         group_id = request.group_id
@@ -142,12 +142,12 @@ class VideoCallController(BaseController):
         # send push notification to all member of group
         lst_client_in_groups = self.service_group.get_clients_in_group(group_id)
         # list token for each device type
+        from_client = next(client for client in lst_client_in_groups if client.User.id == from_client_id)
+        if from_client and from_client.User:
+            from_client_name = from_client.User.display_name
 
         for client in lst_client_in_groups:
-            if client.User and client.User.id == from_client_id:
-                from_client_username = client.User.display_name
-            else:
-                # if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
+            if client.User and client.User.id != from_client_id:
                 push_payload = {
                     'notify_type': 'request_call',
                     'call_type': request.call_type,
@@ -158,7 +158,7 @@ class VideoCallController(BaseController):
                     'group_rtc_url':  client_ws_url,
                     'group_rtc_id': str(group_id),
                     'from_client_id': from_client_id,
-                    'from_client_name': from_client_username,
+                    'from_client_name': from_client_name,
                     'from_client_avatar': '',
                     'client_id': client_id,
                     'stun_server': server_info.stun_server,
@@ -322,10 +322,12 @@ class VideoCallController(BaseController):
         # send push notification to all member of group
         lst_client_in_groups = self.service_group.get_clients_in_group(group_id)
 
+        from_client = next(client for client in lst_client_in_groups if client.User.id == from_client_id)
+        if from_client and from_client.User:
+            from_client_name = from_client.User.display_name
+
         for client in lst_client_in_groups:
-            if client.User and client.User.id == from_client_id:
-                from_client_name = client.User.display_name
-            else:
+            if client.User and client.User.id != from_client_id:
                 push_payload = {
                     'notify_type': update_type,
                     'group_id': str(client.GroupClientKey.group_id),
