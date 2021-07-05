@@ -168,7 +168,7 @@ class GroupService(BaseService):
         else:
             self.notify_service.notify_invite_group(client_id,from_client_id, new_group.id, owner_workspace_domain, created_by_user['display_name'])
 
-        client_workspace_domain = "{}:{}".format(get_system_config()['server_domain'], get_system_config()['grpc_port'])
+        client_workspace_domain = get_owner_workspace_domain()
         return group_pb2.CreateGroupWorkspaceResponse(
             group_id=new_group.id,
             client_id=client_id,

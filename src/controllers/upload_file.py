@@ -21,7 +21,7 @@ class UploadFileController(BaseController):
             return obj_res
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            errors = [Message.get_error_object(Message.UPLOAD_FILE_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -37,7 +37,7 @@ class UploadFileController(BaseController):
             return obj_res
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            errors = [Message.get_error_object(Message.UPLOAD_FILE_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -49,7 +49,7 @@ class UploadFileController(BaseController):
             return obj_res
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            errors = [Message.get_error_object(Message.UPLOAD_FILE_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)

@@ -79,6 +79,7 @@ class MessageController(BaseController):
                     group_id=request.group_id,
                     group_type=request.group_type,
                     from_client_id=request.from_client_id,
+                    from_client_workspace_domain=request.from_client_workspace_domain,
                     client_id=request.client_id,
                     message=request.message
                 )
@@ -89,6 +90,7 @@ class MessageController(BaseController):
                 group_id=request.group_id,
                 group_type=request.group_type,
                 from_client_id=request.from_client_id,
+                from_client_workspace_domain=request.from_client_workspace_domain,
                 message=request.message,
                 created_at=request.created_at,
                 updated_at=request.updated_at
@@ -100,6 +102,7 @@ class MessageController(BaseController):
                 if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                         message_channel = "{}/message".format(client.GroupClientKey.client_id)
+                        new_message.client_id = client.GroupClientKey.client_id
                         if message_channel in client_message_queue:
                             client_message_queue[message_channel].put(new_message)
                         else:
@@ -107,8 +110,10 @@ class MessageController(BaseController):
                             message = {
                                 'id': new_message.id,
                                 'client_id': new_message.client_id,
+                                'client_workspace_domain': get_owner_workspace_domain(),
                                 'created_at': new_message.created_at,
                                 'from_client_id': new_message.from_client_id,
+                                'from_client_workspace_domain': new_message.from_client_workspace_domain,
                                 'group_id': new_message.group_id,
                                 'group_type': request.group_type,
                                 'message': base64.b64encode(new_message.message).decode('utf-8')
@@ -135,35 +140,41 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     async def publish_to_group_owner(self, request, group):
+        owner_workspace_domain = get_owner_workspace_domain()
         # store message here
         message_id = str(uuid.uuid4())
         created_at = datetime.now()
+
         message_res_object = MessageService().store_message(
             message_id=message_id,
             created_at=created_at,
             group_id=group.id,
             group_type=group.group_type,
             from_client_id=request.fromClientId,
+            from_client_workspace_domain=owner_workspace_domain,
             client_id=request.clientId,
             message=request.message
         )
         lst_client = GroupService().get_clients_in_group(group.id)
         push_service = NotifyPushService()
 
-        owner_workspace_domain = get_owner_workspace_domain()
-
         for client in lst_client:
             if client.GroupClientKey.client_id != request.fromClientId:
                 if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+
+                    message_res_object.client_id = client.GroupClientKey.client_id
                     message_channel = "{}/message".format(client.GroupClientKey.client_id)
+
                     if message_channel in client_message_queue:
                         client_message_queue[message_channel].put(message_res_object)
                     else:
                         message = {
                             'id': message_res_object.id,
                             'client_id': message_res_object.client_id,
+                            'client_workspace_domain': owner_workspace_domain,
                             'created_at': message_res_object.created_at,
                             'from_client_id': message_res_object.from_client_id,
+                            'from_client_workspace_domain': owner_workspace_domain,
                             'group_id': message_res_object.group_id,
                             'group_type': message_res_object.group_type,
                             'message': base64.b64encode(message_res_object.message).decode('utf-8')
@@ -177,7 +188,7 @@ class MessageController(BaseController):
                     # call to other server
                     request2 = message_pb2.WorkspacePublishRequest(
                         from_client_id=message_res_object.from_client_id,
-                        from_client_workspace_domain=client.GroupClientKey.client_workspace_domain,
+                        from_client_workspace_domain=owner_workspace_domain,
                         client_id=message_res_object.client_id,
                         group_id=client.GroupClientKey.client_workspace_group_id,
                         group_type=message_res_object.group_type,
@@ -193,6 +204,7 @@ class MessageController(BaseController):
         return message_res_object
 
     async def publish_to_group_not_owner(self, request, group):
+        owner_workspace_domain = get_owner_workspace_domain()
         message_id = str(uuid.uuid4())
         created_at = datetime.now()
 
@@ -202,6 +214,7 @@ class MessageController(BaseController):
             group_id=group.id,
             group_type=group.group_type,
             from_client_id=request.fromClientId,
+            from_client_workspace_domain=owner_workspace_domain,
             message=request.message,
             created_at=int(created_at.timestamp() * 1000),
         )
@@ -213,16 +226,21 @@ class MessageController(BaseController):
         for client in lst_client:
             if client.GroupClientKey.client_id != request.fromClientId:
                 message_channel = "{}/message".format(client.GroupClientKey.client_id)
+
                 new_message_res_object = deepcopy(message_res_object)
                 new_message_res_object.group_id = client.GroupClientKey.group_id
+                new_message_res_object.client_id = client.GroupClientKey.client_id
+
                 if message_channel in client_message_queue:
                     client_message_queue[message_channel].put(new_message_res_object)
                 else:
                     message = {
                         'id': message_res_object.id,
                         'client_id': message_res_object.client_id,
+                        'client_workspace_domain': owner_workspace_domain,
                         'created_at': message_res_object.created_at,
                         'from_client_id': message_res_object.from_client_id,
+                        'from_client_workspace_domain': message_res_object.from_client_workspace_domain,
                         'group_id': client.GroupClientKey.group_id,
                         'group_type': message_res_object.group_type,
                         'message': base64.b64encode(message_res_object.message).decode('utf-8')
@@ -234,7 +252,6 @@ class MessageController(BaseController):
                                                            data=json.dumps(message))
 
         # pubish message to owner server
-        owner_workspace_domain = get_owner_workspace_domain()
         request1 = message_pb2.WorkspacePublishRequest(
             from_client_id=request.fromClientId,
             from_client_workspace_domain=owner_workspace_domain,
@@ -273,8 +290,10 @@ class MessageController(BaseController):
                     message = {
                         'id': message_response.id,
                         'client_id': message_response.client_id,
+                        'client_workspace_domain': get_owner_workspace_domain(),
                         'created_at': message_response.created_at,
                         'from_client_id': message_response.from_client_id,
+                        'from_client_workspace_domain': message_response.from_client_workspace_domain,
                         'group_id': message_response.group_id,
                         'group_type': message_response.group_type,
                         'message': base64.b64encode(message_response.message).decode('utf-8')

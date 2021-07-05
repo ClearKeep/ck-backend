@@ -85,6 +85,7 @@ class VideoCallController(BaseController):
                         'stun_server': server_info.stun_server,
                         'turn_server': server_info.turn_server
                     }
+                    logger.info(push_payload)
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                         await NotifyPushService().push_voip_client(client.User.id, push_payload)
                     else:
@@ -119,7 +120,7 @@ class VideoCallController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     async def call_to_group_owner(self, request, group_obj, from_client_id):
-        from_client_username = ""
+        from_client_name = ""
         owner_workspace_domain = get_owner_workspace_domain()
 
         group_id = request.group_id
@@ -141,12 +142,12 @@ class VideoCallController(BaseController):
         # send push notification to all member of group
         lst_client_in_groups = self.service_group.get_clients_in_group(group_id)
         # list token for each device type
+        from_client = next(client for client in lst_client_in_groups if client.User.id == from_client_id)
+        if from_client and from_client.User:
+            from_client_name = from_client.User.display_name
 
         for client in lst_client_in_groups:
-            if client.User and client.User.id == from_client_id:
-                from_client_username = client.User.display_name
-            else:
-                # if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
+            if client.User and client.User.id != from_client_id:
                 push_payload = {
                     'notify_type': 'request_call',
                     'call_type': request.call_type,
@@ -157,12 +158,13 @@ class VideoCallController(BaseController):
                     'group_rtc_url':  client_ws_url,
                     'group_rtc_id': str(group_id),
                     'from_client_id': from_client_id,
-                    'from_client_name': from_client_username,
+                    'from_client_name': from_client_name,
                     'from_client_avatar': '',
                     'client_id': client_id,
                     'stun_server': server_info.stun_server,
                     'turn_server': server_info.turn_server
                 }
+                logger.info(push_payload)
                 if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                     await NotifyPushService().push_voip_client(client.User.id, push_payload)
                 else:
@@ -228,7 +230,7 @@ class VideoCallController(BaseController):
                     'group_id': str(client["group_id"]),
                     'group_name': group.group_name if group.group_name else '',
                     'group_type': group.group_type if group.group_type else '',
-                    'group_rtc_token': obj_res.webrtc_token,
+                    'group_rtc_token': obj_res.group_rtc_token,
                     'group_rtc_url': obj_res.group_rtc_url,
                     'group_rtc_id': str(obj_res.group_rtc_id),
                     'from_client_id': from_client_id,
@@ -238,7 +240,8 @@ class VideoCallController(BaseController):
                     'stun_server': obj_res.stun_server,
                     'turn_server': obj_res.turn_server
                 }
-                await self.push_service.push_voip_clients(client.User.id, push_payload)
+                logger.info(push_payload)
+                await NotifyPushService().push_voip_client(client["client_id"], push_payload)
             return obj_res
         else:
             raise
@@ -319,10 +322,12 @@ class VideoCallController(BaseController):
         # send push notification to all member of group
         lst_client_in_groups = self.service_group.get_clients_in_group(group_id)
 
+        from_client = next(client for client in lst_client_in_groups if client.User.id == from_client_id)
+        if from_client and from_client.User:
+            from_client_name = from_client.User.display_name
+
         for client in lst_client_in_groups:
-            if client.User and client.User.id == from_client_id:
-                from_client_name = client.User.display_name
-            else:
+            if client.User and client.User.id != from_client_id:
                 push_payload = {
                     'notify_type': update_type,
                     'group_id': str(client.GroupClientKey.group_id),
@@ -366,7 +371,7 @@ class VideoCallController(BaseController):
                         'from_client_avatar': '',
                         'client_id': client_id
                     }
-                    await self.push_service.push_voip_client(client.GroupClientKey.client_id, push_payload)
+                    await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, push_payload)
 
         request = video_call_pb2.WorkspaceUpdateCallRequest(
             from_client_id=from_client_id,
