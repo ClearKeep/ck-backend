@@ -102,6 +102,7 @@ class MessageController(BaseController):
                 if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                         message_channel = "{}/message".format(client.GroupClientKey.client_id)
+                        new_message.client_id = client.GroupClientKey.client_id
                         if message_channel in client_message_queue:
                             client_message_queue[message_channel].put(new_message)
                         else:
@@ -143,6 +144,7 @@ class MessageController(BaseController):
         # store message here
         message_id = str(uuid.uuid4())
         created_at = datetime.now()
+
         message_res_object = MessageService().store_message(
             message_id=message_id,
             created_at=created_at,
@@ -159,7 +161,10 @@ class MessageController(BaseController):
         for client in lst_client:
             if client.GroupClientKey.client_id != request.fromClientId:
                 if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+
+                    message_res_object.client_id = client.GroupClientKey.client_id
                     message_channel = "{}/message".format(client.GroupClientKey.client_id)
+
                     if message_channel in client_message_queue:
                         client_message_queue[message_channel].put(message_res_object)
                     else:
@@ -221,8 +226,11 @@ class MessageController(BaseController):
         for client in lst_client:
             if client.GroupClientKey.client_id != request.fromClientId:
                 message_channel = "{}/message".format(client.GroupClientKey.client_id)
+
                 new_message_res_object = deepcopy(message_res_object)
                 new_message_res_object.group_id = client.GroupClientKey.group_id
+                new_message_res_object.client_id = client.GroupClientKey.client_id
+
                 if message_channel in client_message_queue:
                     client_message_queue[message_channel].put(new_message_res_object)
                 else:
