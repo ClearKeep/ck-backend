@@ -44,7 +44,7 @@ class MessageService(BaseService):
             group_id=new_message.group_id,
             group_type=group_type,
             from_client_id=new_message.from_client_id,
-            from_client_workspace_domain=new_message.new_message,
+            from_client_workspace_domain=new_message.from_client_workspace_domain,
             message=message,
             created_at=int(new_message.created_at.timestamp() * 1000)
         )
