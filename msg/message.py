@@ -58,6 +58,7 @@ class Message:
     CLIENT_DECLINE_CALL_FAILED = 1048
     CLIENT_END_CALL_FAILED = 1049
     CLIENT_EDIT_MESSAGE_FAILED = 1050
+    ADD_MEMBER_FAILED = 1051
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -103,9 +104,10 @@ class Message:
         EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN: "The account with this email "
             "does not exist. Please try again",
         CLIENT_EDIT_MESSAGE_FAILED: "Edit message failed. Please try again",
-        CLIENT_MISS_CALL_FAILED: "Miss Call failed, Please try again",
-        CLIENT_DECLINE_CALL_FAILED: "Decline Call failed, Please try again",
-        CLIENT_END_CALL_FAILED: "End Call failed, Please try again",
+        CLIENT_MISS_CALL_FAILED: "Miss Call failed. Please try again",
+        CLIENT_DECLINE_CALL_FAILED: "Decline Call failed. Please try again",
+        CLIENT_END_CALL_FAILED: "End Call failed. Please try again",
+        ADD_MEMBER_FAILED: "Add Member failed. Please try again",
     }
 
     @staticmethod
