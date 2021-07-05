@@ -19,12 +19,13 @@ class MessageService(BaseService):
         self.service_group = GroupChat()
         self.message_read_model = MessageUserRead()
 
-    def store_message(self, message_id, created_at, group_id, group_type, from_client_id, client_id, message):
+    def store_message(self, message_id, created_at, group_id, group_type, from_client_id, from_client_workpace_domain, client_id, message):
         # init new message
         self.model = Message(
             id=message_id,
             group_id=group_id,
             from_client_id=from_client_id,
+            from_client_workspace_domain=from_client_workpace_domain,
             client_id=client_id,
             message=message,
             created_at=created_at
@@ -43,6 +44,7 @@ class MessageService(BaseService):
             group_id=new_message.group_id,
             group_type=group_type,
             from_client_id=new_message.from_client_id,
+            from_client_workspace_domain=new_message.new_message,
             message=message,
             created_at=int(new_message.created_at.timestamp() * 1000)
         )
