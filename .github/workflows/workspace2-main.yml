@@ -61,6 +61,7 @@ jobs:
         command: |
           cd /home/ubuntu/workspace2-clk328/ck-backend
           git checkout feature/workspace
+          git reset --hard HEAD
           git pull
           pip3 install -r requirement.txt
           python3 -m grpc_tools.protoc -I=. protos/*.proto --python_out=. --grpc_python_out=.
