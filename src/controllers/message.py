@@ -69,6 +69,7 @@ class MessageController(BaseController):
     @request_logged
     async def workspace_publish(self, request, context):
         try:
+            logger.info("workspace_publish")
             owner_workspace_domain = get_owner_workspace_domain()
             group = GroupService().get_group_info(request.group_id)
             if group.owner_workspace_domain is None or group.owner_workspace_domain == owner_workspace_domain:
@@ -140,6 +141,8 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     async def publish_to_group_owner(self, request, group):
+        logger.info("publish_to_group_owner, group_id={}".format(str(group.id)))
+
         owner_workspace_domain = get_owner_workspace_domain()
         # store message here
         message_id = str(uuid.uuid4())
@@ -204,6 +207,8 @@ class MessageController(BaseController):
         return message_res_object
 
     async def publish_to_group_not_owner(self, request, group):
+        logger.info("publish_to_group_not_owner, group_id={}".format(str(group.id)))
+
         owner_workspace_domain = get_owner_workspace_domain()
         message_id = str(uuid.uuid4())
         created_at = datetime.now()
