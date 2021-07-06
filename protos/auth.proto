@@ -33,16 +33,17 @@ message FogotPassWord {
 
 message AuthRes {
     string workspace_domain = 1;
-    string access_token = 2;
-    int64 expires_in = 3;
-    int64 refresh_expires_in = 4;
-    string refresh_token = 5;
-    string token_type = 6;
-    string session_state = 7;
-    string scope = 8;
-    string hash_key = 9;
+    string workspace_name = 2;
+    string access_token = 3;
+    int64 expires_in = 4;
+    int64 refresh_expires_in = 5;
+    string refresh_token = 6;
+    string token_type = 7;
+    string session_state = 8;
+    string scope = 9;
+    string hash_key = 10;
 
-    BaseResponse base_response = 10;
+    BaseResponse base_response = 11;
 }
 
 //Register message struct

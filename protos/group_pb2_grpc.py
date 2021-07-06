@@ -40,10 +40,15 @@ class GroupStub(object):
                 request_serializer=protos_dot_group__pb2.GetJoinedGroupsRequest.SerializeToString,
                 response_deserializer=protos_dot_group__pb2.GetJoinedGroupsResponse.FromString,
                 )
-        self.invite_to_group = channel.unary_unary(
-                '/group.Group/invite_to_group',
-                request_serializer=protos_dot_group__pb2.InviteToGroupRequest.SerializeToString,
+        self.add_member = channel.unary_unary(
+                '/group.Group/add_member',
+                request_serializer=protos_dot_group__pb2.AddMemberRequest.SerializeToString,
                 response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
+                )
+        self.add_member_workspace = channel.unary_unary(
+                '/group.Group/add_member_workspace',
+                request_serializer=protos_dot_group__pb2.AddMemberWorkspaceRequest.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.AddMemberWorkspaceResponse.FromString,
                 )
         self.join_group = channel.unary_unary(
                 '/group.Group/join_group',
@@ -86,7 +91,13 @@ class GroupServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def invite_to_group(self, request, context):
+    def add_member(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def add_member_workspace(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -126,10 +137,15 @@ def add_GroupServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_group__pb2.GetJoinedGroupsRequest.FromString,
                     response_serializer=protos_dot_group__pb2.GetJoinedGroupsResponse.SerializeToString,
             ),
-            'invite_to_group': grpc.unary_unary_rpc_method_handler(
-                    servicer.invite_to_group,
-                    request_deserializer=protos_dot_group__pb2.InviteToGroupRequest.FromString,
+            'add_member': grpc.unary_unary_rpc_method_handler(
+                    servicer.add_member,
+                    request_deserializer=protos_dot_group__pb2.AddMemberRequest.FromString,
                     response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
+            ),
+            'add_member_workspace': grpc.unary_unary_rpc_method_handler(
+                    servicer.add_member_workspace,
+                    request_deserializer=protos_dot_group__pb2.AddMemberWorkspaceRequest.FromString,
+                    response_serializer=protos_dot_group__pb2.AddMemberWorkspaceResponse.SerializeToString,
             ),
             'join_group': grpc.unary_unary_rpc_method_handler(
                     servicer.join_group,
@@ -233,7 +249,7 @@ class Group(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def invite_to_group(request,
+    def add_member(request,
             target,
             options=(),
             channel_credentials=None,
@@ -243,9 +259,26 @@ class Group(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/group.Group/invite_to_group',
-            protos_dot_group__pb2.InviteToGroupRequest.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/group.Group/add_member',
+            protos_dot_group__pb2.AddMemberRequest.SerializeToString,
             protos_dot_group__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def add_member_workspace(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/group.Group/add_member_workspace',
+            protos_dot_group__pb2.AddMemberWorkspaceRequest.SerializeToString,
+            protos_dot_group__pb2.AddMemberWorkspaceResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
