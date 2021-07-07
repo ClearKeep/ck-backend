@@ -21,6 +21,7 @@ from src.models.user import User
 from src.models.message_user_read import MessageUserRead
 from src.models.workspace import Workspace
 from src.models.video_call import VideoCall
+from src.models.note import Note
 
 db_config = get_system_config()['db']
 db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(

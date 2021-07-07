@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package note;
+
+// errors response
+message ErrorRes {
+  int64 code = 1;
+  string message = 2;
+}
+
+message BaseResponse {
+  bool success = 1;
+  ErrorRes errors = 2;
+}
+
+message CreateNoteRequest {
+  string title = 1;
+  bytes content = 2;
+  string note_type = 3;
+}
+
+message EditNoteRequest {
+  string note_id = 1;
+  string title = 2;
+  bytes content = 3;
+  string note_type = 4;
+}
+
+message DeleteNoteRequest {
+  string note_id = 1;
+}
+
+// gRPC methods
+service Note {
+  rpc create_note (CreateNoteRequest) returns (BaseResponse);
+  rpc edit_note (EditNoteRequest) returns (BaseResponse);
+  rpc delete_note (DeleteNoteRequest) returns (BaseResponse);
+}

@@ -31,7 +31,7 @@ class UserService(BaseService):
             #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
             self.model.add()
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(e)
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def create_user_social(self, id, email, display_name, auth_source):

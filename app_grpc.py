@@ -11,6 +11,7 @@ import protos.video_call_pb2_grpc as video_call_service
 import protos.server_info_pb2_grpc as server_info_service
 import protos.upload_file_pb2_grpc as upload_file_service
 import protos.workspace_pb2_grpc as workspace_service
+import protos.note_pb2_grpc as note_service
 from src.controllers.user import UserController
 from src.controllers.auth import AuthController
 from src.controllers.signal import SignalController
@@ -22,6 +23,7 @@ from src.controllers.video_call import VideoCallController
 from src.controllers.server_info import ServerInfoController
 from src.controllers.upload_file import UploadFileController
 from src.controllers.workspace import WorkspaceController
+from src.controllers.note import NoteController
 from utils.logger import *
 # from middlewares.auth_interceptor import AuthInterceptor
 import asyncio
@@ -45,6 +47,7 @@ async def start_server():
     server_info_service.add_ServerInfoServicer_to_server(ServerInfoController(), server)
     upload_file_service.add_UploadFileServicer_to_server(UploadFileController(), server)
     workspace_service.add_WorkspaceServicer_to_server(WorkspaceController(), server)
+    note_service.add_NoteServicer_to_server(NoteController(), server)
     # init log
     create_timed_rotating_log('logs/logfile-' + str(grpc_port) + '.log')
     # start grpc api
