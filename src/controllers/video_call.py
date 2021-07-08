@@ -171,7 +171,6 @@ class VideoCallController(BaseController):
                     'turn_server': server_info.turn_server
                 }
                 logger.info(push_payload)
-                logger.info(client.GroupClientKey.client_workspace_domain)
 
                 if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                     await NotifyPushService().push_voip_client(client.User.id, push_payload)
@@ -222,7 +221,7 @@ class VideoCallController(BaseController):
 
         other_client_in_this_workspace = []
         for client in lst_client:
-            if client.User.id != from_client_id:
+            if client.User and client.User.id != from_client_id:
                 client_with_group = {
                     "client_id": client.User.id,
                     "group_id": client.GroupClientKey.group_id
@@ -353,7 +352,7 @@ class VideoCallController(BaseController):
         #     from_client_name = from_client.User.display_name
 
         for client in lst_client_in_groups:
-            if client.User and client.User.id != from_client_id:
+            if client.User is None or client.User.id != from_client_id:
                 push_payload = {
                     'notify_type': update_type,
                     'group_id': str(client.GroupClientKey.group_id),
