@@ -59,6 +59,9 @@ class Message:
     CLIENT_END_CALL_FAILED = 1049
     CLIENT_EDIT_MESSAGE_FAILED = 1050
     ADD_MEMBER_FAILED = 1051
+    CREATE_NOTE_FAILED = 1052
+    EDIT_NOTE_FAILED = 1053
+    DELETE_NOTE_FAILED = 1054
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -108,6 +111,9 @@ class Message:
         CLIENT_DECLINE_CALL_FAILED: "Decline Call failed. Please try again",
         CLIENT_END_CALL_FAILED: "End Call failed. Please try again",
         ADD_MEMBER_FAILED: "Add Member failed. Please try again",
+        CREATE_NOTE_FAILED: "Create Note failed. Please try again",
+        EDIT_NOTE_FAILED: "Edit Note failed. Please try again",
+        DELETE_NOTE_FAILED : "Delete Note failed. Please try again",
     }
 
     @staticmethod
