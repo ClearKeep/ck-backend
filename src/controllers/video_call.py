@@ -171,8 +171,9 @@ class VideoCallController(BaseController):
                     'turn_server': server_info.turn_server
                 }
                 logger.info(push_payload)
-                if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
-                    await NotifyPushService().push_voip_client(client.User.id, push_payload)
+                if client.GroupClientKey:
+                    if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+                        await NotifyPushService().push_voip_client(client.User.id, push_payload)
                 else:
                     logger.info("Push voip from {} to client {} in {}".format(owner_workspace_domain, client.GroupClientKey.client_workspace_domain, client.GroupClientKey.client_id))
                     ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
