@@ -124,6 +124,7 @@ class MessageController(BaseController):
                                                                    from_client_id=new_message.from_client_id,
                                                                    notify_type="new_message",
                                                                    data=json.dumps(message))
+                            continue
                     else:
                         # call to other server
                         request.group_id = client.GroupClientKey.client_workspace_group_id
@@ -187,6 +188,7 @@ class MessageController(BaseController):
                                                                from_client_id=message_res_object.from_client_id,
                                                                notify_type="new_message",
                                                                data=json.dumps(message))
+                        continue
                 else:
                     # call to other server
                     request2 = message_pb2.WorkspacePublishRequest(
@@ -255,6 +257,7 @@ class MessageController(BaseController):
                                                            from_client_id=message_res_object.from_client_id,
                                                            notify_type="new_message",
                                                            data=json.dumps(message))
+                    continue
 
         # pubish message to owner server
         request1 = message_pb2.WorkspacePublishRequest(
