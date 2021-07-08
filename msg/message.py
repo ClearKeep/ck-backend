@@ -62,6 +62,7 @@ class Message:
     CREATE_NOTE_FAILED = 1052
     EDIT_NOTE_FAILED = 1053
     DELETE_NOTE_FAILED = 1054
+    GET_USER_NOTES_FAILED = 1055
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -114,6 +115,7 @@ class Message:
         CREATE_NOTE_FAILED: "Create Note failed. Please try again",
         EDIT_NOTE_FAILED: "Edit Note failed. Please try again",
         DELETE_NOTE_FAILED : "Delete Note failed. Please try again",
+        GET_USER_NOTES_FAILED : "Get User Notes failed. Please try again",
     }
 
     @staticmethod

@@ -30,9 +30,22 @@ message DeleteNoteRequest {
   string note_id = 1;
 }
 
+message Empty {}
+
+message UserNote {
+  string title = 1;
+  bytes content = 2;
+}
+
+message GetUserNotesResponse {
+  repeated UserNote user_notes = 1;
+  BaseResponse base_response = 2;
+}
+
 // gRPC methods
 service Note {
   rpc create_note (CreateNoteRequest) returns (BaseResponse);
   rpc edit_note (EditNoteRequest) returns (BaseResponse);
   rpc delete_note (DeleteNoteRequest) returns (BaseResponse);
+  rpc get_user_notes (Empty) returns (GetUserNotesResponse);
 }
