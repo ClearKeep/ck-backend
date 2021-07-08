@@ -94,12 +94,12 @@ class NoteController(BaseController):
     async def get_user_notes(self, request, context):
         """docstring for create_note"""
         try:
-            # metadata = dict(context.invocation_metadata())
-            # access_token_information = KeyCloakUtils.introspect_token(
-            #     metadata['access_token']
-            # )
-            # user_id = access_token_information['sub']
-            user_id = '081f2345-bcc8-4447-9da8-3b1e04ad6c51'
+            metadata = dict(context.invocation_metadata())
+            access_token_information = KeyCloakUtils.introspect_token(
+                metadata['access_token']
+            )
+            user_id = access_token_information['sub']
+            # user_id = '081f2345-bcc8-4447-9da8-3b1e04ad6c51'
             user_notes = self.service.get_user_notes(
                 user_id
             )
