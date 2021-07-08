@@ -62,3 +62,17 @@ class NoteService:
         except Exception as e:
             logger.error(e)
             raise Exception(Message.DELETE_NOTE_FAILED)
+
+    def get_user_notes(self, user_id):
+        """TODO: Docstring for get_user_notes.
+
+        :user_id: TODO
+        :returns: TODO
+
+        """
+        try:
+            user_notes = Note().get_user_notes(user_id)
+            return user_notes
+        except Exception as e:
+            logger.error(e)
+            raise Exception(Message.GET_USER_NOTES_FAILED)
