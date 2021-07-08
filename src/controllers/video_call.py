@@ -174,6 +174,7 @@ class VideoCallController(BaseController):
                 if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                     await NotifyPushService().push_voip_client(client.User.id, push_payload)
                 else:
+                    logger.info("Push voip from {} to client {} in {}".format(owner_workspace_domain, client.GroupClientKey.client_workspace_domain, client.GroupClientKey.client_id))
                     ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                         json.dumps(push_payload))
 
