@@ -145,9 +145,12 @@ class VideoCallController(BaseController):
         # send push notification to all member of group
         lst_client_in_groups = self.service_group.get_clients_in_group(group_id)
         # list token for each device type
-        from_client = next(client for client in lst_client_in_groups if (client.User and client.User.id == from_client_id))
-        if from_client and from_client.User:
-            from_client_name = from_client.User.display_name
+        for client in lst_client_in_groups:
+            if client.User and client.User.id == from_client_id:
+                from_client_name = client.User.display_name
+        # from_client = next(client for client in lst_client_in_groups if (client.User and client.User.id == from_client_id))
+        # if from_client and from_client.User:
+        #     from_client_name = from_client.User.display_name
 
         for client in lst_client_in_groups:
             if client.User and client.User.id != from_client_id:
@@ -206,9 +209,13 @@ class VideoCallController(BaseController):
         # request call to owner server, response ọbject push notification
         lst_client = GroupService().get_clients_in_group_owner(group.owner_group_id)
 
-        from_client = next(client for client in lst_client if (client.User and client.User.id == from_client_id))
-        if from_client and from_client.User:
-            from_client_name = from_client.User.display_name
+        for client in lst_client:
+            if client.User and client.User.id == from_client_id:
+                from_client_name = client.User.display_name
+
+        # from_client = next(client for client in lst_client if (client.User and client.User.id == from_client_id))
+        # if from_client and from_client.User:
+        #     from_client_name = from_client.User.display_name
 
         other_client_in_this_workspace = []
         for client in lst_client:
@@ -334,9 +341,13 @@ class VideoCallController(BaseController):
         # send push notification to all member of group
         lst_client_in_groups = self.service_group.get_clients_in_group(group_id)
 
-        from_client = next(client for client in lst_client_in_groups if (client.User and client.User.id == from_client_id))
-        if from_client and from_client.User:
-            from_client_name = from_client.User.display_name
+        for client in lst_client_in_groups:
+            if client.User and client.User.id == from_client_id:
+                from_client_name = client.User.display_name
+
+        # from_client = next(client for client in lst_client_in_groups if (client.User and client.User.id == from_client_id))
+        # if from_client and from_client.User:
+        #     from_client_name = from_client.User.display_name
 
         for client in lst_client_in_groups:
             if client.User and client.User.id != from_client_id:
