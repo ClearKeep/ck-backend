@@ -153,7 +153,7 @@ class VideoCallController(BaseController):
         #     from_client_name = from_client.User.display_name
 
         for client in lst_client_in_groups:
-            if client.User and client.User.id != from_client_id:
+            if client.User is None or client.User.id != from_client_id:
                 push_payload = {
                     'notify_type': 'request_call',
                     'call_type': request.call_type,
