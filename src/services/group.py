@@ -655,7 +655,7 @@ class GroupService(BaseService):
             self.model = GroupChat(
                 group_name=group_name,
                 group_type=group_type,
-                group_clients=clients,
+                group_clients=json.dumps(clients),
                 total_member=len(clients),
                 owner_group_id=owner_group_id,
                 owner_workspace_domain=owner_workspace_domain,
