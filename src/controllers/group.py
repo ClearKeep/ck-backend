@@ -56,17 +56,17 @@ class GroupController(BaseController):
     async def get_group(self, request, context):
         try:
             group_id = request.group_id
-            group = GroupChat().get_group(group_id)
-            if not group.owner_workspace_domain:
-                obj_res = self.service.get_group(group_id)
-            else:
-                get_group_request = group_pb2.GetGroupRequest(
-                    group_id=group.owner_group_id
-                )
-                obj_res = ClientGroup(
-                    group.owner_workspace_domain
-                ).get_group(get_group_request)
-                obj_res.group_id = group_id
+            # group = GroupChat().get_group(group_id)
+            # if not group.owner_workspace_domain:
+            obj_res = self.service.get_group(group_id)
+            # else:
+            #     get_group_request = group_pb2.GetGroupRequest(
+            #         group_id=group.owner_group_id
+            #     )
+            #     obj_res = ClientGroup(
+            #         group.owner_workspace_domain
+            #     ).get_group(get_group_request)
+            #     obj_res.group_id = group_id
             if obj_res is not None:
                 return obj_res
             else:
