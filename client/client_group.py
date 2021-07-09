@@ -35,3 +35,11 @@ class ClientGroup:
         except Exception as e:
             logger.error(e)
             return None
+
+    def get_group(self, request):
+        try:
+            response = self.stub.get_group(request)
+            return response
+        except Exception as e:
+            logger.error(e)
+            return None
