@@ -258,26 +258,34 @@ class GroupService(BaseService):
                 res_obj.updated_at = int(obj.updated_at.timestamp() * 1000)
 
             # list client in group
-            lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
-            owner_workspace_domain = get_owner_workspace_domain()
-
-            for client in lst_client_in_group:
-                if client.GroupClientKey.client_workspace_domain is None:
-                    client_in = group_pb2.ClientInGroupResponse(
-                        id=client.User.id,
-                        display_name=client.User.display_name,
-                        workspace_domain=owner_workspace_domain,
-                    )
-                    res_obj.lst_client.append(client_in)
-                else:
-                    #call to other workspace domain to get client
-                    client_in_workspace = ClientUser(client.GroupClientKey.client_workspace_domain).get_user_info(client.GroupClientKey.client_id, client.GroupClientKey.client_workspace_domain )
-                    client_in = group_pb2.ClientInGroupResponse(
-                        id=client_in_workspace.id,
-                        display_name=client_in_workspace.display_name,
-                        workspace_domain=client.GroupClientKey.client_workspace_domain
-                    )
-                    res_obj.lst_client.append(client_in)
+            group_clients = json.loads(obj.group_clients)
+            for client in group_clients:
+                client_in = group_pb2.ClientInGroupResponse(
+                    id=client['id'],
+                    display_name=client['display_name'],
+                    workspace_domain=client['workspace_domain'],
+                )
+                res_obj.lst_client.append(client_in)
+            # lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
+            # owner_workspace_domain = get_owner_workspace_domain()
+            #
+            # for client in lst_client_in_group:
+            #     if client.GroupClientKey.client_workspace_domain is None:
+            #         client_in = group_pb2.ClientInGroupResponse(
+            #             id=client.User.id,
+            #             display_name=client.User.display_name,
+            #             workspace_domain=owner_workspace_domain,
+            #         )
+            #         res_obj.lst_client.append(client_in)
+            #     else:
+            #         #call to other workspace domain to get client
+            #         client_in_workspace = ClientUser(client.GroupClientKey.client_workspace_domain).get_user_info(client.GroupClientKey.client_id, client.GroupClientKey.client_workspace_domain )
+            #         client_in = group_pb2.ClientInGroupResponse(
+            #             id=client_in_workspace.id,
+            #             display_name=client_in_workspace.display_name,
+            #             workspace_domain=client.GroupClientKey.client_workspace_domain
+            #         )
+            #         res_obj.lst_client.append(client_in)
 
             if obj.last_message_at:
                 res_obj.last_message_at = int(obj.last_message_at.timestamp() * 1000)
