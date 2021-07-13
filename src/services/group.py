@@ -72,6 +72,14 @@ class GroupService(BaseService):
 
         owner_workspace_domain = get_owner_workspace_domain()
         for obj in lst_client:
+            # list client in group
+            client_in = group_pb2.ClientInGroupResponse(
+                id=obj.id,
+                display_name=obj.display_name,
+                workspace_domain=obj.workspace_domain,
+            )
+            res_obj.lst_client.append(client_in)
+
             # add to signal group key
             if obj.workspace_domain == owner_workspace_domain:
                 client_group_key = GroupClientKey().set_key(new_group.id, obj.id, None, None, None, None)
@@ -115,25 +123,23 @@ class GroupService(BaseService):
                     group_res_object.group_id, None, None
                 )
                 client_group_key.add()
-
-                client_in = group_pb2.ClientInGroupResponse(
-                    id=group_res_object.client_id,
-                    display_name=group_res_object.client_name,
-                    workspace_domain=group_res_object.client_workspace_domain
-                )
-                res_obj.lst_client.append(client_in)
+                # client_in = group_pb2.ClientInGroupResponse(
+                #     id=group_res_object.client_id,
+                #     display_name=group_res_object.client_name,
+                #     workspace_domain=group_res_object.client_workspace_domain
+                # )
+                # res_obj.lst_client.append(client_in)
 
         # list client in group
-        lst_client_in_group = GroupClientKey().get_clients_in_group(new_group.id)
-        for client in lst_client_in_group:
-            if client.GroupClientKey.client_workspace_domain is None:
-                client_in = group_pb2.ClientInGroupResponse(
-                    id=client.User.id,
-                    display_name=client.User.display_name,
-                    workspace_domain=owner_workspace_domain
-                )
-                res_obj.lst_client.append(client_in)
-
+        # lst_client_in_group = GroupClientKey().get_clients_in_group(new_group.id)
+        # for client in lst_client_in_group:
+        #     if client.GroupClientKey.client_workspace_domain is None:
+        #         client_in = group_pb2.ClientInGroupResponse(
+        #             id=client.User.id,
+        #             display_name=client.User.display_name,
+        #             workspace_domain=owner_workspace_domain
+        #         )
+        #         res_obj.lst_client.append(client_in)
         return res_obj
 
     def add_group_workspace(self, group_name, group_type, from_client_id, client_id, lst_client, owner_group_id, owner_workspace_domain):
