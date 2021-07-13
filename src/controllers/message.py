@@ -293,22 +293,22 @@ class MessageController(BaseController):
                 client_message_queue[message_channel] = None
                 del client_message_queue[message_channel]
                 # push text notification for client
-                push_service = NotifyPushService()
-                if message_response:
-                    message = {
-                        'id': message_response.id,
-                        'client_id': message_response.client_id,
-                        'client_workspace_domain': get_owner_workspace_domain(),
-                        'created_at': message_response.created_at,
-                        'from_client_id': message_response.from_client_id,
-                        'from_client_workspace_domain': message_response.from_client_workspace_domain,
-                        'group_id': message_response.group_id,
-                        'group_type': message_response.group_type,
-                        'message': base64.b64encode(message_response.message).decode('utf-8')
-                    }
-                    await push_service.push_text_to_clients(
-                        [client_id], title="", body="You have a new message",
-                        from_client_id=client_id, notify_type="new_message", data=json.dumps(message))
+                # push_service = NotifyPushService()
+                # if message_response:
+                #     message = {
+                #         'id': message_response.id,
+                #         'client_id': message_response.client_id,
+                #         'client_workspace_domain': get_owner_workspace_domain(),
+                #         'created_at': message_response.created_at,
+                #         'from_client_id': message_response.from_client_id,
+                #         'from_client_workspace_domain': message_response.from_client_workspace_domain,
+                #         'group_id': message_response.group_id,
+                #         'group_type': message_response.group_type,
+                #         'message': base64.b64encode(message_response.message).decode('utf-8')
+                #     }
+                #     await push_service.push_text_to_clients(
+                #         [client_id], title="", body="You have a new message",
+                #         from_client_id=client_id, notify_type="new_message", data=json.dumps(message))
 
     @request_logged
     async def Subscribe(self, request, context):
