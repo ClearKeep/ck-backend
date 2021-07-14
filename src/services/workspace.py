@@ -8,7 +8,7 @@ class WorkspaceService(BaseService):
     def __init__(self):
         super().__init__(Workspace())
 
-    def leave_workspace(self, client_id, workspace_domain):
+    def leave_workspace(self, client_id):
         return workspace_pb2.BaseResponse(success=True)
 
 
