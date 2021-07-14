@@ -19,7 +19,7 @@ from src.models.signal_group_key import GroupClientKey
 from src.models.signal_peer_key import PeerClientKey
 from src.models.user import User
 from src.models.message_user_read import MessageUserRead
-from src.models.workspace import Workspace
+#from src.models.workspace import Workspace
 from src.models.video_call import VideoCall
 from src.models.note import Note
 
