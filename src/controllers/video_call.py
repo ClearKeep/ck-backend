@@ -408,6 +408,7 @@ class VideoCallController(BaseController):
                         'client_id': client_id
                     }
                     await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, push_payload)
+                continue
 
         request = video_call_pb2.WorkspaceUpdateCallRequest(
             from_client_id=from_client_id,
