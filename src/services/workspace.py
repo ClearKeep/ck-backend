@@ -1,5 +1,6 @@
 from src.services.base import BaseService
 from src.models.workspace import Workspace
+from src.models.group import GroupChat
 from protos import workspace_pb2
 import uuid
 
@@ -9,6 +10,11 @@ class WorkspaceService(BaseService):
         super().__init__(Workspace())
 
     def leave_workspace(self, client_id):
+        # get joined group first
+        lst_joined_group = GroupChat().get_joined(client_id)
+        # for group in lst_joined_group:
+        #     GroupService().leave_group(group.id, client_id)
+
         return workspace_pb2.BaseResponse(success=True)
 
 

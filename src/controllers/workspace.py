@@ -27,7 +27,7 @@ class WorkspaceController(BaseController):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
 
-            obj_res = self.service.get_joined_workspaces(request.client_id)
+            obj_res = self.service.leave_workspace(request.client_id)
             return obj_res
         except Exception as e:
             logger.error(e)

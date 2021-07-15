@@ -327,6 +327,7 @@ class VideoCallController(BaseController):
                         logger.info(new_push_payload)
                         ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                             json.dumps(new_push_payload))
+                        continue
             return video_call_pb2.BaseResponse(
                 success=True
             )
@@ -377,6 +378,7 @@ class VideoCallController(BaseController):
                     logger.info(new_push_payload)
                     ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                         json.dumps(new_push_payload))
+                    continue
         return video_call_pb2.BaseResponse(
             success=True
         )

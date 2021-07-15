@@ -6,7 +6,24 @@ from protos import workspace_pb2 as protos_dot_workspace__pb2
 
 
 class WorkspaceStub(object):
-    """Missing associated documentation comment in .proto file."""
+    """
+    // Request: join group
+    message JoinWorkspaceRequest {
+    string client_id = 1;
+    string workspace_domain = 2;
+    }
+    // Response: BaseResponse
+
+    // Request: get joined groups
+    message GetJoinedWorkspacesRequest {
+    string client_id = 1;
+    }
+    // Response
+    message GetJoinedWorkspacesResponse {
+    repeated WorkspaceObjectResponse lst_workspace = 1;
+    }
+
+    """
 
     def __init__(self, channel):
         """Constructor.
@@ -14,34 +31,42 @@ class WorkspaceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.join_workspace = channel.unary_unary(
-                '/workspace.Workspace/join_workspace',
-                request_serializer=protos_dot_workspace__pb2.JoinWorkspaceRequest.SerializeToString,
-                response_deserializer=protos_dot_workspace__pb2.BaseResponse.FromString,
-                )
-        self.get_joined_workspaces = channel.unary_unary(
-                '/workspace.Workspace/get_joined_workspaces',
-                request_serializer=protos_dot_workspace__pb2.GetJoinedWorkspacesRequest.SerializeToString,
-                response_deserializer=protos_dot_workspace__pb2.GetJoinedWorkspacesResponse.FromString,
+        self.workspace_info = channel.unary_unary(
+                '/workspace.Workspace/workspace_info',
+                request_serializer=protos_dot_workspace__pb2.WorkspaceInfoRequest.SerializeToString,
+                response_deserializer=protos_dot_workspace__pb2.WorkspaceObjectResponse.FromString,
                 )
         self.leave_workspace = channel.unary_unary(
                 '/workspace.Workspace/leave_workspace',
-                request_serializer=protos_dot_workspace__pb2.LeaveWorkspacesRequest.SerializeToString,
+                request_serializer=protos_dot_workspace__pb2.LeaveWorkspaceRequest.SerializeToString,
                 response_deserializer=protos_dot_workspace__pb2.BaseResponse.FromString,
                 )
 
 
 class WorkspaceServicer(object):
-    """Missing associated documentation comment in .proto file."""
+    """
+    // Request: join group
+    message JoinWorkspaceRequest {
+    string client_id = 1;
+    string workspace_domain = 2;
+    }
+    // Response: BaseResponse
 
-    def join_workspace(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+    // Request: get joined groups
+    message GetJoinedWorkspacesRequest {
+    string client_id = 1;
+    }
+    // Response
+    message GetJoinedWorkspacesResponse {
+    repeated WorkspaceObjectResponse lst_workspace = 1;
+    }
 
-    def get_joined_workspaces(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+    """
+
+    def workspace_info(self, request, context):
+        """rpc join_workspace(JoinWorkspaceRequest) returns (BaseResponse) {};
+        rpc get_joined_workspaces(GetJoinedWorkspacesRequest) returns (GetJoinedWorkspacesResponse) {};
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -55,19 +80,14 @@ class WorkspaceServicer(object):
 
 def add_WorkspaceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'join_workspace': grpc.unary_unary_rpc_method_handler(
-                    servicer.join_workspace,
-                    request_deserializer=protos_dot_workspace__pb2.JoinWorkspaceRequest.FromString,
-                    response_serializer=protos_dot_workspace__pb2.BaseResponse.SerializeToString,
-            ),
-            'get_joined_workspaces': grpc.unary_unary_rpc_method_handler(
-                    servicer.get_joined_workspaces,
-                    request_deserializer=protos_dot_workspace__pb2.GetJoinedWorkspacesRequest.FromString,
-                    response_serializer=protos_dot_workspace__pb2.GetJoinedWorkspacesResponse.SerializeToString,
+            'workspace_info': grpc.unary_unary_rpc_method_handler(
+                    servicer.workspace_info,
+                    request_deserializer=protos_dot_workspace__pb2.WorkspaceInfoRequest.FromString,
+                    response_serializer=protos_dot_workspace__pb2.WorkspaceObjectResponse.SerializeToString,
             ),
             'leave_workspace': grpc.unary_unary_rpc_method_handler(
                     servicer.leave_workspace,
-                    request_deserializer=protos_dot_workspace__pb2.LeaveWorkspacesRequest.FromString,
+                    request_deserializer=protos_dot_workspace__pb2.LeaveWorkspaceRequest.FromString,
                     response_serializer=protos_dot_workspace__pb2.BaseResponse.SerializeToString,
             ),
     }
@@ -78,10 +98,27 @@ def add_WorkspaceServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class Workspace(object):
-    """Missing associated documentation comment in .proto file."""
+    """
+    // Request: join group
+    message JoinWorkspaceRequest {
+    string client_id = 1;
+    string workspace_domain = 2;
+    }
+    // Response: BaseResponse
+
+    // Request: get joined groups
+    message GetJoinedWorkspacesRequest {
+    string client_id = 1;
+    }
+    // Response
+    message GetJoinedWorkspacesResponse {
+    repeated WorkspaceObjectResponse lst_workspace = 1;
+    }
+
+    """
 
     @staticmethod
-    def join_workspace(request,
+    def workspace_info(request,
             target,
             options=(),
             channel_credentials=None,
@@ -91,26 +128,9 @@ class Workspace(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/workspace.Workspace/join_workspace',
-            protos_dot_workspace__pb2.JoinWorkspaceRequest.SerializeToString,
-            protos_dot_workspace__pb2.BaseResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def get_joined_workspaces(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/workspace.Workspace/get_joined_workspaces',
-            protos_dot_workspace__pb2.GetJoinedWorkspacesRequest.SerializeToString,
-            protos_dot_workspace__pb2.GetJoinedWorkspacesResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/workspace.Workspace/workspace_info',
+            protos_dot_workspace__pb2.WorkspaceInfoRequest.SerializeToString,
+            protos_dot_workspace__pb2.WorkspaceObjectResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -126,7 +146,7 @@ class Workspace(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/workspace.Workspace/leave_workspace',
-            protos_dot_workspace__pb2.LeaveWorkspacesRequest.SerializeToString,
+            protos_dot_workspace__pb2.LeaveWorkspaceRequest.SerializeToString,
             protos_dot_workspace__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

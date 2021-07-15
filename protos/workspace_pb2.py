@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x16protos/workspace.proto\x12\tworkspace\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"D\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12#\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x13.workspace.ErrorRes\"\x81\x01\n\x17WorkspaceObjectResponse\x12\x14\n\x0cworkspace_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x1c\n\x14is_default_workspace\x18\x03 \x01(\x08\x12\x18\n\x10is_own_workspace\x18\x04 \x01(\x08\"C\n\x14JoinWorkspaceRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"/\n\x1aGetJoinedWorkspacesRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\"X\n\x1bGetJoinedWorkspacesResponse\x12\x39\n\rlst_workspace\x18\x01 \x03(\x0b\x32\".workspace.WorkspaceObjectResponse\"A\n\x16LeaveWorkspacesRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x14\n\x0cworkspace_id\x18\x02 \x01(\t2\x94\x02\n\tWorkspace\x12L\n\x0ejoin_workspace\x12\x1f.workspace.JoinWorkspaceRequest\x1a\x17.workspace.BaseResponse\"\x00\x12h\n\x15get_joined_workspaces\x12%.workspace.GetJoinedWorkspacesRequest\x1a&.workspace.GetJoinedWorkspacesResponse\"\x00\x12O\n\x0fleave_workspace\x12!.workspace.LeaveWorkspacesRequest\x1a\x17.workspace.BaseResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x16protos/workspace.proto\x12\tworkspace\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"D\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12#\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x13.workspace.ErrorRes\"`\n\x14WorkspaceInfoRequest\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12.\n\rbase_response\x18\x02 \x01(\x0b\x32\x17.workspace.BaseResponse\"Q\n\x17WorkspaceObjectResponse\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x1c\n\x14is_default_workspace\x18\x02 \x01(\x08\"@\n\x15LeaveWorkspaceRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x14\n\x0cworkspace_id\x18\x02 \x01(\t2\xb4\x01\n\tWorkspace\x12W\n\x0eworkspace_info\x12\x1f.workspace.WorkspaceInfoRequest\x1a\".workspace.WorkspaceObjectResponse\"\x00\x12N\n\x0fleave_workspace\x12 .workspace.LeaveWorkspaceRequest\x1a\x17.workspace.BaseResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -103,6 +103,45 @@ _BASERESPONSE = _descriptor.Descriptor(
 )
 
 
+_WORKSPACEINFOREQUEST = _descriptor.Descriptor(
+  name='WorkspaceInfoRequest',
+  full_name='workspace.WorkspaceInfoRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='workspace_domain', full_name='workspace.WorkspaceInfoRequest.workspace_domain', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='base_response', full_name='workspace.WorkspaceInfoRequest.base_response', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=150,
+  serialized_end=246,
+)
+
+
 _WORKSPACEOBJECTRESPONSE = _descriptor.Descriptor(
   name='WorkspaceObjectResponse',
   full_name='workspace.WorkspaceObjectResponse',
@@ -112,29 +151,15 @@ _WORKSPACEOBJECTRESPONSE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='workspace_id', full_name='workspace.WorkspaceObjectResponse.workspace_id', index=0,
+      name='workspace_domain', full_name='workspace.WorkspaceObjectResponse.workspace_domain', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='workspace_domain', full_name='workspace.WorkspaceObjectResponse.workspace_domain', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='is_default_workspace', full_name='workspace.WorkspaceObjectResponse.is_default_workspace', index=2,
-      number=3, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='is_own_workspace', full_name='workspace.WorkspaceObjectResponse.is_own_workspace', index=3,
-      number=4, type=8, cpp_type=7, label=1,
+      name='is_default_workspace', full_name='workspace.WorkspaceObjectResponse.is_default_workspace', index=1,
+      number=2, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -151,28 +176,28 @@ _WORKSPACEOBJECTRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=151,
-  serialized_end=280,
+  serialized_start=248,
+  serialized_end=329,
 )
 
 
-_JOINWORKSPACEREQUEST = _descriptor.Descriptor(
-  name='JoinWorkspaceRequest',
-  full_name='workspace.JoinWorkspaceRequest',
+_LEAVEWORKSPACEREQUEST = _descriptor.Descriptor(
+  name='LeaveWorkspaceRequest',
+  full_name='workspace.LeaveWorkspaceRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='client_id', full_name='workspace.JoinWorkspaceRequest.client_id', index=0,
+      name='client_id', full_name='workspace.LeaveWorkspaceRequest.client_id', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='workspace_domain', full_name='workspace.JoinWorkspaceRequest.workspace_domain', index=1,
+      name='workspace_id', full_name='workspace.LeaveWorkspaceRequest.workspace_id', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -190,122 +215,17 @@ _JOINWORKSPACEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=282,
-  serialized_end=349,
-)
-
-
-_GETJOINEDWORKSPACESREQUEST = _descriptor.Descriptor(
-  name='GetJoinedWorkspacesRequest',
-  full_name='workspace.GetJoinedWorkspacesRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='client_id', full_name='workspace.GetJoinedWorkspacesRequest.client_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=351,
-  serialized_end=398,
-)
-
-
-_GETJOINEDWORKSPACESRESPONSE = _descriptor.Descriptor(
-  name='GetJoinedWorkspacesResponse',
-  full_name='workspace.GetJoinedWorkspacesResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='lst_workspace', full_name='workspace.GetJoinedWorkspacesResponse.lst_workspace', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=400,
-  serialized_end=488,
-)
-
-
-_LEAVEWORKSPACESREQUEST = _descriptor.Descriptor(
-  name='LeaveWorkspacesRequest',
-  full_name='workspace.LeaveWorkspacesRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='client_id', full_name='workspace.LeaveWorkspacesRequest.client_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='workspace_id', full_name='workspace.LeaveWorkspacesRequest.workspace_id', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=490,
-  serialized_end=555,
+  serialized_start=331,
+  serialized_end=395,
 )
 
 _BASERESPONSE.fields_by_name['errors'].message_type = _ERRORRES
-_GETJOINEDWORKSPACESRESPONSE.fields_by_name['lst_workspace'].message_type = _WORKSPACEOBJECTRESPONSE
+_WORKSPACEINFOREQUEST.fields_by_name['base_response'].message_type = _BASERESPONSE
 DESCRIPTOR.message_types_by_name['ErrorRes'] = _ERRORRES
 DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
+DESCRIPTOR.message_types_by_name['WorkspaceInfoRequest'] = _WORKSPACEINFOREQUEST
 DESCRIPTOR.message_types_by_name['WorkspaceObjectResponse'] = _WORKSPACEOBJECTRESPONSE
-DESCRIPTOR.message_types_by_name['JoinWorkspaceRequest'] = _JOINWORKSPACEREQUEST
-DESCRIPTOR.message_types_by_name['GetJoinedWorkspacesRequest'] = _GETJOINEDWORKSPACESREQUEST
-DESCRIPTOR.message_types_by_name['GetJoinedWorkspacesResponse'] = _GETJOINEDWORKSPACESRESPONSE
-DESCRIPTOR.message_types_by_name['LeaveWorkspacesRequest'] = _LEAVEWORKSPACESREQUEST
+DESCRIPTOR.message_types_by_name['LeaveWorkspaceRequest'] = _LEAVEWORKSPACEREQUEST
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 ErrorRes = _reflection.GeneratedProtocolMessageType('ErrorRes', (_message.Message,), {
@@ -322,6 +242,13 @@ BaseResponse = _reflection.GeneratedProtocolMessageType('BaseResponse', (_messag
   })
 _sym_db.RegisterMessage(BaseResponse)
 
+WorkspaceInfoRequest = _reflection.GeneratedProtocolMessageType('WorkspaceInfoRequest', (_message.Message,), {
+  'DESCRIPTOR' : _WORKSPACEINFOREQUEST,
+  '__module__' : 'protos.workspace_pb2'
+  # @@protoc_insertion_point(class_scope:workspace.WorkspaceInfoRequest)
+  })
+_sym_db.RegisterMessage(WorkspaceInfoRequest)
+
 WorkspaceObjectResponse = _reflection.GeneratedProtocolMessageType('WorkspaceObjectResponse', (_message.Message,), {
   'DESCRIPTOR' : _WORKSPACEOBJECTRESPONSE,
   '__module__' : 'protos.workspace_pb2'
@@ -329,33 +256,12 @@ WorkspaceObjectResponse = _reflection.GeneratedProtocolMessageType('WorkspaceObj
   })
 _sym_db.RegisterMessage(WorkspaceObjectResponse)
 
-JoinWorkspaceRequest = _reflection.GeneratedProtocolMessageType('JoinWorkspaceRequest', (_message.Message,), {
-  'DESCRIPTOR' : _JOINWORKSPACEREQUEST,
+LeaveWorkspaceRequest = _reflection.GeneratedProtocolMessageType('LeaveWorkspaceRequest', (_message.Message,), {
+  'DESCRIPTOR' : _LEAVEWORKSPACEREQUEST,
   '__module__' : 'protos.workspace_pb2'
-  # @@protoc_insertion_point(class_scope:workspace.JoinWorkspaceRequest)
+  # @@protoc_insertion_point(class_scope:workspace.LeaveWorkspaceRequest)
   })
-_sym_db.RegisterMessage(JoinWorkspaceRequest)
-
-GetJoinedWorkspacesRequest = _reflection.GeneratedProtocolMessageType('GetJoinedWorkspacesRequest', (_message.Message,), {
-  'DESCRIPTOR' : _GETJOINEDWORKSPACESREQUEST,
-  '__module__' : 'protos.workspace_pb2'
-  # @@protoc_insertion_point(class_scope:workspace.GetJoinedWorkspacesRequest)
-  })
-_sym_db.RegisterMessage(GetJoinedWorkspacesRequest)
-
-GetJoinedWorkspacesResponse = _reflection.GeneratedProtocolMessageType('GetJoinedWorkspacesResponse', (_message.Message,), {
-  'DESCRIPTOR' : _GETJOINEDWORKSPACESRESPONSE,
-  '__module__' : 'protos.workspace_pb2'
-  # @@protoc_insertion_point(class_scope:workspace.GetJoinedWorkspacesResponse)
-  })
-_sym_db.RegisterMessage(GetJoinedWorkspacesResponse)
-
-LeaveWorkspacesRequest = _reflection.GeneratedProtocolMessageType('LeaveWorkspacesRequest', (_message.Message,), {
-  'DESCRIPTOR' : _LEAVEWORKSPACESREQUEST,
-  '__module__' : 'protos.workspace_pb2'
-  # @@protoc_insertion_point(class_scope:workspace.LeaveWorkspacesRequest)
-  })
-_sym_db.RegisterMessage(LeaveWorkspacesRequest)
+_sym_db.RegisterMessage(LeaveWorkspaceRequest)
 
 
 
@@ -366,35 +272,25 @@ _WORKSPACE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=558,
-  serialized_end=834,
+  serialized_start=398,
+  serialized_end=578,
   methods=[
   _descriptor.MethodDescriptor(
-    name='join_workspace',
-    full_name='workspace.Workspace.join_workspace',
+    name='workspace_info',
+    full_name='workspace.Workspace.workspace_info',
     index=0,
     containing_service=None,
-    input_type=_JOINWORKSPACEREQUEST,
-    output_type=_BASERESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='get_joined_workspaces',
-    full_name='workspace.Workspace.get_joined_workspaces',
-    index=1,
-    containing_service=None,
-    input_type=_GETJOINEDWORKSPACESREQUEST,
-    output_type=_GETJOINEDWORKSPACESRESPONSE,
+    input_type=_WORKSPACEINFOREQUEST,
+    output_type=_WORKSPACEOBJECTRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
     name='leave_workspace',
     full_name='workspace.Workspace.leave_workspace',
-    index=2,
+    index=1,
     containing_service=None,
-    input_type=_LEAVEWORKSPACESREQUEST,
+    input_type=_LEAVEWORKSPACEREQUEST,
     output_type=_BASERESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
