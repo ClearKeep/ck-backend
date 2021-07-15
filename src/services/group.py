@@ -851,7 +851,11 @@ class GroupService(BaseService):
                 raise ValueError
         for client in current_group_clients:
             if client['workspace_domain'] != current_workspace_domain:
-                continue
+                if not is_owner:
+                    continue
+                else:
+                    if client['id'] != removed_member_info['id']:
+                        continue
             client_key = get_client_key(
                 group.id if is_owner else group.owner_group_id,
                 client['id']
