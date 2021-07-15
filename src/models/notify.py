@@ -36,7 +36,6 @@ class Notify(Database.get().Model):
         Database.get().session.remove()
         return notify
 
-
     def get_unread_notifies(self, client_id):
         notifies = self.query.filter_by(client_id=client_id, read_flg=False)
         return notifies

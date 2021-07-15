@@ -117,8 +117,14 @@ message AddMemberRequest {
   int64 group_id = 3;
 }
 
-// Response BaseResponse
+message RemoveMemberRequest {
+  MemberInfo removed_member_info = 1;
+  int64 group_id = 2;
+}
 
+message LeaveGroupRequest {
+  int64 group_id = 1;
+}
 
 // Request: join group
 message JoinGroupRequest {
@@ -166,6 +172,15 @@ message AddMemberWorkspaceResponse {
   int64 group_id = 1;
 }
 
+message RemoveMemberWorkspaceRequest {
+  string from_workspace_domain = 1;
+  string owner_workspace_domain = 2;
+  MemberInfo removed_member_info = 3;
+  MemberInfo removing_member_info = 4;
+  int64 owner_group_id = 5;
+  repeated MemberInfo group_clients_after_removal = 6;
+}
+
 // Method
 service Group {
     rpc create_group(CreateGroupRequest) returns (GroupObjectResponse) {};
@@ -174,7 +189,10 @@ service Group {
     rpc get_group(GetGroupRequest) returns (GroupObjectResponse) {};
     rpc search_groups(SearchGroupsRequest) returns (SearchGroupsResponse) {};
     rpc get_joined_groups(GetJoinedGroupsRequest) returns (GetJoinedGroupsResponse) {};
+    rpc join_group(JoinGroupRequest) returns (BaseResponse) {};
     rpc add_member(AddMemberRequest) returns (BaseResponse) {};
     rpc add_member_workspace(AddMemberWorkspaceRequest) returns (AddMemberWorkspaceResponse) {};
-    rpc join_group(JoinGroupRequest) returns (BaseResponse) {};
+    rpc remove_member(RemoveMemberRequest) returns (GroupObjectResponse) {};
+    rpc remove_member_workspace(RemoveMemberWorkspaceRequest) returns (BaseResponse) {};
+    rpc leave_group(LeaveGroupRequest) returns (GroupObjectResponse) {};
 }

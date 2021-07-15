@@ -2,6 +2,8 @@ from src.services.base import BaseService
 from src.models.group import GroupChat
 from src.models.user import User
 from src.models.signal_group_key import GroupClientKey
+from src.models.signal_peer_key import PeerClientKey
+from src.models.message import Message as MessageClass
 from src.services.notify_inapp import NotifyInAppService
 from src.services.janus_webrtc import JanusService
 from client.client_group import *
@@ -698,3 +700,218 @@ class GroupService(BaseService):
             return group_pb2.AddMemberWorkspaceResponse(
                 group_id=group.id
             )
+
+    def remove_member_from_group_not_owner(
+            self,
+            removed_member_info,
+            removing_member_info,
+            group,
+            group_clients_after_removal,
+            workspace_domains):
+        """docstring for remove_member_from_group_not_owner"""
+        assert group.total_member > 1
+        owner_workspace_domain = group.owner_workspace_domain
+        current_workspace_domain = get_owner_workspace_domain()
+        # update_this_server_first = (
+        #     current_workspace_domain == removed_member_info['workspace_domain']
+        # )
+        # if update_this_server_first:
+        #     remove_member_workspace(
+        #         from_workspace_domain=current_workspace_domain,
+        #         owner_workspace_domain=owner_workspace_domain,
+        #         removed_member_info=removed_member_info,
+        #         removing_member_info=removing_member_info,
+        #         group=group,
+        #         group_clients_after_removal=group_clients_after_removal
+        #     )
+        request = group_pb2.RemoveMemberRequest(
+            removed_member_info=dict_to_message(removed_member_info),
+            group_id=group.owner_group_id
+        )
+        response =\
+            ClientGroup(
+                owner_workspace_domain
+            ).remove_member(
+                request
+            )
+        # update the information in this auxil server based on the response
+        remove_member_workspace(
+            from_workspace_domain=current_workspace_domain,
+            owner_workspace_domain=owner_workspace_domain,
+            removed_member_info=removed_member_info,
+            removing_member_info=removing_member_info,
+            group=group,
+            group_clients_after_removal=group_clients_after_removal
+        )
+        response.group_id = group.id
+        return response
+
+    def remove_member_from_group_owner(
+            self,
+            removed_member_info,
+            removing_member_info,
+            group,
+            group_clients_after_removal,
+            workspace_domains):
+        """docstring for remove_member_from_group_owner"""
+        assert group.total_member >= 1
+        owner_workspace_domain = get_owner_workspace_domain()
+        # update information in the server of the removed member first
+        workspace_domains.remove(removed_member_info['workspace_domain'])
+        workspace_domains.insert(0, removed_member_info['workspace_domain'])
+        for workspace_domain in workspace_domains:
+            if workspace_domain == owner_workspace_domain:
+                continue
+            elif workspace_domain == removing_member_info['workspace_domain']:
+                continue
+            request = group_pb2.RemoveMemberWorkspaceRequest(
+                from_workspace_domain=get_owner_workspace_domain(),
+                owner_workspace_domain=owner_workspace_domain,
+                removed_member_info=dict_to_message(removed_member_info),
+                removing_member_info=dict_to_message(removing_member_info),
+                owner_group_id=group.id,
+                group_clients_after_removal=[
+                    dict_to_message(e) for e in group_clients_after_removal
+                ]
+            )
+            response =\
+                ClientGroup(
+                    workspace_domain
+                ).remove_member_workspace(
+                    request
+                )
+            if workspace_domain == removed_member_info['workspace_domain']:
+                # keep the response if it is from workspace domain of the
+                # removed member
+                kept_response = response
+            else:
+                # use kept response to update information in the main server
+                # and the other remaining servers
+                pass
+        remove_member_workspace(
+            from_workspace_domain=get_owner_workspace_domain(),
+            owner_workspace_domain=owner_workspace_domain,
+            removed_member_info=removed_member_info,
+            removing_member_info=removing_member_info,
+            group=group,
+            group_clients_after_removal=group_clients_after_removal
+        )
+        last_message = MessageClass().get(message_id=group.last_message_id)
+        return group_pb2.GroupObjectResponse(
+            group_id=group.id,
+            group_name=group.group_name,
+            group_avatar=group.group_avatar,
+            group_type=group.group_type,
+            lst_client=[
+                dict_to_client_in_group_message(e)
+                for e in group_clients_after_removal
+            ],
+            last_message_at=int(group.last_message_at.timestamp() * 1000),
+            last_message=group_pb2.MessageObjectResponse(
+                id=last_message.id,
+                group_id=last_message.group_id,
+                group_type=group.group_type,
+                from_client_id=last_message.from_client_id,
+                client_id=last_message.client_id,
+                message=last_message.message,
+                created_at=int(last_message.created_at.timestamp() * 1000),
+                updated_at=int(last_message.updated_at.timestamp() * 1000)
+            ),
+            created_by_client_id=group.created_by,
+            updated_by_client_id=group.updated_by,
+            created_at=int(group.created_at.timestamp() * 1000),
+            updated_at=int(group.updated_at.timestamp() * 1000),
+            group_rtc_token=group.group_rtc_token
+        )
+
+    def remove_member_workspace(
+            self,
+            from_workspace_domain,
+            owner_workspace_domain,
+            removed_member_info,
+            removing_member_info,
+            group,
+            group_clients_after_removal):
+        current_workspace_domain = get_owner_workspace_domain()
+        current_group_clients = json.loads(group.group_clients)
+        is_owner = (current_workspace_domain == owner_workspace_domain)
+        if is_owner:
+            if group.group_type == 'group':
+                get_client_key = GroupClientKey().get
+            elif group.group_type == 'peer':
+                get_client_key = PeerClientKey().get
+            else:
+                raise ValueError
+        else:
+            if group.group_type == 'group':
+                get_client_key = GroupChat().get_client_key_by_owner_group
+            elif group.group_type == 'peer':
+                get_client_key = GroupChat().get_client_key_by_owner_peer
+            else:
+                raise ValueError
+        for client in current_group_clients:
+            if client['workspace_domain'] != current_workspace_domain:
+                continue
+            client_key = get_client_key(
+                group.id if is_owner else group.owner_group_id,
+                client['id']
+            )
+            member_group = GroupChat().get_group(client_key.group_id)
+            if (client['id'] == removed_member_info['id']):
+                client_key.delete()
+                removed_member_info['group'] = member_group
+                if is_owner:
+                    if len(current_group_clients) == 1:
+                        member_group.delete()
+                    elif len(current_group_clients) > 1:
+                        member_group.group_clients =\
+                            json.dumps(group_clients_after_removal)
+                        member_group.total_member =\
+                            len(group_clients_after_removal)
+                        member_group.updated_by = removing_member_info['id']
+                        member_group.updated_at = datetime.datetime.now()
+                        member_group.update()
+                    else:
+                        raise ValueError
+                else:
+                    member_group.delete()
+            elif not is_owner:
+                member_group.group_clients =\
+                    json.dumps(group_clients_after_removal)
+                member_group.total_member = len(group_clients_after_removal)
+                member_group.updated_by = removing_member_info['id']
+                member_group.updated_at = datetime.datetime.now()
+                member_group.update()
+            self.notify_service.notify_removing_member(
+                client['id'],
+                client['workspace_domain'],
+                removed_member_info['id'],
+                removed_member_info['workspace_domain'],
+                removed_member_info['group'].id,
+                removed_member_info['display_name'],
+                self.notify_service.MEMBER_REMOVAL\
+                if removed_member_info['id'] != removing_member_info['id']\
+                else self.notify_service.MEMBER_LEAVE
+            )
+        if from_workspace_domain == current_workspace_domain:
+            # return results to current server
+            return True
+        else:
+            # return gRPC response message to requesting server
+            return group_pb2.BaseResponse(success=True)
+
+    def dict_to_message(d):
+        m = group_pb2.MemberInfo(
+            id=d['id'],
+            display_name=d['display_name'],
+            workspace_domain=d['workspace_domain']
+        )
+        return m
+
+    def dict_to_client_in_group_message(d):
+        m = group_pb2.ClientInGroupResponse(
+            id=d['id'],
+            display_name=d['display_name'],
+            workspace_domain=d['workspace_domain']
+        )
+        return m

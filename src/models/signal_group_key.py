@@ -91,3 +91,11 @@ class GroupClientKey(Database.get().Model):
         except Exception as e:
             Database.get_session().rollback()
             logger.error(e)
+
+    def delete(self):
+        try:
+            Database.get_session().delete(self)
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            logger.error(e)
