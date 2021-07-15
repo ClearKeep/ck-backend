@@ -3,6 +3,7 @@ import secrets
 from src.models.base import Database
 from src.models.message import Message
 from src.models.signal_group_key import GroupClientKey
+from src.models.signal_peer_key import PeerClientKey
 from sqlalchemy.orm import joinedload
 from src.models.message_user_read import MessageUserRead
 from utils.logger import *
@@ -103,9 +104,25 @@ class GroupChat(Database.get().Model):
         Database.get().session.remove()
         return client
 
+    def get_client_key_by_owner_peer(self, peer_id, client_id):
+        client = Database.get_session().query(PeerClientKey) \
+            .join(GroupChat, PeerClientKey.group_id == GroupChat.id, isouter=True) \
+            .filter(GroupChat.owner_group_id == group_id, PeerClientKey.client_id == client_id) \
+            .one_or_none()
+        Database.get().session.remove()
+        return client
+
     def update(self):
         try:
             Database.get_session().merge(self)
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            logger.error(e)
+
+    def delete(self):
+        try:
+            Database.get_session().delete(self)
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
