@@ -312,19 +312,19 @@ class VideoCallController(BaseController):
                         'client_id': client_id
                     }
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
-                        ret_val = NotifyInAppService().notify_client_update_call(update_type, client.GroupClientKey.client_id, from_client_id,
-                                                                                 client.GroupClientKey.group_id)
-                        if not ret_val:
-                            new_push_payload = deepcopy(push_payload)
-                            logger.info(new_push_payload)
-                            await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, new_push_payload)
+                        # ret_val = NotifyInAppService().notify_client_update_call(update_type, client.GroupClientKey.client_id, from_client_id,
+                        #                                                          client.GroupClientKey.group_id)
+                        # if not ret_val:
+                        new_push_payload = deepcopy(push_payload)
+                        logger.info(new_push_payload)
+                        await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, new_push_payload)
                     else:
                         new_push_payload = deepcopy(push_payload)
                         new_push_payload["group_id"] = str(client.GroupClientKey.client_workspace_group_id)
                         logger.info(new_push_payload)
                         ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                             json.dumps(new_push_payload))
-                        continue
+                        #continue
             return video_call_pb2.BaseResponse(
                 success=True
             )
@@ -363,22 +363,23 @@ class VideoCallController(BaseController):
                     'client_id': client_id
                 }
                 if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
-                    logger.info("update_call_to_group_owner, owner member ->client_id {}".format(client.GroupClientKey.client_id))
-                    ret_val = NotifyInAppService().notify_client_update_call(update_type, client.GroupClientKey.client_id, from_client_id,
-                                                                             client.GroupClientKey.group_id)
-                    logger.info("notify inapp {}".format(ret_val))
-                    if not ret_val:
-                        logger.info("notify push notification")
-                        new_push_payload = deepcopy(push_payload)
-                        logger.info(new_push_payload)
-                        await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, new_push_payload)
+                    # logger.info("update_call_to_group_owner, owner member ->client_id {}".format(client.GroupClientKey.client_id))
+                    # ret_val = NotifyInAppService().notify_client_update_call(update_type, client.GroupClientKey.client_id, from_client_id,
+                    #                                                          client.GroupClientKey.group_id)
+                    # logger.info("notify inapp {}".format(ret_val))
+                    # if not ret_val:
+                    #     logger.info("notify push notification")
+                    new_push_payload = deepcopy(push_payload)
+                    new_push_payload["group_id"] = str(client.GroupClientKey.group_id)
+                    logger.info(new_push_payload)
+                    await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, new_push_payload)
                 else:
                     new_push_payload = deepcopy(push_payload)
                     new_push_payload["group_id"] = str(client.GroupClientKey.client_workspace_group_id)
                     logger.info(new_push_payload)
                     ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                         json.dumps(new_push_payload))
-                    continue
+                    #continue
 
         return video_call_pb2.BaseResponse(
             success=True
@@ -398,17 +399,17 @@ class VideoCallController(BaseController):
             if client.User.id == from_client_id:
                 from_client_username = client.User.display_name
             else:
-                ret_val = NotifyInAppService().notify_client_update_call(update_type, client.GroupClientKey.client_id, from_client_id, client.GroupClientKey.group_id)
-                if not ret_val:
-                    push_payload = {
-                        'notify_type': update_type,
-                        'group_id': str(client.GroupClientKey.group_id),
-                        'from_client_id': from_client_id,
-                        'from_client_name': from_client_username,
-                        'from_client_avatar': '',
-                        'client_id': client_id
-                    }
-                    await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, push_payload)
+                # ret_val = NotifyInAppService().notify_client_update_call(update_type, client.GroupClientKey.client_id, from_client_id, client.GroupClientKey.group_id)
+                # if not ret_val:
+                push_payload = {
+                    'notify_type': update_type,
+                    'group_id': str(client.GroupClientKey.group_id),
+                    'from_client_id': from_client_id,
+                    'from_client_name': from_client_username,
+                    'from_client_avatar': '',
+                    'client_id': client_id
+                }
+                await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, push_payload)
 
         request = video_call_pb2.WorkspaceUpdateCallRequest(
             from_client_id=from_client_id,
