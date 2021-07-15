@@ -736,7 +736,7 @@ class GroupService(BaseService):
                 request
             )
         # update the information in this auxil server based on the response
-        remove_member_workspace(
+        self.remove_member_workspace(
             from_workspace_domain=current_workspace_domain,
             owner_workspace_domain=owner_workspace_domain,
             removed_member_info=removed_member_info,
@@ -789,7 +789,7 @@ class GroupService(BaseService):
                 # use kept response to update information in the main server
                 # and the other remaining servers
                 pass
-        remove_member_workspace(
+        self.remove_member_workspace(
             from_workspace_domain=get_owner_workspace_domain(),
             owner_workspace_domain=owner_workspace_domain,
             removed_member_info=removed_member_info,
