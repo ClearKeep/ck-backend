@@ -726,6 +726,7 @@ class GroupService(BaseService):
         #     )
         request = group_pb2.RemoveMemberRequest(
             removed_member_info=dict_to_message(removed_member_info),
+            removing_member_info=dict_to_message(removing_member_info),
             group_id=group.owner_group_id
         )
         response =\
@@ -862,7 +863,7 @@ class GroupService(BaseService):
             )
             member_group = GroupChat().get_group(client_key.group_id)
             if (client['id'] == removed_member_info['id']):
-                client_key.delete()
+                # client_key.delete()
                 removed_member_info['group'] = member_group
                 if is_owner:
                     if len(current_group_clients) == 1:
@@ -878,7 +879,13 @@ class GroupService(BaseService):
                     else:
                         raise ValueError
                 else:
-                    member_group.delete()
+                    # member_group.delete()
+                    member_group.group_clients =\
+                        json.dumps(group_clients_after_removal)
+                    member_group.total_member = len(group_clients_after_removal)
+                    member_group.updated_by = removing_member_info['id']
+                    member_group.updated_at = datetime.datetime.now()
+                    member_group.update()
             elif not is_owner:
                 member_group.group_clients =\
                     json.dumps(group_clients_after_removal)

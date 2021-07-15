@@ -181,27 +181,41 @@ class GroupController(BaseController):
                     message=request.removed_member_info,
                     preserving_proto_field_name=True
                 )
-            metadata = dict(context.invocation_metadata())
-            access_token_information = KeyCloakUtils.introspect_token(
-                metadata['access_token']
-            )
-            # removing_member_id = '081f2345-bcc8-4447-9da8-3b1e04ad6c51'
-            removing_member_info = {
-                'id': access_token_information['sub'],
-                'workspace_domain': get_owner_workspace_domain()
-            }
+            # metadata = dict(context.invocation_metadata())
+            # access_token_information = KeyCloakUtils.introspect_token(
+            #     metadata['access_token']
+            # )
+            # removing_member_info = {
+            #     'id': access_token_information['sub'],
+            #     'workspace_domain': get_owner_workspace_domain()
+            # }
+            removing_member_info =\
+                MessageToDict(
+                    message=request.removing_member_info,
+                    preserving_proto_field_name=True
+                )
             group = GroupService().get_group_info(request.group_id)
             current_group_clients = json.loads(group.group_clients)
             if all([e['id'] != removed_member_info['id']
                     for e in current_group_clients]):
                 raise Exception(Message.USER_NOT_IN_GROUP)
             else:
-                group_clients_after_removal =\
-                    [e for e in current_group_clients
-                     if e['id'] != removed_member_info['id']]
-                assert len(group_clients_after_removal) == len(
-                    current_group_clients
-                ) - 1
+                # group_clients_after_removal =\
+                #     [e for e in current_group_clients
+                #      if e['id'] != removed_member_info['id']]
+                # assert len(group_clients_after_removal) == len(
+                #     current_group_clients
+                # ) - 1
+                group_clients_after_removal = []
+                for e in current_group_clients:
+                    if e['id'] == removed_member_info['id']:
+                        if (removed_member_info['id'] ==
+                                removing_member_info['id']):
+                            e['status'] = 'left'
+                        else:
+                            e['status'] = 'removed'
+                    group_clients_after_removal.append(e)
+
             workspace_domains = list(set(
                 [e['workspace_domain'] for e in current_group_clients]
             ))
