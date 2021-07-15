@@ -152,9 +152,6 @@ class VideoCallController(BaseController):
         for client in lst_client_in_groups:
             if client.User and client.User.id == from_client_id:
                 from_client_name = client.User.display_name
-        # from_client = next(client for client in lst_client_in_groups if (client.User and client.User.id == from_client_id))
-        # if from_client and from_client.User:
-        #     from_client_name = from_client.User.display_name
 
         for client in lst_client_in_groups:
             if client.User is None or client.User.id != from_client_id:
@@ -366,6 +363,7 @@ class VideoCallController(BaseController):
                     'client_id': client_id
                 }
                 if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+                    logger.info("update_call_to_group_owner, owner member ->client_id {}".format(client.GroupClientKey.client_id))
                     ret_val = NotifyInAppService().notify_client_update_call(update_type, client.GroupClientKey.client_id, from_client_id,
                                                                              client.GroupClientKey.group_id)
                     if not ret_val:
