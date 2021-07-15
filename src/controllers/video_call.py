@@ -366,7 +366,9 @@ class VideoCallController(BaseController):
                     logger.info("update_call_to_group_owner, owner member ->client_id {}".format(client.GroupClientKey.client_id))
                     ret_val = NotifyInAppService().notify_client_update_call(update_type, client.GroupClientKey.client_id, from_client_id,
                                                                              client.GroupClientKey.group_id)
+                    logger.info("notify inapp {}".format(ret_val))
                     if not ret_val:
+                        logger.info("notify push notification")
                         new_push_payload = deepcopy(push_payload)
                         logger.info(new_push_payload)
                         await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, new_push_payload)
