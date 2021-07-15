@@ -11,6 +11,7 @@ from client.client_call import *
 import secrets
 from utils.config import *
 from protos import video_call_pb2
+from copy import deepcopy
 
 
 class VideoCallController(BaseController):
@@ -304,31 +305,45 @@ class VideoCallController(BaseController):
             for client in lst_client_in_groups:
                 if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
 
+                    push_payload = {
+                        'notify_type': update_type,
+                        'group_id': str(client.GroupClientKey.group_id),
+                        'from_client_id': from_client_id,
+                        'from_client_name': from_client_name,
+                        'from_client_avatar': '',
+                        'client_id': client_id
+                    }
+
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                         ret_val = NotifyInAppService().notify_client_update_call(update_type, client.GroupClientKey.client_id, from_client_id,
                                                                                  client.GroupClientKey.group_id)
                         if not ret_val:
-                            push_payload = {
-                                'notify_type': update_type,
-                                'group_id': str(client.GroupClientKey.group_id),
-                                'from_client_id': from_client_id,
-                                'from_client_name': from_client_name,
-                                'from_client_avatar': '',
-                                'client_id': client_id
-                            }
-                            await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, push_payload)
+                            # push_payload = {
+                            #     'notify_type': update_type,
+                            #     'group_id': str(client.GroupClientKey.group_id),
+                            #     'from_client_id': from_client_id,
+                            #     'from_client_name': from_client_name,
+                            #     'from_client_avatar': '',
+                            #     'client_id': client_id
+                            # }
+                            new_push_payload = deepcopy(push_payload)
+                            logger.info(new_push_payload)
+                            await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, new_push_payload)
                     else:
-                        push_payload_2 = {
-                            'notify_type': update_type,
-                            'group_id': str(client.GroupClientKey.client_workspace_group_id),
-                            'from_client_id': from_client_id,
-                            'from_client_name': from_client_name,
-                            'from_client_avatar': '',
-                            'client_id': client_id
-                        }
+                        new_push_payload = deepcopy(push_payload)
+                        new_push_payload["group_id"] = str(client.GroupClientKey.client_workspace_group_id)
+                        logger.info(new_push_payload)
+                        # push_payload_2 = {
+                        #     'notify_type': update_type,
+                        #     'group_id': str(client.GroupClientKey.client_workspace_group_id),
+                        #     'from_client_id': from_client_id,
+                        #     'from_client_name': from_client_name,
+                        #     'from_client_avatar': '',
+                        #     'client_id': client_id
+                        # }
                         #push_payload["group_id"] = str(client.GroupClientKey.client_workspace_group_id)
                         ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
-                                                                                            json.dumps(push_payload_2))
+                                                                                            json.dumps(new_push_payload))
             return video_call_pb2.BaseResponse(
                 success=True
             )
