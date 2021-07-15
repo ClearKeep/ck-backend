@@ -321,13 +321,14 @@ class VideoCallController(BaseController):
                             new_push_payload = deepcopy(push_payload)
                             logger.info(new_push_payload)
                             await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, new_push_payload)
+                            continue
                     else:
                         new_push_payload = deepcopy(push_payload)
                         new_push_payload["group_id"] = str(client.GroupClientKey.client_workspace_group_id)
                         logger.info(new_push_payload)
                         ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                             json.dumps(new_push_payload))
-                    continue
+                        continue
             return video_call_pb2.BaseResponse(
                 success=True
             )
@@ -372,13 +373,15 @@ class VideoCallController(BaseController):
                         new_push_payload = deepcopy(push_payload)
                         logger.info(new_push_payload)
                         await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, new_push_payload)
+                        continue
                 else:
                     new_push_payload = deepcopy(push_payload)
                     new_push_payload["group_id"] = str(client.GroupClientKey.client_workspace_group_id)
                     logger.info(new_push_payload)
                     ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                         json.dumps(new_push_payload))
-                continue
+                    continue
+
         return video_call_pb2.BaseResponse(
             success=True
         )
@@ -408,7 +411,7 @@ class VideoCallController(BaseController):
                         'client_id': client_id
                     }
                     await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, push_payload)
-                continue
+                    continue
 
         request = video_call_pb2.WorkspaceUpdateCallRequest(
             from_client_id=from_client_id,
