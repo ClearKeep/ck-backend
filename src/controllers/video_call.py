@@ -93,6 +93,7 @@ class VideoCallController(BaseController):
                         await NotifyPushService().push_voip_client(client.User.id, push_payload)
                     else:
                         new_push_payload = deepcopy(push_payload)
+                        new_push_payload['group_id'] = str(client.GroupClientKey.client_workspace_group_id)
                         logger.info(new_push_payload)
                         ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.User.id,
                                                                                             json.dumps(new_push_payload))
@@ -180,6 +181,7 @@ class VideoCallController(BaseController):
                 else:
                     logger.info("Push voip from {} to client {} in {}".format(owner_workspace_domain, client.GroupClientKey.client_workspace_domain, client.GroupClientKey.client_id))
                     new_push_payload = deepcopy(push_payload)
+                    new_push_payload['group_id'] = str(client.GroupClientKey.client_workspace_group_id)
                     logger.info(new_push_payload)
                     ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                         json.dumps(new_push_payload))
