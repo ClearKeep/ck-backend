@@ -39,7 +39,7 @@ class UploadFileService(BaseService):
         )
         return obj_res
 
-    def upload_chunked_file(self, request_iterator):
+    async def upload_chunked_file(self, request_iterator):
         data_blocks = []
         file_hash = None
         file_name = None

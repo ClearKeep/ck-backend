@@ -45,7 +45,7 @@ class UploadFileController(BaseController):
     @request_logged
     async def upload_chunked_file(self, request_iterator, context):
         try:
-            obj_res = self.service.upload_chunked_file(request_iterator)
+            obj_res = await self.service.upload_chunked_file(request_iterator)
             return obj_res
         except Exception as e:
             logger.error(e)
