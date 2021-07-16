@@ -109,6 +109,7 @@ message MemberInfo {
   string id = 1;
   string display_name = 2;
   string workspace_domain = 3;
+  string status = 4;
 }
 
 message AddMemberRequest {
@@ -125,6 +126,21 @@ message RemoveMemberRequest {
 
 message LeaveGroupRequest {
   int64 group_id = 1;
+}
+
+message GroupObjectResponse2 {
+  int64 group_id = 1;
+  string group_name = 2;
+  string group_avatar = 3;
+  string group_type = 4;
+  repeated MemberInfo lst_client = 5;
+  int64 last_message_at = 6;
+  MessageObjectResponse last_message = 7;
+  string created_by_client_id = 8;
+  int64 created_at = 9;
+  string updated_by_client_id = 10;
+  int64 updated_at = 11;
+  string group_rtc_token = 12;
 }
 
 // Request: join group
@@ -193,7 +209,7 @@ service Group {
     rpc join_group(JoinGroupRequest) returns (BaseResponse) {};
     rpc add_member(AddMemberRequest) returns (BaseResponse) {};
     rpc add_member_workspace(AddMemberWorkspaceRequest) returns (AddMemberWorkspaceResponse) {};
-    rpc remove_member(RemoveMemberRequest) returns (GroupObjectResponse) {};
+    rpc remove_member(RemoveMemberRequest) returns (GroupObjectResponse2) {};
     rpc remove_member_workspace(RemoveMemberWorkspaceRequest) returns (BaseResponse) {};
-    rpc leave_group(LeaveGroupRequest) returns (GroupObjectResponse) {};
+    rpc leave_group(LeaveGroupRequest) returns (GroupObjectResponse2) {};
 }

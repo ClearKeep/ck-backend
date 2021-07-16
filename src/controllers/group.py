@@ -196,6 +196,16 @@ class GroupController(BaseController):
                 )
             group = GroupService().get_group_info(request.group_id)
             current_group_clients = json.loads(group.group_clients)
+            workspace_domains = list(set(
+                [e['workspace_domain'] for e in current_group_clients
+                 if ('status' not in e or
+                     ('status' in e and e['status'] in ['active']))]
+            ))
+            for e in current_group_clients:
+                if ((e['id'] in [removed_member_info['id'],
+                                 removing_member_info['id']]) and
+                        ('status' in e and e['status'] in ['removed', 'left'])):
+                    raise Exception(Message.USER_NOT_IN_GROUP)
             if all([e['id'] != removed_member_info['id']
                     for e in current_group_clients]):
                 raise Exception(Message.USER_NOT_IN_GROUP)
@@ -216,9 +226,6 @@ class GroupController(BaseController):
                             e['status'] = 'removed'
                     group_clients_after_removal.append(e)
 
-            workspace_domains = list(set(
-                [e['workspace_domain'] for e in current_group_clients]
-            ))
             if (group.owner_workspace_domain and
                     group.owner_workspace_domain !=
                     removing_member_info['workspace_domain']):

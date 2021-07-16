@@ -814,13 +814,13 @@ class GroupService(BaseService):
         )
         last_message = None if group.last_message_id is None\
             else MessageClass().get(message_id=group.last_message_id)
-        return group_pb2.GroupObjectResponse(
+        return group_pb2.GroupObjectResponse2(
             group_id=group.id,
             group_name=group.group_name,
             group_avatar=group.group_avatar,
             group_type=group.group_type,
             lst_client=[
-                self.dict_to_client_in_group_message(e)
+                self.dict_to_message(e)
                 for e in group_clients_after_removal
             ],
             last_message_at=None if group.last_message_at is None\
@@ -857,6 +857,9 @@ class GroupService(BaseService):
             group_clients_after_removal):
         current_workspace_domain = get_owner_workspace_domain()
         current_group_clients = json.loads(group.group_clients)
+        active_clients =\
+            [e for e in current_group_clients
+             if 'status' not in e or e['status'] in ['active']]
         is_owner = (current_workspace_domain == owner_workspace_domain)
         if is_owner:
             if group.group_type == 'group':
@@ -872,7 +875,7 @@ class GroupService(BaseService):
                 get_client_key = GroupChat().get_client_key_by_owner_peer
             else:
                 raise ValueError
-        for client in current_group_clients:
+        for client in active_clients:
             if client['workspace_domain'] != current_workspace_domain:
                 if not is_owner:
                     continue
@@ -885,33 +888,33 @@ class GroupService(BaseService):
             )
             member_group = GroupChat().get_group(client_key.group_id)
             if (client['id'] == removed_member_info['id']):
-                # client_key.delete()
+                client_key.delete()
                 removed_member_info['group'] = member_group
                 if is_owner:
-                    if len(current_group_clients) == 1:
+                    if len(active_clients) == 1:
                         member_group.delete()
-                    elif len(current_group_clients) > 1:
+                    elif len(active_clients) > 1:
                         member_group.group_clients =\
                             json.dumps(group_clients_after_removal)
                         member_group.total_member =\
-                            len(group_clients_after_removal)
+                            len(active_clients) - 1
                         member_group.updated_by = removing_member_info['id']
                         member_group.updated_at = datetime.datetime.now()
                         member_group.update()
                     else:
                         raise ValueError
                 else:
-                    # member_group.delete()
-                    member_group.group_clients =\
-                        json.dumps(group_clients_after_removal)
-                    member_group.total_member = len(group_clients_after_removal)
-                    member_group.updated_by = removing_member_info['id']
-                    member_group.updated_at = datetime.datetime.now()
-                    member_group.update()
+                    member_group.delete()
+                    # member_group.group_clients =\
+                    #     json.dumps(group_clients_after_removal)
+                    # member_group.total_member = len(group_clients_after_removal)
+                    # member_group.updated_by = removing_member_info['id']
+                    # member_group.updated_at = datetime.datetime.now()
+                    # member_group.update()
             elif not is_owner:
                 member_group.group_clients =\
                     json.dumps(group_clients_after_removal)
-                member_group.total_member = len(group_clients_after_removal)
+                member_group.total_member = len(active_clients) - 1
                 member_group.updated_by = removing_member_info['id']
                 member_group.updated_at = datetime.datetime.now()
                 member_group.update()
@@ -937,14 +940,7 @@ class GroupService(BaseService):
         m = group_pb2.MemberInfo(
             id=d['id'],
             display_name=d['display_name'],
-            workspace_domain=d['workspace_domain']
-        )
-        return m
-
-    def dict_to_client_in_group_message(self, d):
-        m = group_pb2.ClientInGroupResponse(
-            id=d['id'],
-            display_name=d['display_name'],
-            workspace_domain=d['workspace_domain']
+            workspace_domain=d['workspace_domain'],
+            status=None if 'status' not in d else d['status']
         )
         return m
