@@ -6,6 +6,7 @@ from middlewares.request_logged import *
 import asyncio
 from datetime import datetime
 from utils.config import *
+from utils.logger import *
 
 # notify type
 NEW_PEER = "new-peer"
@@ -142,6 +143,8 @@ class NotifyInAppService(BaseService):
             notify_content="A member have been removed or have left the group.",
             notify_platform="all"
         )
+        logger.info('notify_removing_member:')
+        logger.info(self.model)
         new_notification = self.model.add()
         # check queue and push
         notify_channel = "{}/notify".format(client_id)
