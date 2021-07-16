@@ -263,13 +263,18 @@ class GroupController(BaseController):
             response = self.service.remove_member_workspace(
                 from_workspace_domain=request.from_workspace_domain,
                 owner_workspace_domain=request.owner_workspace_domain,
-                removed_member_info=MessageToDict(request.removed_member_info),
+                removed_member_info=MessageToDict(
+                    request.removed_member_info,
+                    preserving_proto_field_name=True
+                ),
                 removing_member_info=MessageToDict(
-                    request.removing_member_info
+                    request.removing_member_info,
+                    preserving_proto_field_name=True
                 ),
                 group=groups[0],  # arbitrary auxiliary group
                 group_clients_after_removal=[
-                    MessageToDict(e)
+                    MessageToDict(e,
+                                  preserving_proto_field_name=True)
                     for e in request.group_clients_after_removal
                 ]
             )
