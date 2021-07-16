@@ -5,6 +5,7 @@ from src.models.signal_group_key import GroupClientKey
 from src.models.signal_peer_key import PeerClientKey
 from src.models.message import Message as MessageClass
 from src.services.notify_inapp import NotifyInAppService
+import src.services.notify_inapp as notify_inapp
 from src.services.janus_webrtc import JanusService
 from client.client_group import *
 from client.client_user import *
@@ -723,7 +724,7 @@ class GroupService(BaseService):
             group_clients_after_removal,
             workspace_domains):
         """docstring for remove_member_from_group_not_owner"""
-        assert group.total_member > 1
+        assert len(json.loads(group.group_clients)) > 1
         owner_workspace_domain = group.owner_workspace_domain
         current_workspace_domain = get_owner_workspace_domain()
         # update_this_server_first = (
@@ -739,7 +740,8 @@ class GroupService(BaseService):
         #         group_clients_after_removal=group_clients_after_removal
         #     )
         request = group_pb2.RemoveMemberRequest(
-            removed_member_info=dict_to_message(removed_member_info),
+            removed_member_info=self.dict_to_message(removed_member_info),
+            removing_member_info=self.dict_to_message(removing_member_info),
             group_id=group.owner_group_id
         )
         response =\
@@ -749,7 +751,7 @@ class GroupService(BaseService):
                 request
             )
         # update the information in this auxil server based on the response
-        remove_member_workspace(
+        self.remove_member_workspace(
             from_workspace_domain=current_workspace_domain,
             owner_workspace_domain=owner_workspace_domain,
             removed_member_info=removed_member_info,
@@ -768,7 +770,7 @@ class GroupService(BaseService):
             group_clients_after_removal,
             workspace_domains):
         """docstring for remove_member_from_group_owner"""
-        assert group.total_member >= 1
+        assert len(json.loads(group.group_clients)) >= 1
         owner_workspace_domain = get_owner_workspace_domain()
         # update information in the server of the removed member first
         workspace_domains.remove(removed_member_info['workspace_domain'])
@@ -781,11 +783,11 @@ class GroupService(BaseService):
             request = group_pb2.RemoveMemberWorkspaceRequest(
                 from_workspace_domain=get_owner_workspace_domain(),
                 owner_workspace_domain=owner_workspace_domain,
-                removed_member_info=dict_to_message(removed_member_info),
-                removing_member_info=dict_to_message(removing_member_info),
+                removed_member_info=self.dict_to_message(removed_member_info),
+                removing_member_info=self.dict_to_message(removing_member_info),
                 owner_group_id=group.id,
                 group_clients_after_removal=[
-                    dict_to_message(e) for e in group_clients_after_removal
+                    self.dict_to_message(e) for e in group_clients_after_removal
                 ]
             )
             response =\
@@ -802,7 +804,7 @@ class GroupService(BaseService):
                 # use kept response to update information in the main server
                 # and the other remaining servers
                 pass
-        remove_member_workspace(
+        self.remove_member_workspace(
             from_workspace_domain=get_owner_workspace_domain(),
             owner_workspace_domain=owner_workspace_domain,
             removed_member_info=removed_member_info,
@@ -810,31 +812,38 @@ class GroupService(BaseService):
             group=group,
             group_clients_after_removal=group_clients_after_removal
         )
-        last_message = MessageClass().get(message_id=group.last_message_id)
+        last_message = None if group.last_message_id is None\
+            else MessageClass().get(message_id=group.last_message_id)
         return group_pb2.GroupObjectResponse(
             group_id=group.id,
             group_name=group.group_name,
             group_avatar=group.group_avatar,
             group_type=group.group_type,
             lst_client=[
-                dict_to_client_in_group_message(e)
+                self.dict_to_client_in_group_message(e)
                 for e in group_clients_after_removal
             ],
-            last_message_at=int(group.last_message_at.timestamp() * 1000),
-            last_message=group_pb2.MessageObjectResponse(
+            last_message_at=None if group.last_message_at is None\
+                else int(group.last_message_at.timestamp() * 1000),
+            last_message=None if last_message is None\
+            else group_pb2.MessageObjectResponse(
                 id=last_message.id,
                 group_id=last_message.group_id,
                 group_type=group.group_type,
                 from_client_id=last_message.from_client_id,
                 client_id=last_message.client_id,
                 message=last_message.message,
-                created_at=int(last_message.created_at.timestamp() * 1000),
-                updated_at=int(last_message.updated_at.timestamp() * 1000)
+                created_at=None if last_message.created_at is None\
+                    else int(last_message.created_at.timestamp() * 1000),
+                updated_at=None if last_message.updated_at is None\
+                    else int(last_message.updated_at.timestamp() * 1000),
             ),
             created_by_client_id=group.created_by,
             updated_by_client_id=group.updated_by,
-            created_at=int(group.created_at.timestamp() * 1000),
-            updated_at=int(group.updated_at.timestamp() * 1000),
+            created_at=None if group.created_at is None\
+                else int(group.created_at.timestamp() * 1000),
+            updated_at=None if group.updated_at is None\
+                else int(group.updated_at.timestamp() * 1000),
             group_rtc_token=group.group_rtc_token
         )
 
@@ -876,7 +885,7 @@ class GroupService(BaseService):
             )
             member_group = GroupChat().get_group(client_key.group_id)
             if (client['id'] == removed_member_info['id']):
-                client_key.delete()
+                # client_key.delete()
                 removed_member_info['group'] = member_group
                 if is_owner:
                     if len(current_group_clients) == 1:
@@ -892,7 +901,13 @@ class GroupService(BaseService):
                     else:
                         raise ValueError
                 else:
-                    member_group.delete()
+                    # member_group.delete()
+                    member_group.group_clients =\
+                        json.dumps(group_clients_after_removal)
+                    member_group.total_member = len(group_clients_after_removal)
+                    member_group.updated_by = removing_member_info['id']
+                    member_group.updated_at = datetime.datetime.now()
+                    member_group.update()
             elif not is_owner:
                 member_group.group_clients =\
                     json.dumps(group_clients_after_removal)
@@ -905,11 +920,11 @@ class GroupService(BaseService):
                 client['workspace_domain'],
                 removed_member_info['id'],
                 removed_member_info['workspace_domain'],
-                removed_member_info['group'].id,
+                member_group.id,
                 removed_member_info['display_name'],
-                self.notify_service.MEMBER_REMOVAL\
+                notify_inapp.MEMBER_REMOVAL\
                 if removed_member_info['id'] != removing_member_info['id']\
-                else self.notify_service.MEMBER_LEAVE
+                else notify_inapp.MEMBER_LEAVE
             )
         if from_workspace_domain == current_workspace_domain:
             # return results to current server
@@ -918,7 +933,7 @@ class GroupService(BaseService):
             # return gRPC response message to requesting server
             return group_pb2.BaseResponse(success=True)
 
-    def dict_to_message(d):
+    def dict_to_message(self, d):
         m = group_pb2.MemberInfo(
             id=d['id'],
             display_name=d['display_name'],
@@ -926,7 +941,7 @@ class GroupService(BaseService):
         )
         return m
 
-    def dict_to_client_in_group_message(d):
+    def dict_to_client_in_group_message(self, d):
         m = group_pb2.ClientInGroupResponse(
             id=d['id'],
             display_name=d['display_name'],
