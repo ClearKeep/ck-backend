@@ -16,6 +16,7 @@ from utils.config import *
 from protos import group_pb2
 from msg.message import Message
 from google.protobuf.json_format import MessageToDict
+from utils.logger import *
 
 
 class GroupService(BaseService):
@@ -724,6 +725,7 @@ class GroupService(BaseService):
             group_clients_after_removal,
             workspace_domains):
         """docstring for remove_member_from_group_not_owner"""
+        logger.info('remove_member_from_group_not_owner')
         assert len(json.loads(group.group_clients)) > 1
         owner_workspace_domain = group.owner_workspace_domain
         current_workspace_domain = get_owner_workspace_domain()
@@ -770,6 +772,7 @@ class GroupService(BaseService):
             group_clients_after_removal,
             workspace_domains):
         """docstring for remove_member_from_group_owner"""
+        logger.info('remove_member_from_group_owner')
         assert len(json.loads(group.group_clients)) >= 1
         owner_workspace_domain = get_owner_workspace_domain()
         # update information in the server of the removed member first
