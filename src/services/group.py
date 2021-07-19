@@ -47,7 +47,7 @@ class GroupService(BaseService):
         for obj in lst_client:
             if obj.id == created_by:
                 created_by_user = obj
-            tmp_list_client.append({"id": obj.id, "display_name": obj.display_name, "workspace_domain": obj.workspace_domain})
+            tmp_list_client.append({"id": obj.id, "display_name": obj.display_name, "workspace_domain": obj.workspace_domain, "status": "active"})
 
         self.model = GroupChat(
             group_name=group_name,
@@ -274,6 +274,7 @@ class GroupService(BaseService):
                     id=client['id'],
                     display_name=client['display_name'],
                     workspace_domain=client['workspace_domain'],
+                    status=client['status']
                 )
                 res_obj.lst_client.append(client_in)
             # lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
@@ -410,6 +411,7 @@ class GroupService(BaseService):
                     id=client['id'],
                     display_name=client['display_name'],
                     workspace_domain=client['workspace_domain'],
+                    status=client['status']
                 )
                 obj_res.lst_client.append(client_in)
 

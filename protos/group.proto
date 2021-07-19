@@ -24,6 +24,7 @@ message ClientInGroupResponse {
   string id = 1;
   string display_name = 2;
   string workspace_domain = 3;
+  string status = 4;
 }
 
 message GroupObjectResponse {
