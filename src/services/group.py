@@ -81,6 +81,7 @@ class GroupService(BaseService):
                 id=obj.id,
                 display_name=obj.display_name,
                 workspace_domain=obj.workspace_domain,
+                status="active"
             )
             res_obj.lst_client.append(client_in)
 
