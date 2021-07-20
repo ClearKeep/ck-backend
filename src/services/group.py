@@ -1055,9 +1055,9 @@ class GroupService(BaseService):
                                    for e in json.loads(group.group_clients)],
                     group_type=group.group_type,
                     group_name=group.group_name,
-                    id=group.id,
-                    owner_group_id=None,
-                    owner_workspace_domain=None
+                    id=None,
+                    owner_group_id=group.id,
+                    owner_workspace_domain=get_owner_workspace_domain()
                 ),
                 resulting_group_clients=[
                     self.dict_to_message(e)
