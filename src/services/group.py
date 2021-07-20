@@ -476,8 +476,8 @@ class GroupService(BaseService):
         group_ids = (group.id for group in lst_group)
         return GroupClientKey().get_clients_in_groups(group_ids)
 
+    """
     def add_member_to_group_not_owner(self, request, group):
-        """docstring for add_member_to_group_not_owner"""
         # client will handle the situation when group_type = 'peer'
         assert group.group_type == 'group'
         added_member_info = request.added_member_info
@@ -568,7 +568,6 @@ class GroupService(BaseService):
             )
 
     def add_member_to_group_owner(self, request, group):
-        """docstring for add_member_to_group_owner"""
         # client will handle the situation when group_type = 'peer'
         assert group.group_type == 'group'
         added_member_info = request.added_member_info
@@ -719,6 +718,7 @@ class GroupService(BaseService):
             return group_pb2.AddMemberWorkspaceResponse(
                 group_id=group.id
             )
+    """
 
     def remove_member_from_group_not_owner(
             self,
@@ -941,6 +941,262 @@ class GroupService(BaseService):
         else:
             # return gRPC response message to requesting server
             return group_pb2.BaseResponse(success=True)
+
+    def add_member_to_group_not_owner(
+            self,
+            added_member_info,
+            adding_member_info,
+            group,
+            new_state,
+            workspace_domains):
+        logger.info('add_member_to_group_not_owner')
+        owner_workspace_domain = group.owner_workspace_domain
+        current_workspace_domain = get_owner_workspace_domain()
+        update_this_server_first = (
+            current_workspace_domain == added_member_info.workspace_domain
+        )
+        if update_this_server_first:
+            response = self.add_member_workspace(
+                from_workspace_domain=current_workspace_domain,
+                owner_workspace_domain=owner_workspace_domain,
+                added_member_info=added_member_info,
+                adding_member_info=adding_member_info,
+                group=group,
+                new_state=new_state
+            )
+        request = group_pb2.AddMemberRequest(
+            added_member_info=added_member_info,
+            adding_member_info=adding_member_info,
+            group_id=group.owner_group_id
+        )
+        if update_this_server_first:
+            request.new_state = response
+        response =\
+            ClientGroup(
+                owner_workspace_domain
+            ).add_member(
+                request
+            )
+        if not update_this_server_first:
+            # update the information in this auxil server based on the response
+            self.add_member_workspace(
+                from_workspace_domain=current_workspace_domain,
+                owner_workspace_domain=owner_workspace_domain,
+                added_member_info=added_member_info,
+                adding_member_info=adding_member_info,
+                group=group,
+                new_state=new_state
+            )
+        response.group_id = group.id
+        return response
+
+    def add_member_to_group_owner(
+            self,
+            added_member_info,
+            adding_member_info,
+            group,
+            new_state,
+            workspace_domains):
+        logger.info('add_member_to_group_owner')
+        owner_workspace_domain = get_owner_workspace_domain()
+        update_this_server_first = (
+            adding_member_info.workspace_domain ==\
+            added_member_info.workspace_domain
+        )
+        if update_this_server_first:
+            self.add_member_workspace(
+                from_workspace_domain=current_workspace_domain,
+                owner_workspace_domain=owner_workspace_domain,
+                added_member_info=added_member_info,
+                adding_member_info=adding_member_info,
+                group=group,
+                new_state=new_state
+            )
+        workspace_domains.remove(added_member_info.workspace_domain)
+        workspace_domains.insert(0, added_member_info.workspace_domain)
+        # workspace_domains = ['localhost:15000', 'localhost:25000']
+        for workspace_domain in workspace_domains:
+            if workspace_domain == owner_workspace_domain:
+                continue
+            elif workspace_domain == adding_member_info.workspace_domain:
+                continue
+            # if workspace_domain == 'localhost:15000':
+            #     continue
+            # elif workspace_domain == 'localhost:15000':
+            #     continue
+            request = group_pb2.AddMemberWorkspaceRequest(
+                from_workspace_domain=get_owner_workspace_domain(),
+                owner_workspace_domain=owner_workspace_domain,
+                added_member_info=added_member_info,
+                adding_member_info=adding_member_info,
+                owner_group_id=group.id,
+                resulting_group_clients=[
+                    self.dict_to_message(e)
+                    for e in new_state['resulting_group_clients']
+                ]
+            )
+            response =\
+                ClientGroup(
+                    workspace_domain
+                ).add_member_workspace(
+                    request
+                )
+            if workspace_domain == added_member_info.workspace_domain:
+                # keep the response if it is from workspace domain of the
+                # removed member
+                new_state['auxil_group_id'] = response.auxil_group_id
+            else:
+                # use kept response to update information in the main server
+                # and the other remaining servers
+                pass
+        if not update_this_server_first:
+            self.add_member_workspace(
+                from_workspace_domain=get_owner_workspace_domain(),
+                owner_workspace_domain=owner_workspace_domain,
+                added_member_info=added_member_info,
+                adding_member_info=adding_member_info,
+                group=group,
+                new_state=new_state
+            )
+        last_message = None if group.last_message_id is None\
+            else MessageClass().get(message_id=group.last_message_id)
+        return group_pb2.GroupObjectResponse2(
+            group_id=group.id,
+            group_name=group.group_name,
+            group_avatar=group.group_avatar,
+            group_type=group.group_type,
+            lst_client=[
+                self.dict_to_message(e)
+                for e in new_state['resulting_group_clients']
+            ],
+            last_message_at=None if group.last_message_at is None\
+                else int(group.last_message_at.timestamp() * 1000),
+            last_message=None if last_message is None\
+            else group_pb2.MessageObjectResponse(
+                id=last_message.id,
+                group_id=last_message.group_id,
+                group_type=group.group_type,
+                from_client_id=last_message.from_client_id,
+                client_id=last_message.client_id,
+                message=last_message.message,
+                created_at=None if last_message.created_at is None\
+                    else int(last_message.created_at.timestamp() * 1000),
+                updated_at=None if last_message.updated_at is None\
+                    else int(last_message.updated_at.timestamp() * 1000),
+            ),
+            created_by_client_id=group.created_by,
+            updated_by_client_id=group.updated_by,
+            created_at=None if group.created_at is None\
+                else int(group.created_at.timestamp() * 1000),
+            updated_at=None if group.updated_at is None\
+                else int(group.updated_at.timestamp() * 1000),
+            group_rtc_token=group.group_rtc_token
+        )
+
+    def add_member_workspace(
+            self,
+            from_workspace_domain,
+            owner_workspace_domain,
+            added_member_info,
+            adding_member_info,
+            group,
+            new_state):
+        logger.info('add_member_workspace')
+        current_workspace_domain = get_owner_workspace_domain()
+        current_group_clients = json.loads(group.group_clients)
+        active_clients =\
+            [e for e in current_group_clients
+             if 'status' not in e or e['status'] in ['active']]
+        is_owner = (current_workspace_domain == owner_workspace_domain)
+        if is_owner:
+            if group.group_type == 'group':
+                get_client_key = GroupClientKey().get
+            elif group.group_type == 'peer':
+                # peer doesn't support add member
+                raise ValueError
+                get_client_key = PeerClientKey().get
+            else:
+                raise ValueError
+        else:
+            if group.group_type == 'group':
+                get_client_key = GroupChat().get_client_key_by_owner_group
+            elif group.group_type == 'peer':
+                # peer doesn't support add member
+                raise ValueError
+                get_client_key = GroupChat().get_client_key_by_owner_peer
+            else:
+                raise ValueError
+        already_updated = False
+        for client in active_clients:
+            if client['workspace_domain'] != current_workspace_domain:
+                continue
+            if not already_updated:
+                client_key = get_client_key(
+                    group.id if is_owner else group.owner_group_id,
+                    client['id']
+                )
+                member_group = GroupChat().get_group(client_key.group_id)
+                member_group.group_clients =\
+                    json.dumps(new_state['resulting_group_clients'])
+                member_group.total_member = len(active_clients) + 1
+                member_group.updated_by = adding_member_info.id
+                member_group.updated_at = datetime.datetime.now()
+                member_group.update()
+                if is_owner:
+                    already_updated = True
+            self.notify_service.notify_adding_member(
+                client['id'],
+                client['workspace_domain'],
+                added_member_info.id,
+                added_member_info.workspace_domain,
+                member_group.id,
+                added_member_info.display_name,
+                notify_inapp.MEMBER_ADD
+            )
+        new_group = None
+        if is_owner:
+            if added_member_info.workspace_domain == current_workspace_domain:
+                group_client_key = GroupClientKey().set_key(
+                    group.id, added_member_info.id,
+                    None, None, None, None
+                )
+                group_client_key.add()
+            else:
+                group_client_key = GroupClientKey().set_key(
+                    group.id, added_member_info.id,
+                    added_member_info.workspace_domain,
+                    new_state['auxil_group_id'],
+                    None, None
+                )
+                group_client_key.add()
+        elif added_member_info.workspace_domain == current_workspace_domain:
+            self.model = GroupChat(
+                group_name=group.group_name,
+                group_type=group.group_type,
+                group_clients=json.dumps(
+                    new_state['resulting_group_clients']),
+                total_member=len(active_clients) + 1,
+                owner_group_id=group.owner_group_id,
+                owner_workspace_domain=group.owner_workspace_domain,
+                updated_at=datetime.datetime.now(),
+                updated_by=adding_member_info.id
+            )
+            new_group = self.model.add()
+            group_client_key = GroupClientKey().set_key(
+                new_group.id, added_member_info.id,
+                None, None, None, None
+            )
+            group_client_key.add()
+            new_state['auxil_group_id'] = new_group.id
+        if from_workspace_domain == current_workspace_domain:
+            # return results to current server
+            return new_state
+        else:
+            # return gRPC response message to requesting server
+            return group_pb2.AddMemberWorkspaceResponse(
+                auxil_group_id=member_group.id\
+                    if new_group is None else new_group.id
+            )
 
     def dict_to_message(self, d):
         m = group_pb2.MemberInfo(

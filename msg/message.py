@@ -66,6 +66,7 @@ class Message:
     USER_NOT_IN_GROUP = 1056
     REMOVE_MEMBER_FAILED = 1057
     LEAVE_GROUP_FAILED = 1058
+    ADDED_USER_IS_MEMBER = 1059
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -117,11 +118,13 @@ class Message:
         ADD_MEMBER_FAILED: "Add Member failed. Please try again",
         CREATE_NOTE_FAILED: "Create Note failed. Please try again",
         EDIT_NOTE_FAILED: "Edit Note failed. Please try again",
-        DELETE_NOTE_FAILED : "Delete Note failed. Please try again",
-        GET_USER_NOTES_FAILED : "Get User Notes failed. Please try again",
-        USER_NOT_IN_GROUP : "User is not in group. Please try again",
-        REMOVE_MEMBER_FAILED : "Remove Member failed. Please try again",
-        LEAVE_GROUP_FAILED : "Leave Group failed. Please try again",
+        DELETE_NOTE_FAILED: "Delete Note failed. Please try again",
+        GET_USER_NOTES_FAILED: "Get User Notes failed. Please try again",
+        USER_NOT_IN_GROUP: "User is not in the group. Please try again",
+        REMOVE_MEMBER_FAILED: "Remove Member failed. Please try again",
+        LEAVE_GROUP_FAILED: "Leave Group failed. Please try again",
+        ADDED_USER_IS_MEMBER: "Added user is already a member of the group. \
+            Please try again",
     }
 
     @staticmethod
