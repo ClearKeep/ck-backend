@@ -1161,6 +1161,16 @@ class GroupService(BaseService):
                     None, None, None, None
                 )
                 group_client_key.add()
+                # notify added member
+                self.notify_service.notify_adding_member(
+                    added_member_info.id,
+                    added_member_info.workspace_domain,
+                    added_member_info.id,
+                    added_member_info.workspace_domain,
+                    member_group.id,
+                    added_member_info.display_name,
+                    notify_inapp.MEMBER_ADD
+                )
             else:
                 group_client_key = GroupClientKey().set_key(
                     group.id, added_member_info.id,
@@ -1187,6 +1197,16 @@ class GroupService(BaseService):
                 None, None, None, None
             )
             group_client_key.add()
+            # notify added member
+            self.notify_service.notify_adding_member(
+                added_member_info.id,
+                added_member_info.workspace_domain,
+                added_member_info.id,
+                added_member_info.workspace_domain,
+                new_group.id,
+                added_member_info.display_name,
+                notify_inapp.MEMBER_ADD
+            )
             new_state['auxil_group_id'] = new_group.id
         if from_workspace_domain == current_workspace_domain:
             # return results to current server
