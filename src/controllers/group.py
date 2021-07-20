@@ -294,17 +294,9 @@ class GroupController(BaseController):
     @request_logged
     async def leave_group(self, request, context):
         try:
-            metadata = dict(context.invocation_metadata())
-            access_token_information = KeyCloakUtils.introspect_token(
-                metadata['access_token']
-            )
-            removed_member_info = {
-                'id': access_token_information['sub'],
-                'workspace_domain': get_owner_workspace_domain()
-            }
             request = group_pb2.RemoveMemberRequest(
-                removed_member_info=self.service.dict_to_message(
-                    removed_member_info),
+                removed_member_info=request.member_info,
+                removing_member_info=request.member_info,
                 group_id=request.group_id
             )
             response = self.remove_member(request, context)
@@ -319,6 +311,7 @@ class GroupController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
     async def add_member(self, request, context):
         try:
             group = GroupService().get_group_info(request.group_id)
@@ -340,6 +333,7 @@ class GroupController(BaseController):
             if not in_group:
                 raise Exception(Message.USER_NOT_IN_GROUP)
 
+            new_state = {}
             if request.new_state:
                 new_state = request.new_state
             else:
@@ -392,6 +386,7 @@ class GroupController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
     async def add_member_workspace(self, request, context):
         try:
             groups = GroupChat().get_by_group_owner(request.owner_group_id)
