@@ -1005,7 +1005,7 @@ class GroupService(BaseService):
         )
         if update_this_server_first:
             self.add_member_workspace(
-                from_workspace_domain=current_workspace_domain,
+                from_workspace_domain=get_owner_workspace_domain(),
                 owner_workspace_domain=owner_workspace_domain,
                 added_member_info=added_member_info,
                 adding_member_info=adding_member_info,
@@ -1020,9 +1020,9 @@ class GroupService(BaseService):
                 continue
             elif workspace_domain == adding_member_info.workspace_domain:
                 continue
-            # if workspace_domain == 'localhost:15000':
+            # if workspace_domain == 'localhost:25000':
             #     continue
-            # elif workspace_domain == 'localhost:15000':
+            # elif workspace_domain == 'localhost:25000':
             #     continue
             request = group_pb2.AddMemberWorkspaceRequest(
                 from_workspace_domain=get_owner_workspace_domain(),

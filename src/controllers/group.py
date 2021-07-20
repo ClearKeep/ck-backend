@@ -318,6 +318,9 @@ class GroupController(BaseController):
             group_clients = json.loads(group.group_clients)
             added_member_info = request.added_member_info
             adding_member_info = request.adding_member_info
+            if hasattr(adding_member_info, 'status'):
+                if adding_member_info.status != 'active':
+                    raise ValueError('Adding member need to be an active member.')
             workspace_domains = list(set(
                 [e['workspace_domain'] for e in group_clients
                  if ('status' not in e or
@@ -334,19 +337,20 @@ class GroupController(BaseController):
                 raise Exception(Message.USER_NOT_IN_GROUP)
 
             new_state = {}
-            try:
+            if hasattr(request, 'new_state'):
                 new_state = request.new_state
-            except:
+            else:
                 resulting_group_clients = []
                 is_old_member = False
                 for e in group_clients:
                     if e['id'] == added_member_info.id:
-                        assert e['status'] in ['removed', 'left']
+                        if not e['status'] in ['removed', 'left']:
+                            raise ValueError('Wrong status for added member')
                         e['status'] = 'active'  # turn into active member
                         is_old_member = True
                     resulting_group_clients.append(e)
                 if not is_old_member:
-                    assert added_member_info.status == 'active'
+                    added_member_info.status = 'active'
                     resulting_group_clients.append(
                         MessageToDict(
                             added_member_info,
