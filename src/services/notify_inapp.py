@@ -17,6 +17,7 @@ PEER_UPDATE_SIGNAL_KEY = "peer-update-key"
 UPDATE_CALL = "update-call"
 MEMBER_REMOVAL = 'member-removal'
 MEMBER_LEAVE = 'member-leave'
+MEMBER_ADD = 'member-add'
 
 client_notify_queue = {}
 
@@ -145,6 +146,38 @@ class NotifyInAppService(BaseService):
         )
         logger.info('notify_removing_member:')
         logger.info(self.model)
+        new_notification = self.model.add()
+        # check queue and push
+        notify_channel = "{}/notify".format(client_id)
+        if notify_channel in client_notify_queue:
+            try:
+                client_notify_queue[notify_channel].put(new_notification)
+            except Exception as e:
+                logger.error(e)
+
+    def notify_adding_member(
+            self,
+            client_id,
+            client_workspace_domain,
+            ref_client_id,
+            ref_workspace_domain,
+            ref_group_id,
+            ref_subject_name,
+            notify_type=MEMBER_ADD):
+        self.model = Notify(
+            client_id=client_id,
+            client_workspace_domain=client_workspace_domain,
+            ref_client_id=ref_client_id,
+            ref_workspace_domain=ref_workspace_domain,
+            ref_group_id=ref_group_id,
+            ref_subject_name=ref_subject_name,
+            notify_type=notify_type,
+            notify_image=None,
+            notify_title="Member Add",
+            notify_content="A member have been added to the group.",
+            notify_platform="all"
+        )
+        logger.info('notify_adding_member')
         new_notification = self.model.add()
         # check queue and push
         notify_channel = "{}/notify".format(client_id)

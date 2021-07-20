@@ -111,6 +111,7 @@ class GroupController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    """
     @request_logged
     async def add_member(self, request, context):
         try:
@@ -161,6 +162,7 @@ class GroupController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+    """
 
     @request_logged
     async def join_group(self, request, context):
@@ -312,6 +314,106 @@ class GroupController(BaseController):
             errors = [
                 e,
                 Message.get_error_object(Message.LEAVE_GROUP_FAILED)
+            ]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    async def add_member(self, request, context):
+        try:
+            group = GroupService().get_group_info(request.group_id)
+            group_clients = json.loads(group.group_clients)
+            added_member_info = request.added_member_info
+            adding_member_info = request.adding_member_info
+            workspace_domains = list(set(
+                [e['workspace_domain'] for e in group_clients
+                 if ('status' not in e or
+                     ('status' in e and e['status'] in ['active']))]
+            ))
+            in_group = False
+            for e in group_clients:
+                if 'status' not in e or e['status'] in ['active']:
+                    if e['id'] == added_member_info.id:
+                        raise Exception(Message.ADDED_USER_IS_MEMBER)
+                    if e['id'] == adding_member_info.id:
+                        in_group = True
+            if not in_group:
+                raise Exception(Message.USER_NOT_IN_GROUP)
+
+            if request.new_state:
+                new_state = request.new_state
+            else:
+                resulting_group_clients = []
+                is_old_member = False
+                for e in group_clients:
+                    if e['id'] == added_member_info.id:
+                        assert e['status'] in ['removed', 'left']
+                        e['status'] = 'active'  # turn into active member
+                        is_old_member = True
+                    resulting_group_clients.append(e)
+                if not is_old_member:
+                    assert added_member_info.status == 'active'
+                    resulting_group_clients.append(
+                        MessageToDict(
+                            added_member_info,
+                            preserving_proto_field_name=True
+                        )
+                    )
+                new_state = {
+                    'resulting_group_clients': resulting_group_clients
+                }
+            if (group.owner_workspace_domain and
+                    group.owner_workspace_domain !=
+                    adding_member_info.workspace_domain):
+                response = self.service.add_member_to_group_not_owner(
+                    added_member_info,
+                    adding_member_info,
+                    group,
+                    new_state,
+                    workspace_domains
+                )
+                return response
+            else:
+                response = self.service.add_member_to_group_owner(
+                    added_member_info,
+                    adding_member_info,
+                    group,
+                    new_state,
+                    workspace_domains
+                )
+                return response
+        except Exception as e:
+            logger.error(e)
+            errors = [
+                e,
+                Message.get_error_object(Message.ADD_MEMBER_FAILED)
+            ]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    async def add_member_workspace(self, request, context):
+        try:
+            groups = GroupChat().get_by_group_owner(request.owner_group_id)
+            response = self.service.add_member_workspace(
+                from_workspace_domain=request.from_workspace_domain,
+                owner_workspace_domain=request.owner_workspace_domain,
+                added_member_info=request.added_member_info,
+                adding_member_info=request.adding_member_info,
+                group=groups[0],  # arbitrary auxiliary group
+                new_state={
+                    'resulting_group_clients': [
+                        MessageToDict(e, preserving_proto_field_name=True)
+                        for e in request.resulting_group_clients
+                    ]
+                }
+            )
+            return response
+        except Exception as e:
+            logger.error(e)
+            errors = [
+                e,
+                Message.get_error_object(Message.ADD_MEMBER_FAILED)
             ]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
