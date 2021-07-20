@@ -186,12 +186,21 @@ message CreateGroupWorkspaceResponse {
 /*   int64 group_id = 9; */
 /*   string added_member_workspace_domain = 10; */
 /* } */
+message GroupInfo {
+  repeated MemberInfo group_clients = 1;
+  string group_type = 2;
+  string group_name = 3;
+  int64 id = 4;
+  int64 owner_group_id = 5;
+  string owner_workspace_domain = 6;
+}
+
 message AddMemberWorkspaceRequest {
   string from_workspace_domain = 1;
   string owner_workspace_domain = 2;
   MemberInfo added_member_info = 3;
   MemberInfo adding_member_info = 4;
-  int64 owner_group_id = 5;
+  GroupInfo group = 5;
   repeated MemberInfo resulting_group_clients = 6;
 }
 

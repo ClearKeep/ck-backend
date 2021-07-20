@@ -393,20 +393,47 @@ class GroupController(BaseController):
     @request_logged
     async def add_member_workspace(self, request, context):
         try:
-            groups = GroupChat().get_by_group_owner(request.owner_group_id)
-            response = self.service.add_member_workspace(
-                from_workspace_domain=request.from_workspace_domain,
-                owner_workspace_domain=request.owner_workspace_domain,
-                added_member_info=request.added_member_info,
-                adding_member_info=request.adding_member_info,
-                group=groups[0],  # arbitrary auxiliary group
-                new_state={
-                    'resulting_group_clients': [
-                        MessageToDict(e, preserving_proto_field_name=True)
-                        for e in request.resulting_group_clients
-                    ]
-                }
-            )
+            current_workspace_domain = get_owner_workspace_domain()
+            from_workspace_domain = request.from_workspace_domain
+            owner_workspace_domain = request.owner_workspace_domain
+            added_member_info = request.added_member_info
+            adding_member_info = request.adding_member_info
+            if current_workspace_domain == owner_workspace_domain:
+                if from_workspace_domain != added_member_info.workspace_domain:
+                    raise ValueError
+                group = GroupChat().get_group(request.group.owner_group_id)
+                group_clients = json.loads(group.group_clients)
+                workspace_domains = list(set(
+                    [e['workspace_domain'] for e in group_clients
+                     if ('status' not in e or
+                         ('status' in e and e['status'] in ['active']))]
+                ))
+                response = self.service.add_member_to_group_owner(
+                    added_member_info=added_member_info,
+                    adding_member_info=adding_member_info,
+                    group=group,
+                    new_state={
+                        'resulting_group_clients': [
+                            MessageToDict(e, preserving_proto_field_name=True)
+                            for e in request.resulting_group_clients
+                        ]
+                    },
+                    workspace_domains=workspace_domains
+                )
+            else:
+                response = self.service.add_member_workspace(
+                    from_workspace_domain=from_workspace_domain,
+                    owner_workspace_domain=owner_workspace_domain,
+                    added_member_info=added_member_info,
+                    adding_member_info=adding_member_info,
+                    group=request.group,
+                    new_state={
+                        'resulting_group_clients': [
+                            MessageToDict(e, preserving_proto_field_name=True)
+                            for e in request.resulting_group_clients
+                        ]
+                    }
+                )
             return response
         except Exception as e:
             logger.error(e)
