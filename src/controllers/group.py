@@ -319,7 +319,7 @@ class GroupController(BaseController):
             added_member_info = request.added_member_info
             adding_member_info = request.adding_member_info
             if hasattr(adding_member_info, 'status'):
-                if adding_member_info.status != 'active':
+                if adding_member_info.status not in ['active', '']:
                     raise ValueError('Adding member need to be an active member.')
             workspace_domains = list(set(
                 [e['workspace_domain'] for e in group_clients
