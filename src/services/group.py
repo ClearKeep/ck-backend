@@ -1012,7 +1012,8 @@ class GroupService(BaseService):
                 group=group,
                 new_state=new_state
             )
-        workspace_domains.remove(added_member_info.workspace_domain)
+        if added_member_info.workspace_domain in workspace_domains:
+            workspace_domains.remove(added_member_info.workspace_domain)
         workspace_domains.insert(0, added_member_info.workspace_domain)
         # workspace_domains = ['localhost:15000', 'localhost:25000']
         for workspace_domain in workspace_domains:
