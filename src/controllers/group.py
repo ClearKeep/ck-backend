@@ -416,7 +416,8 @@ class GroupController(BaseController):
                         'resulting_group_clients': [
                             MessageToDict(e, preserving_proto_field_name=True)
                             for e in request.resulting_group_clients
-                        ]
+                        ],
+                        'auxil_group_id': request.group.id
                     },
                     workspace_domains=workspace_domains
                 )

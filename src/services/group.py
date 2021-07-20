@@ -972,7 +972,7 @@ class GroupService(BaseService):
         # if update_this_server_first:
         #     request.new_state = response
         request = group_pb2.AddMemberWorkspaceRequest(
-            from_workspace_domain=get_owner_workspace_domain(),
+            from_workspace_domain=current_workspace_domain,
             owner_workspace_domain=owner_workspace_domain,
             added_member_info=added_member_info,
             adding_member_info=adding_member_info,
@@ -981,9 +981,10 @@ class GroupService(BaseService):
                                for e in json.loads(group.group_clients)],
                 group_type=group.group_type,
                 group_name=group.group_name,
-                id=group.id,
-                owner_group_id=None,
-                owner_workspace_domain=None
+                id=group.id if not update_this_server_first else\
+                    response.auxil_group_id
+                owner_group_id=group.owner_group_id,
+                owner_workspace_domain=group.owner_workspace_domain
             ),
             resulting_group_clients=[
                 self.dict_to_message(e)
