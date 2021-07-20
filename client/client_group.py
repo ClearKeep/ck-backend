@@ -28,14 +28,6 @@ class ClientGroup:
             logger.error(e)
             return None
 
-    def add_member(self, request):
-        try:
-            response = self.stub.add_member(request)
-            return response
-        except Exception as e:
-            logger.error(e)
-            return None
-
     def get_group(self, request):
         try:
             response = self.stub.get_group(request)

@@ -964,17 +964,36 @@ class GroupService(BaseService):
                 group=group,
                 new_state=new_state
             )
-        request = group_pb2.AddMemberRequest(
+        # request = group_pb2.AddMemberRequest(
+        #     added_member_info=added_member_info,
+        #     adding_member_info=adding_member_info,
+        #     group_id=group.owner_group_id
+        # )
+        # if update_this_server_first:
+        #     request.new_state = response
+        request = group_pb2.AddMemberWorkspaceRequest(
+            from_workspace_domain=get_owner_workspace_domain(),
+            owner_workspace_domain=owner_workspace_domain,
             added_member_info=added_member_info,
             adding_member_info=adding_member_info,
-            group_id=group.owner_group_id
+            group=group_pb2.GroupInfo(
+                group_clients=[self.dict_to_message(e)
+                               for e in json.loads(group.group_clients)],
+                group_type=group.group_type,
+                group_name=group.group_name,
+                id=group.id,
+                owner_group_id=None,
+                owner_workspace_domain=None
+            ),
+            resulting_group_clients=[
+                self.dict_to_message(e)
+                for e in new_state['resulting_group_clients']
+            ]
         )
-        if update_this_server_first:
-            request.new_state = response
         response =\
             ClientGroup(
                 owner_workspace_domain
-            ).add_member(
+            ).add_member_workspace(
                 request
             )
         if not update_this_server_first:
@@ -1030,7 +1049,15 @@ class GroupService(BaseService):
                 owner_workspace_domain=owner_workspace_domain,
                 added_member_info=added_member_info,
                 adding_member_info=adding_member_info,
-                owner_group_id=group.id,
+                group=group_pb2.GroupInfo(
+                    group_clients=[self.dict_to_message(e)
+                                   for e in json.loads(group.group_clients)],
+                    group_type=group.group_type,
+                    group_name=group.group_name,
+                    id=group.id,
+                    owner_group_id=None,
+                    owner_workspace_domain=None
+                ),
                 resulting_group_clients=[
                     self.dict_to_message(e)
                     for e in new_state['resulting_group_clients']
