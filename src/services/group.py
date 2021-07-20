@@ -1132,7 +1132,14 @@ class GroupService(BaseService):
             new_state):
         logger.info('add_member_workspace')
         current_workspace_domain = get_owner_workspace_domain()
-        current_group_clients = json.loads(group.group_clients)
+        if isinstance(group, GroupChat):
+            # database -> Python
+            current_group_clients = json.loads(group.group_clients)
+        else:
+            # gRPC -> Python
+            current_group_clients = [MessageToDict(e,
+                                                   preserving_proto_field_name=True)
+                                     for e in group.group_clients]
         active_clients =\
             [e for e in current_group_clients
              if 'status' not in e or e['status'] in ['active']]
