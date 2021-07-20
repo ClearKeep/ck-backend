@@ -126,7 +126,8 @@ message RemoveMemberRequest {
 }
 
 message LeaveGroupRequest {
-  int64 group_id = 1;
+  MemberInfo member_info = 1;
+  int64 group_id = 2;
 }
 
 message GroupObjectResponse2 {
