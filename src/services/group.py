@@ -982,7 +982,7 @@ class GroupService(BaseService):
                 group_type=group.group_type,
                 group_name=group.group_name,
                 id=group.id if not update_this_server_first else\
-                    response.auxil_group_id
+                    response.auxil_group_id,
                 owner_group_id=group.owner_group_id,
                 owner_workspace_domain=group.owner_workspace_domain
             ),
