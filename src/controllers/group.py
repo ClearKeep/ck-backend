@@ -334,9 +334,9 @@ class GroupController(BaseController):
                 raise Exception(Message.USER_NOT_IN_GROUP)
 
             new_state = {}
-            if request.new_state:
+            try:
                 new_state = request.new_state
-            else:
+            except:
                 resulting_group_clients = []
                 is_old_member = False
                 for e in group_clients:
