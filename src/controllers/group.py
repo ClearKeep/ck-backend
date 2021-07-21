@@ -111,59 +111,6 @@ class GroupController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    """
-    @request_logged
-    async def add_member(self, request, context):
-        try:
-            current_workspace_domain = get_owner_workspace_domain()
-            group = GroupService().get_group_info(request.group_id)
-            if (group.owner_workspace_domain and
-                    group.owner_workspace_domain != current_workspace_domain):
-                res_obj = self.service.add_member_to_group_not_owner(
-                    request, group)
-                return res_obj
-            else:
-                res_obj = self.service.add_member_to_group_owner(
-                    request, group)
-                return res_obj
-        except Exception as e:
-            logger.error(e)
-            errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
-            return group_pb2.BaseResponse(
-                success=False,
-                errors=group_pb2.ErrorRes(
-                    code=errors[0].code,
-                    message=errors[0].message
-                )
-            )
-
-    @request_logged
-    async def add_member_workspace(self, request, context):
-        try:
-            obj_res = self.service.add_member_workspace(
-                request.group_name,
-                request.group_type,
-                request.adding_member_id,
-                request.adding_member_display_name,
-                request.added_member_id,
-                request.clients,
-                request.owner_group_id,
-                request.owner_workspace_domain,
-                request.group_id,
-                request.added_member_workspace_domain
-            )
-            return obj_res
-        except Exception as e:
-            logger.error(e)
-            errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
-    """
-
     @request_logged
     async def join_group(self, request, context):
         try:
@@ -183,14 +130,6 @@ class GroupController(BaseController):
                     message=request.removed_member_info,
                     preserving_proto_field_name=True
                 )
-            # metadata = dict(context.invocation_metadata())
-            # access_token_information = KeyCloakUtils.introspect_token(
-            #     metadata['access_token']
-            # )
-            # removing_member_info = {
-            #     'id': access_token_information['sub'],
-            #     'workspace_domain': get_owner_workspace_domain()
-            # }
             removing_member_info =\
                 MessageToDict(
                     message=request.removing_member_info,
@@ -212,12 +151,6 @@ class GroupController(BaseController):
                     for e in current_group_clients]):
                 raise Exception(Message.USER_NOT_IN_GROUP)
             else:
-                # group_clients_after_removal =\
-                #     [e for e in current_group_clients
-                #      if e['id'] != removed_member_info['id']]
-                # assert len(group_clients_after_removal) == len(
-                #     current_group_clients
-                # ) - 1
                 group_clients_after_removal = []
                 for e in current_group_clients:
                     if e['id'] == removed_member_info['id']:
