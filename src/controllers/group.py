@@ -232,7 +232,7 @@ class GroupController(BaseController):
                 removing_member_info=request.member_info,
                 group_id=request.group_id
             )
-            response = self.remove_member(request, context)
+            response = await self.remove_member(request, context)
             return response
         except Exception as e:
             logger.error(e)
