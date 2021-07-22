@@ -6,6 +6,7 @@ from protos import group_pb2, workspace_pb2
 from utils.config import *
 from src.controllers.group import GroupController
 from src.models.group import GroupChat
+from src.models.user import User
 
 
 class WorkspaceController(BaseController):
@@ -32,18 +33,20 @@ class WorkspaceController(BaseController):
             client_id = introspect_token['sub']
 
             lst_joined_group = GroupChat().get_joined(client_id)
+            if len(lst_joined_group) > 0:
+                user_info = User().get(client_id)
 
-            for group in lst_joined_group:
-                request_leave_group = group_pb2.LeaveGroupRequest(
-                    member_info=group_pb2.MemberInfo(
-                        id=client_id,
-                        display_name="",
-                        workspace_domain=get_owner_workspace_domain(),
-                        status=""
-                    ),
-                    group_id=group.GroupChat.id
-                )
-                await GroupController().leave_group(request_leave_group, context)
+                for group in lst_joined_group:
+                    request_leave_group = group_pb2.LeaveGroupRequest(
+                        member_info=group_pb2.MemberInfo(
+                            id=client_id,
+                            display_name=user_info.display_name,
+                            workspace_domain=get_owner_workspace_domain(),
+                            status="leave"
+                        ),
+                        group_id=group.GroupChat.id
+                    )
+                    await GroupController().leave_group(request_leave_group, context)
 
             return workspace_pb2.BaseResponse(success=True)
         except Exception as e:
