@@ -17,6 +17,7 @@ from protos import group_pb2
 from msg.message import Message
 from google.protobuf.json_format import MessageToDict
 from utils.logger import *
+from src.services.notify_push import NotifyPushService
 
 
 class GroupService(BaseService):
@@ -681,17 +682,38 @@ class GroupService(BaseService):
                 member_group.updated_by = removing_member_info['id']
                 member_group.updated_at = datetime.datetime.now()
                 member_group.update()
-            self.notify_service.notify_removing_member(
-                client['id'],
-                client['workspace_domain'],
-                removed_member_info['id'],
-                removed_member_info['workspace_domain'],
-                member_group.id,
-                removed_member_info['display_name'],
-                notify_inapp.MEMBER_REMOVAL\
-                if removed_member_info['id'] != removing_member_info['id']\
-                else notify_inapp.MEMBER_LEAVE
-            )
+            try:
+                self.notify_service.notify_removing_member(
+                    client['id'],
+                    client['workspace_domain'],
+                    removed_member_info['id'],
+                    removed_member_info['workspace_domain'],
+                    member_group.id,
+                    removed_member_info['display_name'],
+                    notify_inapp.MEMBER_REMOVAL\
+                    if removed_member_info['id'] != removing_member_info['id']\
+                    else notify_inapp.MEMBER_LEAVE
+                )
+            except Exception as e:
+                logger.info('Inapp notification is not working now')
+                push_service = NotifyPushService()
+                data = {
+                    'nclient_id': client['id'],
+                    'nclient_workspace_domain': client['workspace_domain'],
+                    'group_id': member_group.id,
+                    'removed_member_id': removed_member_info.id,
+                    'removed_member_workspace_domain': removed_member_info.workspace_domain,
+                    'removing_member_id': removing_member_info.id,
+                    'removing_member_workspace_domain': removing_member_info.workspace_domain
+                }
+                push_service.push_text_to_client(
+                    removed_member_info.id,
+                    title="Member Removal (Leave)",
+                    body="A user removed (left) to the group",
+                    from_client_id=removed_member_info.id,
+                    notify_type="old_member",
+                    data=json.dumps(data)
+                )
         if from_workspace_domain == current_workspace_domain:
             # return results to current server
             return True
@@ -823,7 +845,7 @@ class GroupService(BaseService):
             if workspace_domain == added_member_info.workspace_domain:
                 # keep the response if it is from workspace domain of the
                 # removed member
-                new_state['auxil_group_id'] = response.auxil_group_id
+                new_state['auxil_group_id'] = response.group_id
             else:
                 # use kept response to update information in the main server
                 # and the other remaining servers
@@ -887,9 +909,10 @@ class GroupService(BaseService):
             current_group_clients = json.loads(group.group_clients)
         else:
             # gRPC -> Python
-            current_group_clients = [MessageToDict(e,
-                                                   preserving_proto_field_name=True)
-                                     for e in group.group_clients]
+            current_group_clients = [
+                MessageToDict(e, preserving_proto_field_name=True)
+                for e in group.group_clients
+            ]
         active_clients =\
             [e for e in current_group_clients
              if 'status' not in e or e['status'] in ['active']]
@@ -928,15 +951,36 @@ class GroupService(BaseService):
                 member_group.update()
                 if is_owner:
                     already_updated = True
-            self.notify_service.notify_adding_member(
-                client['id'],
-                client['workspace_domain'],
-                added_member_info.id,
-                added_member_info.workspace_domain,
-                member_group.id,
-                added_member_info.display_name,
-                notify_inapp.MEMBER_ADD
-            )
+            try:
+                self.notify_service.notify_adding_member(
+                    client['id'],
+                    client['workspace_domain'],
+                    added_member_info.id,
+                    added_member_info.workspace_domain,
+                    member_group.id,
+                    added_member_info.display_name,
+                    notify_inapp.MEMBER_ADD
+                )
+            except Exception as e:
+                logger.info('Inapp notification is not working now')
+                push_service = NotifyPushService()
+                data = {
+                    'nclient_id': client['id'],
+                    'nclient_workspace_domain': client['workspace_domain'],
+                    'group_id': member_group.id,
+                    'added_member_id': added_member_info.id,
+                    'added_member_workspace_domain': added_member_info.workspace_domain,
+                    'adding_member_id': adding_member_info.id,
+                    'adding_member_workspace_domain': adding_member_info.workspace_domain
+                }
+                push_service.push_text_to_client(
+                    client['id'],
+                    title="Member Add",
+                    body="A user has been added to the group",
+                    from_client_id=added_member_info.id,
+                    notify_type="new_member",
+                    data=json.dumps(data)
+                )
         new_group = None
         if is_owner:
             if added_member_info.workspace_domain == current_workspace_domain:
@@ -946,15 +990,36 @@ class GroupService(BaseService):
                 )
                 group_client_key.add()
                 # notify added member
-                self.notify_service.notify_adding_member(
-                    added_member_info.id,
-                    added_member_info.workspace_domain,
-                    added_member_info.id,
-                    added_member_info.workspace_domain,
-                    member_group.id,
-                    added_member_info.display_name,
-                    notify_inapp.MEMBER_ADD
-                )
+                try:
+                    self.notify_service.notify_adding_member(
+                        added_member_info.id,
+                        added_member_info.workspace_domain,
+                        added_member_info.id,
+                        added_member_info.workspace_domain,
+                        member_group.id,
+                        added_member_info.display_name,
+                        notify_inapp.MEMBER_ADD
+                    )
+                except Exception as e:
+                    logger.info('Inapp notification is not working now')
+                    push_service = NotifyPushService()
+                    data = {
+                        'nclient_id': added_member_info.id,
+                        'nclient_workspace_domain': added_member_info.workspace_domain,
+                        'group_id': member_group.id,
+                        'added_member_id': added_member_info.id,
+                        'added_member_workspace_domain': added_member_info.workspace_domain,
+                        'adding_member_id': adding_member_info.id,
+                        'adding_member_workspace_domain': adding_member_info.workspace_domain
+                    }
+                    push_service.push_text_to_client(
+                        added_member_info.id,
+                        title="Member Add",
+                        body="A user has been added to the group",
+                        from_client_id=added_member_info.id,
+                        notify_type="new_member",
+                        data=json.dumps(data)
+                    )
             else:
                 group_client_key = GroupClientKey().set_key(
                     group.id, added_member_info.id,
@@ -982,23 +1047,44 @@ class GroupService(BaseService):
             )
             group_client_key.add()
             # notify added member
-            self.notify_service.notify_adding_member(
-                added_member_info.id,
-                added_member_info.workspace_domain,
-                added_member_info.id,
-                added_member_info.workspace_domain,
-                new_group.id,
-                added_member_info.display_name,
-                notify_inapp.MEMBER_ADD
-            )
+            try:
+                self.notify_service.notify_adding_member(
+                    added_member_info.id,
+                    added_member_info.workspace_domain,
+                    added_member_info.id,
+                    added_member_info.workspace_domain,
+                    new_group.id,
+                    added_member_info.display_name,
+                    notify_inapp.MEMBER_ADD
+                )
+            except Exception as e:
+                logger.info('Inapp notification is not working now')
+                push_service = NotifyPushService()
+                data = {
+                    'nclient_id': added_member_info.id,
+                    'nclient_workspace_domain': added_member_info.workspace_domain,
+                    'group_id': new_group.id,
+                    'added_member_id': added_member_info.id,
+                    'added_member_workspace_domain': added_member_info.workspace_domain,
+                    'adding_member_id': adding_member_info.id,
+                    'adding_member_workspace_domain': adding_member_info.workspace_domain
+                }
+                push_service.push_text_to_client(
+                    added_member_info.id,
+                    title="Member Add",
+                    body="A user has been added to the group",
+                    from_client_id=added_member_info.id,
+                    notify_type="new_member",
+                    data=json.dumps(data)
+                )
             new_state['auxil_group_id'] = new_group.id
         if from_workspace_domain == current_workspace_domain:
             # return results to current server
             return new_state
         else:
             # return gRPC response message to requesting server
-            return group_pb2.AddMemberWorkspaceResponse(
-                auxil_group_id=member_group.id\
+            return group_pb2.GroupObjectResponse2(
+                group_id=member_group.id\
                     if new_group is None else new_group.id
             )
 
