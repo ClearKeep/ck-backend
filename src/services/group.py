@@ -952,7 +952,7 @@ class GroupService(BaseService):
                     'adding_member_id': adding_member_info.id,
                     'adding_member_workspace_domain': adding_member_info.workspace_domain
                 }
-                await push_service.push_text_to_client(
+                push_service.push_text_to_client(
                     client['id'],
                     title="Member Add",
                     body="A user has been added to the group",
@@ -991,7 +991,7 @@ class GroupService(BaseService):
                         'adding_member_id': adding_member_info.id,
                         'adding_member_workspace_domain': adding_member_info.workspace_domain
                     }
-                    await push_service.push_text_to_client(
+                    push_service.push_text_to_client(
                         added_member_info.id,
                         title="Member Add",
                         body="A user has been added to the group",
@@ -1048,7 +1048,7 @@ class GroupService(BaseService):
                     'adding_member_id': adding_member_info.id,
                     'adding_member_workspace_domain': adding_member_info.workspace_domain
                 }
-                await push_service.push_text_to_client(
+                push_service.push_text_to_client(
                     added_member_info.id,
                     title="Member Add",
                     body="A user has been added to the group",
