@@ -332,8 +332,6 @@ class GroupController(BaseController):
             added_member_info = request.added_member_info
             adding_member_info = request.adding_member_info
             if current_workspace_domain == owner_workspace_domain:
-                if from_workspace_domain != added_member_info.workspace_domain:
-                    raise ValueError('not supported currently')
                 group = GroupChat().get_group(request.group.owner_group_id)
                 group_clients = json.loads(group.group_clients)
                 workspace_domains = list(set(

@@ -682,17 +682,38 @@ class GroupService(BaseService):
                 member_group.updated_by = removing_member_info['id']
                 member_group.updated_at = datetime.datetime.now()
                 member_group.update()
-            self.notify_service.notify_removing_member(
-                client['id'],
-                client['workspace_domain'],
-                removed_member_info['id'],
-                removed_member_info['workspace_domain'],
-                member_group.id,
-                removed_member_info['display_name'],
-                notify_inapp.MEMBER_REMOVAL\
-                if removed_member_info['id'] != removing_member_info['id']\
-                else notify_inapp.MEMBER_LEAVE
-            )
+            try:
+                self.notify_service.notify_removing_member(
+                    client['id'],
+                    client['workspace_domain'],
+                    removed_member_info['id'],
+                    removed_member_info['workspace_domain'],
+                    member_group.id,
+                    removed_member_info['display_name'],
+                    notify_inapp.MEMBER_REMOVAL\
+                    if removed_member_info['id'] != removing_member_info['id']\
+                    else notify_inapp.MEMBER_LEAVE
+                )
+            except Exception as e:
+                logger.info('Inapp notification is not working now')
+                push_service = NotifyPushService()
+                data = {
+                    'nclient_id': client['id'],
+                    'nclient_workspace_domain': client['workspace_domain'],
+                    'group_id': member_group.id,
+                    'removed_member_id': removed_member_info.id,
+                    'removed_member_workspace_domain': removed_member_info.workspace_domain,
+                    'removing_member_id': removing_member_info.id,
+                    'removing_member_workspace_domain': removing_member_info.workspace_domain
+                }
+                push_service.push_text_to_client(
+                    removed_member_info.id,
+                    title="Member Removal (Leave)",
+                    body="A user removed (left) to the group",
+                    from_client_id=removed_member_info.id,
+                    notify_type="old_member",
+                    data=json.dumps(data)
+                )
         if from_workspace_domain == current_workspace_domain:
             # return results to current server
             return True
