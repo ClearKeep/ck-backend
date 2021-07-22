@@ -617,6 +617,7 @@ class GroupService(BaseService):
             removing_member_info,
             group,
             group_clients_after_removal):
+        logger.info('remove_member_workspace')
         current_workspace_domain = get_owner_workspace_domain()
         current_group_clients = json.loads(group.group_clients)
         active_clients =\
@@ -731,7 +732,7 @@ class GroupService(BaseService):
                 group_type=group.group_type,
                 group_name=group.group_name,
                 id=group.id if not update_this_server_first else\
-                    response.auxil_group_id,
+                    response['auxil_group_id'],
                 owner_group_id=group.owner_group_id,
                 owner_workspace_domain=group.owner_workspace_domain
             ),
