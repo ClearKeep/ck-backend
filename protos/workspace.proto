@@ -25,10 +25,8 @@ message WorkspaceObjectResponse {
   bool is_default_workspace = 2;
 }
 
-// Request: get joined groups
-message LeaveWorkspaceRequest {
-  string client_id = 1;
-  string workspace_id = 2;
+// Request: leave workspace
+message Empty {
 }
 
 
@@ -55,5 +53,5 @@ service Workspace {
 //    rpc join_workspace(JoinWorkspaceRequest) returns (BaseResponse) {};
 //    rpc get_joined_workspaces(GetJoinedWorkspacesRequest) returns (GetJoinedWorkspacesResponse) {};
     rpc workspace_info(WorkspaceInfoRequest) returns (WorkspaceObjectResponse) {};
-    rpc leave_workspace(LeaveWorkspaceRequest) returns (BaseResponse) {};
+    rpc leave_workspace(Empty) returns (BaseResponse) {};
 }
