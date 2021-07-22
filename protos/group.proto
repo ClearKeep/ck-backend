@@ -204,9 +204,9 @@ message AddMemberWorkspaceRequest {
   repeated MemberInfo resulting_group_clients = 6;
 }
 
-message AddMemberWorkspaceResponse {
-  int64 auxil_group_id = 1;
-}
+/* message AddMemberWorkspaceResponse { */
+/*   int64 auxil_group_id = 1; */
+/* } */
 
 message RemoveMemberWorkspaceRequest {
   string from_workspace_domain = 1;
@@ -227,7 +227,7 @@ service Group {
     rpc get_joined_groups(GetJoinedGroupsRequest) returns (GetJoinedGroupsResponse) {};
     rpc join_group(JoinGroupRequest) returns (BaseResponse) {};
     rpc add_member(AddMemberRequest) returns (GroupObjectResponse2) {};
-    rpc add_member_workspace(AddMemberWorkspaceRequest) returns (AddMemberWorkspaceResponse) {};
+    rpc add_member_workspace(AddMemberWorkspaceRequest) returns (GroupObjectResponse2) {};
     rpc remove_member(RemoveMemberRequest) returns (GroupObjectResponse2) {};
     rpc remove_member_workspace(RemoveMemberWorkspaceRequest) returns (BaseResponse) {};
     rpc leave_group(LeaveGroupRequest) returns (GroupObjectResponse2) {};
