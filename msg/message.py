@@ -68,6 +68,8 @@ class Message:
     LEAVE_GROUP_FAILED = 1058
     ADDED_USER_IS_MEMBER = 1059
 
+    LEAVE_WORKSPACE_FAILED = 1060
+
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
         AUTH_USER_NOT_FOUND: "Login information is not correct. Please try again",
@@ -125,6 +127,7 @@ class Message:
         LEAVE_GROUP_FAILED: "Leave Group failed. Please try again",
         ADDED_USER_IS_MEMBER: "Added user is already a member of the group. \
             Please try again",
+        LEAVE_WORKSPACE_FAILED: "Leave Workspace failed. Please try again",
     }
 
     @staticmethod

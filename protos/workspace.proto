@@ -26,7 +26,7 @@ message WorkspaceObjectResponse {
 }
 
 // Request: leave workspace
-message Empty {
+message LeaveWorkspaceRequest {
 }
 
 
@@ -53,5 +53,5 @@ service Workspace {
 //    rpc join_workspace(JoinWorkspaceRequest) returns (BaseResponse) {};
 //    rpc get_joined_workspaces(GetJoinedWorkspacesRequest) returns (GetJoinedWorkspacesResponse) {};
     rpc workspace_info(WorkspaceInfoRequest) returns (WorkspaceObjectResponse) {};
-    rpc leave_workspace(Empty) returns (BaseResponse) {};
+    rpc leave_workspace(LeaveWorkspaceRequest) returns (BaseResponse) {};
 }

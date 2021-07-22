@@ -41,14 +41,14 @@ class WorkspaceController(BaseController):
                         workspace_domain=get_owner_workspace_domain(),
                         status=""
                     ),
-                    group_id=group.id
+                    group_id=group.GroupChat.id
                 )
-                GroupController().leave_group(request_leave_group, context)
+                await GroupController().leave_group(request_leave_group, context)
 
             return workspace_pb2.BaseResponse(success=True)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            errors = [Message.get_error_object(Message.LEAVE_WORKSPACE_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
