@@ -154,6 +154,8 @@ class NotifyInAppService(BaseService):
                 client_notify_queue[notify_channel].put(new_notification)
             except Exception as e:
                 logger.error(e)
+        else:
+            raise ValueError
 
     def notify_adding_member(
             self,
@@ -186,6 +188,8 @@ class NotifyInAppService(BaseService):
                 client_notify_queue[notify_channel].put(new_notification)
             except Exception as e:
                 logger.error(e)
+        else:
+            raise ValueError
 
     def notify_client_update_peer_key(self, client_id, ref_client_id, ref_group_id):
         notify_channel = "{}/notify".format(client_id)
