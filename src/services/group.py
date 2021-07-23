@@ -626,19 +626,19 @@ class GroupService(BaseService):
              if 'status' not in e or e['status'] in ['active']]
         is_owner = (current_workspace_domain == owner_workspace_domain)
         if is_owner:
-            if group.group_type == 'group':
-                get_client_key = GroupClientKey().get
-            elif group.group_type == 'peer':
-                get_client_key = PeerClientKey().get
-            else:
-                raise ValueError
+            # if group.group_type == 'group':
+            get_client_key = GroupClientKey().get
+            # elif group.group_type == 'peer':
+            #     get_client_key = PeerClientKey().get
+            # else:
+            #     raise ValueError
         else:
-            if group.group_type == 'group':
-                get_client_key = GroupChat().get_client_key_by_owner_group
-            elif group.group_type == 'peer':
-                get_client_key = GroupChat().get_client_key_by_owner_peer
-            else:
-                raise ValueError
+            # if group.group_type == 'group':
+            get_client_key = GroupChat().get_client_key_by_owner_group
+            # elif group.group_type == 'peer':
+            #     get_client_key = GroupChat().get_client_key_by_owner_peer
+            # else:
+            #     raise ValueError
         for client in active_clients:
             if client['workspace_domain'] != current_workspace_domain:
                 if not is_owner:
@@ -650,14 +650,7 @@ class GroupService(BaseService):
                 group.id if is_owner else group.owner_group_id,
                 client['id']
             )
-            if group.group_type == 'group':
-                member_group = GroupChat().get_group(client_key.group_id)
-            elif group.group_type == 'peer':
-                member_group = GroupChat().get_group(
-                    group.id if is_owner else group.owner_group_id,
-                )
-            else:
-                raise ValueError
+            member_group = GroupChat().get_group(client_key.group_id)
             if (client['id'] == removed_member_info['id']):
                 client_key.delete()
                 removed_member_info['group'] = member_group
