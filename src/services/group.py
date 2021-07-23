@@ -702,16 +702,16 @@ class GroupService(BaseService):
                     'nclient_id': client['id'],
                     'nclient_workspace_domain': client['workspace_domain'],
                     'group_id': member_group.id,
-                    'removed_member_id': removed_member_info.id,
-                    'removed_member_workspace_domain': removed_member_info.workspace_domain,
-                    'removing_member_id': removing_member_info.id,
-                    'removing_member_workspace_domain': removing_member_info.workspace_domain
+                    'removed_member_id': removed_member_info['id'],
+                    'removed_member_workspace_domain': removed_member_info['workspace_domain'],
+                    'removing_member_id': removing_member_info['id'],
+                    'removing_member_workspace_domain': removing_member_info['workspace_domain']
                 }
                 push_service.push_text_to_client(
-                    removed_member_info.id,
+                    removed_member_info['id'],
                     title="Member Removal (Leave)",
                     body="A user removed (left) to the group",
-                    from_client_id=removed_member_info.id,
+                    from_client_id=removed_member_info['id'],
                     notify_type="old_member",
                     data=json.dumps(data)
                 )
