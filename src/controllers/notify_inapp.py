@@ -76,6 +76,7 @@ class NotifyInAppController(BaseController):
     async def un_subscribe(self, request, context):
         print("notify_inapp un_subscribe api")
         try:
+            logger.info('un_subscribe user: {}'.format(request.client_id))
             self.service.un_subscribe(request.client_id)
             return notify_pb2.BaseResponse(success=True)
         except Exception as e:

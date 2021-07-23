@@ -683,6 +683,7 @@ class GroupService(BaseService):
                 member_group.updated_at = datetime.datetime.now()
                 member_group.update()
             try:
+                logger('inapp notification: services')
                 self.notify_service.notify_removing_member(
                     client['id'],
                     client['workspace_domain'],
