@@ -164,7 +164,7 @@ class GroupController(BaseController):
             if (group.owner_workspace_domain and
                     group.owner_workspace_domain !=
                     removing_member_info['workspace_domain']):
-                res_obj = self.service.remove_member_from_group_not_owner(
+                res_obj = await self.service.remove_member_from_group_not_owner(
                     removed_member_info,
                     removing_member_info,
                     group,
@@ -173,7 +173,7 @@ class GroupController(BaseController):
                 )
                 return res_obj
             else:
-                res_obj = self.service.remove_member_from_group_owner(
+                res_obj = await self.service.remove_member_from_group_owner(
                     removed_member_info,
                     removing_member_info,
                     group,
@@ -195,7 +195,7 @@ class GroupController(BaseController):
     async def remove_member_workspace(self, request, context):
         try:
             groups = GroupChat().get_by_group_owner(request.owner_group_id)
-            response = self.service.remove_member_workspace(
+            response = await self.service.remove_member_workspace(
                 from_workspace_domain=request.from_workspace_domain,
                 owner_workspace_domain=request.owner_workspace_domain,
                 removed_member_info=MessageToDict(
