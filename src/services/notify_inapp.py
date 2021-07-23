@@ -68,8 +68,12 @@ class NotifyInAppService(BaseService):
     def un_subscribe(self, client_id):
         notify_channel = "{}/notify".format(client_id)
         if notify_channel in client_notify_queue:
+            logger.info('all queues before')
+            logger.info(client_notify_queue)
             client_notify_queue[notify_channel] = None
             del client_notify_queue[notify_channel]
+            logger.info('all queues after')
+            logger.info(client_notify_queue)
 
     def read_notify(self, notify_id):
         self.model = Notify(id=notify_id, read_flg=True)
@@ -145,17 +149,22 @@ class NotifyInAppService(BaseService):
             notify_platform="all"
         )
         logger.info('notify_removing_member:')
-        logger.info(self.model)
         new_notification = self.model.add()
         # check queue and push
         notify_channel = "{}/notify".format(client_id)
+        logger.info('current notify client queue')
+        logger.info(client_notify_queue)
         if notify_channel in client_notify_queue:
+            logger.info(notify_channel)
             try:
+                logger.info('inapp notification')
                 client_notify_queue[notify_channel].put(new_notification)
             except Exception as e:
                 logger.error(e)
+                logger.info('push notification: 1')
                 raise ValueError
         else:
+            logger.info('push notification: 2')
             raise ValueError
 
     def notify_adding_member(
