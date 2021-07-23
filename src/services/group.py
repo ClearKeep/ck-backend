@@ -650,7 +650,14 @@ class GroupService(BaseService):
                 group.id if is_owner else group.owner_group_id,
                 client['id']
             )
-            member_group = GroupChat().get_group(client_key.group_id)
+            if group.group_type == 'group':
+                member_group = GroupChat().get_group(client_key.group_id)
+            elif group.group_type == 'peer':
+                member_group = GroupChat().get_group(
+                    group.id if is_owner else group.owner_group_id,
+                )
+            else:
+                raise ValueError
             if (client['id'] == removed_member_info['id']):
                 client_key.delete()
                 removed_member_info['group'] = member_group
@@ -708,10 +715,10 @@ class GroupService(BaseService):
                     'removing_member_workspace_domain': removing_member_info['workspace_domain']
                 }
                 push_service.push_text_to_client(
-                    removed_member_info['id'],
+                    client['id'],
                     title="Member Removal (Leave)",
                     body="A user removed (left) to the group",
-                    from_client_id=removed_member_info['id'],
+                    from_client_id=removing_member_info['id'],
                     notify_type="old_member",
                     data=json.dumps(data)
                 )
@@ -978,7 +985,7 @@ class GroupService(BaseService):
                     client['id'],
                     title="Member Add",
                     body="A user has been added to the group",
-                    from_client_id=added_member_info.id,
+                    from_client_id=adding_member_info.id,
                     notify_type="new_member",
                     data=json.dumps(data)
                 )
@@ -1017,7 +1024,7 @@ class GroupService(BaseService):
                         added_member_info.id,
                         title="Member Add",
                         body="A user has been added to the group",
-                        from_client_id=added_member_info.id,
+                        from_client_id=adding_member_info.id,
                         notify_type="new_member",
                         data=json.dumps(data)
                     )
@@ -1074,7 +1081,7 @@ class GroupService(BaseService):
                     added_member_info.id,
                     title="Member Add",
                     body="A user has been added to the group",
-                    from_client_id=added_member_info.id,
+                    from_client_id=adding_member_info.id,
                     notify_type="new_member",
                     data=json.dumps(data)
                 )
