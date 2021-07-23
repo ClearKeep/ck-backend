@@ -154,6 +154,7 @@ class NotifyInAppService(BaseService):
                 client_notify_queue[notify_channel].put(new_notification)
             except Exception as e:
                 logger.error(e)
+                raise ValueError
         else:
             raise ValueError
 
@@ -188,6 +189,7 @@ class NotifyInAppService(BaseService):
                 client_notify_queue[notify_channel].put(new_notification)
             except Exception as e:
                 logger.error(e)
+                raise ValueError
         else:
             raise ValueError
 
