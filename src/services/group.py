@@ -477,7 +477,7 @@ class GroupService(BaseService):
         group_ids = (group.id for group in lst_group)
         return GroupClientKey().get_clients_in_groups(group_ids)
 
-    def remove_member_from_group_not_owner(
+    async def remove_member_from_group_not_owner(
             self,
             removed_member_info,
             removing_member_info,
@@ -513,7 +513,7 @@ class GroupService(BaseService):
                 request
             )
         # update the information in this auxil server based on the response
-        self.remove_member_workspace(
+        await self.remove_member_workspace(
             from_workspace_domain=current_workspace_domain,
             owner_workspace_domain=owner_workspace_domain,
             removed_member_info=removed_member_info,
@@ -524,7 +524,7 @@ class GroupService(BaseService):
         response.group_id = group.id
         return response
 
-    def remove_member_from_group_owner(
+    async def remove_member_from_group_owner(
             self,
             removed_member_info,
             removing_member_info,
@@ -567,7 +567,7 @@ class GroupService(BaseService):
                 # use kept response to update information in the main server
                 # and the other remaining servers
                 pass
-        self.remove_member_workspace(
+        await self.remove_member_workspace(
             from_workspace_domain=get_owner_workspace_domain(),
             owner_workspace_domain=owner_workspace_domain,
             removed_member_info=removed_member_info,
@@ -610,7 +610,7 @@ class GroupService(BaseService):
             group_rtc_token=group.group_rtc_token
         )
 
-    def remove_member_workspace(
+    async def remove_member_workspace(
             self,
             from_workspace_domain,
             owner_workspace_domain,
@@ -708,7 +708,7 @@ class GroupService(BaseService):
                     'removing_member_workspace_domain': removing_member_info['workspace_domain']
                 }
                 logger.info(data)
-                push_service.push_text_to_client(
+                await push_service.push_text_to_client(
                     client['id'],
                     title="Member Removal (Leave)",
                     body="A user removed (left) to the group",
