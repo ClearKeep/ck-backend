@@ -37,7 +37,7 @@ class WorkspaceController(BaseController):
                 user_info = User().get(client_id)
 
                 for group in lst_joined_group:
-                    try:
+                    if group.GroupChat.group_type == "group":
                         request_leave_group = group_pb2.LeaveGroupRequest(
                             member_info=group_pb2.MemberInfo(
                                 id=client_id,
@@ -48,9 +48,6 @@ class WorkspaceController(BaseController):
                             group_id=group.GroupChat.id
                         )
                         await GroupController().leave_group(request_leave_group, context)
-                    except Exception as e:
-                        logger.error(e)
-                        continue
 
             return workspace_pb2.BaseResponse(success=True)
         except Exception as e:
