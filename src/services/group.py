@@ -701,12 +701,13 @@ class GroupService(BaseService):
                 data = {
                     'nclient_id': client['id'],
                     'nclient_workspace_domain': client['workspace_domain'],
-                    'group_id': member_group.id,
+                    'group_id': str(member_group.id),
                     'removed_member_id': removed_member_info['id'],
                     'removed_member_workspace_domain': removed_member_info['workspace_domain'],
                     'removing_member_id': removing_member_info['id'],
                     'removing_member_workspace_domain': removing_member_info['workspace_domain']
                 }
+                logger.info(data)
                 push_service.push_text_to_client(
                     client['id'],
                     title="Member Removal (Leave)",
