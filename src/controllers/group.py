@@ -146,7 +146,7 @@ class GroupController(BaseController):
             logger.info(removed_member_info)
             logger.info(removing_member_info)
             for e in current_group_clients:
-                logger(e)
+                logger.info(e)
                 if ((e['id'] in [removed_member_info['id'],
                                  removing_member_info['id']]) and
                         ('status' in e and e['status'] in ['removed', 'left'])):
