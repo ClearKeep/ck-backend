@@ -7,6 +7,7 @@ from utils.config import *
 from src.controllers.group import GroupController
 from src.models.group import GroupChat
 from src.models.user import User
+import json
 
 
 class WorkspaceController(BaseController):
@@ -37,13 +38,20 @@ class WorkspaceController(BaseController):
                 user_info = User().get(client_id)
 
                 for group in lst_joined_group:
-                #     if group.GroupChat.group_type == "group":
+                    current_group_clients = json.loads(group.GroupChat.group_clients)
+                    has_left = False
+                    for client in current_group_clients:
+                        if (client['id'] == client_id
+                                and client['status'] in ['removed', 'left']):
+                            has_left = True
+                            break
+                    if has_left:
+                        continue
                     request_leave_group = group_pb2.LeaveGroupRequest(
                         member_info=group_pb2.MemberInfo(
                             id=client_id,
                             display_name=user_info.display_name,
-                            workspace_domain=get_owner_workspace_domain(),
-                            status='left'
+                            workspace_domain=get_owner_workspace_domain()
                         ),
                         group_id=group.GroupChat.id
                     )
