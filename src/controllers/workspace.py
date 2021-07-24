@@ -43,7 +43,7 @@ class WorkspaceController(BaseController):
                             id=client_id,
                             display_name=user_info.display_name,
                             workspace_domain=get_owner_workspace_domain(),
-                            status="leave"
+                            status='left'
                         ),
                         group_id=group.GroupChat.id
                     )

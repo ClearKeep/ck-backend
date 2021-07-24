@@ -142,13 +142,19 @@ class GroupController(BaseController):
                  if ('status' not in e or
                      ('status' in e and e['status'] in ['active']))]
             ))
+            logger.info(current_group_clients)
+            logger.info(removed_member_info)
+            logger.info(removing_member_info)
             for e in current_group_clients:
+                logger(e)
                 if ((e['id'] in [removed_member_info['id'],
                                  removing_member_info['id']]) and
                         ('status' in e and e['status'] in ['removed', 'left'])):
+                    logger.info('Not in group 1')
                     raise Exception(Message.USER_NOT_IN_GROUP)
             if all([e['id'] != removed_member_info['id']
                     for e in current_group_clients]):
+                logger.info('Not in group 2')
                 raise Exception(Message.USER_NOT_IN_GROUP)
             else:
                 group_clients_after_removal = []
