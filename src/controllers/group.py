@@ -296,7 +296,7 @@ class GroupController(BaseController):
             if (group.owner_workspace_domain and
                     group.owner_workspace_domain !=
                     adding_member_info.workspace_domain):
-                response = self.service.add_member_to_group_not_owner(
+                response = await self.service.add_member_to_group_not_owner(
                     added_member_info,
                     adding_member_info,
                     group,
@@ -305,7 +305,7 @@ class GroupController(BaseController):
                 )
                 return response
             else:
-                response = self.service.add_member_to_group_owner(
+                response = await self.service.add_member_to_group_owner(
                     added_member_info,
                     adding_member_info,
                     group,
@@ -339,7 +339,7 @@ class GroupController(BaseController):
                      if ('status' not in e or
                          ('status' in e and e['status'] in ['active']))]
                 ))
-                response = self.service.add_member_to_group_owner(
+                response = await self.service.add_member_to_group_owner(
                     added_member_info=added_member_info,
                     adding_member_info=adding_member_info,
                     group=group,
@@ -353,7 +353,7 @@ class GroupController(BaseController):
                     workspace_domains=workspace_domains
                 )
             else:
-                response = self.service.add_member_workspace(
+                response = await self.service.add_member_workspace(
                     from_workspace_domain=from_workspace_domain,
                     owner_workspace_domain=owner_workspace_domain,
                     added_member_info=added_member_info,

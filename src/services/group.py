@@ -723,7 +723,7 @@ class GroupService(BaseService):
             # return gRPC response message to requesting server
             return group_pb2.BaseResponse(success=True)
 
-    def add_member_to_group_not_owner(
+    async def add_member_to_group_not_owner(
             self,
             added_member_info,
             adding_member_info,
@@ -737,7 +737,7 @@ class GroupService(BaseService):
             current_workspace_domain == added_member_info.workspace_domain
         )
         if update_this_server_first:
-            response = self.add_member_workspace(
+            response = await self.add_member_workspace(
                 from_workspace_domain=current_workspace_domain,
                 owner_workspace_domain=owner_workspace_domain,
                 added_member_info=added_member_info,
@@ -773,7 +773,7 @@ class GroupService(BaseService):
             )
         if not update_this_server_first:
             # update the information in this auxil server based on the response
-            self.add_member_workspace(
+            await self.add_member_workspace(
                 from_workspace_domain=current_workspace_domain,
                 owner_workspace_domain=owner_workspace_domain,
                 added_member_info=added_member_info,
@@ -784,7 +784,7 @@ class GroupService(BaseService):
         response.group_id = group.id
         return response
 
-    def add_member_to_group_owner(
+    async def add_member_to_group_owner(
             self,
             added_member_info,
             adding_member_info,
@@ -798,7 +798,7 @@ class GroupService(BaseService):
             added_member_info.workspace_domain
         )
         if update_this_server_first:
-            self.add_member_workspace(
+            await self.add_member_workspace(
                 from_workspace_domain=get_owner_workspace_domain(),
                 owner_workspace_domain=owner_workspace_domain,
                 added_member_info=added_member_info,
@@ -853,7 +853,7 @@ class GroupService(BaseService):
                 # and the other remaining servers
                 pass
         if not update_this_server_first:
-            self.add_member_workspace(
+            await self.add_member_workspace(
                 from_workspace_domain=get_owner_workspace_domain(),
                 owner_workspace_domain=owner_workspace_domain,
                 added_member_info=added_member_info,
@@ -896,7 +896,7 @@ class GroupService(BaseService):
             group_rtc_token=group.group_rtc_token
         )
 
-    def add_member_workspace(
+    async def add_member_workspace(
             self,
             from_workspace_domain,
             owner_workspace_domain,
@@ -969,13 +969,13 @@ class GroupService(BaseService):
                 data = {
                     'nclient_id': client['id'],
                     'nclient_workspace_domain': client['workspace_domain'],
-                    'group_id': member_group.id,
+                    'group_id': str(member_group.id),
                     'added_member_id': added_member_info.id,
                     'added_member_workspace_domain': added_member_info.workspace_domain,
                     'adding_member_id': adding_member_info.id,
                     'adding_member_workspace_domain': adding_member_info.workspace_domain
                 }
-                push_service.push_text_to_client(
+                await push_service.push_text_to_client(
                     client['id'],
                     title="Member Add",
                     body="A user has been added to the group",
@@ -1008,13 +1008,13 @@ class GroupService(BaseService):
                     data = {
                         'nclient_id': added_member_info.id,
                         'nclient_workspace_domain': added_member_info.workspace_domain,
-                        'group_id': member_group.id,
+                        'group_id': str(member_group.id),
                         'added_member_id': added_member_info.id,
                         'added_member_workspace_domain': added_member_info.workspace_domain,
                         'adding_member_id': adding_member_info.id,
                         'adding_member_workspace_domain': adding_member_info.workspace_domain
                     }
-                    push_service.push_text_to_client(
+                    await push_service.push_text_to_client(
                         added_member_info.id,
                         title="Member Add",
                         body="A user has been added to the group",
@@ -1065,13 +1065,13 @@ class GroupService(BaseService):
                 data = {
                     'nclient_id': added_member_info.id,
                     'nclient_workspace_domain': added_member_info.workspace_domain,
-                    'group_id': new_group.id,
+                    'group_id': str(new_group.id),
                     'added_member_id': added_member_info.id,
                     'added_member_workspace_domain': added_member_info.workspace_domain,
                     'adding_member_id': adding_member_info.id,
                     'adding_member_workspace_domain': adding_member_info.workspace_domain
                 }
-                push_service.push_text_to_client(
+                await push_service.push_text_to_client(
                     added_member_info.id,
                     title="Member Add",
                     body="A user has been added to the group",
