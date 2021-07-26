@@ -30,11 +30,11 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     # @auth_required
     # @request_logged
     async def get_profile(self, request, context):
+        print("user get_profile api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-
             user_info = self.service.get_profile(client_id, header_data['hash_key'])
             if user_info is not None:
                 return user_info
@@ -142,3 +142,23 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
+    # update status for user ("Active, Busy, Away, Do not disturb")
+    async def update_status(self, request, context):
+        print("user update_status api")
+        try:
+            status = request.status
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            
+            self.service.set_user_status(client_id, status)
+            return user_messages.BaseResponse(success=True)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+            
+    

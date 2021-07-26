@@ -58,7 +58,6 @@ class UserService(BaseService):
         user_info = self.model.get_google_user(email, auth_source)
         return user_info
 
-
     def change_password(self, request, old_pass, new_pass, user_id):
         try:
             user_info = self.model.get(user_id)
@@ -176,6 +175,14 @@ class UserService(BaseService):
         try:
             user_info = self.model.get(user_id)
             user_info.last_login_at = datetime.datetime.now()
+            user_info.update()
+        except Exception as e:
+            logger.info(bytes(str(e), encoding='utf-8'))
+
+    def set_user_status(self, user_id, status):
+        try:
+            user_info = self.model.get(user_id)
+            user_info.status = status
             user_info.update()
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
