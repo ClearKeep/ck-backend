@@ -193,13 +193,19 @@ class NotifyInAppService(BaseService):
         new_notification = self.model.add()
         # check queue and push
         notify_channel = "{}/notify".format(client_id)
+        logger.info('current notify client queue')
+        logger.info(client_notify_queue)
         if notify_channel in client_notify_queue:
+            logger.info(notify_channel)
             try:
+                logger.info('inapp notification')
                 client_notify_queue[notify_channel].put(new_notification)
             except Exception as e:
                 logger.error(e)
+                logger.info('push notification: 1')
                 raise ValueError
         else:
+            logger.info('push notification: 2')
             raise ValueError
 
     def notify_client_update_peer_key(self, client_id, ref_client_id, ref_group_id):

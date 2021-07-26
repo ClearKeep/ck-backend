@@ -953,36 +953,36 @@ class GroupService(BaseService):
                 member_group.update()
                 if is_owner:
                     already_updated = True
-            try:
-                self.notify_service.notify_adding_member(
-                    client['id'],
-                    client['workspace_domain'],
-                    added_member_info.id,
-                    added_member_info.workspace_domain,
-                    member_group.id,
-                    added_member_info.display_name,
-                    notify_inapp.MEMBER_ADD
-                )
-            except Exception as e:
-                logger.info('Inapp notification is not working now')
-                push_service = NotifyPushService()
-                data = {
-                    'nclient_id': client['id'],
-                    'nclient_workspace_domain': client['workspace_domain'],
-                    'group_id': str(member_group.id),
-                    'added_member_id': added_member_info.id,
-                    'added_member_workspace_domain': added_member_info.workspace_domain,
-                    'adding_member_id': adding_member_info.id,
-                    'adding_member_workspace_domain': adding_member_info.workspace_domain
-                }
-                await push_service.push_text_to_client(
-                    client['id'],
-                    title="Member Add",
-                    body="A user has been added to the group",
-                    from_client_id=adding_member_info.id,
-                    notify_type="new_member",
-                    data=json.dumps(data)
-                )
+            # try:
+            #     self.notify_service.notify_adding_member(
+            #         client['id'],
+            #         client['workspace_domain'],
+            #         added_member_info.id,
+            #         added_member_info.workspace_domain,
+            #         member_group.id,
+            #         added_member_info.display_name,
+            #         notify_inapp.MEMBER_ADD
+            #     )
+            # except Exception as e:
+            logger.info('Inapp notification is not working now')
+            push_service = NotifyPushService()
+            data = {
+                'nclient_id': client['id'],
+                'nclient_workspace_domain': client['workspace_domain'],
+                'group_id': str(member_group.id),
+                'added_member_id': added_member_info.id,
+                'added_member_workspace_domain': added_member_info.workspace_domain,
+                'adding_member_id': adding_member_info.id,
+                'adding_member_workspace_domain': adding_member_info.workspace_domain
+            }
+            await push_service.push_text_to_client(
+                client['id'],
+                title="Member Add",
+                body="A user has been added to the group",
+                from_client_id=adding_member_info.id,
+                notify_type="new_member",
+                data=json.dumps(data)
+            )
         new_group = None
         if is_owner:
             if added_member_info.workspace_domain == current_workspace_domain:
@@ -992,36 +992,36 @@ class GroupService(BaseService):
                 )
                 group_client_key.add()
                 # notify added member
-                try:
-                    self.notify_service.notify_adding_member(
-                        added_member_info.id,
-                        added_member_info.workspace_domain,
-                        added_member_info.id,
-                        added_member_info.workspace_domain,
-                        member_group.id,
-                        added_member_info.display_name,
-                        notify_inapp.MEMBER_ADD
-                    )
-                except Exception as e:
-                    logger.info('Inapp notification is not working now')
-                    push_service = NotifyPushService()
-                    data = {
-                        'nclient_id': added_member_info.id,
-                        'nclient_workspace_domain': added_member_info.workspace_domain,
-                        'group_id': str(member_group.id),
-                        'added_member_id': added_member_info.id,
-                        'added_member_workspace_domain': added_member_info.workspace_domain,
-                        'adding_member_id': adding_member_info.id,
-                        'adding_member_workspace_domain': adding_member_info.workspace_domain
-                    }
-                    await push_service.push_text_to_client(
-                        added_member_info.id,
-                        title="Member Add",
-                        body="A user has been added to the group",
-                        from_client_id=adding_member_info.id,
-                        notify_type="new_member",
-                        data=json.dumps(data)
-                    )
+                # try:
+                #     self.notify_service.notify_adding_member(
+                #         added_member_info.id,
+                #         added_member_info.workspace_domain,
+                #         added_member_info.id,
+                #         added_member_info.workspace_domain,
+                #         member_group.id,
+                #         added_member_info.display_name,
+                #         notify_inapp.MEMBER_ADD
+                #     )
+                # except Exception as e:
+                logger.info('Inapp notification is not working now')
+                push_service = NotifyPushService()
+                data = {
+                    'nclient_id': added_member_info.id,
+                    'nclient_workspace_domain': added_member_info.workspace_domain,
+                    'group_id': str(member_group.id),
+                    'added_member_id': added_member_info.id,
+                    'added_member_workspace_domain': added_member_info.workspace_domain,
+                    'adding_member_id': adding_member_info.id,
+                    'adding_member_workspace_domain': adding_member_info.workspace_domain
+                }
+                await push_service.push_text_to_client(
+                    added_member_info.id,
+                    title="Member Add",
+                    body="A user has been added to the group",
+                    from_client_id=adding_member_info.id,
+                    notify_type="new_member",
+                    data=json.dumps(data)
+                )
             else:
                 group_client_key = GroupClientKey().set_key(
                     group.id, added_member_info.id,
@@ -1049,36 +1049,36 @@ class GroupService(BaseService):
             )
             group_client_key.add()
             # notify added member
-            try:
-                self.notify_service.notify_adding_member(
-                    added_member_info.id,
-                    added_member_info.workspace_domain,
-                    added_member_info.id,
-                    added_member_info.workspace_domain,
-                    new_group.id,
-                    added_member_info.display_name,
-                    notify_inapp.MEMBER_ADD
-                )
-            except Exception as e:
-                logger.info('Inapp notification is not working now')
-                push_service = NotifyPushService()
-                data = {
-                    'nclient_id': added_member_info.id,
-                    'nclient_workspace_domain': added_member_info.workspace_domain,
-                    'group_id': str(new_group.id),
-                    'added_member_id': added_member_info.id,
-                    'added_member_workspace_domain': added_member_info.workspace_domain,
-                    'adding_member_id': adding_member_info.id,
-                    'adding_member_workspace_domain': adding_member_info.workspace_domain
-                }
-                await push_service.push_text_to_client(
-                    added_member_info.id,
-                    title="Member Add",
-                    body="A user has been added to the group",
-                    from_client_id=adding_member_info.id,
-                    notify_type="new_member",
-                    data=json.dumps(data)
-                )
+            # try:
+            #     self.notify_service.notify_adding_member(
+            #         added_member_info.id,
+            #         added_member_info.workspace_domain,
+            #         added_member_info.id,
+            #         added_member_info.workspace_domain,
+            #         new_group.id,
+            #         added_member_info.display_name,
+            #         notify_inapp.MEMBER_ADD
+            #     )
+            # except Exception as e:
+            logger.info('Inapp notification is not working now')
+            push_service = NotifyPushService()
+            data = {
+                'nclient_id': added_member_info.id,
+                'nclient_workspace_domain': added_member_info.workspace_domain,
+                'group_id': str(new_group.id),
+                'added_member_id': added_member_info.id,
+                'added_member_workspace_domain': added_member_info.workspace_domain,
+                'adding_member_id': adding_member_info.id,
+                'adding_member_workspace_domain': adding_member_info.workspace_domain
+            }
+            await push_service.push_text_to_client(
+                added_member_info.id,
+                title="Member Add",
+                body="A user has been added to the group",
+                from_client_id=adding_member_info.id,
+                notify_type="new_member",
+                data=json.dumps(data)
+            )
             new_state['auxil_group_id'] = new_group.id
         if from_workspace_domain == current_workspace_domain:
             # return results to current server
