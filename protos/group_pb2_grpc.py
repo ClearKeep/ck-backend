@@ -63,7 +63,7 @@ class GroupStub(object):
         self.workspace_add_member = channel.unary_unary(
                 '/group.Group/workspace_add_member',
                 request_serializer=protos_dot_group__pb2.AddMemberWorkspaceRequest.SerializeToString,
-                response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
+                response_deserializer=protos_dot_group__pb2.AddMemberWorkspaceResponse.FromString,
                 )
         self.remove_member_workspace = channel.unary_unary(
                 '/group.Group/remove_member_workspace',
@@ -194,7 +194,7 @@ def add_GroupServicer_to_server(servicer, server):
             'workspace_add_member': grpc.unary_unary_rpc_method_handler(
                     servicer.workspace_add_member,
                     request_deserializer=protos_dot_group__pb2.AddMemberWorkspaceRequest.FromString,
-                    response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
+                    response_serializer=protos_dot_group__pb2.AddMemberWorkspaceResponse.SerializeToString,
             ),
             'remove_member_workspace': grpc.unary_unary_rpc_method_handler(
                     servicer.remove_member_workspace,
@@ -378,7 +378,7 @@ class Group(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/group.Group/workspace_add_member',
             protos_dot_group__pb2.AddMemberWorkspaceRequest.SerializeToString,
-            protos_dot_group__pb2.BaseResponse.FromString,
+            protos_dot_group__pb2.AddMemberWorkspaceResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

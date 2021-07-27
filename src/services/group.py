@@ -729,6 +729,7 @@ class GroupService(BaseService):
         owner_workspace_domain = group.owner_workspace_domain
         tmp_list_client = json.loads(group.group_clients)
 
+
         # PROCESS IN THIS SERVER
         # case new member is same server (not owner group)
         if added_member_info.workspace_domain == owner_workspace_domain:
@@ -744,6 +745,8 @@ class GroupService(BaseService):
                 created_by=group.created_by,
             )
             new_group = self.model.add()
+            added_member_info.ref_group_id = new_group.id
+
             # add more group client key
             group_client_key = GroupClientKey().set_key(
                 new_group.id, added_member_info.id,
@@ -803,12 +806,14 @@ class GroupService(BaseService):
         logger.info('add_member_to_group_owner')
         owner_workspace_domain = get_owner_workspace_domain()
 
-        # case added member is in owner server
-        #if added_member_info.workspace_domain == owner_workspace_domain:
-        # add more group client key
+        # add more group client key for group owner
+        client_workspace_domain = None
+        if added_member_info.workspace_domain != owner_workspace_domain:
+            client_workspace_domain = added_member_info.workspace_domain
+
         group_client_key = GroupClientKey().set_key(
-            group.id, added_member_info.id,
-            None, None, None, None
+            group.id, added_member_info.id, client_workspace_domain, added_member_info.ref_group_id,
+            None, None
         )
         group_client_key.add()
 
@@ -858,7 +863,7 @@ class GroupService(BaseService):
                     owner_group=owner_group_req
                 )
                 logger("call add member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
-                response = ClientGroup(client.GroupClientKey.client_workspace_domain).add_member_workspace(request)
+                response = ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_add_member(request)
 
         return group_pb2.BaseResponse(
             success=True

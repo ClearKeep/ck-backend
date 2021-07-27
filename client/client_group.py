@@ -28,9 +28,9 @@ class ClientGroup:
             logger.error(e)
             return None
 
-    def add_member_workspace(self, request):
+    def workspace_add_member(self, request):
         try:
-            response = self.stub.add_member_workspace(request)
+            response = self.stub.workspace_add_member(request)
             return response
         except Exception as e:
             logger.error(e)
