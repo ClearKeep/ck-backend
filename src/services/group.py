@@ -819,8 +819,8 @@ class GroupService(BaseService):
             if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                 if client.GroupClientKey.id != adding_member_info.id:
                     data = {
-                        'client_id': client['id'],
-                        'client_workspace_domain': client['workspace_domain'],
+                        'client_id': client.GroupClientKey.id,
+                        'client_workspace_domain': owner_workspace_domain,
                         'group_id': str(group.id),
                         'added_member_id': added_member_info.id,
                         'added_member_display_name': added_member_info.display_name,
@@ -831,7 +831,7 @@ class GroupService(BaseService):
                     }
                     logger.info(data)
                     await push_service.push_text_to_client(
-                        to_client_id=client['id'],
+                        to_client_id=client.GroupClientKey.id,
                         title="Member Add",
                         body="A user has been added to the group",
                         from_client_id=adding_member_info.id,
