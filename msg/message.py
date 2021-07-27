@@ -57,6 +57,8 @@ class Message:
 
     # change status
     UPDATE_USER_STATUS_FAILED = 1047
+    PING_PONG_SERVER_FAILED = 1048
+    
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
         AUTH_USER_NOT_FOUND: "Login information is not correct. Please try again",
@@ -101,7 +103,8 @@ class Message:
         EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN: "The account with this email "
             "does not exist. Please try again",
             
-        UPDATE_USER_STATUS_FAILED :"Update status failed. Please try again"
+        UPDATE_USER_STATUS_FAILED :"Update status failed. Please try again",
+        PING_PONG_SERVER_FAILED :"Ping and pong server failed. Please try again"
     }
 
     @staticmethod

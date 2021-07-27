@@ -160,5 +160,47 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-        
     
+    
+    
+    async def ping_pong_server(self, request, context):
+        print("ping_pong_server api")
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            
+            self.service.update_client_record(client_id)
+            return user_messages.BaseResponse(success=True)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.PING_PONG_SERVER_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+            
+            
+    async def get_user_info(self, request, context):
+        try:
+            client_id = request.client_id
+            domain_client = request.domain
+            domain_local = get_system_domain()
+            if domain_local == domain_client:
+                user_info = self.service.get_user_info(client_id)
+            else:
+                server_ip = get_ip_domain(domain_client)
+                client = ClientUser(server_ip, get_system_config()['port'])
+                user_info = client.get_user_info(client_id=client_id, domain=domain_client)
+            if user_info is not None:
+                return user_info
+            else:
+                errors = [Message.get_error_object(Message.USER_NOT_FOUND)]
+                context.set_details(json.dumps(
+                    errors, default=lambda x: x.__dict__))
+                context.set_code(grpc.StatusCode.NOT_FOUND)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.GET_USER_INFO_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)

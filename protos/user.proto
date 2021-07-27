@@ -80,12 +80,14 @@ message SetUserStatusRequest {
 }
 
 
+
 service User {
     //----- FROM MY ACCOUNT -----
     rpc get_profile(Empty) returns (UserProfileResponse) {};
     rpc update_profile(UpdateProfileRequest) returns (BaseResponse) {};
     rpc change_password(ChangePasswordRequest) returns (BaseResponse) {};
     rpc update_status(SetUserStatusRequest) returns (BaseResponse) {};
+    rpc ping_pong_server(Empty) returns (BaseResponse) {};
 
     //----- FROM OTHER ACCOUNT -----
     rpc get_user_info(GetUserRequest) returns (UserInfoResponse) {};

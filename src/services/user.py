@@ -6,6 +6,7 @@ from protos import user_pb2
 from utils.config import get_system_domain
 from utils.logger import *
 from msg.message import Message
+from utils.memory_storages import client_records_list_in_memory
 import datetime
 
 
@@ -187,3 +188,32 @@ class UserService(BaseService):
         except Exception as e:
             logger.error(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.UPDATE_USER_STATUS_FAILED)
+
+    def update_client_record(self, client_id):
+        print("update_client_record api")
+        try:
+            client_record = client_records_list_in_memory.get(str(client_id), None)
+            
+            if client_record is None:
+                client_records_list_in_memory.update({
+                    str(client_id):{
+                     "last_active" : datetime.datetime.now(),
+                     "prev_active" : None,
+                        }
+                    })
+            else:
+                client_record["prev_active"] = client_record["last_active"]
+                client_record["last_active"] = datetime.datetime.now()
+        except Exception as e:
+            logger.error(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.PING_PONG_SERVER_FAILED)
+        
+        
+    # def check_client_exists(self, client_id):
+    #     try:
+    #         return client_records_list_in_memory.get(str(client_id), None)
+    #     except Exception as e:
+    #         logger.error(bytes(str(e), encoding='utf-8'))
+    #         raise Exception(Message.UPDATE_USER_STATUS_FAILED)
+        
+ 
