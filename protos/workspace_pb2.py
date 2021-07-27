@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x16protos/workspace.proto\x12\tworkspace\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"D\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12#\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x13.workspace.ErrorRes\"`\n\x14WorkspaceInfoRequest\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12.\n\rbase_response\x18\x02 \x01(\x0b\x32\x17.workspace.BaseResponse\"Q\n\x17WorkspaceObjectResponse\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x1c\n\x14is_default_workspace\x18\x02 \x01(\x08\"@\n\x15LeaveWorkspaceRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x14\n\x0cworkspace_id\x18\x02 \x01(\t2\xb4\x01\n\tWorkspace\x12W\n\x0eworkspace_info\x12\x1f.workspace.WorkspaceInfoRequest\x1a\".workspace.WorkspaceObjectResponse\"\x00\x12N\n\x0fleave_workspace\x12 .workspace.LeaveWorkspaceRequest\x1a\x17.workspace.BaseResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x16protos/workspace.proto\x12\tworkspace\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"D\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12#\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x13.workspace.ErrorRes\"`\n\x14WorkspaceInfoRequest\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12.\n\rbase_response\x18\x02 \x01(\x0b\x32\x17.workspace.BaseResponse\"Q\n\x17WorkspaceObjectResponse\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x1c\n\x14is_default_workspace\x18\x02 \x01(\x08\"\x17\n\x15LeaveWorkspaceRequest2\xb4\x01\n\tWorkspace\x12W\n\x0eworkspace_info\x12\x1f.workspace.WorkspaceInfoRequest\x1a\".workspace.WorkspaceObjectResponse\"\x00\x12N\n\x0fleave_workspace\x12 .workspace.LeaveWorkspaceRequest\x1a\x17.workspace.BaseResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -189,20 +189,6 @@ _LEAVEWORKSPACEREQUEST = _descriptor.Descriptor(
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
-    _descriptor.FieldDescriptor(
-      name='client_id', full_name='workspace.LeaveWorkspaceRequest.client_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='workspace_id', full_name='workspace.LeaveWorkspaceRequest.workspace_id', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -216,7 +202,7 @@ _LEAVEWORKSPACEREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=331,
-  serialized_end=395,
+  serialized_end=354,
 )
 
 _BASERESPONSE.fields_by_name['errors'].message_type = _ERRORRES
@@ -272,8 +258,8 @@ _WORKSPACE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=398,
-  serialized_end=578,
+  serialized_start=357,
+  serialized_end=537,
   methods=[
   _descriptor.MethodDescriptor(
     name='workspace_info',
