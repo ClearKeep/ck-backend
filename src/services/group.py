@@ -814,8 +814,7 @@ class GroupService(BaseService):
         group_client_key = GroupClientKey().set_key(
             group.id, added_member_info.id, client_workspace_domain, added_member_info.ref_group_id,
             None, None
-        )
-        group_client_key.add()
+        ).add()
 
         # push notification for other member in server
         lst_client_in_group = self.get_clients_in_group(group.id)
@@ -864,6 +863,9 @@ class GroupService(BaseService):
                 )
                 logger("call add member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
                 response = ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_add_member(request)
+                if response.is_member_workspace:
+                    group_client_key.client_workspace_group_id = response.ref_group_id
+                    group_client_key.update()
 
         return group_pb2.BaseResponse(
             success=True
@@ -875,8 +877,11 @@ class GroupService(BaseService):
         owner_workspace_domain = get_owner_workspace_domain()
         tmp_list_client = json.loads(owner_group_info.group_clients)
 
+        is_member_workspace = False
+        ref_group_id = None
         # create for new member
         if added_member_info.workspace_domain == owner_workspace_domain:
+            is_member_workspace = True
             # add group with owner group
             self.model = GroupChat(
                 owner_group_id=owner_group_info.group_id,
@@ -889,6 +894,7 @@ class GroupService(BaseService):
                 created_by=owner_group_info.created_by,
             )
             new_group = self.model.add()
+            ref_group_id = new_group.id
             # add more group client key
             group_client_key = GroupClientKey().set_key(
                 new_group.id, added_member_info.id,
@@ -929,8 +935,10 @@ class GroupService(BaseService):
                 notify_type="new_member",
                 data=json.dumps(data)
             )
-        return group_pb2.BaseResponse(
-            success=True
+
+        return group_pb2.AddMemberWorkspaceResponse(
+            is_member_workspace=is_member_workspace,
+            ref_group_id=ref_group_id
         )
 
     def dict_to_message(self, d):

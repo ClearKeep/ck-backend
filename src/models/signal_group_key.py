@@ -31,10 +31,12 @@ class GroupClientKey(Database.get().Model):
         if client is not None:
             self.id = client.id
             self.update()
+            return self
         else:
             try:
                 Database.get_session().add(self)
                 Database.get_session().commit()
+                return self
             except Exception as e:
                 Database.get_session().rollback()
                 logger.error(e)
