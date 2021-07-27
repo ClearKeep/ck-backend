@@ -804,13 +804,13 @@ class GroupService(BaseService):
         owner_workspace_domain = get_owner_workspace_domain()
 
         # case added member is in owner server
-        if added_member_info.workspace_domain == owner_workspace_domain:
-            # add more group client key
-            group_client_key = GroupClientKey().set_key(
-                group.id, added_member_info.id,
-                None, None, None, None
-            )
-            group_client_key.add()
+        #if added_member_info.workspace_domain == owner_workspace_domain:
+        # add more group client key
+        group_client_key = GroupClientKey().set_key(
+            group.id, added_member_info.id,
+            None, None, None, None
+        )
+        group_client_key.add()
 
         # push notification for other member in server
         lst_client_in_group = self.get_clients_in_group(group.id)
@@ -841,7 +841,7 @@ class GroupService(BaseService):
 
         # request add member to other server
         for client in lst_client_in_group:
-            if  client.GroupClientKey.client_workspace_domain and client.GroupClientKey.client_workspace_domain != owner_workspace_domain \
+            if client.GroupClientKey.client_workspace_domain and client.GroupClientKey.client_workspace_domain != owner_workspace_domain \
                     and client.GroupClientKey.client_workspace_domain != adding_member_info.workspace_domain: # prevent loop call
 
                 owner_group_req = group_pb2.GroupInfo(
