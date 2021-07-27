@@ -856,7 +856,7 @@ class GroupService(BaseService):
                     adding_member_info=adding_member_info,
                     owner_group=owner_group_req
                 )
-                response = ClientGroup(client['workspace_domain']).add_member_workspace(request)
+                response = ClientGroup(client.GroupClientKey.client_workspace_domain).add_member_workspace(request)
 
         return group_pb2.BaseResponse(
             success=True
