@@ -31,7 +31,7 @@ class UserService(BaseService):
             #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
             self.model.add()
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def create_user_social(self, id, email, display_name, auth_source):
@@ -51,7 +51,7 @@ class UserService(BaseService):
             #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
             self.model.add()
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def get_google_user(self, email, auth_source):
@@ -74,7 +74,7 @@ class UserService(BaseService):
 
             return user_info.update()
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.CHANGE_PASSWORD_FAILED)
 
     def get_profile(self, user_id, hash_key):
@@ -96,7 +96,7 @@ class UserService(BaseService):
             else:
                 return None
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.GET_PROFILE_FAILED)
 
     def update_profile(self, request, user_id, hash_key):
@@ -115,7 +115,7 @@ class UserService(BaseService):
 
             return user_info.update()
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.UPDATE_PROFILE_FAILED)
 
     def get_user_info(self, client_id):
@@ -130,7 +130,7 @@ class UserService(BaseService):
             else:
                 raise Exception(Message.GET_USER_INFO_FAILED)
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.GET_USER_INFO_FAILED)
 
     def search_user(self, keyword, client_id):
@@ -149,7 +149,7 @@ class UserService(BaseService):
             )
             return response
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.SEARCH_USER_FAILED)
 
     def get_users(self, client_id):
@@ -168,7 +168,7 @@ class UserService(BaseService):
             )
             return response
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.GET_USER_INFO_FAILED)
 
     def update_last_login(self, user_id):
@@ -177,7 +177,7 @@ class UserService(BaseService):
             user_info.last_login_at = datetime.datetime.now()
             user_info.update()
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(bytes(str(e), encoding='utf-8'))
 
     def set_user_status(self, user_id, status):
         try:
@@ -185,4 +185,5 @@ class UserService(BaseService):
             user_info.status = status
             user_info.update()
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.UPDATE_USER_STATUS_FAILED)

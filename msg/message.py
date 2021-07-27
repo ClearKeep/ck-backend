@@ -23,7 +23,7 @@ class Message:
     GET_GROUP_CHAT_FAILED = 1018
     SEARCH_GROUP_CHAT_FAILED = 1019
     CLIENT_QUEUE_NOT_FOUND = 1020
-
+    
     # notify
     GET_CLIENT_NOTIFIES_FAILED = 1021
     CLIENT_READ_NOTIFY_FAILED = 1022
@@ -55,6 +55,8 @@ class Message:
 
     EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN = 1046
 
+    # change status
+    UPDATE_USER_STATUS_FAILED = 1047
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
         AUTH_USER_NOT_FOUND: "Login information is not correct. Please try again",
@@ -98,6 +100,8 @@ class Message:
         JOIN_WORKSPACE_FAILED: "Join workspace failed. Please try again",
         EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN: "The account with this email "
             "does not exist. Please try again",
+            
+        UPDATE_USER_STATUS_FAILED :"Update status failed. Please try again"
     }
 
     @staticmethod

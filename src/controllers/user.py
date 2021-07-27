@@ -156,9 +156,9 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.BaseResponse(success=True)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
+            errors = [Message.get_error_object(Message.UPDATE_USER_STATUS_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-            
+        
     
