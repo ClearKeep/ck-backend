@@ -841,8 +841,9 @@ class GroupService(BaseService):
 
         # request add member to other server
         for client in lst_client_in_group:
-            if client.GroupClientKey.client_workspace_domain != owner_workspace_domain \
+            if  client.GroupClientKey.client_workspace_domain and client.GroupClientKey.client_workspace_domain != owner_workspace_domain \
                     and client.GroupClientKey.client_workspace_domain != adding_member_info.workspace_domain: # prevent loop call
+
                 owner_group_req = group_pb2.GroupInfo(
                     group_id=group.id,
                     group_name=group.group_name,
@@ -856,6 +857,7 @@ class GroupService(BaseService):
                     adding_member_info=adding_member_info,
                     owner_group=owner_group_req
                 )
+                logger("call add member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
                 response = ClientGroup(client.GroupClientKey.client_workspace_domain).add_member_workspace(request)
 
         return group_pb2.BaseResponse(
