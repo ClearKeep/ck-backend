@@ -729,7 +729,6 @@ class GroupService(BaseService):
         owner_workspace_domain = group.owner_workspace_domain
         tmp_list_client = json.loads(group.group_clients)
 
-
         # PROCESS IN THIS SERVER
         # case new member is same server (not owner group)
         if added_member_info.workspace_domain == owner_workspace_domain:
@@ -787,7 +786,6 @@ class GroupService(BaseService):
                 notify_type="new_member",
                 data=json.dumps(data)
             )
-
         # END PROCESS IN THIS SERVER
         # CALL ADD MEMBER TO OWNER SERVER
         add_member_request = group_pb2.AddMemberRequest(
@@ -847,7 +845,6 @@ class GroupService(BaseService):
         for client in lst_client_in_group:
             if client.GroupClientKey.client_workspace_domain and client.GroupClientKey.client_workspace_domain != owner_workspace_domain \
                     and client.GroupClientKey.client_workspace_domain != adding_member_info.workspace_domain: # prevent loop call
-
                 owner_group_req = group_pb2.GroupInfo(
                     group_id=group.id,
                     group_name=group.group_name,
@@ -864,6 +861,7 @@ class GroupService(BaseService):
                 logger("call add member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
                 response = ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_add_member(request)
                 if response.is_member_workspace:
+                    logger("update ref_group to main server {}".format(response.ref_group_id))
                     group_client_key.client_workspace_group_id = response.ref_group_id
                     group_client_key.update()
 
