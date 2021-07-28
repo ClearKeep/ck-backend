@@ -726,7 +726,7 @@ class GroupService(BaseService):
     async def add_member_to_group_not_owner(self, added_member_info, adding_member_info, group):
         logger.info('add_member_to_group_not_owner')
 
-        owner_workspace_domain = group.owner_workspace_domain
+        owner_workspace_domain = get_owner_workspace_domain() #  group.owner_workspace_domain
         tmp_list_client = json.loads(group.group_clients)
 
         # PROCESS IN THIS SERVER
