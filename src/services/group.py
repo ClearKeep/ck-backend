@@ -683,7 +683,7 @@ class GroupService(BaseService):
                 member_group.updated_at = datetime.datetime.now()
                 member_group.update()
             try:
-                logger('inapp notification: services')
+                logger.info('inapp notification: services')
                 self.notify_service.notify_removing_member(
                     client['id'],
                     client['workspace_domain'],
@@ -858,10 +858,10 @@ class GroupService(BaseService):
                     adding_member_info=adding_member_info,
                     owner_group=owner_group_req
                 )
-                logger("call add member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
+                logger.info("call add member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
                 response = ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_add_member(request)
                 if response.is_member_workspace:
-                    logger("update ref_group to main server {}".format(response.ref_group_id))
+                    logger.info("update ref_group to main server {}".format(response.ref_group_id))
                     group_client_key.client_workspace_group_id = response.ref_group_id
                     group_client_key.update()
 
