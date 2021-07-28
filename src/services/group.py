@@ -772,10 +772,10 @@ class GroupService(BaseService):
                 'group_id': str(client.GroupClientKey.group_id),
                 'added_member_id': added_member_info.id,
                 'added_member_display_name': added_member_info.display_name,
-                'added_member_workspace_domain': added_member_info.owner_workspace_domain,
+                'added_member_workspace_domain': added_member_info.workspace_domain,
                 'adding_member_id': adding_member_info.id,
                 'adding_member_display_name': adding_member_info.display_name,
-                'adding_member_workspace_domain': adding_member_info.owner_workspace_domain
+                'adding_member_workspace_domain': adding_member_info.workspace_domain
             }
             logger.info(data)
             await push_service.push_text_to_client(
@@ -919,10 +919,10 @@ class GroupService(BaseService):
                 'group_id': str(client.GroupClientKey.group_id),
                 'added_member_id': added_member_info.id,
                 'added_member_display_name': added_member_info.display_name,
-                'added_member_workspace_domain': added_member_info.owner_workspace_domain,
+                'added_member_workspace_domain': added_member_info.workspace_domain,
                 'adding_member_id': adding_member_info.id,
                 'adding_member_display_name': adding_member_info.display_name,
-                'adding_member_workspace_domain': adding_member_info.owner_workspace_domain
+                'adding_member_workspace_domain': adding_member_info.workspace_domain
             }
             logger.info(data)
             await push_service.push_text_to_client(
