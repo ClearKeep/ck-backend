@@ -333,7 +333,7 @@ class GroupController(BaseController):
         try:
             added_member_info = request.added_member_info
             adding_member_info = request.adding_member_info
-            owner_group = request.group
+            owner_group = request.owner_group
 
             response = await self.service.workspace_add_member(
                 added_member_info,
