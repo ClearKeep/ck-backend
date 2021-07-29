@@ -4,7 +4,6 @@ from utils.logger import logger
 from msg.message import Message
 from datetime import datetime
 
-
 class NoteService:
 
     """Docstring for NoteService. """
@@ -23,7 +22,7 @@ class NoteService:
                 note_type=note_type,
                 created_by=user_id
             )
-            self.note.add()
+            return self.note.add()
         except Exception as e:
             logger.error(e)
             raise Exception(Message.CREATE_NOTE_FAILED)

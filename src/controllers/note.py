@@ -27,13 +27,18 @@ class NoteController(BaseController):
             )
             user_id = access_token_information['sub']
             # user_id = '081f2345-bcc8-4447-9da8-3b1e04ad6c51'
-            self.service.create_note(
+            note = self.service.create_note(
                 user_id,
                 request.title,
                 request.content,
                 request.note_type
             )
-            return note_pb2.BaseResponse(success=True)
+            return note_pb2.UserNoteResponse(
+                title=note.title,
+                content=note.content,
+                note_type=note.note_type,
+                created_at=int(note.created_at.timestamp() * 1000)
+            )
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
@@ -104,7 +109,7 @@ class NoteController(BaseController):
                 user_id
             )
             return note_pb2.GetUserNotesResponse(
-                user_notes=[note_pb2.UserNote(
+                user_notes=[note_pb2.UserNoteResponse(
                     title=note.title,
                     content=note.content,
                     note_type=note.note_type,
