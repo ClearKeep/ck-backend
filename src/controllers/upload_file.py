@@ -9,7 +9,7 @@ class UploadFileController(BaseController):
     def __init__(self, *kwargs):
         self.service = UploadFileService()
 
-    @request_logged
+    #@request_logged
     async def upload_image(self, request, context):
         try:
             file_name = request.file_name
@@ -26,7 +26,7 @@ class UploadFileController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    @request_logged
+    #@request_logged
     async def upload_file(self, request, context):
         try:
             file_name = request.file_name
@@ -42,7 +42,7 @@ class UploadFileController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    @request_logged
+    #@request_logged
     async def upload_chunked_file(self, request_iterator, context):
         try:
             obj_res = await self.service.upload_chunked_file(request_iterator)
