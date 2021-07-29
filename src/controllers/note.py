@@ -106,7 +106,9 @@ class NoteController(BaseController):
             return note_pb2.GetUserNotesResponse(
                 user_notes=[note_pb2.UserNote(
                     title=note.title,
-                    content=note.content
+                    content=note.content,
+                    note_type=note.note_type,
+                    created_at=int(note.created_at.timestamp() * 1000)
                 ) for note in user_notes],
                 base_response=note_pb2.BaseResponse(success=True)
             )

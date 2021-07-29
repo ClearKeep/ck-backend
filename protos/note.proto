@@ -35,7 +35,13 @@ message Empty {}
 message UserNote {
   string title = 1;
   bytes content = 2;
+  string note_type = 3;
+  int64 created_at = 4;
 }
+
+message GetUserNotesRequest {
+}
+
 
 message GetUserNotesResponse {
   repeated UserNote user_notes = 1;
@@ -47,5 +53,5 @@ service Note {
   rpc create_note (CreateNoteRequest) returns (BaseResponse);
   rpc edit_note (EditNoteRequest) returns (BaseResponse);
   rpc delete_note (DeleteNoteRequest) returns (BaseResponse);
-  rpc get_user_notes (Empty) returns (GetUserNotesResponse);
+  rpc get_user_notes (GetUserNotesRequest) returns (GetUserNotesResponse);
 }
