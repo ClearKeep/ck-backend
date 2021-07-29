@@ -33,8 +33,10 @@ class MessageController(BaseController):
             if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
                 request.group_id = group.owner_group_id
                 lst_message = ClientMessage(group.owner_workspace_domain).get_messages_in_group(request)
-                logger.info(lst_message)
                 if lst_message:
+                    for obj in lst_message:
+                        obj.group_id = group_id
+                        obj.client_workspace_domain = owner_workspace_domain
                     return lst_message
                 else:
                     raise

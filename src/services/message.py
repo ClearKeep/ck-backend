@@ -9,7 +9,6 @@ from queue import Queue
 import uuid
 import asyncio
 from utils.config import *
-from utils.logger import *
 
 client_message_queue = {}
 
@@ -123,7 +122,6 @@ class MessageService(BaseService):
 
             lst_obj_res.append(obj_res)
 
-        logger.info(lst_obj_res)
         response = message_pb2.GetMessagesInGroupResponse(
             lst_message=lst_obj_res
         )
