@@ -63,12 +63,19 @@ class Message:
     EDIT_NOTE_FAILED = 1053
     DELETE_NOTE_FAILED = 1054
     GET_USER_NOTES_FAILED = 1055
-    USER_NOT_IN_GROUP = 1056
-    REMOVE_MEMBER_FAILED = 1057
-    LEAVE_GROUP_FAILED = 1058
-    ADDED_USER_IS_MEMBER = 1059
 
-    LEAVE_WORKSPACE_FAILED = 1060
+    # add member to group
+    ADDER_MEMBER_NOT_IN_GROUP = 1056
+    ADDED_USER_IS_ALREADY_MEMBER = 1057
+    # leave group
+    LEAVED_MEMBER_NOT_IN_GROUP = 1058
+    LEAVE_GROUP_FAILED = 1059
+    # remove member
+    REMOVED_MEMBER_NOT_IN_GROUP = 1060
+    REMOVER_MEMBER_NOT_IN_GROUP = 1061
+    REMOVE_MEMBER_GROUP_FAILED = 1062
+    # leave workspace
+    LEAVE_WORKSPACE_FAILED = 1063
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -122,11 +129,18 @@ class Message:
         EDIT_NOTE_FAILED: "Edit Note failed. Please try again",
         DELETE_NOTE_FAILED: "Delete Note failed. Please try again",
         GET_USER_NOTES_FAILED: "Get User Notes failed. Please try again",
-        USER_NOT_IN_GROUP: "User is not in the group. Please try again",
-        REMOVE_MEMBER_FAILED: "Remove Member failed. Please try again",
-        LEAVE_GROUP_FAILED: "Leave Group failed. Please try again",
-        ADDED_USER_IS_MEMBER: "Added user is already a member of the group. \
-            Please try again",
+
+        ADDER_MEMBER_NOT_IN_GROUP: "User is not in the group. Please try again",
+        ADDED_USER_IS_ALREADY_MEMBER: "Added user is already a member of the group. \
+                Please try again",
+
+        LEAVED_MEMBER_NOT_IN_GROUP: "Leave member is not in group. Please check again",
+        LEAVE_GROUP_FAILED: "Leave group failed. Please try again",
+
+        REMOVED_MEMBER_NOT_IN_GROUP: "Removed member is not in group. Please check again",
+        REMOVER_MEMBER_NOT_IN_GROUP: "Remover member is not in group. Please check again",
+        REMOVE_MEMBER_GROUP_FAILED: "Remover member group failed. Please try again",
+
         LEAVE_WORKSPACE_FAILED: "Leave Workspace failed. Please try again",
     }
 

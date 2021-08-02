@@ -44,17 +44,17 @@ class ClientGroup:
             logger.error(e)
             return None
 
-    def remove_member(self, request):
+    def leave_group(self, request):
         try:
-            response = self.stub.remove_member(request)
+            response = self.stub.leave_group(request)
             return response
         except Exception as e:
             logger.error(e)
             return None
 
-    def remove_member_workspace(self, request):
+    def workspace_leave_group(self, request):
         try:
-            response = self.stub.remove_member_workspace(request)
+            response = self.stub.workspace_leave_group(request)
             return response
         except Exception as e:
             logger.error(e)

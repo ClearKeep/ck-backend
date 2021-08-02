@@ -50,24 +50,19 @@ class GroupStub(object):
                 request_serializer=protos_dot_group__pb2.AddMemberRequest.SerializeToString,
                 response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
                 )
-        self.remove_member = channel.unary_unary(
-                '/group.Group/remove_member',
-                request_serializer=protos_dot_group__pb2.RemoveMemberRequest.SerializeToString,
-                response_deserializer=protos_dot_group__pb2.GroupObjectResponse2.FromString,
-                )
         self.leave_group = channel.unary_unary(
                 '/group.Group/leave_group',
                 request_serializer=protos_dot_group__pb2.LeaveGroupRequest.SerializeToString,
-                response_deserializer=protos_dot_group__pb2.GroupObjectResponse2.FromString,
+                response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
                 )
         self.workspace_add_member = channel.unary_unary(
                 '/group.Group/workspace_add_member',
                 request_serializer=protos_dot_group__pb2.AddMemberWorkspaceRequest.SerializeToString,
                 response_deserializer=protos_dot_group__pb2.AddMemberWorkspaceResponse.FromString,
                 )
-        self.remove_member_workspace = channel.unary_unary(
-                '/group.Group/remove_member_workspace',
-                request_serializer=protos_dot_group__pb2.RemoveMemberWorkspaceRequest.SerializeToString,
+        self.workspace_leave_group = channel.unary_unary(
+                '/group.Group/workspace_leave_group',
+                request_serializer=protos_dot_group__pb2.WorkspaceLeaveGroupRequest.SerializeToString,
                 response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
                 )
 
@@ -118,12 +113,6 @@ class GroupServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def remove_member(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def leave_group(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -137,7 +126,7 @@ class GroupServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def remove_member_workspace(self, request, context):
+    def workspace_leave_group(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -181,24 +170,19 @@ def add_GroupServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_group__pb2.AddMemberRequest.FromString,
                     response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
             ),
-            'remove_member': grpc.unary_unary_rpc_method_handler(
-                    servicer.remove_member,
-                    request_deserializer=protos_dot_group__pb2.RemoveMemberRequest.FromString,
-                    response_serializer=protos_dot_group__pb2.GroupObjectResponse2.SerializeToString,
-            ),
             'leave_group': grpc.unary_unary_rpc_method_handler(
                     servicer.leave_group,
                     request_deserializer=protos_dot_group__pb2.LeaveGroupRequest.FromString,
-                    response_serializer=protos_dot_group__pb2.GroupObjectResponse2.SerializeToString,
+                    response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
             ),
             'workspace_add_member': grpc.unary_unary_rpc_method_handler(
                     servicer.workspace_add_member,
                     request_deserializer=protos_dot_group__pb2.AddMemberWorkspaceRequest.FromString,
                     response_serializer=protos_dot_group__pb2.AddMemberWorkspaceResponse.SerializeToString,
             ),
-            'remove_member_workspace': grpc.unary_unary_rpc_method_handler(
-                    servicer.remove_member_workspace,
-                    request_deserializer=protos_dot_group__pb2.RemoveMemberWorkspaceRequest.FromString,
+            'workspace_leave_group': grpc.unary_unary_rpc_method_handler(
+                    servicer.workspace_leave_group,
+                    request_deserializer=protos_dot_group__pb2.WorkspaceLeaveGroupRequest.FromString,
                     response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
             ),
     }
@@ -332,23 +316,6 @@ class Group(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def remove_member(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/group.Group/remove_member',
-            protos_dot_group__pb2.RemoveMemberRequest.SerializeToString,
-            protos_dot_group__pb2.GroupObjectResponse2.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
     def leave_group(request,
             target,
             options=(),
@@ -361,7 +328,7 @@ class Group(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/group.Group/leave_group',
             protos_dot_group__pb2.LeaveGroupRequest.SerializeToString,
-            protos_dot_group__pb2.GroupObjectResponse2.FromString,
+            protos_dot_group__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -383,7 +350,7 @@ class Group(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def remove_member_workspace(request,
+    def workspace_leave_group(request,
             target,
             options=(),
             channel_credentials=None,
@@ -393,8 +360,8 @@ class Group(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/group.Group/remove_member_workspace',
-            protos_dot_group__pb2.RemoveMemberWorkspaceRequest.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/group.Group/workspace_leave_group',
+            protos_dot_group__pb2.WorkspaceLeaveGroupRequest.SerializeToString,
             protos_dot_group__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

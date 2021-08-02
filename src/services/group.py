@@ -48,7 +48,9 @@ class GroupService(BaseService):
         for obj in lst_client:
             if obj.id == created_by:
                 created_by_user = obj
-            tmp_list_client.append({"id": obj.id, "display_name": obj.display_name, "workspace_domain": obj.workspace_domain, "status": "active"})
+            tmp_list_client.append(
+                {"id": obj.id, "display_name": obj.display_name, "workspace_domain": obj.workspace_domain,
+                 "status": "active"})
 
         self.model = GroupChat(
             group_name=group_name,
@@ -119,7 +121,7 @@ class GroupService(BaseService):
                     owner_workspace_domain=owner_workspace_domain
                 )
 
-                group_res_object =\
+                group_res_object = \
                     ClientGroup(obj.workspace_domain).create_group_workspace(
                         request
                     )
@@ -148,7 +150,8 @@ class GroupService(BaseService):
         #         res_obj.lst_client.append(client_in)
         return res_obj
 
-    def add_group_workspace(self, group_name, group_type, from_client_id, client_id, lst_client, owner_group_id, owner_workspace_domain):
+    def add_group_workspace(self, group_name, group_type, from_client_id, client_id, lst_client, owner_group_id,
+                            owner_workspace_domain):
         self.model = GroupChat(
             group_name=group_name,
             group_type=group_type,
@@ -173,12 +176,13 @@ class GroupService(BaseService):
             if obj['id'] == from_client_id:
                 created_by_user = obj
 
-
         # notify to client
         if group_type == "peer":
-            self.notify_service.notify_invite_peer(client_id, from_client_id, new_group.id, owner_workspace_domain, created_by_user['display_name'])
+            self.notify_service.notify_invite_peer(client_id, from_client_id, new_group.id, owner_workspace_domain,
+                                                   created_by_user['display_name'])
         else:
-            self.notify_service.notify_invite_group(client_id,from_client_id, new_group.id, owner_workspace_domain, created_by_user['display_name'])
+            self.notify_service.notify_invite_group(client_id, from_client_id, new_group.id, owner_workspace_domain,
+                                                    created_by_user['display_name'])
 
         client_workspace_domain = get_owner_workspace_domain()
         return group_pb2.CreateGroupWorkspaceResponse(
@@ -477,256 +481,10 @@ class GroupService(BaseService):
         group_ids = (group.id for group in lst_group)
         return GroupClientKey().get_clients_in_groups(group_ids)
 
-    async def remove_member_from_group_not_owner(
-            self,
-            removed_member_info,
-            removing_member_info,
-            group,
-            group_clients_after_removal,
-            workspace_domains):
-        """docstring for remove_member_from_group_not_owner"""
-        logger.info('remove_member_from_group_not_owner')
-        assert len(json.loads(group.group_clients)) > 1
-        owner_workspace_domain = group.owner_workspace_domain
-        current_workspace_domain = get_owner_workspace_domain()
-        # update_this_server_first = (
-        #     current_workspace_domain == removed_member_info['workspace_domain']
-        # )
-        # if update_this_server_first:
-        #     remove_member_workspace(
-        #         from_workspace_domain=current_workspace_domain,
-        #         owner_workspace_domain=owner_workspace_domain,
-        #         removed_member_info=removed_member_info,
-        #         removing_member_info=removing_member_info,
-        #         group=group,
-        #         group_clients_after_removal=group_clients_after_removal
-        #     )
-        request = group_pb2.RemoveMemberRequest(
-            removed_member_info=self.dict_to_message(removed_member_info),
-            removing_member_info=self.dict_to_message(removing_member_info),
-            group_id=group.owner_group_id
-        )
-        response =\
-            ClientGroup(
-                owner_workspace_domain
-            ).remove_member(
-                request
-            )
-        # update the information in this auxil server based on the response
-        await self.remove_member_workspace(
-            from_workspace_domain=current_workspace_domain,
-            owner_workspace_domain=owner_workspace_domain,
-            removed_member_info=removed_member_info,
-            removing_member_info=removing_member_info,
-            group=group,
-            group_clients_after_removal=group_clients_after_removal
-        )
-        response.group_id = group.id
-        return response
-
-    async def remove_member_from_group_owner(
-            self,
-            removed_member_info,
-            removing_member_info,
-            group,
-            group_clients_after_removal,
-            workspace_domains):
-        """docstring for remove_member_from_group_owner"""
-        logger.info('remove_member_from_group_owner')
-        assert len(json.loads(group.group_clients)) >= 1
-        owner_workspace_domain = get_owner_workspace_domain()
-        # update information in the server of the removed member first
-        workspace_domains.remove(removed_member_info['workspace_domain'])
-        workspace_domains.insert(0, removed_member_info['workspace_domain'])
-        for workspace_domain in workspace_domains:
-            if workspace_domain == owner_workspace_domain:
-                continue
-            elif workspace_domain == removing_member_info['workspace_domain']:
-                continue
-            request = group_pb2.RemoveMemberWorkspaceRequest(
-                from_workspace_domain=get_owner_workspace_domain(),
-                owner_workspace_domain=owner_workspace_domain,
-                removed_member_info=self.dict_to_message(removed_member_info),
-                removing_member_info=self.dict_to_message(removing_member_info),
-                owner_group_id=group.id,
-                group_clients_after_removal=[
-                    self.dict_to_message(e) for e in group_clients_after_removal
-                ]
-            )
-            response =\
-                ClientGroup(
-                    workspace_domain
-                ).remove_member_workspace(
-                    request
-                )
-            if workspace_domain == removed_member_info['workspace_domain']:
-                # keep the response if it is from workspace domain of the
-                # removed member
-                kept_response = response
-            else:
-                # use kept response to update information in the main server
-                # and the other remaining servers
-                pass
-        await self.remove_member_workspace(
-            from_workspace_domain=get_owner_workspace_domain(),
-            owner_workspace_domain=owner_workspace_domain,
-            removed_member_info=removed_member_info,
-            removing_member_info=removing_member_info,
-            group=group,
-            group_clients_after_removal=group_clients_after_removal
-        )
-        last_message = None if group.last_message_id is None\
-            else MessageClass().get(message_id=group.last_message_id)
-        return group_pb2.GroupObjectResponse2(
-            group_id=group.id,
-            group_name=group.group_name,
-            group_avatar=group.group_avatar,
-            group_type=group.group_type,
-            lst_client=[
-                self.dict_to_message(e)
-                for e in group_clients_after_removal
-            ],
-            last_message_at=None if group.last_message_at is None\
-                else int(group.last_message_at.timestamp() * 1000),
-            last_message=None if last_message is None\
-            else group_pb2.MessageObjectResponse(
-                id=last_message.id,
-                group_id=last_message.group_id,
-                group_type=group.group_type,
-                from_client_id=last_message.from_client_id,
-                client_id=last_message.client_id,
-                message=last_message.message,
-                created_at=None if last_message.created_at is None\
-                    else int(last_message.created_at.timestamp() * 1000),
-                updated_at=None if last_message.updated_at is None\
-                    else int(last_message.updated_at.timestamp() * 1000),
-            ),
-            created_by_client_id=group.created_by,
-            updated_by_client_id=group.updated_by,
-            created_at=None if group.created_at is None\
-                else int(group.created_at.timestamp() * 1000),
-            updated_at=None if group.updated_at is None\
-                else int(group.updated_at.timestamp() * 1000),
-            group_rtc_token=group.group_rtc_token
-        )
-
-    async def remove_member_workspace(
-            self,
-            from_workspace_domain,
-            owner_workspace_domain,
-            removed_member_info,
-            removing_member_info,
-            group,
-            group_clients_after_removal):
-        logger.info('remove_member_workspace')
-        current_workspace_domain = get_owner_workspace_domain()
-        current_group_clients = json.loads(group.group_clients)
-        active_clients =\
-            [e for e in current_group_clients
-             if 'status' not in e or e['status'] in ['active']]
-        is_owner = (current_workspace_domain == owner_workspace_domain)
-        if is_owner:
-            # if group.group_type == 'group':
-            get_client_key = GroupClientKey().get
-            # elif group.group_type == 'peer':
-            #     get_client_key = PeerClientKey().get
-            # else:
-            #     raise ValueError
-        else:
-            # if group.group_type == 'group':
-            get_client_key = GroupChat().get_client_key_by_owner_group
-            # elif group.group_type == 'peer':
-            #     get_client_key = GroupChat().get_client_key_by_owner_peer
-            # else:
-            #     raise ValueError
-        for client in active_clients:
-            if client['workspace_domain'] != current_workspace_domain:
-                if not is_owner:
-                    continue
-                else:
-                    if client['id'] != removed_member_info['id']:
-                        continue
-            client_key = get_client_key(
-                group.id if is_owner else group.owner_group_id,
-                client['id']
-            )
-            member_group = GroupChat().get_group(client_key.group_id)
-            if (client['id'] == removed_member_info['id']):
-                client_key.delete()
-                removed_member_info['group'] = member_group
-                if is_owner:
-                    if len(active_clients) == 1:
-                        member_group.delete()
-                    elif len(active_clients) > 1:
-                        member_group.group_clients =\
-                            json.dumps(group_clients_after_removal)
-                        member_group.total_member =\
-                            len(active_clients) - 1
-                        member_group.updated_by = removing_member_info['id']
-                        member_group.updated_at = datetime.datetime.now()
-                        member_group.update()
-                    else:
-                        raise ValueError
-                else:
-                    member_group.delete()
-                    # member_group.group_clients =\
-                    #     json.dumps(group_clients_after_removal)
-                    # member_group.total_member = len(group_clients_after_removal)
-                    # member_group.updated_by = removing_member_info['id']
-                    # member_group.updated_at = datetime.datetime.now()
-                    # member_group.update()
-            elif not is_owner:
-                member_group.group_clients =\
-                    json.dumps(group_clients_after_removal)
-                member_group.total_member = len(active_clients) - 1
-                member_group.updated_by = removing_member_info['id']
-                member_group.updated_at = datetime.datetime.now()
-                member_group.update()
-            try:
-                logger.info('inapp notification: services')
-                self.notify_service.notify_removing_member(
-                    client['id'],
-                    client['workspace_domain'],
-                    removed_member_info['id'],
-                    removed_member_info['workspace_domain'],
-                    member_group.id,
-                    removed_member_info['display_name'],
-                    notify_inapp.MEMBER_REMOVAL\
-                    if removed_member_info['id'] != removing_member_info['id']\
-                    else notify_inapp.MEMBER_LEAVE
-                )
-            except Exception as e:
-                logger.info('Inapp notification is not working now')
-                push_service = NotifyPushService()
-                data = {
-                    'nclient_id': client['id'],
-                    'nclient_workspace_domain': client['workspace_domain'],
-                    'group_id': str(member_group.id),
-                    'removed_member_id': removed_member_info['id'],
-                    'removed_member_workspace_domain': removed_member_info['workspace_domain'],
-                    'removing_member_id': removing_member_info['id'],
-                    'removing_member_workspace_domain': removing_member_info['workspace_domain']
-                }
-                logger.info(data)
-                await push_service.push_text_to_client(
-                    client['id'],
-                    title="Member Removal (Leave)",
-                    body="A user removed (left) to the group",
-                    from_client_id=removing_member_info['id'],
-                    notify_type="old_member",
-                    data=json.dumps(data)
-                )
-        if from_workspace_domain == current_workspace_domain:
-            # return results to current server
-            return True
-        else:
-            # return gRPC response message to requesting server
-            return group_pb2.BaseResponse(success=True)
-
     async def add_member_to_group_not_owner(self, added_member_info, adding_member_info, group):
         logger.info('add_member_to_group_not_owner')
 
-        owner_workspace_domain = get_owner_workspace_domain() #  group.owner_workspace_domain
+        owner_workspace_domain = get_owner_workspace_domain()
         tmp_list_client = json.loads(group.group_clients)
 
         # PROCESS IN THIS SERVER
@@ -845,7 +603,7 @@ class GroupService(BaseService):
         informed_workspace_domain = []
         for client in lst_client_in_group:
             if client.GroupClientKey.client_workspace_domain and client.GroupClientKey.client_workspace_domain != owner_workspace_domain \
-                    and client.GroupClientKey.client_workspace_domain != adding_member_info.workspace_domain: # prevent loop call
+                    and client.GroupClientKey.client_workspace_domain != adding_member_info.workspace_domain:  # prevent loop call
 
                 if client.GroupClientKey.client_workspace_domain in informed_workspace_domain:
                     continue
@@ -864,7 +622,8 @@ class GroupService(BaseService):
                     adding_member_info=adding_member_info,
                     owner_group=owner_group_req
                 )
-                logger.info("call add member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
+                logger.info(
+                    "call add member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
                 response = ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_add_member(request)
                 if response.is_member_workspace:
                     logger.info("update ref_group to main server {}".format(response.ref_group_id))
@@ -945,11 +704,180 @@ class GroupService(BaseService):
             ref_group_id=ref_group_id
         )
 
-    def dict_to_message(self, d):
-        m = group_pb2.MemberInfo(
-            id=d['id'],
-            display_name=d['display_name'],
-            workspace_domain=d['workspace_domain'],
-            status=None if 'status' not in d else d['status']
+    async def leave_group_owner(self, leave_member, leave_member_by, group):
+        logger.info('leave_group_owner')
+        owner_workspace_domain = get_owner_workspace_domain()
+
+        # delete group client key and inform member in this server
+        push_service = NotifyPushService()
+        lst_client_in_group = self.get_clients_in_group(group.id)
+
+        for client in lst_client_in_group:
+            if client.GroupClientKey.client_id == leave_member.id:
+                client.GroupClientKey.delete()
+            if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+                if client.GroupClientKey.client_id != leave_member_by.id:
+                    data = {
+                        'client_id': client.GroupClientKey.client_id,
+                        'client_workspace_domain': owner_workspace_domain,
+                        'group_id': str(group.id),
+                        'leave_member': leave_member.id,
+                        'leave_member_display_name': leave_member.display_name,
+                        'leave_member_workspace_domain': leave_member.workspace_domain,
+                        'leave_member_by': leave_member_by.id,
+                        'leave_member_by_display_name': leave_member_by.display_name,
+                        'leave_member_by_workspace_domain': leave_member_by.workspace_domain
+                    }
+                    logger.info(data)
+                    await push_service.push_text_to_client(
+                        to_client_id=client.GroupClientKey.client_id,
+                        title="Member leave",
+                        body="user leave group",
+                        from_client_id=leave_member_by.id,
+                        notify_type="member_leave",
+                        data=json.dumps(data)
+                    )
+        # call workspace leave for other server
+        informed_workspace_domain = []
+        for client in lst_client_in_group:
+            if client.GroupClientKey.client_workspace_domain and client.GroupClientKey.client_workspace_domain != owner_workspace_domain \
+                    and client.GroupClientKey.client_workspace_domain != leave_member_by.workspace_domain:  # prevent loop call
+
+                if client.GroupClientKey.client_workspace_domain in informed_workspace_domain:
+                    continue
+                informed_workspace_domain.append(client.GroupClientKey.client_workspace_domain)
+
+                owner_group_req = group_pb2.GroupInfo(
+                    group_id=client.GroupClientKey.group_id,
+                    group_name=group.group_name,
+                    group_type=group.group_type,
+                    group_clients=group.group_clients,
+                    group_workspace_domain=owner_workspace_domain,
+                    created_by=group.created_by,
+                )
+                request = group_pb2.WorkspaceLeaveGroupRequest(
+                    leave_member=leave_member,
+                    leave_member_by=leave_member,
+                    owner_group=owner_group_req
+                )
+                logger.info(
+                    "call add member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
+                ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_leave_group(request)
+
+        return group_pb2.BaseResponse(
+            success=True
         )
-        return m
+
+    async def leave_group_not_owner(self, leave_member, leave_member_by, group):
+        logger.info('leave_group_not_owner')
+        owner_workspace_domain = get_owner_workspace_domain()
+        tmp_list_client = json.loads(group.group_clients)
+        # PROCESS IN THIS SERVER
+        # case new member is same server (not owner group)
+        if leave_member.workspace_domain == owner_workspace_domain:
+            # remove group client add more group client key
+            group_client_key = GroupClientKey().get(group.id, leave_member.id)
+            if group_client_key:
+                group_client_key.delete()
+            # remove group with owner group
+            group.delete()
+
+        # update all group with owner group
+        lst_group = self.model.get_by_group_owner(group.owner_group_id)
+        for group in lst_group:
+            group.group_clients = group.group_clients
+            group.total_member = len(tmp_list_client)
+            group.update()
+
+        # push notification for member active
+        group_ids = (group.id for group in lst_group)
+        list_clients = GroupClientKey().get_clients_in_groups(group_ids)
+        push_service = NotifyPushService()
+
+        for client in list_clients:
+            data = {
+                'client_id': client.GroupClientKey.client_id,
+                'client_workspace_domain': owner_workspace_domain,
+                'group_id': str(group.id),
+                'leave_member': leave_member.id,
+                'leave_member_display_name': leave_member.display_name,
+                'leave_member_workspace_domain': leave_member.workspace_domain,
+                'leave_member_by': leave_member_by.id,
+                'leave_member_by_display_name': leave_member_by.display_name,
+                'leave_member_by_workspace_domain': leave_member_by.workspace_domain
+            }
+            logger.info(data)
+            await push_service.push_text_to_client(
+                to_client_id=client.GroupClientKey.client_id,
+                title="Member leave",
+                body="user leave group",
+                from_client_id=leave_member_by.id,
+                notify_type="member_leave",
+                data=json.dumps(data)
+            )
+        # END PROCESS IN THIS SERVER
+        # CALL LEAVE MEMBER TO OWNER SERVER
+        leave_group_request = group_pb2.LeaveGroupRequest(
+            leave_member=leave_member,
+            leave_member_by=leave_member_by,
+            group_id=group.owner_group_id,
+        )
+        ClientGroup(group.owner_workspace_domain).leave_group(leave_group_request)
+        return group_pb2.BaseResponse(
+            success=True
+        )
+
+    async def workspace_leave_group(self, leave_member, leave_member_by, group):
+        logger.info('workspace_leave_group')
+
+        owner_workspace_domain = get_owner_workspace_domain()
+        tmp_list_client = json.loads(group.group_clients)
+
+        # delete removed member group
+        owner_group_id = None
+        if leave_member.workspace_domain == owner_workspace_domain:
+            # remove group client add more group client key
+            group_client_key = GroupClientKey().get(group.id, leave_member.id)
+            if group_client_key:
+                group_client_key.delete()
+            # remove group with owner group
+            leave_member_group = self.get_group_info(group.id)
+
+            if leave_member_group:
+                owner_group_id = leave_member_group.owner_group_id
+                leave_member_group.delete()
+
+        # update all group with owner group
+        lst_group = self.model.get_by_group_owner(owner_group_id)
+        for group in lst_group:
+            group.group_clients = group.group_clients
+            group.total_member = len(tmp_list_client)
+            group.update()
+
+        # push notification for member active
+        group_ids = (group.id for group in lst_group)
+        list_clients = GroupClientKey().get_clients_in_groups(group_ids)
+        push_service = NotifyPushService()
+
+        for client in list_clients:
+            data = {
+                'client_id': client.GroupClientKey.client_id,
+                'client_workspace_domain': owner_workspace_domain,
+                'group_id': str(client.GroupClientKey.group_id),
+                'leave_member': leave_member.id,
+                'leave_member_display_name': leave_member.display_name,
+                'leave_member_workspace_domain': leave_member.workspace_domain,
+                'leave_member_by': leave_member_by.id,
+                'leave_member_by_display_name': leave_member_by.display_name,
+                'leave_member_by_workspace_domain': leave_member_by.workspace_domain
+            }
+            logger.info(data)
+            await push_service.push_text_to_client(
+                to_client_id=client.GroupClientKey.client_id,
+                title="Member leave",
+                body="user leave group",
+                from_client_id=leave_member_by.id,
+                notify_type="member_leave",
+                data=json.dumps(data)
+            )
+        return group_pb2.BaseResponse(success=True)

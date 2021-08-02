@@ -123,133 +123,6 @@ class GroupController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    @request_logged
-    async def remove_member(self, request, context):
-        try:
-            removed_member_info =\
-                MessageToDict(
-                    message=request.removed_member_info,
-                    preserving_proto_field_name=True
-                )
-            removing_member_info =\
-                MessageToDict(
-                    message=request.removing_member_info,
-                    preserving_proto_field_name=True
-                )
-            group = GroupService().get_group_info(request.group_id)
-            current_group_clients = json.loads(group.group_clients)
-            workspace_domains = list(set(
-                [e['workspace_domain'] for e in current_group_clients
-                 if ('status' not in e or
-                     ('status' in e and e['status'] in ['active']))]
-            ))
-            logger.info(current_group_clients)
-            logger.info(removed_member_info)
-            logger.info(removing_member_info)
-            for e in current_group_clients:
-                logger.info(e)
-                if ((e['id'] in [removed_member_info['id'],
-                                 removing_member_info['id']]) and
-                        ('status' in e and e['status'] in ['removed', 'left'])):
-                    logger.info('Not in group 1')
-                    raise Exception(Message.USER_NOT_IN_GROUP)
-            if all([e['id'] != removed_member_info['id']
-                    for e in current_group_clients]):
-                logger.info('Not in group 2')
-                raise Exception(Message.USER_NOT_IN_GROUP)
-            else:
-                group_clients_after_removal = []
-                for e in current_group_clients:
-                    if e['id'] == removed_member_info['id']:
-                        if (removed_member_info['id'] ==
-                                removing_member_info['id']):
-                            e['status'] = 'left'
-                        else:
-                            e['status'] = 'removed'
-                    group_clients_after_removal.append(e)
-
-            if (group.owner_workspace_domain and
-                    group.owner_workspace_domain !=
-                    removing_member_info['workspace_domain']):
-                res_obj = await self.service.remove_member_from_group_not_owner(
-                    removed_member_info,
-                    removing_member_info,
-                    group,
-                    group_clients_after_removal,
-                    workspace_domains
-                )
-                return res_obj
-            else:
-                res_obj = await self.service.remove_member_from_group_owner(
-                    removed_member_info,
-                    removing_member_info,
-                    group,
-                    group_clients_after_removal,
-                    workspace_domains
-                )
-                return res_obj
-        except Exception as e:
-            logger.error(e)
-            errors = [
-                e,
-                Message.get_error_object(Message.REMOVE_MEMBER_FAILED)
-            ]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
-
-    @request_logged
-    async def remove_member_workspace(self, request, context):
-        try:
-            groups = GroupChat().get_by_group_owner(request.owner_group_id)
-            response = await self.service.remove_member_workspace(
-                from_workspace_domain=request.from_workspace_domain,
-                owner_workspace_domain=request.owner_workspace_domain,
-                removed_member_info=MessageToDict(
-                    request.removed_member_info,
-                    preserving_proto_field_name=True
-                ),
-                removing_member_info=MessageToDict(
-                    request.removing_member_info,
-                    preserving_proto_field_name=True
-                ),
-                group=groups[0],  # arbitrary auxiliary group
-                group_clients_after_removal=[
-                    MessageToDict(e,
-                                  preserving_proto_field_name=True)
-                    for e in request.group_clients_after_removal
-                ]
-            )
-            return response
-        except Exception as e:
-            logger.error(e)
-            errors = [
-                e,
-                Message.get_error_object(Message.REMOVE_MEMBER_FAILED)
-            ]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
-
-    @request_logged
-    async def leave_group(self, request, context):
-        try:
-            request = group_pb2.RemoveMemberRequest(
-                removed_member_info=request.member_info,
-                removing_member_info=request.member_info,
-                group_id=request.group_id
-            )
-            response = await self.remove_member(request, context)
-            return response
-        except Exception as e:
-            logger.error(e)
-            errors = [
-                e,
-                Message.get_error_object(Message.LEAVE_GROUP_FAILED)
-            ]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
     async def add_member(self, request, context):
@@ -272,11 +145,11 @@ class GroupController(BaseController):
             for e in group_clients:
                 if 'status' not in e or e['status'] in ['active']:
                     if e['id'] == added_member_info.id:
-                        raise Exception(Message.ADDED_USER_IS_MEMBER)
+                        raise Exception(Message.ADDED_USER_IS_ALREADY_MEMBER)
                     if e['id'] == adding_member_info.id:
                         adding_member_in_group = True
             if not adding_member_in_group:
-                raise Exception(Message.USER_NOT_IN_GROUP)
+                raise Exception(Message.ADDER_MEMBER_NOT_IN_GROUP)
 
             # new group clients
             new_group_clients = []
@@ -338,6 +211,87 @@ class GroupController(BaseController):
             response = await self.service.workspace_add_member(
                 added_member_info,
                 adding_member_info,
+                owner_group
+            )
+            return response
+        except Exception as e:
+            logger.error(e)
+            errors = [
+                e,
+                Message.get_error_object(Message.ADD_MEMBER_FAILED)
+            ]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def leave_group(self, request, context):
+        try:
+            leave_member = request.leave_member
+            leave_member_by = request.leave_member_by
+
+            new_member_status = "removed"
+            if leave_member.id == leave_member_by.id:
+                new_member_status = "leaved"
+
+            group = GroupService().get_group_info(request.group_id)
+            group_clients = json.loads(group.group_clients)
+
+            leave_member_in_group = False
+            leave_member_by_in_group = False
+            for e in group_clients:
+                if e['id'] == leave_member.id:
+                    leave_member_in_group = True
+                    e['status'] = new_member_status
+                if e['id'] == leave_member_by.id:
+                    leave_member_by_in_group = True
+            if not leave_member_in_group:
+                raise Exception(Message.LEAVED_MEMBER_NOT_IN_GROUP)
+            if not leave_member_by_in_group and new_member_status == "removed":
+                raise Exception(Message.REMOVER_MEMBER_NOT_IN_GROUP)
+
+            # update field group_clients first
+            logger.info("New group client: {}".format(group_clients))
+            group.group_clients = json.dumps(group_clients)
+            group.updated_by = leave_member_by.id
+            group.update()
+
+            owner_workspace_domain = get_owner_workspace_domain()
+
+            if (group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain):
+                response = await self.service.leave_group_not_owner(
+                    leave_member,
+                    leave_member_by,
+                    group,
+                )
+                return response
+            else:
+                response = await self.service.leave_group_owner(
+                    leave_member,
+                    leave_member_by,
+                    group,
+                )
+                return response
+        except Exception as e:
+            logger.error(e)
+            errors = [
+                e,
+                Message.get_error_object(Message.LEAVE_GROUP_FAILED)
+            ]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def workspace_leave_group(self, request, context):
+        try:
+            leave_member = request.leave_member
+            leave_member_by = request.leave_member_by
+            owner_group = request.owner_group
+
+            response = await self.service.workspace_leave_group(
+                leave_member,
+                leave_member_by,
                 owner_group
             )
             return response
