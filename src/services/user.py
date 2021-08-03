@@ -7,7 +7,9 @@ from utils.config import get_system_domain
 from utils.logger import *
 from msg.message import Message
 import datetime
-
+from utils.config import get_system_domain, get_system_config
+from utils.memory_storages import client_records_list_in_memory
+from client.client_user import ClientUser
 
 class UserService(BaseService):
     def __init__(self):
@@ -180,3 +182,133 @@ class UserService(BaseService):
             user_info.update()
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
+
+    def set_user_status(self, client_id, status):
+        try:
+            user_info = self.model.get(client_id)
+            user_info.status = status
+            user_info.update()
+            client_record = client_records_list_in_memory.get(str(client_id), None)
+            client_record["user_status"] = status
+        except Exception as e:
+            logger.error(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.UPDATE_USER_STATUS_FAILED)
+
+    def update_client_record(self, client_id):
+        print("update_client_record api - ping & pong server")
+        try:
+            client_record = client_records_list_in_memory.get(str(client_id), None)
+            if client_record is None:
+                client_records_list_in_memory.update({
+                    str(client_id):{
+                     "last_active" : datetime.datetime.now(),
+                     "prev_active" : None,
+                     "user_status" : None,
+                        }
+                    })
+            else:
+                client_record["prev_active"] = client_record["last_active"]
+                client_record["last_active"] = datetime.datetime.now()
+            print("client_record", client_records_list_in_memory)
+        except Exception as e:
+            logger.error(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.PING_PONG_SERVER_FAILED)
+
+        
+    def get_list_client_status(self, list_clients):
+        print ("get_list_client_status")
+        try:
+            domain_local = get_system_domain()
+            list_clients_status_res = []
+            list_other_servers_clients = []
+        
+            for client in list_clients:
+                if client.domain == domain_local:
+                    user_status = self.get_client_status(client.client_id)
+                    
+                    if user_status is not None:
+                        tmp_client_response = user_pb2.MemberInfoRes(
+                                client_id=client.client_id,
+                                domain=client.domain,
+                                status=user_status,
+                                )
+                        list_clients_status_res.append(tmp_client_response)
+                else:
+                    list_other_servers_clients.append(client)
+                    
+            other_client_response = self.get_other_domains_client_status(list_other_servers_clients)
+            
+            if other_client_response is not None:
+                list_clients_status_res.extend(other_client_response)
+            response = user_pb2.GetClientsStatusResponse(
+                    lst_client=list_clients_status_res
+                )
+            return response
+        except Exception as e:
+                logger.error(bytes(str(e), encoding='utf-8'))
+                raise Exception(Message.GET_USER_STATUS_FAILED)
+    
+            
+    def get_client_status(self, client_id):
+        print("get_client_status api ")
+    
+        client_record = client_records_list_in_memory.get(str(client_id), None)
+        
+        if client_record is not None:
+            leave_time_amount = datetime.datetime.now() - client_record["last_active"]
+            
+            if leave_time_amount.seconds > get_system_config().get("maximum_offline_time_limit"):
+                client_record["user_status"] is None
+                user_status = "Offline"
+            else:
+                if client_record["user_status"] is not None:
+                    user_status = client_record["user_status"]
+                else:
+                    user_status = "Active"
+        else:
+            user_status = "Undefined"
+            
+        return user_status
+        
+    def get_other_domains_client_status(self, list_another_server_clients):
+        if not list_another_server_clients:
+            return None
+        
+        list_clients_status_res = []
+        last_domain = None
+        domain_list_client = []
+        
+        for client in list_another_server_clients:
+            if client.domain == last_domain or last_domain == None:
+                    domain_list_client.append(client)
+            else:
+                list_domain_client_status_res = self.get_response_from_domain(domain_list_client)
+                list_clients_status_res.extend(list_domain_client_status_res)
+            last_domain = client.domain
+            
+        list_domain_client_status_res = self.get_response_from_domain(domain_list_client)
+        list_clients_status_res.extend(list_domain_client_status_res)
+        
+        return list_clients_status_res
+
+                
+    def get_response_from_domain(self,domain_list_client ):
+        server_error_resp = []
+        
+        if domain_list_client:
+            server_ip = domain_list_client[0].domain.split(':')[0]
+            server_port = domain_list_client[0].domain.split(':')[1]
+            client = ClientUser(server_ip,server_port)
+            client_resp = client.get_client_status(domain_list_client)
+            
+            if client_resp is None:
+                for client in domain_list_client:
+                    tmp_client_response = user_pb2.MemberInfoRes(
+                                client_id=client.client_id,
+                                domain=client.domain,
+                                status="Error",
+                                )
+                    server_error_resp.append(tmp_client_response)
+                return server_error_resp
+            return client_resp.lst_client
+                

@@ -144,3 +144,56 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
+ # update status for user ("Active, Busy, Away, Do not disturb")
+    @request_logged
+    async def update_status(self, request, context):
+        print("user update_status api")
+        try:
+            status = request.status
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            
+            self.service.set_user_status(client_id, status)
+            return user_messages.BaseResponse(success=True)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.UPDATE_USER_STATUS_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+    
+    
+    @request_logged
+    async def ping_request(self, request, context):
+        print("ping_pong_server api")
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            
+            self.service.update_client_record(client_id)
+            return user_messages.BaseResponse(success=True)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.PING_PONG_SERVER_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+            
+            
+    @request_logged
+    async def get_client_status(self, request, context):
+        print("get_client_status api")
+        try:
+            list_clients = request.lst_client
+            list_clients.sort( key = lambda x:x.domain)
+            list_user_status = self.service.get_list_client_status(list_clients)
+            return list_user_status
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.GET_USER_STATUS_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
