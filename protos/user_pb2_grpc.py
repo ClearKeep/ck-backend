@@ -34,6 +34,16 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.SetUserStatusRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
                 )
+        self.ping_request = channel.unary_unary(
+                '/user.User/ping_request',
+                request_serializer=protos_dot_user__pb2.PingRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
+                )
+        self.get_client_status = channel.unary_unary(
+                '/user.User/get_client_status',
+                request_serializer=protos_dot_user__pb2.GetClientsStatusRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.GetClientsStatusResponse.FromString,
+                )
         self.get_user_info = channel.unary_unary(
                 '/user.User/get_user_info',
                 request_serializer=protos_dot_user__pb2.GetUserRequest.SerializeToString,
@@ -79,6 +89,19 @@ class UserServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ping_request(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def get_client_status(self, request, context):
+        """----- FROM BOTH -----
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def get_user_info(self, request, context):
         """----- FROM OTHER ACCOUNT -----
         """
@@ -120,6 +143,16 @@ def add_UserServicer_to_server(servicer, server):
                     servicer.update_status,
                     request_deserializer=protos_dot_user__pb2.SetUserStatusRequest.FromString,
                     response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
+            ),
+            'ping_request': grpc.unary_unary_rpc_method_handler(
+                    servicer.ping_request,
+                    request_deserializer=protos_dot_user__pb2.PingRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
+            ),
+            'get_client_status': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_client_status,
+                    request_deserializer=protos_dot_user__pb2.GetClientsStatusRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.GetClientsStatusResponse.SerializeToString,
             ),
             'get_user_info': grpc.unary_unary_rpc_method_handler(
                     servicer.get_user_info,
@@ -211,6 +244,40 @@ class User(object):
         return grpc.experimental.unary_unary(request, target, '/user.User/update_status',
             protos_dot_user__pb2.SetUserStatusRequest.SerializeToString,
             protos_dot_user__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ping_request(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/ping_request',
+            protos_dot_user__pb2.PingRequest.SerializeToString,
+            protos_dot_user__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def get_client_status(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/get_client_status',
+            protos_dot_user__pb2.GetClientsStatusRequest.SerializeToString,
+            protos_dot_user__pb2.GetClientsStatusResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
