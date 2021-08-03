@@ -712,6 +712,14 @@ class GroupService(BaseService):
         push_service = NotifyPushService()
         lst_client_in_group = self.get_clients_in_group(group.id)
 
+        # case group remain only one member
+        if len(lst_client_in_group) == 1 and lst_client_in_group[0].GroupClientKey.client_id == leave_member.id:
+            lst_client_in_group[0].GroupClientKey.delete()
+            group.delete()
+            return group_pb2.BaseResponse(
+                success=True
+            )
+
         for client in lst_client_in_group:
             if client.GroupClientKey.client_id == leave_member.id:
                 client.GroupClientKey.delete()
