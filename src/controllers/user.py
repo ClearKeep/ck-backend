@@ -144,6 +144,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     # update status for user ("Active, Busy, Away, Do not disturb")
+    @request_logged
     async def update_status(self, request, context):
         print("user update_status api")
         try:
@@ -162,8 +163,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
     
     
-    
-    async def ping_pong_server(self, request, context):
+    @request_logged
+    async def ping_request(self, request, context):
         print("ping_pong_server api")
         try:
             header_data = dict(context.invocation_metadata())
@@ -180,27 +181,23 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
             
             
-    async def get_user_info(self, request, context):
+    @request_logged
+    async def get_client_status(self, request, context):
+        print("get_client_status api")
         try:
-            client_id = request.client_id
-            domain_client = request.domain
-            domain_local = get_system_domain()
-            if domain_local == domain_client:
-                user_info = self.service.get_user_info(client_id)
-            else:
-                server_ip = get_ip_domain(domain_client)
-                client = ClientUser(server_ip, get_system_config()['port'])
-                user_info = client.get_user_info(client_id=client_id, domain=domain_client)
-            if user_info is not None:
-                return user_info
-            else:
-                errors = [Message.get_error_object(Message.USER_NOT_FOUND)]
-                context.set_details(json.dumps(
-                    errors, default=lambda x: x.__dict__))
-                context.set_code(grpc.StatusCode.NOT_FOUND)
+            list_clients = request.lst_client
+            list_clients.sort( key = lambda x:x.domain)
+            list_user_status = self.service.get_list_client_status(list_clients)
+            return list_user_status
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.GET_USER_INFO_FAILED)]
+            errors = [Message.get_error_object(Message.GET_USER_STATUS_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+            
+           
+            
+            
+  
+            

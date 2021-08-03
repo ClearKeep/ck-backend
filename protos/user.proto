@@ -79,7 +79,30 @@ message SetUserStatusRequest {
     string status = 1;
 }
 
+// << get user status >>
+// Request: get my info
+message PingRequest {}
 
+
+message GetClientsStatusRequest {
+    repeated MemberInfoRequest lst_client = 1;
+ }
+ 
+ message MemberInfoRequest {
+   string client_id = 1;
+   string domain = 2;
+ }
+ 
+ 
+ message GetClientsStatusResponse {
+    repeated MemberInfoRes lst_client = 1;
+ }
+ 
+ message MemberInfoRes {
+   string client_id = 1;
+   string domain = 2;
+   string status = 3;
+ }
 
 service User {
     //----- FROM MY ACCOUNT -----
@@ -87,7 +110,10 @@ service User {
     rpc update_profile(UpdateProfileRequest) returns (BaseResponse) {};
     rpc change_password(ChangePasswordRequest) returns (BaseResponse) {};
     rpc update_status(SetUserStatusRequest) returns (BaseResponse) {};
-    rpc ping_pong_server(Empty) returns (BaseResponse) {};
+    rpc ping_request(PingRequest) returns (BaseResponse) {};
+
+    //----- FROM BOTH -----
+    rpc get_client_status(GetClientsStatusRequest) returns (GetClientsStatusResponse) {};
 
     //----- FROM OTHER ACCOUNT -----
     rpc get_user_info(GetUserRequest) returns (UserInfoResponse) {};

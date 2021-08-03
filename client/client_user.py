@@ -24,6 +24,15 @@ class ClientUser:
             return response
         except:
             return None
+        
+    def get_client_status(self, lst_client):
+        print("get_client_status",lst_client)
+        try:
+            request = user_pb2.GetClientsStatusRequest(lst_client=lst_client)
+            response = self.stub.get_client_status(request)
+            return response
+        except:
+            return None
 
     def grpc_stub(self, host, port):
         channel = grpc.insecure_channel(host + ':' + str(port))

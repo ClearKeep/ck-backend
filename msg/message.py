@@ -58,6 +58,7 @@ class Message:
     # change status
     UPDATE_USER_STATUS_FAILED = 1047
     PING_PONG_SERVER_FAILED = 1048
+    GET_USER_STATUS_FAILED = 1049
     
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -104,7 +105,8 @@ class Message:
             "does not exist. Please try again",
             
         UPDATE_USER_STATUS_FAILED :"Update status failed. Please try again",
-        PING_PONG_SERVER_FAILED :"Ping and pong server failed. Please try again"
+        PING_PONG_SERVER_FAILED :"Ping and pong server failed. Please try again",
+        GET_USER_STATUS_FAILED :"Get user status failed failed. Please try again"
     }
 
     @staticmethod
