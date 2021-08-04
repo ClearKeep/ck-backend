@@ -841,18 +841,29 @@ class GroupService(BaseService):
         owner_workspace_domain = get_owner_workspace_domain()
         tmp_list_client = json.loads(group.group_clients)
 
-        push_service = NotifyPushService()
-
-        # delete removed member group
         owner_group_id = None
-        if leave_member.workspace_domain == owner_workspace_domain:
-            # remove group client add more group client key
-            group_client_key = GroupClientKey().get(group.group_id, leave_member.id)
-            if group_client_key:
+        group_this_workspace = self.get_group_info(group.group_id)
+        if group_this_workspace:
+            owner_group_id = group_this_workspace.owner_group_id
+
+        # update all group with owner group
+        if owner_group_id:
+            lst_group = self.model.get_by_group_owner(owner_group_id)
+            for gr in lst_group:
+                gr.group_clients = group.group_clients
+                gr.total_member = len(tmp_list_client)
+                gr.update()
+
+            # push notification for member active
+            group_ids = (gr.id for gr in lst_group)
+            list_clients = GroupClientKey().get_clients_in_groups(group_ids)
+            push_service = NotifyPushService()
+
+            for client in list_clients:
                 data = {
-                    'client_id': group_client_key.client_id,
+                    'client_id': client.GroupClientKey.client_id,
                     'client_workspace_domain': owner_workspace_domain,
-                    'group_id': str(group_client_key.group_id),
+                    'group_id': str(client.GroupClientKey.group_id),
                     'leave_member': leave_member.id,
                     'leave_member_display_name': leave_member.display_name,
                     'leave_member_workspace_domain': leave_member.workspace_domain,
@@ -862,50 +873,18 @@ class GroupService(BaseService):
                 }
                 logger.info(data)
                 await push_service.push_text_to_client(
-                    to_client_id=group_client_key.client_id,
+                    to_client_id=client.GroupClientKey.client_id,
                     title="Member leave",
                     body="user leave group",
                     from_client_id=leave_member_by.id,
                     notify_type="member_leave",
                     data=json.dumps(data)
                 )
-                group_client_key.delete()
+                if leave_member.workspace_domain == owner_workspace_domain and leave_member.id == client.client_id:
+                    client.GroupClientKey.delete()
+                    #remove group
+                    leave_member_group = self.get_group_info(client.GroupClientKey.group_id)
+                    if leave_member_group:
+                        leave_member_group.delete()
 
-            # remove group with owner group
-            leave_member_group = self.get_group_info(group.group_id)
-            if leave_member_group:
-                owner_group_id = leave_member_group.owner_group_id
-                leave_member_group.delete()
-
-        # update all group with owner group
-        lst_group = self.model.get_by_group_owner(owner_group_id)
-        for gr in lst_group:
-            gr.group_clients = group.group_clients
-            gr.total_member = len(tmp_list_client)
-            gr.update()
-
-        # push notification for member active
-        group_ids = (gr.id for gr in lst_group)
-        list_clients = GroupClientKey().get_clients_in_groups(group_ids)
-        for client in list_clients:
-            data = {
-                'client_id': client.GroupClientKey.client_id,
-                'client_workspace_domain': owner_workspace_domain,
-                'group_id': str(client.GroupClientKey.group_id),
-                'leave_member': leave_member.id,
-                'leave_member_display_name': leave_member.display_name,
-                'leave_member_workspace_domain': leave_member.workspace_domain,
-                'leave_member_by': leave_member_by.id,
-                'leave_member_by_display_name': leave_member_by.display_name,
-                'leave_member_by_workspace_domain': leave_member_by.workspace_domain
-            }
-            logger.info(data)
-            await push_service.push_text_to_client(
-                to_client_id=client.GroupClientKey.client_id,
-                title="Member leave",
-                body="user leave group",
-                from_client_id=leave_member_by.id,
-                notify_type="member_leave",
-                data=json.dumps(data)
-            )
         return group_pb2.BaseResponse(success=True)
