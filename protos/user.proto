@@ -73,12 +73,47 @@ message GetUsersResponse {
     repeated UserInfoResponse lst_user = 1;
 }
 
+// << Set user status >>
+// request
+message SetUserStatusRequest {
+    string status = 1;
+}
+
+// << get user status >>
+// Request: get my info
+message PingRequest {}
+
+
+message GetClientsStatusRequest {
+    repeated MemberInfoRequest lst_client = 1;
+ }
+ 
+ message MemberInfoRequest {
+   string client_id = 1;
+   string workspace_domain = 2;
+ }
+ 
+ 
+ message GetClientsStatusResponse {
+    repeated MemberInfoRes lst_client = 1;
+ }
+ 
+ message MemberInfoRes {
+   string client_id = 1;
+   string workspace_domain = 2;
+   string status = 3;
+ }
 
 service User {
     //----- FROM MY ACCOUNT -----
     rpc get_profile(Empty) returns (UserProfileResponse) {};
     rpc update_profile(UpdateProfileRequest) returns (BaseResponse) {};
     rpc change_password(ChangePasswordRequest) returns (BaseResponse) {};
+    rpc update_status(SetUserStatusRequest) returns (BaseResponse) {};
+    rpc ping_request(PingRequest) returns (BaseResponse) {};
+
+    //----- FROM BOTH -----
+    rpc get_clients_status(GetClientsStatusRequest) returns (GetClientsStatusResponse) {};
 
     //----- FROM OTHER ACCOUNT -----
     rpc get_user_info(GetUserRequest) returns (UserInfoResponse) {};

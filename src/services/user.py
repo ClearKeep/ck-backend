@@ -3,16 +3,18 @@ from src.models.user import User
 from utils.encrypt import EncryptUtils
 from utils.keycloak import KeyCloakUtils
 from protos import user_pb2
-from utils.config import get_system_domain
 from utils.logger import *
 from msg.message import Message
 import datetime
+from utils.config import  get_system_config, get_owner_workspace_domain
+from client.client_user import ClientUser
 
+client_records_list_in_memory = {}
 
 class UserService(BaseService):
     def __init__(self):
         super().__init__(User())
-        #self.domain = get_system_domain()
+        #self.workspace_domain = get_system_domain()
 
     def create_new_user(self, id, email, display_name, auth_source):
         # password, first_name, last_name,
@@ -180,3 +182,123 @@ class UserService(BaseService):
             user_info.update()
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
+
+    def set_user_status(self, client_id, status):
+        try:
+            user_info = self.model.get(client_id)
+            if status == "":
+                status = None
+            user_info.status = status
+                
+            user_info.update()
+            client_record = client_records_list_in_memory.get(str(client_id), None)
+            client_record["user_status"] = status
+        except Exception as e:
+            logger.error(e)
+            raise Exception(Message.UPDATE_USER_STATUS_FAILED)
+
+
+    def update_client_record(self, client_id):
+        try:
+            client_record = client_records_list_in_memory.get(str(client_id), None)
+            if client_record is None:
+                client_records_list_in_memory.update({
+                    str(client_id):{
+                     "last_active" : datetime.datetime.now(),
+                     "prev_active" : None,
+                     "user_status" : None,
+                        }
+                    })
+            else:
+                client_record["prev_active"] = client_record["last_active"]
+                client_record["last_active"] = datetime.datetime.now()
+        except Exception as e:
+            logger.error(e)
+            raise Exception(Message.PING_PONG_SERVER_FAILED)
+
+
+    def categorize_workspace_domains(self, list_clients):
+        domain_local = get_owner_workspace_domain()
+        workspace_domains_dictionary = {}
+        
+        for client in list_clients:
+            if str(client.workspace_domain) in workspace_domains_dictionary:
+                workspace_domains_dictionary[str(client.workspace_domain)].append(client)
+            else:
+                workspace_domains_dictionary.update({
+                        str(client.workspace_domain) : [client]
+                    })
+        return workspace_domains_dictionary
+        
+            
+    def get_list_clients_status(self, list_clients):
+        logger.info("get_list_clients_status")
+        try:
+            owner_workspace_domain = get_owner_workspace_domain()
+            list_clients_status = []
+            
+            workspace_domains_dictionary = self.categorize_workspace_domains(list_clients)
+
+            for workspace_domain in workspace_domains_dictionary.keys():
+                list_client = workspace_domains_dictionary[workspace_domain]
+                if workspace_domain == owner_workspace_domain:
+                    for client in list_client:
+                        user_status = self.get_owner_workspace_client_status(client.client_id)
+                        
+                        tmp_client_response = user_pb2.MemberInfoRes(
+                                client_id=client.client_id,
+                                workspace_domain=workspace_domain,
+                                status=user_status,
+                                )
+                        list_clients_status.append(tmp_client_response)
+                else:
+                    other_clients_response = self.get_other_workspace_clients_status(workspace_domain, list_client)
+                    list_clients_status.extend(other_clients_response)
+                    
+            response = user_pb2.GetClientsStatusResponse(
+                    lst_client=list_clients_status
+                )
+            return response
+        except Exception as e:
+            logger.error(e)
+            raise Exception(Message.GET_USER_STATUS_FAILED)
+    
+        
+    def get_owner_workspace_client_status(self, client_id):
+        logger.info("get_client_status")
+        client_record = client_records_list_in_memory.get(str(client_id), None)
+        
+        if client_record is not None:
+            leave_time_amount = datetime.datetime.now() - client_record["last_active"]
+            
+            if leave_time_amount.seconds > get_system_config().get("maximum_offline_time_limit"):
+                user_status = "Offline"
+            else:
+                if client_record["user_status"] is not None:
+                    user_status = client_record["user_status"]
+                else:
+                    user_status = "Active"
+        else:
+            user_status = "Undefined"
+        return user_status
+
+  
+    def get_other_workspace_clients_status(self,workspace_domain,list_client):
+        server_error_resp = []
+        
+        client = ClientUser(workspace_domain)
+        client_resp = client.get_clients_status(list_client)
+        
+        if client_resp is None:
+            logger.info("CALL WORKSPACE ERROR", workspace_domain)
+            for client in list_client:
+                tmp_client_response = user_pb2.MemberInfoRes(
+                            client_id=client.client_id,
+                            workspace_domain=client.workspace_domain,
+                            status="Undefined",
+                            )
+                server_error_resp.append(tmp_client_response)
+            return server_error_resp
+        return client_resp.lst_client
+                
+    

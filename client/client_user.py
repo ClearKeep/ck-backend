@@ -29,3 +29,13 @@ class ClientUser:
         except Exception as e:
             logger.error(e)
             return None
+        
+    def get_clients_status(self, lst_client):
+        print("get_client_status",lst_client)
+        try:
+            request = user_pb2.GetClientsStatusRequest(lst_client=lst_client)
+            response = self.stub.get_clients_status(request)
+            return response
+        except:
+            return None
+
