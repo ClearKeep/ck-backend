@@ -879,13 +879,13 @@ class GroupService(BaseService):
 
         # update all group with owner group
         lst_group = self.model.get_by_group_owner(owner_group_id)
-        for group in lst_group:
-            group.group_clients = group.group_clients
-            group.total_member = len(tmp_list_client)
-            group.update()
+        for gr in lst_group:
+            gr.group_clients = group.group_clients
+            gr.total_member = len(tmp_list_client)
+            gr.update()
 
         # push notification for member active
-        group_ids = (group.id for group in lst_group)
+        group_ids = (gr.id for gr in lst_group)
         list_clients = GroupClientKey().get_clients_in_groups(group_ids)
         for client in list_clients:
             data = {
