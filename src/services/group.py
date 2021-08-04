@@ -765,7 +765,7 @@ class GroupService(BaseService):
                 )
                 request = group_pb2.WorkspaceLeaveGroupRequest(
                     leave_member=leave_member,
-                    leave_member_by=leave_member,
+                    leave_member_by=leave_member_by,
                     owner_group=owner_group_req
                 )
                 logger.info(
