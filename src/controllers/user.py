@@ -184,12 +184,11 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             
             
     @request_logged
-    async def get_client_status(self, request, context):
+    async def get_clients_status(self, request, context):
         print("get_client_status api")
         try:
             list_clients = request.lst_client
-            list_clients.sort( key = lambda x:x.domain)
-            list_user_status = self.service.get_list_client_status(list_clients)
+            list_user_status = self.service.get_list_clients_status(list_clients)
             return list_user_status
         except Exception as e:
             logger.error(e)
