@@ -212,7 +212,6 @@ class UserService(BaseService):
             else:
                 client_record["prev_active"] = client_record["last_active"]
                 client_record["last_active"] = datetime.datetime.now()
-            print ("client_records_list_in_memory", client_records_list_in_memory)
         except Exception as e:
             logger.error(e)
             raise Exception(Message.PING_PONG_SERVER_FAILED)
@@ -233,7 +232,7 @@ class UserService(BaseService):
         
             
     def get_list_clients_status(self, list_clients):
-        print ("get_list_clients_status")
+        logger.info("get_list_clients_status")
         try:
             owner_workspace_domain = get_owner_workspace_domain()
             list_clients_status = []
@@ -266,8 +265,7 @@ class UserService(BaseService):
     
         
     def get_owner_workspace_client_status(self, client_id):
-        print("get_client_status api ")
-    
+        logger.info("get_client_status")
         client_record = client_records_list_in_memory.get(str(client_id), None)
         
         if client_record is not None:
@@ -289,14 +287,11 @@ class UserService(BaseService):
         server_error_resp = []
         
         client = ClientUser(workspace_domain)
-        ## for local test
-        # client = ClientUser("localhost:"+ workspace_domain.split(":")[1])
-        
         client_resp = client.get_clients_status(list_client)
         
         if client_resp is None:
+            logger.info("CALL WORKSPACE ERROR", workspace_domain)
             for client in list_client:
-                print ("CALL WORKSPACE ERROR", workspace_domain)
                 tmp_client_response = user_pb2.MemberInfoRes(
                             client_id=client.client_id,
                             workspace_domain=client.workspace_domain,

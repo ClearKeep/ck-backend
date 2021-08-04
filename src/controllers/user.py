@@ -52,7 +52,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
     # @auth_required
     async def update_profile(self, request, context):
-        print("user update_profile api")
+        logger.info("user update_profile api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -97,7 +97,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
     @request_logged
     async def search_user(self, request, context):
-        print("user search_user api")
+        logger.info("user search_user api")
         try:
             keyword = request.keyword
             header_data = dict(context.invocation_metadata())
@@ -115,7 +115,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
     @request_logged
     async def get_users(self, request, context):
-        print("user get_users api")
+        logger.info("user get_users api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -148,7 +148,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
  # update status for user ("Active, Busy, Away, Do not disturb")
     @request_logged
     async def update_status(self, request, context):
-        print("user update_status api")
+        logger.info("user update_status api")
         try:
             status = request.status
             header_data = dict(context.invocation_metadata())
@@ -167,7 +167,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     
     @request_logged
     async def ping_request(self, request, context):
-        print("ping_pong_server api")
+        logger.info("ping_request api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -184,7 +184,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             
     @request_logged
     async def get_clients_status(self, request, context):
-        print("get_client_status api")
+        logger.info("get_client_status api")
         try:
             list_clients = request.lst_client
             list_user_status = self.service.get_list_clients_status(list_clients)
