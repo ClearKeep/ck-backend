@@ -756,7 +756,7 @@ class GroupService(BaseService):
                 informed_workspace_domain.append(client.GroupClientKey.client_workspace_domain)
 
                 owner_group_req = group_pb2.GroupInfo(
-                    group_id=client.GroupClientKey.group_id,
+                    group_id=client.GroupClientKey.client_workspace_group_id,
                     group_name=group.group_name,
                     group_type=group.group_type,
                     group_clients=group.group_clients,
@@ -769,7 +769,7 @@ class GroupService(BaseService):
                     owner_group=owner_group_req
                 )
                 logger.info(
-                    "call add member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
+                    "call leave member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
                 ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_leave_group(request)
 
         return group_pb2.BaseResponse(
@@ -845,11 +845,11 @@ class GroupService(BaseService):
         owner_group_id = None
         if leave_member.workspace_domain == owner_workspace_domain:
             # remove group client add more group client key
-            group_client_key = GroupClientKey().get(group.id, leave_member.id)
+            group_client_key = GroupClientKey().get(group.group_id, leave_member.id)
             if group_client_key:
                 group_client_key.delete()
             # remove group with owner group
-            leave_member_group = self.get_group_info(group.id)
+            leave_member_group = self.get_group_info(group.group_id)
 
             if leave_member_group:
                 owner_group_id = leave_member_group.owner_group_id
