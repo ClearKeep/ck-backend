@@ -145,7 +145,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
- # update status for user ("Active, Busy, Away, Do not disturb")
+    # update status for user ("Active, Busy, Away, Do not disturb")
     @request_logged
     async def update_status(self, request, context):
         logger.info("user update_status api")
@@ -154,7 +154,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-            
+
             self.service.set_user_status(client_id, status)
             return user_messages.BaseResponse(success=True)
         except Exception as e:
@@ -163,8 +163,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-    
-    
+
     @request_logged
     async def ping_request(self, request, context):
         logger.info("ping_request api")
@@ -180,8 +179,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-            
-            
+
     @request_logged
     async def get_clients_status(self, request, context):
         logger.info("get_client_status api")
