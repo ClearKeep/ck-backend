@@ -23,7 +23,7 @@ class Message:
     GET_GROUP_CHAT_FAILED = 1018
     SEARCH_GROUP_CHAT_FAILED = 1019
     CLIENT_QUEUE_NOT_FOUND = 1020
-
+    
     # notify
     GET_CLIENT_NOTIFIES_FAILED = 1021
     CLIENT_READ_NOTIFY_FAILED = 1022
@@ -77,6 +77,11 @@ class Message:
     # leave workspace
     LEAVE_WORKSPACE_FAILED = 1063
 
+    # change status
+    UPDATE_USER_STATUS_FAILED = 1047
+    PING_PONG_SERVER_FAILED = 1048
+    GET_USER_STATUS_FAILED = 1049
+    
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
         AUTH_USER_NOT_FOUND: "Login information is not correct. Please try again",
@@ -142,6 +147,10 @@ class Message:
         REMOVE_MEMBER_GROUP_FAILED: "Remover member group failed. Please try again",
 
         LEAVE_WORKSPACE_FAILED: "Leave Workspace failed. Please try again",
+            
+        UPDATE_USER_STATUS_FAILED :"Update status failed. Please try again",
+        PING_PONG_SERVER_FAILED :"Ping and pong server failed. Please try again",
+        GET_USER_STATUS_FAILED :"Get user status failed failed. Please try again"
     }
 
     @staticmethod
