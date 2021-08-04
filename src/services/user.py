@@ -186,7 +186,10 @@ class UserService(BaseService):
     def set_user_status(self, client_id, status):
         try:
             user_info = self.model.get(client_id)
+            if status == "":
+                status = None
             user_info.status = status
+                
             user_info.update()
             client_record = client_records_list_in_memory.get(str(client_id), None)
             client_record["user_status"] = status
@@ -216,8 +219,6 @@ class UserService(BaseService):
 
 
     def categorize_workspace_domains(self, list_clients):
-        print ("categorize workspace domain list to dict")
-        
         domain_local = get_owner_workspace_domain()
         workspace_domains_dictionary = {}
         
@@ -288,11 +289,14 @@ class UserService(BaseService):
         server_error_resp = []
         
         client = ClientUser(workspace_domain)
+        ## for local test
+        # client = ClientUser("localhost:"+ workspace_domain.split(":")[1])
+        
         client_resp = client.get_clients_status(list_client)
         
         if client_resp is None:
             for client in list_client:
-                print ("ERROR", workspace_domain)
+                print ("CALL WORKSPACE ERROR", workspace_domain)
                 tmp_client_response = user_pb2.MemberInfoRes(
                             client_id=client.client_id,
                             workspace_domain=client.workspace_domain,
