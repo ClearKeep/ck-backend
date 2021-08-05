@@ -33,9 +33,10 @@ class WorkspaceController(BaseController):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
 
+            user_info = User().get(client_id)
             lst_joined_group = GroupChat().get_joined(client_id)
             if len(lst_joined_group) > 0:
-                user_info = User().get(client_id)
+
                 for group in lst_joined_group:
                     request_leave_group = group_pb2.LeaveGroupRequest(
                         leave_member=group_pb2.MemberInfo(
@@ -51,6 +52,9 @@ class WorkspaceController(BaseController):
                         group_id=group.GroupChat.id
                     )
                     await GroupController().leave_group(request_leave_group, context)
+
+            user_info.delete()
+            KeyCloakUtils.delete_user(client_id)
 
             return workspace_pb2.BaseResponse(success=True)
         except Exception as e:
