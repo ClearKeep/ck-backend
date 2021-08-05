@@ -53,7 +53,7 @@ class WorkspaceController(BaseController):
                     )
                     await GroupController().leave_group(request_leave_group, context)
 
-            user_info.delete()
+            #user_info.delete()
             KeyCloakUtils.delete_user(client_id)
 
             return workspace_pb2.BaseResponse(success=True)

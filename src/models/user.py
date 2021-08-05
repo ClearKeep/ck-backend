@@ -19,8 +19,8 @@ class User(Database.get().Model):
     last_login_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
-    tokens = relationship('NotifyToken', back_populates='user', cascade="delete")
-    messages_read = relationship('MessageUserRead', back_populates='user', cascade="delete")
+    tokens = relationship('NotifyToken', back_populates='user')
+    messages_read = relationship('MessageUserRead', back_populates='user')
 
     def add(self):
         try:
