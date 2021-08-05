@@ -20,7 +20,7 @@ class User(Database.get().Model):
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
     tokens = relationship('NotifyToken', back_populates='user', cascade="delete")
-    #messages_read = relationship('MessageUserRead', back_populates='user', cascade="delete")
+    messages_read = relationship('MessageUserRead', back_populates='user', cascade="delete")
 
     def add(self):
         try:
