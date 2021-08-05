@@ -880,7 +880,7 @@ class GroupService(BaseService):
                     notify_type="member_leave",
                     data=json.dumps(data)
                 )
-                if leave_member.workspace_domain == owner_workspace_domain and leave_member.id == client.client_id:
+                if leave_member.workspace_domain == owner_workspace_domain and leave_member.id == client.GroupClientKey.client_id:
                     client.GroupClientKey.delete()
                     #remove group
                     leave_member_group = self.get_group_info(client.GroupClientKey.group_id)
