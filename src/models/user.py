@@ -19,8 +19,8 @@ class User(Database.get().Model):
     last_login_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
-    tokens = relationship('NotifyToken', back_populates='user')
-    messages_read = relationship('MessageUserRead', back_populates='user')
+    tokens = relationship('NotifyToken', back_populates='user', cascade="delete")
+    messages_read = relationship('MessageUserRead', back_populates='user', cascade="delete")
 
     def add(self):
         try:
@@ -77,6 +77,14 @@ class User(Database.get().Model):
             .first()
         Database.get().session.remove()
         return result
+
+    def delete(self):
+        try:
+            Database.get_session().delete(self)
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            logger.error(e)
 
     def __repr__(self):
         return '<Item(id=%s, display_name=%s, email=%s)>' % (self.id, self.display_name, self.email)

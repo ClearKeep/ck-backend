@@ -39,36 +39,41 @@ def generate_stun_turn_credential(data):
 
 
 def update_stun_turn_credential():
+    print('Cronjob Run At: ' + str(datetime.now()))
+
+    data = get_system_config()
+    stun, turn = generate_stun_turn_credential(data)
+    host = data['server_domain']
+    port = data['grpc_port']
+
     try:
-        print('Cronjob Run At: ' + str(datetime.now()))
-
-        data = get_system_config()
-        stun, turn = generate_stun_turn_credential(data)
-        host = data['server_domain']
-        port = data['grpc_port']
-
         # update for production branch
         channel = grpc.insecure_channel(host + ':' + str(port))
         stub = server_info_pb2_grpc.ServerInfoStub(channel)
         request = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
         stub.update_nts(request)
+    except Exception as e:
+        logger.error(e)
 
+    try:
         #update for stagging branch
         channel2 = grpc.insecure_channel(host + ':1' + str(port))
         stub2 = server_info_pb2_grpc.ServerInfoStub(channel2)
         request2 = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
         stub2.update_nts(request2)
+    except Exception as e:
+        logger.error(e)
 
+    try:
         # update for dev branch
         channel3 = grpc.insecure_channel(host + ':2' + str(port))
         stub3 = server_info_pb2_grpc.ServerInfoStub(channel3)
         request3 = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
         stub3.update_nts(request3)
-
-        print('Set cronjob succesful')
-
     except Exception as e:
         logger.error(e)
+
+    print('Set cronjob succesful')
 
 
 if __name__ == '__main__':

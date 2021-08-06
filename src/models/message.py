@@ -11,8 +11,15 @@ class Message(Database.get().Model):
     id = Database.get().Column(Database.get().String(36), primary_key=True)
     group_id = Database.get().Column(Database.get().Integer, nullable=True)
     from_client_id = Database.get().Column(Database.get().String(36), unique=False, nullable=True)
+    from_client_workspace_domain = Database.get().Column(Database.get().String(100), unique=False, nullable=True)
     client_id = Database.get().Column(Database.get().String(36), nullable=True)
+    client_workspace_domain = Database.get().Column(Database.get().String(100), unique=False, nullable=True)
     message = Database.get().Column(Database.get().Binary)
+    message_type = Database.get().Column(
+        Database.get().String(128),
+        default='text',
+        nullable=False
+    )
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
     deleted_at = Database.get().Column(Database.get().DateTime, nullable=True)

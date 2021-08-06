@@ -18,7 +18,22 @@ message BaseResponse {
     ErrorRes errors = 2;
 }
 
+message PushTextRequest {
+  string title = 1;
+  string body = 2;
+  string notify_type = 3;
+  string custom_data = 4;
+  string to_client_id = 5;
+}
+
+message PushVoipRequest {
+  string to_client_id = 1;
+  string payload = 2;
+}
+
 // Method
 service NotifyPush {
     rpc register_token (RegisterTokenRequest) returns (BaseResponse);
+    rpc push_text (PushTextRequest) returns (BaseResponse);
+    rpc push_voip (PushVoipRequest) returns (BaseResponse);
 }

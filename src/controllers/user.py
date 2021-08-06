@@ -4,7 +4,7 @@ from src.services.user import UserService
 from middlewares.permission import *
 from middlewares.request_logged import *
 from utils.logger import *
-from utils.config import get_system_domain, get_ip_domain
+from utils.config import *
 from client.client_user import *
 
 
@@ -52,7 +52,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
     # @auth_required
     async def update_profile(self, request, context):
-        print("user update_profile api")
+        logger.info("user update_profile api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -70,17 +70,17 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     # @auth_required
     # @request_logged
     async def get_user_info(self, request, context):
-        print("user get_user_info api")
         try:
             client_id = request.client_id
-            domain_client = request.domain
-            domain_local = get_system_domain()
-            if domain_local == domain_client:
-                user_info = self.service.get_user_info(client_id)
+            client_workspace_domain = request.workspace_domain
+            owner_workspace_domain = get_owner_workspace_domain()
+
+            if client_workspace_domain == owner_workspace_domain:
+                user_info = self.service.get_user_info(client_id, owner_workspace_domain)
             else:
-                server_ip = get_ip_domain(domain_client)
-                client = ClientUser(server_ip, get_system_config()['port'])
-                user_info = client.get_user_info(client_id=client_id, domain=domain_client)
+                client = ClientUser(client_workspace_domain)
+                user_info = client.get_user_info(client_id=client_id, workspace_domain=client_workspace_domain)
+
             if user_info is not None:
                 return user_info
             else:
@@ -97,7 +97,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
     @request_logged
     async def search_user(self, request, context):
-        print("user search_user api")
+        logger.info("user search_user api")
         try:
             keyword = request.keyword
             header_data = dict(context.invocation_metadata())
@@ -115,13 +115,14 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
     @request_logged
     async def get_users(self, request, context):
-        print("user get_users api")
+        logger.info("user get_users api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
+            owner_workspace_domain = get_owner_workspace_domain()
 
-            obj_res = self.service.get_users(client_id)
+            obj_res = self.service.get_users(client_id, owner_workspace_domain)
             return obj_res
         except Exception as e:
             logger.error(e)
@@ -140,6 +141,55 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    # update status for user ("Active, Busy, Away, Do not disturb")
+    @request_logged
+    async def update_status(self, request, context):
+        logger.info("user update_status api")
+        try:
+            status = request.status
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+
+            self.service.set_user_status(client_id, status)
+            return user_messages.BaseResponse(success=True)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.UPDATE_USER_STATUS_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def ping_request(self, request, context):
+        logger.info("ping_request api")
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            self.service.update_client_record(client_id)
+            return user_messages.BaseResponse(success=True)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.PING_PONG_SERVER_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def get_clients_status(self, request, context):
+        logger.info("get_client_status api")
+        try:
+            list_clients = request.lst_client
+            list_user_status = self.service.get_list_clients_status(list_clients)
+            return list_user_status
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.GET_USER_STATUS_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)

@@ -2,7 +2,7 @@ name: clearkeep-test
 
 on:
   push:
-    branches: [ production ]
+    branches: [ feature/workspace ]
 #  pull_request:
 #    branches: [ development ]
 #   schedule:
@@ -59,19 +59,14 @@ jobs:
         hosts: ${{ secrets.USERNAME }}@${{ secrets.HOST }}
         privateKey: ${{ secrets.KEY }}
         command: |
-          cd /home/ubuntu/prod-clk328/ck-backend
-          git checkout production
+          cd /home/ubuntu/workspace2-clk328/ck-backend
+          git checkout feature/workspace
           git reset --hard HEAD
           git pull
           pip3 install -r requirement.txt
           python3 -m grpc_tools.protoc -I=. protos/*.proto --python_out=. --grpc_python_out=.
-          sudo systemctl restart prod-http-clk328.service
+          sudo systemctl restart workspace2-http-clk328.service
           sleep 10
-          sudo systemctl restart prod-grpc-clk328.service
-          sleep 20
-          python3 cron_tab.py
-          sleep 20
-          sudo systemctl restart dev-http-clk328.service
-          sudo systemctl restart stagging-http-clk328.service
+          sudo systemctl restart workspace2-grpc-clk328.service
         #  docker restart clearkeep
         # ./restart-service.sh
