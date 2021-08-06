@@ -39,6 +39,11 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.PingRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
                 )
+        self.change_mfa_status = channel.stream_stream(
+                '/user.User/change_mfa_status',
+                request_serializer=protos_dot_user__pb2.ChangeMfaState.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaChangingStateResponse.FromString,
+                )
         self.get_clients_status = channel.unary_unary(
                 '/user.User/get_clients_status',
                 request_serializer=protos_dot_user__pb2.GetClientsStatusRequest.SerializeToString,
@@ -90,6 +95,12 @@ class UserServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ping_request(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def change_mfa_status(self, request_iterator, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -148,6 +159,11 @@ def add_UserServicer_to_server(servicer, server):
                     servicer.ping_request,
                     request_deserializer=protos_dot_user__pb2.PingRequest.FromString,
                     response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
+            ),
+            'change_mfa_status': grpc.stream_stream_rpc_method_handler(
+                    servicer.change_mfa_status,
+                    request_deserializer=protos_dot_user__pb2.ChangeMfaState.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaChangingStateResponse.SerializeToString,
             ),
             'get_clients_status': grpc.unary_unary_rpc_method_handler(
                     servicer.get_clients_status,
@@ -261,6 +277,23 @@ class User(object):
         return grpc.experimental.unary_unary(request, target, '/user.User/ping_request',
             protos_dot_user__pb2.PingRequest.SerializeToString,
             protos_dot_user__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def change_mfa_status(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_stream(request_iterator, target, '/user.User/change_mfa_status',
+            protos_dot_user__pb2.ChangeMfaState.SerializeToString,
+            protos_dot_user__pb2.MfaChangingStateResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

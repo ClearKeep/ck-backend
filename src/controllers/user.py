@@ -28,6 +28,32 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     # @auth_required
+    async def change_mfa_status(self, request_iterator, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            is_begin = True
+            # starting current_state is None as we don't know remain_step
+            remain_step = None
+            async for request in request_iterator:
+                remain_step = self.service.change_mfa_state(request, request.state_keyword, introspect_token['sub'], remain_step=remain_step)
+                # for each request, we will return an response message to notify user about remain_step
+                yield user_messages.MfaChangingStateResponse(remain_step=remain_step)
+                # successfully end when current_state reach 0, or else we will get an exception
+                if remain_step <= 0:
+                    break
+
+        except Exception as e:
+            # each type of exception will response difference message
+            logger.error(e)
+            remain_step = 0
+            errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    # @auth_required
     # @request_logged
     async def get_profile(self, request, context):
         try:

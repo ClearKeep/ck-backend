@@ -23,7 +23,7 @@ class Message:
     GET_GROUP_CHAT_FAILED = 1018
     SEARCH_GROUP_CHAT_FAILED = 1019
     CLIENT_QUEUE_NOT_FOUND = 1020
-    
+
     # notify
     GET_CLIENT_NOTIFIES_FAILED = 1021
     CLIENT_READ_NOTIFY_FAILED = 1022
@@ -81,7 +81,11 @@ class Message:
     UPDATE_USER_STATUS_FAILED = 1047
     PING_PONG_SERVER_FAILED = 1048
     GET_USER_STATUS_FAILED = 1049
-    
+
+    # otp setting
+    PHONE_NUMBER_NOT_FOUND = 1050
+    NUMBER_OF_ATTEMPTS_OTP_EXCEEDED = 1051
+
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
         AUTH_USER_NOT_FOUND: "Login information is not correct. Please try again",
@@ -147,10 +151,13 @@ class Message:
         REMOVE_MEMBER_GROUP_FAILED: "Remover member group failed. Please try again",
 
         LEAVE_WORKSPACE_FAILED: "Leave Workspace failed. Please try again",
-            
+
         UPDATE_USER_STATUS_FAILED :"Update status failed. Please try again",
         PING_PONG_SERVER_FAILED :"Ping and pong server failed. Please try again",
-        GET_USER_STATUS_FAILED :"Get user status failed failed. Please try again"
+        GET_USER_STATUS_FAILED :"Get user status failed. Please try again",
+
+        PHONE_NUMBER_NOT_FOUND: "User must provide phone number to enable this feature.",
+        NUMBER_OF_ATTEMPTS_OTP_EXCEEDED: "Exceeded the number of attempts otp. Please wait for 30 minutes and try agains",
     }
 
     @staticmethod

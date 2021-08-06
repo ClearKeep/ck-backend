@@ -8,6 +8,7 @@ class User(Database.get().Model):
     __tablename__ = 'user'
     id = Database.get().Column(Database.get().String(36), primary_key=True)
     email = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
+    phone_number = Database.get().Column(Database.get().String(15), unique=False, nullable=True)
     display_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     first_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     last_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)

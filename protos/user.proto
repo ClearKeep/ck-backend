@@ -22,6 +22,11 @@ message UserProfileResponse {
     string last_name = 5;
 }
 
+message MfaChangingStateResponse {
+    int64 remain_step = 1;
+}
+
+
 // Request: get my info
 message Empty {}
 // Response: UserObjectResponse
@@ -42,6 +47,11 @@ message ChangePasswordRequest {
 }
 // Response: BaseResponse
 
+// Request: change mfa state
+message ChangeMfaState {
+  string state_keyword = 1;
+}
+// Response: MfaChangingStateResponse
 
 //----- FROM ANOTHER ACCOUNT -----
 message UserInfoResponse {
@@ -87,17 +97,17 @@ message PingRequest {}
 message GetClientsStatusRequest {
     repeated MemberInfoRequest lst_client = 1;
  }
- 
+
  message MemberInfoRequest {
    string client_id = 1;
    string workspace_domain = 2;
  }
- 
- 
+
+
  message GetClientsStatusResponse {
     repeated MemberInfoRes lst_client = 1;
  }
- 
+
  message MemberInfoRes {
    string client_id = 1;
    string workspace_domain = 2;
@@ -111,6 +121,7 @@ service User {
     rpc change_password(ChangePasswordRequest) returns (BaseResponse) {};
     rpc update_status(SetUserStatusRequest) returns (BaseResponse) {};
     rpc ping_request(PingRequest) returns (BaseResponse) {};
+    rpc change_mfa_status(stream ChangeMfaState) returns (stream MfaChangingStateResponse) {};
 
     //----- FROM BOTH -----
     rpc get_clients_status(GetClientsStatusRequest) returns (GetClientsStatusResponse) {};
