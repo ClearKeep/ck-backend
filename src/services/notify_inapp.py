@@ -5,6 +5,8 @@ from queue import Queue
 from middlewares.request_logged import *
 import asyncio
 from datetime import datetime
+from utils.config import *
+from utils.logger import *
 
 # notify type
 NEW_PEER = "new-peer"
@@ -12,8 +14,13 @@ IN_PEER = "in-peer"
 NEW_GROUP = "new-group"
 IN_GROUP = "in-group"
 PEER_UPDATE_SIGNAL_KEY = "peer-update-key"
+UPDATE_CALL = "update-call"
+MEMBER_REMOVAL = 'member-removal'
+MEMBER_LEAVE = 'member-leave'
+MEMBER_ADD = 'member-add'
 
 client_notify_queue = {}
+
 
 class NotifyInAppService(BaseService):
     def __init__(self):
@@ -23,7 +30,7 @@ class NotifyInAppService(BaseService):
         lst_notify = self.model.get_unread_notifies(client_id)
         lst_obj_res = []
         for obj in lst_notify:
-            obj_res = notify_pb2.NotifyObjectResponse (
+            obj_res = notify_pb2.NotifyObjectResponse(
                 id=obj.id,
                 client_id=obj.client_id,
                 notify_type=obj.notify_type,
@@ -58,23 +65,29 @@ class NotifyInAppService(BaseService):
             await asyncio.sleep(1)
         client_notify_queue[notify_channel] = Queue()
 
-
     def un_subscribe(self, client_id):
         notify_channel = "{}/notify".format(client_id)
         if notify_channel in client_notify_queue:
+            logger.info('all queues before')
+            logger.info(client_notify_queue)
             client_notify_queue[notify_channel] = None
             del client_notify_queue[notify_channel]
+            logger.info('all queues after')
+            logger.info(client_notify_queue)
 
     def read_notify(self, notify_id):
         self.model = Notify(id=notify_id, read_flg=True)
         self.model.update()
 
     # add notify
-    def notify_invite_peer(self, client_id, ref_client_id, ref_group_id):
+    def notify_invite_peer(self, client_id, ref_client_id, ref_group_id, ref_workspace_domain, ref_subject_name):
         self.model = Notify(
             client_id=client_id,
             ref_client_id=ref_client_id,
+            client_workspace_domain=get_owner_workspace_domain(),
             ref_group_id=ref_group_id,
+            ref_subject_name=ref_subject_name,
+            ref_workspace_domain=ref_workspace_domain,
             notify_type=NEW_PEER,
             notify_image=None,
             notify_title="New message",
@@ -90,11 +103,14 @@ class NotifyInAppService(BaseService):
             except Exception as e:
                 logger.error(e)
 
-    def notify_invite_group(self, client_id, ref_client_id, ref_group_id):
+    def notify_invite_group(self, client_id, ref_client_id, ref_group_id, ref_workspace_domain, ref_subject_name):
         self.model = Notify(
             client_id=client_id,
+            client_workspace_domain=get_owner_workspace_domain(),
             ref_client_id=ref_client_id,
             ref_group_id=ref_group_id,
+            ref_subject_name=ref_subject_name,
+            ref_workspace_domain=ref_workspace_domain,
             notify_type=NEW_GROUP,
             notify_image=None,
             notify_title="Group Chat",
@@ -110,6 +126,88 @@ class NotifyInAppService(BaseService):
             except Exception as e:
                 logger.error(e)
 
+    def notify_removing_member(
+            self,
+            client_id,
+            client_workspace_domain,
+            ref_client_id,
+            ref_workspace_domain,
+            ref_group_id,
+            ref_subject_name,
+            notify_type=MEMBER_REMOVAL):
+        self.model = Notify(
+            client_id=client_id,
+            client_workspace_domain=client_workspace_domain,
+            ref_client_id=ref_client_id,
+            ref_workspace_domain=ref_workspace_domain,
+            ref_group_id=ref_group_id,
+            ref_subject_name=ref_subject_name,
+            notify_type=notify_type,
+            notify_image=None,
+            notify_title="Member Removal (Leave)",
+            notify_content="A member have been removed or have left the group.",
+            notify_platform="all"
+        )
+        logger.info('notify_removing_member:')
+        new_notification = self.model.add()
+        # check queue and push
+        notify_channel = "{}/notify".format(client_id)
+        logger.info('current notify client queue')
+        logger.info(client_notify_queue)
+        if notify_channel in client_notify_queue:
+            logger.info(notify_channel)
+            try:
+                logger.info('inapp notification')
+                client_notify_queue[notify_channel].put(new_notification)
+            except Exception as e:
+                logger.error(e)
+                logger.info('push notification: 1')
+                raise ValueError
+        else:
+            logger.info('push notification: 2')
+            raise ValueError
+
+    def notify_adding_member(
+            self,
+            client_id,
+            client_workspace_domain,
+            ref_client_id,
+            ref_workspace_domain,
+            ref_group_id,
+            ref_subject_name,
+            notify_type=MEMBER_ADD):
+        self.model = Notify(
+            client_id=client_id,
+            client_workspace_domain=client_workspace_domain,
+            ref_client_id=ref_client_id,
+            ref_workspace_domain=ref_workspace_domain,
+            ref_group_id=ref_group_id,
+            ref_subject_name=ref_subject_name,
+            notify_type=notify_type,
+            notify_image=None,
+            notify_title="Member Add",
+            notify_content="A member have been added to the group.",
+            notify_platform="all"
+        )
+        logger.info('notify_adding_member')
+        new_notification = self.model.add()
+        # check queue and push
+        notify_channel = "{}/notify".format(client_id)
+        logger.info('current notify client queue')
+        logger.info(client_notify_queue)
+        if notify_channel in client_notify_queue:
+            logger.info(notify_channel)
+            try:
+                logger.info('inapp notification')
+                client_notify_queue[notify_channel].put(new_notification)
+            except Exception as e:
+                logger.error(e)
+                logger.info('push notification: 1')
+                raise ValueError
+        else:
+            logger.info('push notification: 2')
+            raise ValueError
+
     def notify_client_update_peer_key(self, client_id, ref_client_id, ref_group_id):
         notify_channel = "{}/notify".format(client_id)
         if notify_channel in client_notify_queue:
@@ -117,8 +215,11 @@ class NotifyInAppService(BaseService):
                 notify = Notify(
                     id=0,
                     client_id=client_id,
+                    client_workspace_domain=get_owner_workspace_domain(),
                     ref_client_id=ref_client_id,
                     ref_group_id=ref_group_id,
+                    ref_subject_name="",
+                    ref_workspace_domain="",
                     notify_type=PEER_UPDATE_SIGNAL_KEY,
                     notify_image=None,
                     notify_title="",
@@ -137,8 +238,11 @@ class NotifyInAppService(BaseService):
                 notify = Notify(
                     id=0,
                     client_id=client_id,
+                    client_workspace_domain=get_owner_workspace_domain(),
                     ref_client_id=ref_client_id,
                     ref_group_id=ref_group_id,
+                    ref_subject_name="",
+                    ref_workspace_domain="",
                     notify_type=notify_type,
                     notify_image=None,
                     notify_title="",
@@ -147,7 +251,9 @@ class NotifyInAppService(BaseService):
                     created_at=datetime.now()
                 )
                 client_notify_queue[notify_channel].put(notify)
+                return True
             except Exception as e:
                 logger.error(e)
-
-
+                return False
+        else:
+            return False

@@ -7,6 +7,7 @@ from src.services.notify_inapp import NotifyInAppService
 from utils.encrypt import EncryptUtils
 from middlewares.permission import *
 from middlewares.request_logged import *
+from utils.config import *
 
 
 class AuthController(BaseController):
@@ -29,6 +30,8 @@ class AuthController(BaseController):
             if token:
                 self.user_service.update_last_login(user_id=user_id)
                 return auth_messages.AuthRes(
+                    workspace_domain=get_owner_workspace_domain(),
+                    workspace_name=get_system_config()['server_name'],
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
                     refresh_expires_in=token['refresh_expires_in'],
@@ -64,6 +67,8 @@ class AuthController(BaseController):
             if token:
                 #self.user_service.update_last_login(user_id=introspect_token['sub'])
                 auth_response = auth_messages.AuthRes(
+                    workspace_domain=get_owner_workspace_domain(),
+                    workspace_name=get_system_config()['server_name'],
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
                     hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
@@ -104,6 +109,8 @@ class AuthController(BaseController):
             if token:
                 #self.user_service.update_last_login(user_id=introspect_token['sub'])
                 auth_response = auth_messages.AuthRes(
+                    workspace_domain=get_owner_workspace_domain(),
+                    workspace_name=get_system_config()['server_name'],
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
                     hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
@@ -144,6 +151,8 @@ class AuthController(BaseController):
             if token:
                 # self.user_service.update_last_login(user_id=introspect_token['sub'])
                 auth_response = auth_messages.AuthRes(
+                    workspace_domain=get_owner_workspace_domain(),
+                    workspace_name=get_system_config()['server_name'],
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
                     hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),

@@ -13,37 +13,45 @@ message BaseResponse {
     ErrorRes errors = 2;
 }
 
+// Request: get workspace info
+message WorkspaceInfoRequest {
+  string workspace_domain = 1;
+  BaseResponse base_response = 2;
+}
+
+// Response: workspace info response
 message WorkspaceObjectResponse {
-  string workspace_id = 1;
-  string workspace_domain = 2;
-  bool is_default_workspace = 3;
-  bool is_own_workspace = 4;
+  string workspace_domain = 1;
+  bool is_default_workspace = 2;
 }
 
-// Request: join group
-message JoinWorkspaceRequest {
-  string client_id = 1;
-  string workspace_domain = 2;
-}
-// Response: BaseResponse
-
-// Request: get joined groups
-message GetJoinedWorkspacesRequest {
-  string client_id = 1;
-}
-// Response
-message GetJoinedWorkspacesResponse {
-  repeated WorkspaceObjectResponse lst_workspace = 1;
+// Request: leave workspace
+message LeaveWorkspaceRequest {
 }
 
-// Request: get joined groups
-message LeaveWorkspacesRequest {
-  string client_id = 1;
-  string workspace_id = 2;
-}
+
+//
+//// Request: join group
+//message JoinWorkspaceRequest {
+//  string client_id = 1;
+//  string workspace_domain = 2;
+//}
+//// Response: BaseResponse
+//
+//// Request: get joined groups
+//message GetJoinedWorkspacesRequest {
+//  string client_id = 1;
+//}
+//// Response
+//message GetJoinedWorkspacesResponse {
+//  repeated WorkspaceObjectResponse lst_workspace = 1;
+//}
+
+
 
 service Workspace {
-    rpc join_workspace(JoinWorkspaceRequest) returns (BaseResponse) {};
-    rpc get_joined_workspaces(GetJoinedWorkspacesRequest) returns (GetJoinedWorkspacesResponse) {};
-    rpc leave_workspace(LeaveWorkspacesRequest) returns (BaseResponse) {};
+//    rpc join_workspace(JoinWorkspaceRequest) returns (BaseResponse) {};
+//    rpc get_joined_workspaces(GetJoinedWorkspacesRequest) returns (GetJoinedWorkspacesResponse) {};
+    rpc workspace_info(WorkspaceInfoRequest) returns (WorkspaceObjectResponse) {};
+    rpc leave_workspace(LeaveWorkspaceRequest) returns (BaseResponse) {};
 }

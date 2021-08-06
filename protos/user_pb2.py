@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x11protos/user.proto\x12\x04user\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"?\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x1e\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x0e.user.ErrorRes\"m\n\x13UserProfileResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x12\n\nfirst_name\x18\x04 \x01(\t\x12\x11\n\tlast_name\x18\x05 \x01(\t\"\x07\n\x05\x45mpty\"M\n\x14UpdateProfileRequest\x12\x12\n\nfirst_name\x18\x01 \x01(\t\x12\x11\n\tlast_name\x18\x02 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x03 \x01(\t\"C\n\x15\x43hangePasswordRequest\x12\x14\n\x0cold_password\x18\x01 \x01(\t\x12\x14\n\x0cnew_password\x18\x02 \x01(\t\"D\n\x10UserInfoResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x0e\n\x06\x64omain\x18\x03 \x01(\t\"3\n\x0eGetUserRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x0e\n\x06\x64omain\x18\x02 \x01(\t\"$\n\x11SearchUserRequest\x12\x0f\n\x07keyword\x18\x01 \x01(\t\">\n\x12SearchUserResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"<\n\x10GetUsersResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse2\x82\x03\n\x04User\x12\x37\n\x0bget_profile\x12\x0b.user.Empty\x1a\x19.user.UserProfileResponse\"\x00\x12\x42\n\x0eupdate_profile\x12\x1a.user.UpdateProfileRequest\x1a\x12.user.BaseResponse\"\x00\x12\x44\n\x0f\x63hange_password\x12\x1b.user.ChangePasswordRequest\x1a\x12.user.BaseResponse\"\x00\x12?\n\rget_user_info\x12\x14.user.GetUserRequest\x1a\x16.user.UserInfoResponse\"\x00\x12\x42\n\x0bsearch_user\x12\x17.user.SearchUserRequest\x1a\x18.user.SearchUserResponse\"\x00\x12\x32\n\tget_users\x12\x0b.user.Empty\x1a\x16.user.GetUsersResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x11protos/user.proto\x12\x04user\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"?\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x1e\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x0e.user.ErrorRes\"m\n\x13UserProfileResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x12\n\nfirst_name\x18\x04 \x01(\t\x12\x11\n\tlast_name\x18\x05 \x01(\t\"\x07\n\x05\x45mpty\"M\n\x14UpdateProfileRequest\x12\x12\n\nfirst_name\x18\x01 \x01(\t\x12\x11\n\tlast_name\x18\x02 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x03 \x01(\t\"C\n\x15\x43hangePasswordRequest\x12\x14\n\x0cold_password\x18\x01 \x01(\t\x12\x14\n\x0cnew_password\x18\x02 \x01(\t\"N\n\x10UserInfoResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x18\n\x10workspace_domain\x18\x03 \x01(\t\"=\n\x0eGetUserRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"$\n\x11SearchUserRequest\x12\x0f\n\x07keyword\x18\x01 \x01(\t\">\n\x12SearchUserResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"<\n\x10GetUsersResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"&\n\x14SetUserStatusRequest\x12\x0e\n\x06status\x18\x01 \x01(\t\"\r\n\x0bPingRequest\"F\n\x17GetClientsStatusRequest\x12+\n\nlst_client\x18\x01 \x03(\x0b\x32\x17.user.MemberInfoRequest\"@\n\x11MemberInfoRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"C\n\x18GetClientsStatusResponse\x12\'\n\nlst_client\x18\x01 \x03(\x0b\x32\x13.user.MemberInfoRes\"L\n\rMemberInfoRes\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\t2\xd5\x04\n\x04User\x12\x37\n\x0bget_profile\x12\x0b.user.Empty\x1a\x19.user.UserProfileResponse\"\x00\x12\x42\n\x0eupdate_profile\x12\x1a.user.UpdateProfileRequest\x1a\x12.user.BaseResponse\"\x00\x12\x44\n\x0f\x63hange_password\x12\x1b.user.ChangePasswordRequest\x1a\x12.user.BaseResponse\"\x00\x12\x41\n\rupdate_status\x12\x1a.user.SetUserStatusRequest\x1a\x12.user.BaseResponse\"\x00\x12\x37\n\x0cping_request\x12\x11.user.PingRequest\x1a\x12.user.BaseResponse\"\x00\x12U\n\x12get_clients_status\x12\x1d.user.GetClientsStatusRequest\x1a\x1e.user.GetClientsStatusResponse\"\x00\x12?\n\rget_user_info\x12\x14.user.GetUserRequest\x1a\x16.user.UserInfoResponse\"\x00\x12\x42\n\x0bsearch_user\x12\x17.user.SearchUserRequest\x1a\x18.user.SearchUserResponse\"\x00\x12\x32\n\tget_users\x12\x0b.user.Empty\x1a\x16.user.GetUsersResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -296,7 +296,7 @@ _USERINFORESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='domain', full_name='user.UserInfoResponse.domain', index=2,
+      name='workspace_domain', full_name='user.UserInfoResponse.workspace_domain', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -315,7 +315,7 @@ _USERINFORESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=403,
-  serialized_end=471,
+  serialized_end=481,
 )
 
 
@@ -335,7 +335,7 @@ _GETUSERREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='domain', full_name='user.GetUserRequest.domain', index=1,
+      name='workspace_domain', full_name='user.GetUserRequest.workspace_domain', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -353,8 +353,8 @@ _GETUSERREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=473,
-  serialized_end=524,
+  serialized_start=483,
+  serialized_end=544,
 )
 
 
@@ -385,8 +385,8 @@ _SEARCHUSERREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=526,
-  serialized_end=562,
+  serialized_start=546,
+  serialized_end=582,
 )
 
 
@@ -417,8 +417,8 @@ _SEARCHUSERRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=564,
-  serialized_end=626,
+  serialized_start=584,
+  serialized_end=646,
 )
 
 
@@ -449,13 +449,221 @@ _GETUSERSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=628,
-  serialized_end=688,
+  serialized_start=648,
+  serialized_end=708,
+)
+
+
+_SETUSERSTATUSREQUEST = _descriptor.Descriptor(
+  name='SetUserStatusRequest',
+  full_name='user.SetUserStatusRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='status', full_name='user.SetUserStatusRequest.status', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=710,
+  serialized_end=748,
+)
+
+
+_PINGREQUEST = _descriptor.Descriptor(
+  name='PingRequest',
+  full_name='user.PingRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=750,
+  serialized_end=763,
+)
+
+
+_GETCLIENTSSTATUSREQUEST = _descriptor.Descriptor(
+  name='GetClientsStatusRequest',
+  full_name='user.GetClientsStatusRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='lst_client', full_name='user.GetClientsStatusRequest.lst_client', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=765,
+  serialized_end=835,
+)
+
+
+_MEMBERINFOREQUEST = _descriptor.Descriptor(
+  name='MemberInfoRequest',
+  full_name='user.MemberInfoRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='client_id', full_name='user.MemberInfoRequest.client_id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='workspace_domain', full_name='user.MemberInfoRequest.workspace_domain', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=837,
+  serialized_end=901,
+)
+
+
+_GETCLIENTSSTATUSRESPONSE = _descriptor.Descriptor(
+  name='GetClientsStatusResponse',
+  full_name='user.GetClientsStatusResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='lst_client', full_name='user.GetClientsStatusResponse.lst_client', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=903,
+  serialized_end=970,
+)
+
+
+_MEMBERINFORES = _descriptor.Descriptor(
+  name='MemberInfoRes',
+  full_name='user.MemberInfoRes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='client_id', full_name='user.MemberInfoRes.client_id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='workspace_domain', full_name='user.MemberInfoRes.workspace_domain', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='user.MemberInfoRes.status', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=972,
+  serialized_end=1048,
 )
 
 _BASERESPONSE.fields_by_name['errors'].message_type = _ERRORRES
 _SEARCHUSERRESPONSE.fields_by_name['lst_user'].message_type = _USERINFORESPONSE
 _GETUSERSRESPONSE.fields_by_name['lst_user'].message_type = _USERINFORESPONSE
+_GETCLIENTSSTATUSREQUEST.fields_by_name['lst_client'].message_type = _MEMBERINFOREQUEST
+_GETCLIENTSSTATUSRESPONSE.fields_by_name['lst_client'].message_type = _MEMBERINFORES
 DESCRIPTOR.message_types_by_name['ErrorRes'] = _ERRORRES
 DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
 DESCRIPTOR.message_types_by_name['UserProfileResponse'] = _USERPROFILERESPONSE
@@ -467,6 +675,12 @@ DESCRIPTOR.message_types_by_name['GetUserRequest'] = _GETUSERREQUEST
 DESCRIPTOR.message_types_by_name['SearchUserRequest'] = _SEARCHUSERREQUEST
 DESCRIPTOR.message_types_by_name['SearchUserResponse'] = _SEARCHUSERRESPONSE
 DESCRIPTOR.message_types_by_name['GetUsersResponse'] = _GETUSERSRESPONSE
+DESCRIPTOR.message_types_by_name['SetUserStatusRequest'] = _SETUSERSTATUSREQUEST
+DESCRIPTOR.message_types_by_name['PingRequest'] = _PINGREQUEST
+DESCRIPTOR.message_types_by_name['GetClientsStatusRequest'] = _GETCLIENTSSTATUSREQUEST
+DESCRIPTOR.message_types_by_name['MemberInfoRequest'] = _MEMBERINFOREQUEST
+DESCRIPTOR.message_types_by_name['GetClientsStatusResponse'] = _GETCLIENTSSTATUSRESPONSE
+DESCRIPTOR.message_types_by_name['MemberInfoRes'] = _MEMBERINFORES
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 ErrorRes = _reflection.GeneratedProtocolMessageType('ErrorRes', (_message.Message,), {
@@ -546,6 +760,48 @@ GetUsersResponse = _reflection.GeneratedProtocolMessageType('GetUsersResponse', 
   })
 _sym_db.RegisterMessage(GetUsersResponse)
 
+SetUserStatusRequest = _reflection.GeneratedProtocolMessageType('SetUserStatusRequest', (_message.Message,), {
+  'DESCRIPTOR' : _SETUSERSTATUSREQUEST,
+  '__module__' : 'protos.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.SetUserStatusRequest)
+  })
+_sym_db.RegisterMessage(SetUserStatusRequest)
+
+PingRequest = _reflection.GeneratedProtocolMessageType('PingRequest', (_message.Message,), {
+  'DESCRIPTOR' : _PINGREQUEST,
+  '__module__' : 'protos.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.PingRequest)
+  })
+_sym_db.RegisterMessage(PingRequest)
+
+GetClientsStatusRequest = _reflection.GeneratedProtocolMessageType('GetClientsStatusRequest', (_message.Message,), {
+  'DESCRIPTOR' : _GETCLIENTSSTATUSREQUEST,
+  '__module__' : 'protos.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.GetClientsStatusRequest)
+  })
+_sym_db.RegisterMessage(GetClientsStatusRequest)
+
+MemberInfoRequest = _reflection.GeneratedProtocolMessageType('MemberInfoRequest', (_message.Message,), {
+  'DESCRIPTOR' : _MEMBERINFOREQUEST,
+  '__module__' : 'protos.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.MemberInfoRequest)
+  })
+_sym_db.RegisterMessage(MemberInfoRequest)
+
+GetClientsStatusResponse = _reflection.GeneratedProtocolMessageType('GetClientsStatusResponse', (_message.Message,), {
+  'DESCRIPTOR' : _GETCLIENTSSTATUSRESPONSE,
+  '__module__' : 'protos.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.GetClientsStatusResponse)
+  })
+_sym_db.RegisterMessage(GetClientsStatusResponse)
+
+MemberInfoRes = _reflection.GeneratedProtocolMessageType('MemberInfoRes', (_message.Message,), {
+  'DESCRIPTOR' : _MEMBERINFORES,
+  '__module__' : 'protos.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.MemberInfoRes)
+  })
+_sym_db.RegisterMessage(MemberInfoRes)
+
 
 
 _USER = _descriptor.ServiceDescriptor(
@@ -555,8 +811,8 @@ _USER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=691,
-  serialized_end=1077,
+  serialized_start=1051,
+  serialized_end=1648,
   methods=[
   _descriptor.MethodDescriptor(
     name='get_profile',
@@ -589,9 +845,39 @@ _USER = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
+    name='update_status',
+    full_name='user.User.update_status',
+    index=3,
+    containing_service=None,
+    input_type=_SETUSERSTATUSREQUEST,
+    output_type=_BASERESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='ping_request',
+    full_name='user.User.ping_request',
+    index=4,
+    containing_service=None,
+    input_type=_PINGREQUEST,
+    output_type=_BASERESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='get_clients_status',
+    full_name='user.User.get_clients_status',
+    index=5,
+    containing_service=None,
+    input_type=_GETCLIENTSSTATUSREQUEST,
+    output_type=_GETCLIENTSSTATUSRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
     name='get_user_info',
     full_name='user.User.get_user_info',
-    index=3,
+    index=6,
     containing_service=None,
     input_type=_GETUSERREQUEST,
     output_type=_USERINFORESPONSE,
@@ -601,7 +887,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='search_user',
     full_name='user.User.search_user',
-    index=4,
+    index=7,
     containing_service=None,
     input_type=_SEARCHUSERREQUEST,
     output_type=_SEARCHUSERRESPONSE,
@@ -611,7 +897,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='get_users',
     full_name='user.User.get_users',
-    index=5,
+    index=8,
     containing_service=None,
     input_type=_EMPTY,
     output_type=_GETUSERSRESPONSE,

@@ -8,6 +8,7 @@ from datetime import datetime
 from queue import Queue
 import uuid
 import asyncio
+from utils.config import *
 
 client_message_queue = {}
 
@@ -18,15 +19,13 @@ class MessageService(BaseService):
         self.service_group = GroupChat()
         self.message_read_model = MessageUserRead()
 
-    def store_message(self, group_id, from_client_id, client_id, message):
-        # store message to database
-        message_id = str(uuid.uuid4())
-        created_at = datetime.now()
+    def store_message(self, message_id, created_at, group_id, group_type, from_client_id, from_client_workspace_domain, client_id, message):
         # init new message
         self.model = Message(
             id=message_id,
             group_id=group_id,
             from_client_id=from_client_id,
+            from_client_workspace_domain=from_client_workspace_domain,
             client_id=client_id,
             message=message,
             created_at=created_at
@@ -43,7 +42,9 @@ class MessageService(BaseService):
         res_obj = message_pb2.MessageObjectResponse(
             id=new_message.id,
             group_id=new_message.group_id,
+            group_type=group_type,
             from_client_id=new_message.from_client_id,
+            from_client_workspace_domain=new_message.from_client_workspace_domain,
             message=message,
             created_at=int(new_message.created_at.timestamp() * 1000)
         )
@@ -52,10 +53,7 @@ class MessageService(BaseService):
         if new_message.updated_at:
             res_obj.updated_at = int(new_message.updated_at.timestamp() * 1000)
 
-        if client_id:
-            res_obj.group_type = "peer"
-        else:
-            res_obj.group_type = "group"
+        res_obj.client_workspace_domain = get_owner_workspace_domain()
 
         return res_obj
 
@@ -105,6 +103,7 @@ class MessageService(BaseService):
                 group_id=obj.group_id,
                 group_type=group_type.group_type,
                 from_client_id=obj.from_client_id,
+                from_client_workspace_domain=obj.from_client_workspace_domain,
                 message=obj.message,
                 created_at=int(obj.created_at.timestamp() * 1000)
             )

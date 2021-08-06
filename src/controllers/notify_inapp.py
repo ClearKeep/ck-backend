@@ -39,8 +39,11 @@ class NotifyInAppController(BaseController):
                     notify_stream_response = notify_pb2.NotifyObjectResponse(
                         id=notify_response.id,
                         client_id=notify_response.client_id,
+                        client_workspace_domain=notify_response.client_workspace_domain,
                         ref_client_id=notify_response.ref_client_id,
                         ref_group_id=notify_response.ref_group_id,
+                        ref_subject_name=notify_response.ref_subject_name,
+                        ref_workspace_domain=notify_response.ref_workspace_domain,
                         notify_type=notify_response.notify_type,
                         notify_image=notify_response.notify_image,
                         notify_title=notify_response.notify_title,
@@ -51,7 +54,7 @@ class NotifyInAppController(BaseController):
                     await context.write(notify_stream_response)
                 await asyncio.sleep(0.5)
             except:
-                logger.info('Client notify {} is disconnected'.format(client_id))
+                logger.error('Client notify {} is disconnected'.format(client_id))
                 client_notify_queue[notify_channel] = None
                 del client_notify_queue[notify_channel]
 
@@ -72,6 +75,7 @@ class NotifyInAppController(BaseController):
     async def un_subscribe(self, request, context):
         print("notify_inapp un_subscribe api")
         try:
+            logger.info('un_subscribe user: {}'.format(request.client_id))
             self.service.un_subscribe(request.client_id)
             return notify_pb2.BaseResponse(success=True)
         except Exception as e:

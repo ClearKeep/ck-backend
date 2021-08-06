@@ -6,11 +6,13 @@ message MessageObjectResponse {
   int64 group_id = 2;
   string group_type = 3;
   string from_client_id = 4;
-  string client_id = 5;
-  bytes message = 6;
-  repeated ClientReadObject lst_client_read = 7;
-  int64 created_at = 8;
-  int64 updated_at = 9;
+  string from_client_workspace_domain = 5;
+  string client_id = 6;
+  string client_workspace_domain = 7;
+  bytes message = 8;
+  repeated ClientReadObject lst_client_read = 9;
+  int64 created_at = 10;
+  int64 updated_at = 11;
 }
 
 message ClientReadObject {
@@ -48,11 +50,21 @@ message PublishRequest {
   string fromClientId = 1;
   string clientId = 2;
   int64 groupId = 3;
-  string groupType = 4;
-  bytes message = 5;
+  bytes message = 4;
 }
 //response: BaseResponse
 
+message WorkspacePublishRequest {
+  string from_client_id = 1;
+  string from_client_workspace_domain = 2;
+  string client_id = 3;
+  int64 group_id = 4;
+  string group_type = 5;
+  string message_id = 6;
+  bytes message = 7;
+  int64 created_at = 8;
+  int64 updated_at = 9;
+}
 
 // Request: subcribe
 message SubscribeRequest {
@@ -96,5 +108,7 @@ service Message {
     rpc Listen (ListenRequest) returns (stream MessageObjectResponse);
     rpc Publish (PublishRequest) returns (MessageObjectResponse);
     rpc read_messages (ReadMessagesRequest) returns (BaseResponse);
-    rpc edit_message (EditMessageRequest) returns (MessageObjectResponse);
+    //
+    rpc workspace_publish (WorkspacePublishRequest) returns (MessageObjectResponse);
+    //rpc edit_message (EditMessageRequest) returns (MessageObjectResponse);
 }

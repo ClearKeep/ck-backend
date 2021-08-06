@@ -29,7 +29,7 @@ def ios_data_notification_test():
     alert = 'request_call'
     # token = registration_tokens
     token = '16D6F8F928B7A1315DCB65E78AA1666CA6AF83EB37ACC5A3F9F4332517CC7552'
-    f = open("/configs/apns/Certificates_voip.pem", "r")
+    f = open("/configs/apns/ios_apns_production.pem", "r")
     pemfile = f.read()
     try:
         beams_client = PushNotifications(
@@ -57,7 +57,7 @@ def ios_data_notification_test():
 
 def test1():
     # sslcontext.load_cert_chain(cert, keyfile=ca_cert)
-    cli = apnsclient(mode=apnsclient.MODE_DEV, client_cert='/home/global/Ductn/ck-backend/src/services/Certificates_voip.pem')
+    cli = apnsclient(mode=apnsclient.MODE_DEV, client_cert='/home/global/Ductn/ck-backend/src/services/ios_apns_production.pem')
     alert = IOSPayloadAlert(body='body!', title='title!')
     payload = IOSPayload(alert=alert)
     notification = IOSNotification(payload=payload, priority=IOSNotification.PRIORITY_LOW)
@@ -86,7 +86,7 @@ def test1():
 def voip():
 
     client = VoIPClient(
-    auth_key_filepath="/configs/apns/Certificates_voip.pem",
+    auth_key_filepath="/configs/apns/ios_apns_production.pem",
     bundle_id= "com.telred.clearkeep3.ios.dev",
     use_sandbox=True
     )
