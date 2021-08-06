@@ -4,15 +4,19 @@ package notification;
 message NotifyObjectResponse {
   int64 id = 1;
   string client_id = 2;
+  string client_workspace_domain = 3;
   string ref_client_id = 4;
-  int64 ref_group_id = 5;
-  string notify_type = 6;
-  string notify_image = 7;
-  string notify_title = 8;
-  string notify_content = 9;
-  bool read_flg = 11;
-  int64 created_at = 12;
+  string ref_workspace_domain = 5;
+  string ref_subject_name = 6;
+  int64 ref_group_id = 7;
+  string notify_type = 8;
+  string notify_image = 9;
+  string notify_title = 10;
+  string notify_content = 11;
+  bool read_flg = 12;
+  int64 created_at = 13;
 }
+
 
 //errors response
 message ErrorRes {

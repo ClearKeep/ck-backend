@@ -10,7 +10,7 @@ def create_timed_rotating_log(path):
                                        when='midnight',
                                        backupCount=1)
     handler.suffix = "%Y-%m-%d"
-    formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s %(message)s')
+    formatter = logging.Formatter(u'%(asctime)s\t%(levelname)s\t%(filename)s:%(lineno)d\t%(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 

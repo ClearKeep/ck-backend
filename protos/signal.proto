@@ -86,6 +86,17 @@ message GroupGetClientKeyResponse {
   GroupClientKeyObject clientKey = 2;
 }
 
+//Request: Get client key via clientId and groupId
+message WorkspaceGroupGetClientKeyRequest {
+  int64 groupId = 1;
+  string clientId = 2;
+}
+//Response
+message WorkspaceGroupGetClientKeyResponse {
+  int64 groupId = 1;
+  GroupClientKeyObject clientKey = 2;
+}
+
 
 // Request: Get all client key via groupId
 message GroupGetAllClientKeyRequest {
@@ -105,4 +116,6 @@ service SignalKeyDistribution {
       rpc GroupRegisterClientKey (GroupRegisterClientKeyRequest) returns (BaseResponse);
       rpc GroupGetClientKey (GroupGetClientKeyRequest) returns (GroupGetClientKeyResponse);
       rpc GroupGetAllClientKey (GroupGetAllClientKeyRequest) returns (GroupGetAllClientKeyResponse);
+      //workspace
+      rpc WorkspaceGroupGetClientKey (WorkspaceGroupGetClientKeyRequest) returns (WorkspaceGroupGetClientKeyResponse);
 }

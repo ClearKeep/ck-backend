@@ -23,7 +23,7 @@ class Message:
     GET_GROUP_CHAT_FAILED = 1018
     SEARCH_GROUP_CHAT_FAILED = 1019
     CLIENT_QUEUE_NOT_FOUND = 1020
-
+    
     # notify
     GET_CLIENT_NOTIFIES_FAILED = 1021
     CLIENT_READ_NOTIFY_FAILED = 1022
@@ -54,7 +54,34 @@ class Message:
     JOIN_WORKSPACE_FAILED = 1045
 
     EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN = 1046
+    CLIENT_MISS_CALL_FAILED = 1047
+    CLIENT_DECLINE_CALL_FAILED = 1048
+    CLIENT_END_CALL_FAILED = 1049
+    CLIENT_EDIT_MESSAGE_FAILED = 1050
+    ADD_MEMBER_FAILED = 1051
+    CREATE_NOTE_FAILED = 1052
+    EDIT_NOTE_FAILED = 1053
+    DELETE_NOTE_FAILED = 1054
+    GET_USER_NOTES_FAILED = 1055
 
+    # add member to group
+    ADDER_MEMBER_NOT_IN_GROUP = 1056
+    ADDED_USER_IS_ALREADY_MEMBER = 1057
+    # leave group
+    LEAVED_MEMBER_NOT_IN_GROUP = 1058
+    LEAVE_GROUP_FAILED = 1059
+    # remove member
+    REMOVED_MEMBER_NOT_IN_GROUP = 1060
+    REMOVER_MEMBER_NOT_IN_GROUP = 1061
+    REMOVE_MEMBER_GROUP_FAILED = 1062
+    # leave workspace
+    LEAVE_WORKSPACE_FAILED = 1063
+
+    # change status
+    UPDATE_USER_STATUS_FAILED = 1047
+    PING_PONG_SERVER_FAILED = 1048
+    GET_USER_STATUS_FAILED = 1049
+    
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
         AUTH_USER_NOT_FOUND: "Login information is not correct. Please try again",
@@ -98,6 +125,32 @@ class Message:
         JOIN_WORKSPACE_FAILED: "Join workspace failed. Please try again",
         EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN: "The account with this email "
             "does not exist. Please try again",
+        CLIENT_EDIT_MESSAGE_FAILED: "Edit message failed. Please try again",
+        CLIENT_MISS_CALL_FAILED: "Miss Call failed. Please try again",
+        CLIENT_DECLINE_CALL_FAILED: "Decline Call failed. Please try again",
+        CLIENT_END_CALL_FAILED: "End Call failed. Please try again",
+        ADD_MEMBER_FAILED: "Add Member failed. Please try again",
+        CREATE_NOTE_FAILED: "Create Note failed. Please try again",
+        EDIT_NOTE_FAILED: "Edit Note failed. Please try again",
+        DELETE_NOTE_FAILED: "Delete Note failed. Please try again",
+        GET_USER_NOTES_FAILED: "Get User Notes failed. Please try again",
+
+        ADDER_MEMBER_NOT_IN_GROUP: "User is not in the group. Please try again",
+        ADDED_USER_IS_ALREADY_MEMBER: "Added user is already a member of the group. \
+                Please try again",
+
+        LEAVED_MEMBER_NOT_IN_GROUP: "Leave member is not in group. Please check again",
+        LEAVE_GROUP_FAILED: "Leave group failed. Please try again",
+
+        REMOVED_MEMBER_NOT_IN_GROUP: "Removed member is not in group. Please check again",
+        REMOVER_MEMBER_NOT_IN_GROUP: "Remover member is not in group. Please check again",
+        REMOVE_MEMBER_GROUP_FAILED: "Remover member group failed. Please try again",
+
+        LEAVE_WORKSPACE_FAILED: "Leave Workspace failed. Please try again",
+            
+        UPDATE_USER_STATUS_FAILED :"Update status failed. Please try again",
+        PING_PONG_SERVER_FAILED :"Ping and pong server failed. Please try again",
+        GET_USER_STATUS_FAILED :"Get user status failed failed. Please try again"
     }
 
     @staticmethod

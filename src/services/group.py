@@ -1,16 +1,23 @@
 from src.services.base import BaseService
 from src.models.group import GroupChat
-from protos import group_pb2
+from src.models.user import User
 from src.models.signal_group_key import GroupClientKey
+from src.models.signal_peer_key import PeerClientKey
+from src.models.message import Message as MessageClass
 from src.services.notify_inapp import NotifyInAppService
+import src.services.notify_inapp as notify_inapp
 from src.services.janus_webrtc import JanusService
-from utils.config import get_system_config
 from client.client_group import *
 from client.client_user import *
 import requests
-import json
 import secrets
 import datetime
+from utils.config import *
+from protos import group_pb2
+from msg.message import Message
+from google.protobuf.json_format import MessageToDict
+from utils.logger import *
+from src.services.notify_push import NotifyPushService
 
 
 class GroupService(BaseService):
@@ -21,32 +28,38 @@ class GroupService(BaseService):
 
     def add_group(self, group_name, group_type, lst_client, created_by):
         # check duplicate with create group peer
-        if group_type == 'peer':
-            group_chat = self.check_joined(create_by=created_by, list_client=lst_client)
-            if group_chat:
-                res_obj = group_pb2.GroupObjectResponse(
-                    group_id=group_chat.id,
-                    group_name=group_chat.group_name,
-                    group_type=group_chat.group_type,
-                    group_avatar=group_chat.group_avatar,
-                    created_by_client_id=group_chat.created_by,
-                    created_at=int(group_chat.created_at.timestamp() * 1000),
-                    updated_by_client_id=group_chat.updated_by,
-                    group_rtc_token=group_chat.group_rtc_token
-                )
-                return res_obj
+        # if group_type == 'peer':
+        #     group_chat = self.check_joined(create_by=created_by, list_client=lst_client)
+        #     if group_chat:
+        #         res_obj = group_pb2.GroupObjectResponse(
+        #             group_id=group_chat.id,
+        #             group_name=group_chat.group_name,
+        #             group_type=group_chat.group_type,
+        #             group_avatar=group_chat.group_avatar,
+        #             created_by_client_id=group_chat.created_by,
+        #             created_at=int(group_chat.created_at.timestamp() * 1000),
+        #             updated_by_client_id=group_chat.updated_by,
+        #             group_rtc_token=group_chat.group_rtc_token
+        #         )
+        #         return res_obj
 
         tmp_list_client = []
+        created_by_user = None
         for obj in lst_client:
-            tmp_list_client.append({"id": obj.id, "workspace_domain":obj.workspace_domain})
+            if obj.id == created_by:
+                created_by_user = obj
+            tmp_list_client.append(
+                {"id": obj.id, "display_name": obj.display_name, "workspace_domain": obj.workspace_domain,
+                 "status": "active"})
 
         self.model = GroupChat(
             group_name=group_name,
             group_type=group_type,
-            created_by=created_by,
-            updated_at=datetime.datetime.now(),
             group_clients=json.dumps(tmp_list_client),
-            group_rtc_token=secrets.token_hex(10)
+            group_rtc_token=secrets.token_hex(10),
+            total_member=len(tmp_list_client),
+            created_by=created_by,
+            updated_at=datetime.datetime.now()
         )
         new_group = self.model.add()
 
@@ -64,51 +77,85 @@ class GroupService(BaseService):
         if new_group.updated_at is not None:
             res_obj.updated_at = int(new_group.updated_at.timestamp() * 1000)
 
-        owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'], get_system_config()['grpc_port'])
+        owner_workspace_domain = get_owner_workspace_domain()
         for obj in lst_client:
+            # list client in group
+            client_in = group_pb2.ClientInGroupResponse(
+                id=obj.id,
+                display_name=obj.display_name,
+                workspace_domain=obj.workspace_domain,
+                status="active"
+            )
+            res_obj.lst_client.append(client_in)
+
             # add to signal group key
             if obj.workspace_domain == owner_workspace_domain:
                 client_group_key = GroupClientKey().set_key(new_group.id, obj.id, None, None, None, None)
                 client_group_key.add()
                 # notify per client
                 if group_type == "peer":
-                    self.notify_service.notify_invite_peer(obj, created_by, new_group.id)
+                    self.notify_service.notify_invite_peer(
+                        obj.id,
+                        created_by,
+                        new_group.id,
+                        created_by_user.workspace_domain,
+                        created_by_user.display_name
+                    )
                 else:
-                    self.notify_service.notify_invite_group(obj, created_by, new_group.id)
+                    self.notify_service.notify_invite_group(
+                        obj.id,
+                        created_by,
+                        new_group.id,
+                        created_by_user.workspace_domain,
+                        created_by_user.display_name
+                    )
             else:
                 # need to call other workspace and create group key
-                group_res_object = ClientGroup(obj.workspace_domain).create_group_workspace(group_name, group_type,
-                                                                                            obj.id, new_group.id,
-                                                                                            owner_workspace_domain)
-                client_group_key = GroupClientKey().set_key(new_group.id, obj.id,
-                                                            group_res_object.client_workspace_domain,
-                                                            group_res_object.group_id, None, None)
-                client_group_key.add()
-
-                client_in = group_pb2.ClientInGroupResponse(
-                    id=group_res_object.client_id,
-                    display_name=group_res_object.client_name,
-                    workspace_domain=group_res_object.client_workspace_domain
+                request = group_pb2.CreateGroupWorkspaceRequest(
+                    group_name=group_name,
+                    group_type=group_type,
+                    from_client_id=created_by,
+                    client_id=obj.id,
+                    lst_client=new_group.group_clients,
+                    owner_group_id=new_group.id,
+                    owner_workspace_domain=owner_workspace_domain
                 )
-                res_obj.lst_client.append(client_in)
+
+                group_res_object = \
+                    ClientGroup(obj.workspace_domain).create_group_workspace(
+                        request
+                    )
+                client_group_key = GroupClientKey().set_key(
+                    new_group.id, obj.id,
+                    group_res_object.client_workspace_domain,
+                    group_res_object.group_id, None, None
+                )
+                client_group_key.add()
+                # client_in = group_pb2.ClientInGroupResponse(
+                #     id=group_res_object.client_id,
+                #     display_name=group_res_object.client_name,
+                #     workspace_domain=group_res_object.client_workspace_domain
+                # )
+                # res_obj.lst_client.append(client_in)
 
         # list client in group
-        lst_client_in_group = GroupClientKey().get_clients_in_group(new_group.id)
-        for client in lst_client_in_group:
-            if client.client_workspace_domain is None:
-                client_in = group_pb2.ClientInGroupResponse(
-                    id=client.User.id,
-                    display_name=client.User.display_name,
-                    workspace_domain=owner_workspace_domain
-                )
-                res_obj.lst_client.append(client_in)
-
+        # lst_client_in_group = GroupClientKey().get_clients_in_group(new_group.id)
+        # for client in lst_client_in_group:
+        #     if client.GroupClientKey.client_workspace_domain is None:
+        #         client_in = group_pb2.ClientInGroupResponse(
+        #             id=client.User.id,
+        #             display_name=client.User.display_name,
+        #             workspace_domain=owner_workspace_domain
+        #         )
+        #         res_obj.lst_client.append(client_in)
         return res_obj
 
-    def add_group_workspace(self, group_name, group_type, client_id, owner_group_id, owner_workspace_domain):
+    def add_group_workspace(self, group_name, group_type, from_client_id, client_id, lst_client, owner_group_id,
+                            owner_workspace_domain):
         self.model = GroupChat(
             group_name=group_name,
             group_type=group_type,
+            group_clients=lst_client,
             owner_group_id=owner_group_id,
             owner_workspace_domain=owner_workspace_domain,
             updated_at=datetime.datetime.now()
@@ -117,17 +164,31 @@ class GroupService(BaseService):
         # add to signal group key
         client_group_key = GroupClientKey().set_key(new_group.id, client_id, None, None, None, None)
         client_group_key.add()
+
+        client_name = ""
+        user_info = User().get(client_id)
+        if user_info:
+            client_name = user_info.display_name
+
+        list_client_in_group = json.loads(lst_client)
+        created_by_user = None
+        for obj in list_client_in_group:
+            if obj['id'] == from_client_id:
+                created_by_user = obj
+
         # notify to client
         if group_type == "peer":
-            self.notify_service.notify_invite_peer(client_id, "", new_group.id)
+            self.notify_service.notify_invite_peer(client_id, from_client_id, new_group.id, owner_workspace_domain,
+                                                   created_by_user['display_name'])
         else:
-            self.notify_service.notify_invite_group(client_id, "", new_group.id)
+            self.notify_service.notify_invite_group(client_id, from_client_id, new_group.id, owner_workspace_domain,
+                                                    created_by_user['display_name'])
 
-        client_workspace_domain = "{}:{}".format(get_system_config()['server_domain'], get_system_config()['grpc_port'])
+        client_workspace_domain = get_owner_workspace_domain()
         return group_pb2.CreateGroupWorkspaceResponse(
             group_id=new_group.id,
             client_id=client_id,
-            client_name="",
+            client_name=client_name,
             client_workspace_domain=client_workspace_domain
         )
 
@@ -213,23 +274,35 @@ class GroupService(BaseService):
                 res_obj.updated_at = int(obj.updated_at.timestamp() * 1000)
 
             # list client in group
-            lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
-            for client in lst_client_in_group:
-                if client.client_workspace_domain is None:
-                    client_in = group_pb2.ClientInGroupResponse(
-                        id=client.User.id,
-                        display_name=client.User.display_name,
-                    )
-                    res_obj.lst_client.append(client_in)
-                else:
-                    #call to other workspace domain to get client
-                    client_in_workspace = ClientUser().get_user_info(client.GroupClientKey.client_id, client.GroupClientKey.client_workspace_domain )
-                    client_in = group_pb2.ClientInGroupResponse(
-                        id=client_in_workspace.id,
-                        display_name=client_in_workspace.display_name,
-                        workspace_domain=client.GroupClientKey.client_workspace_domain
-                    )
-                    res_obj.lst_client.append(client_in)
+            group_clients = json.loads(obj.group_clients)
+            for client in group_clients:
+                client_in = group_pb2.ClientInGroupResponse(
+                    id=client['id'],
+                    display_name=client['display_name'],
+                    workspace_domain=client['workspace_domain'],
+                    status=client['status']
+                )
+                res_obj.lst_client.append(client_in)
+            # lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
+            # owner_workspace_domain = get_owner_workspace_domain()
+            #
+            # for client in lst_client_in_group:
+            #     if client.GroupClientKey.client_workspace_domain is None:
+            #         client_in = group_pb2.ClientInGroupResponse(
+            #             id=client.User.id,
+            #             display_name=client.User.display_name,
+            #             workspace_domain=owner_workspace_domain,
+            #         )
+            #         res_obj.lst_client.append(client_in)
+            #     else:
+            #         #call to other workspace domain to get client
+            #         client_in_workspace = ClientUser(client.GroupClientKey.client_workspace_domain).get_user_info(client.GroupClientKey.client_id, client.GroupClientKey.client_workspace_domain )
+            #         client_in = group_pb2.ClientInGroupResponse(
+            #             id=client_in_workspace.id,
+            #             display_name=client_in_workspace.display_name,
+            #             workspace_domain=client.GroupClientKey.client_workspace_domain
+            #         )
+            #         res_obj.lst_client.append(client_in)
 
             if obj.last_message_at:
                 res_obj.last_message_at = int(obj.last_message_at.timestamp() * 1000)
@@ -338,13 +411,15 @@ class GroupService(BaseService):
             if obj.updated_at:
                 obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
 
-            # for client in lst_client_in_groups:
-            #     if client.group_id == obj.id:
-            #         client_in = group_pb2.ClientInGroupResponse(
-            #             id=client.User.id,
-            #             display_name=client.User.display_name
-            #         )
-            #         obj_res.lst_client.append(client_in)
+            group_clients = json.loads(obj.group_clients)
+            for client in group_clients:
+                client_in = group_pb2.ClientInGroupResponse(
+                    id=client['id'],
+                    display_name=client['display_name'],
+                    workspace_domain=client['workspace_domain'],
+                    status=client['status']
+                )
+                obj_res.lst_client.append(client_in)
 
             if obj.last_message_at:
                 obj_res.last_message_at = int(obj.last_message_at.timestamp() * 1000)
@@ -394,3 +469,422 @@ class GroupService(BaseService):
                         if member_id in lst_group_client_id:
                             return group_joined.GroupChat
         return None
+
+    def get_group_info(self, group_id):
+        return self.model.get_group(group_id)
+
+    def get_clients_in_group(self, group_id):
+        return GroupClientKey().get_clients_in_group(group_id)
+
+    def get_clients_in_group_owner(self, group_owner_id):
+        lst_group = self.model.get_by_group_owner(group_owner_id)
+        group_ids = (group.id for group in lst_group)
+        return GroupClientKey().get_clients_in_groups(group_ids)
+
+    async def add_member_to_group_not_owner(self, added_member_info, adding_member_info, group):
+        logger.info('add_member_to_group_not_owner')
+
+        owner_workspace_domain = get_owner_workspace_domain()
+        tmp_list_client = json.loads(group.group_clients)
+
+        # PROCESS IN THIS SERVER
+        # case new member is same server (not owner group)
+        if added_member_info.workspace_domain == owner_workspace_domain:
+            # add group with owner group
+            self.model = GroupChat(
+                owner_group_id=group.owner_group_id,
+                owner_workspace_domain=group.owner_workspace_domain,
+                group_name=group.group_name,
+                group_type=group.group_type,
+                group_clients=group.group_clients,
+                group_rtc_token="",
+                total_member=len(tmp_list_client),
+                created_by=group.created_by,
+            )
+            new_group = self.model.add()
+            added_member_info.ref_group_id = new_group.id
+
+            # add more group client key
+            group_client_key = GroupClientKey().set_key(
+                new_group.id, added_member_info.id,
+                None, None, None, None
+            )
+            group_client_key.add()
+
+        # update all group with owner group
+        lst_group = self.model.get_by_group_owner(group.owner_group_id)
+        for group in lst_group:
+            group.group_clients = group.group_clients
+            group.total_member = len(tmp_list_client)
+            group.update()
+
+        # push notification for member active
+        group_ids = (group.id for group in lst_group)
+        list_clients = GroupClientKey().get_clients_in_groups(group_ids)
+        push_service = NotifyPushService()
+
+        for client in list_clients:
+            data = {
+                'client_id': client.GroupClientKey.client_id,
+                'client_workspace_domain': owner_workspace_domain,
+                'group_id': str(client.GroupClientKey.group_id),
+                'added_member_id': added_member_info.id,
+                'added_member_display_name': added_member_info.display_name,
+                'added_member_workspace_domain': added_member_info.workspace_domain,
+                'adding_member_id': adding_member_info.id,
+                'adding_member_display_name': adding_member_info.display_name,
+                'adding_member_workspace_domain': adding_member_info.workspace_domain
+            }
+            logger.info(data)
+            await push_service.push_text_to_client(
+                to_client_id=client.GroupClientKey.client_id,
+                title="Member Add",
+                body="A user has been added to the group",
+                from_client_id=adding_member_info.id,
+                notify_type="new_member",
+                data=json.dumps(data)
+            )
+        # END PROCESS IN THIS SERVER
+        # CALL ADD MEMBER TO OWNER SERVER
+        add_member_request = group_pb2.AddMemberRequest(
+            added_member_info=added_member_info,
+            adding_member_info=adding_member_info,
+            group_id=group.owner_group_id,
+        )
+        ClientGroup(group.owner_workspace_domain).add_member(add_member_request)
+
+        return group_pb2.BaseResponse(
+            success=True
+        )
+
+    async def add_member_to_group_owner(self, added_member_info, adding_member_info, group):
+
+        logger.info('add_member_to_group_owner')
+        owner_workspace_domain = get_owner_workspace_domain()
+
+        # add more group client key for group owner
+        client_workspace_domain = None
+        if added_member_info.workspace_domain != owner_workspace_domain:
+            client_workspace_domain = added_member_info.workspace_domain
+
+        group_client_key = GroupClientKey().set_key(
+            group.id, added_member_info.id, client_workspace_domain, added_member_info.ref_group_id,
+            None, None
+        ).add()
+
+        # push notification for other member in server
+        lst_client_in_group = self.get_clients_in_group(group.id)
+        push_service = NotifyPushService()
+        for client in lst_client_in_group:
+            if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+                if client.GroupClientKey.client_id != adding_member_info.id:
+                    data = {
+                        'client_id': client.GroupClientKey.client_id,
+                        'client_workspace_domain': owner_workspace_domain,
+                        'group_id': str(group.id),
+                        'added_member_id': added_member_info.id,
+                        'added_member_display_name': added_member_info.display_name,
+                        'added_member_workspace_domain': owner_workspace_domain,
+                        'adding_member_id': adding_member_info.id,
+                        'adding_member_display_name': adding_member_info.display_name,
+                        'adding_member_workspace_domain': owner_workspace_domain
+                    }
+                    logger.info(data)
+                    await push_service.push_text_to_client(
+                        to_client_id=client.GroupClientKey.client_id,
+                        title="Member Add",
+                        body="A user has been added to the group",
+                        from_client_id=adding_member_info.id,
+                        notify_type="new_member",
+                        data=json.dumps(data)
+                    )
+
+        # request add member to other server
+        informed_workspace_domain = []
+        for client in lst_client_in_group:
+            if client.GroupClientKey.client_workspace_domain and client.GroupClientKey.client_workspace_domain != owner_workspace_domain \
+                    and client.GroupClientKey.client_workspace_domain != adding_member_info.workspace_domain:  # prevent loop call
+
+                if client.GroupClientKey.client_workspace_domain in informed_workspace_domain:
+                    continue
+                informed_workspace_domain.append(client.GroupClientKey.client_workspace_domain)
+
+                owner_group_req = group_pb2.GroupInfo(
+                    group_id=group.id,
+                    group_name=group.group_name,
+                    group_type=group.group_type,
+                    group_clients=group.group_clients,
+                    group_workspace_domain=owner_workspace_domain,
+                    created_by=group.created_by,
+                )
+                request = group_pb2.AddMemberWorkspaceRequest(
+                    added_member_info=added_member_info,
+                    adding_member_info=adding_member_info,
+                    owner_group=owner_group_req
+                )
+                logger.info(
+                    "call add member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
+                response = ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_add_member(request)
+                if response.is_member_workspace:
+                    logger.info("update ref_group to main server {}".format(response.ref_group_id))
+                    group_client_key.client_workspace_group_id = response.ref_group_id
+                    group_client_key.update()
+
+        return group_pb2.BaseResponse(
+            success=True
+        )
+
+    async def workspace_add_member(self, added_member_info, adding_member_info, owner_group_info):
+        logger.info('workspace_add_member')
+
+        owner_workspace_domain = get_owner_workspace_domain()
+        tmp_list_client = json.loads(owner_group_info.group_clients)
+
+        is_member_workspace = False
+        ref_group_id = None
+        # create for new member
+        if added_member_info.workspace_domain == owner_workspace_domain:
+            is_member_workspace = True
+            # add group with owner group
+            self.model = GroupChat(
+                owner_group_id=owner_group_info.group_id,
+                owner_workspace_domain=owner_group_info.group_workspace_domain,
+                group_name=owner_group_info.group_name,
+                group_type=owner_group_info.group_type,
+                group_clients=owner_group_info.group_clients,
+                group_rtc_token="",
+                total_member=len(tmp_list_client),
+                created_by=owner_group_info.created_by,
+            )
+            new_group = self.model.add()
+            ref_group_id = new_group.id
+            # add more group client key
+            group_client_key = GroupClientKey().set_key(
+                new_group.id, added_member_info.id,
+                None, None, None, None
+            )
+            group_client_key.add()
+
+        # update all group with owner group
+        lst_group = self.model.get_by_group_owner(owner_group_info.group_id)
+        for group in lst_group:
+            group.group_clients = owner_group_info.group_clients
+            group.total_member = len(tmp_list_client)
+            group.update()
+
+        # push notification for member active
+        group_ids = (group.id for group in lst_group)
+        list_clients = GroupClientKey().get_clients_in_groups(group_ids)
+        push_service = NotifyPushService()
+
+        for client in list_clients:
+            data = {
+                'client_id': client.GroupClientKey.client_id,
+                'client_workspace_domain': owner_workspace_domain,
+                'group_id': str(client.GroupClientKey.group_id),
+                'added_member_id': added_member_info.id,
+                'added_member_display_name': added_member_info.display_name,
+                'added_member_workspace_domain': added_member_info.workspace_domain,
+                'adding_member_id': adding_member_info.id,
+                'adding_member_display_name': adding_member_info.display_name,
+                'adding_member_workspace_domain': adding_member_info.workspace_domain
+            }
+            logger.info(data)
+            await push_service.push_text_to_client(
+                to_client_id=client.GroupClientKey.client_id,
+                title="Member Add",
+                body="A user has been added to the group",
+                from_client_id=adding_member_info.id,
+                notify_type="new_member",
+                data=json.dumps(data)
+            )
+
+        return group_pb2.AddMemberWorkspaceResponse(
+            is_member_workspace=is_member_workspace,
+            ref_group_id=ref_group_id
+        )
+
+    async def leave_group_owner(self, leave_member, leave_member_by, group):
+        logger.info('leave_group_owner')
+        owner_workspace_domain = get_owner_workspace_domain()
+
+        # delete group client key and inform member in this server
+        push_service = NotifyPushService()
+        lst_client_in_group = self.get_clients_in_group(group.id)
+
+        # case group remain only one member
+        if len(lst_client_in_group) == 1 and lst_client_in_group[0].GroupClientKey.client_id == leave_member.id:
+            lst_client_in_group[0].GroupClientKey.delete()
+            group.delete()
+            return group_pb2.BaseResponse(
+                success=True
+            )
+
+        for client in lst_client_in_group:
+            if client.GroupClientKey.client_id == leave_member.id:
+                client.GroupClientKey.delete()
+            if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+                if client.GroupClientKey.client_id != leave_member_by.id:
+                    data = {
+                        'client_id': client.GroupClientKey.client_id,
+                        'client_workspace_domain': owner_workspace_domain,
+                        'group_id': str(group.id),
+                        'leave_member': leave_member.id,
+                        'leave_member_display_name': leave_member.display_name,
+                        'leave_member_workspace_domain': leave_member.workspace_domain,
+                        'leave_member_by': leave_member_by.id,
+                        'leave_member_by_display_name': leave_member_by.display_name,
+                        'leave_member_by_workspace_domain': leave_member_by.workspace_domain
+                    }
+                    logger.info(data)
+                    await push_service.push_text_to_client(
+                        to_client_id=client.GroupClientKey.client_id,
+                        title="Member leave",
+                        body="user leave group",
+                        from_client_id=leave_member_by.id,
+                        notify_type="member_leave",
+                        data=json.dumps(data)
+                    )
+        # call workspace leave for other server
+        informed_workspace_domain = []
+        for client in lst_client_in_group:
+            if client.GroupClientKey.client_workspace_domain and client.GroupClientKey.client_workspace_domain != owner_workspace_domain \
+                    and client.GroupClientKey.client_workspace_domain != leave_member_by.workspace_domain:  # prevent loop call
+
+                if client.GroupClientKey.client_workspace_domain in informed_workspace_domain:
+                    continue
+                informed_workspace_domain.append(client.GroupClientKey.client_workspace_domain)
+
+                owner_group_req = group_pb2.GroupInfo(
+                    group_id=client.GroupClientKey.client_workspace_group_id,
+                    group_name=group.group_name,
+                    group_type=group.group_type,
+                    group_clients=group.group_clients,
+                    group_workspace_domain=owner_workspace_domain,
+                    created_by=group.created_by,
+                )
+                request = group_pb2.WorkspaceLeaveGroupRequest(
+                    leave_member=leave_member,
+                    leave_member_by=leave_member_by,
+                    owner_group=owner_group_req
+                )
+                logger.info(
+                    "call leave member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
+                ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_leave_group(request)
+
+        return group_pb2.BaseResponse(
+            success=True
+        )
+
+    async def leave_group_not_owner(self, leave_member, leave_member_by, group):
+        logger.info('leave_group_not_owner')
+        owner_workspace_domain = get_owner_workspace_domain()
+        tmp_list_client = json.loads(group.group_clients)
+        # PROCESS IN THIS SERVER
+        # case new member is same server (not owner group)
+        if leave_member.workspace_domain == owner_workspace_domain:
+            # remove group client add more group client key
+            group_client_key = GroupClientKey().get(group.id, leave_member.id)
+            if group_client_key:
+                group_client_key.delete()
+            # remove group with owner group
+            group.delete()
+
+        # update all group with owner group
+        lst_group = self.model.get_by_group_owner(group.owner_group_id)
+        for group in lst_group:
+            group.group_clients = group.group_clients
+            group.total_member = len(tmp_list_client)
+            group.update()
+
+        # push notification for member active
+        group_ids = (group.id for group in lst_group)
+        list_clients = GroupClientKey().get_clients_in_groups(group_ids)
+        push_service = NotifyPushService()
+
+        for client in list_clients:
+            data = {
+                'client_id': client.GroupClientKey.client_id,
+                'client_workspace_domain': owner_workspace_domain,
+                'group_id': str(group.id),
+                'leave_member': leave_member.id,
+                'leave_member_display_name': leave_member.display_name,
+                'leave_member_workspace_domain': leave_member.workspace_domain,
+                'leave_member_by': leave_member_by.id,
+                'leave_member_by_display_name': leave_member_by.display_name,
+                'leave_member_by_workspace_domain': leave_member_by.workspace_domain
+            }
+            logger.info(data)
+            await push_service.push_text_to_client(
+                to_client_id=client.GroupClientKey.client_id,
+                title="Member leave",
+                body="user leave group",
+                from_client_id=leave_member_by.id,
+                notify_type="member_leave",
+                data=json.dumps(data)
+            )
+        # END PROCESS IN THIS SERVER
+        # CALL LEAVE MEMBER TO OWNER SERVER
+        leave_group_request = group_pb2.LeaveGroupRequest(
+            leave_member=leave_member,
+            leave_member_by=leave_member_by,
+            group_id=group.owner_group_id,
+        )
+        ClientGroup(group.owner_workspace_domain).leave_group(leave_group_request)
+        return group_pb2.BaseResponse(
+            success=True
+        )
+
+    async def workspace_leave_group(self, leave_member, leave_member_by, group):
+        logger.info('workspace_leave_group')
+
+        owner_workspace_domain = get_owner_workspace_domain()
+        tmp_list_client = json.loads(group.group_clients)
+
+        owner_group_id = None
+        group_this_workspace = self.get_group_info(group.group_id)
+        if group_this_workspace:
+            owner_group_id = group_this_workspace.owner_group_id
+
+        # update all group with owner group
+        if owner_group_id:
+            lst_group = self.model.get_by_group_owner(owner_group_id)
+            for gr in lst_group:
+                gr.group_clients = group.group_clients
+                gr.total_member = len(tmp_list_client)
+                gr.update()
+
+            # push notification for member active
+            group_ids = (gr.id for gr in lst_group)
+            list_clients = GroupClientKey().get_clients_in_groups(group_ids)
+            push_service = NotifyPushService()
+
+            for client in list_clients:
+                data = {
+                    'client_id': client.GroupClientKey.client_id,
+                    'client_workspace_domain': owner_workspace_domain,
+                    'group_id': str(client.GroupClientKey.group_id),
+                    'leave_member': leave_member.id,
+                    'leave_member_display_name': leave_member.display_name,
+                    'leave_member_workspace_domain': leave_member.workspace_domain,
+                    'leave_member_by': leave_member_by.id,
+                    'leave_member_by_display_name': leave_member_by.display_name,
+                    'leave_member_by_workspace_domain': leave_member_by.workspace_domain
+                }
+                logger.info(data)
+                await push_service.push_text_to_client(
+                    to_client_id=client.GroupClientKey.client_id,
+                    title="Member leave",
+                    body="user leave group",
+                    from_client_id=leave_member_by.id,
+                    notify_type="member_leave",
+                    data=json.dumps(data)
+                )
+                if leave_member.workspace_domain == owner_workspace_domain and leave_member.id == client.client_id:
+                    client.GroupClientKey.delete()
+                    #remove group
+                    leave_member_group = self.get_group_info(client.GroupClientKey.group_id)
+                    if leave_member_group:
+                        leave_member_group.delete()
+
+        return group_pb2.BaseResponse(success=True)

@@ -1,7 +1,12 @@
 # ref https://pypi.org/project/python-keycloak/
 from keycloak import KeycloakOpenID, KeycloakAdmin
+from keycloak import raise_error_from_response
+from keycloak import KeycloakGetError
 from utils.config import get_system_config
 import json
+
+URL_ADMIN_REMOVE_USER_SESSIONS = "admin/realms/{realm-name}/users/{id}/logout"
+URL_ADMIN_REMOVE_SESSION = "admin/realms/{realm-name}/sessions/{session}"
 
 # keycloak client
 config_keycloak_client = get_system_config()['keycloak_account']
@@ -93,6 +98,22 @@ class KeyCloakUtils:
         return keycloak_admin.send_verify_email(user_id=user_id)
 
     @staticmethod
+    def get_sessions(user_id):
+        return keycloak_admin.get_sessions(user_id=user_id)
+
+    @staticmethod
+    def count_users():
+        return keycloak_admin.users_count()
+
+    @staticmethod
+    def get_user_id(email):
+        return keycloak_admin.get_user_id(email)
+
+    @staticmethod
+    def get_clients():
+        return keycloak_admin.get_clients()
+
+    @staticmethod
     def delete_user(user_id):
         return keycloak_admin.delete_user(user_id=user_id)
 
@@ -107,3 +128,26 @@ class KeyCloakUtils:
         return keycloak_admin.update_user(user_id=user_id, payload={'emailVerified': True})
 
 
+    @staticmethod
+    def remove_user_sessions(user_id):
+        params_path = {
+            "realm-name": keycloak_admin.realm_name,
+            "id": user_id
+        }
+        data_raw = keycloak_admin.raw_post(
+            URL_ADMIN_REMOVE_USER_SESSIONS.format(**params_path),
+            data=None
+        )
+        return raise_error_from_response(data_raw, KeycloakGetError, expected_codes=[204])
+
+    @staticmethod
+    def remove_session(session_id):
+        params_path = {
+            "realm-name": keycloak_admin.realm_name,
+            "session": session_id
+        }
+        data_raw = keycloak_admin.raw_delete(
+            URL_ADMIN_REMOVE_SESSION.format(**params_path),
+            data=None
+        )
+        return raise_error_from_response(data_raw, KeycloakGetError, expected_codes=[204])

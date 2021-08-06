@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x14protos/message.proto\x12\x07message\"\xa8\x02\n\x15MessageObjectResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x12\n\ngroup_type\x18\x03 \x01(\t\x12\x16\n\x0e\x66rom_client_id\x18\x04 \x01(\t\x12$\n\x1c\x66rom_client_workspace_domain\x18\x05 \x01(\t\x12\x11\n\tclient_id\x18\x06 \x01(\t\x12\x1f\n\x17\x63lient_workspace_domain\x18\x07 \x01(\t\x12\x0f\n\x07message\x18\x08 \x01(\x0c\x12\x32\n\x0flst_client_read\x18\t \x03(\x0b\x32\x19.message.ClientReadObject\x12\x12\n\ncreated_at\x18\n \x01(\x03\x12\x12\n\nupdated_at\x18\x0b \x01(\x03\"D\n\x10\x43lientReadObject\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x03 \x01(\t\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"B\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12!\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x11.message.ErrorRes\"W\n\x19GetMessagesInGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x0f\n\x07off_set\x18\x02 \x01(\x05\x12\x17\n\x0flast_message_at\x18\x03 \x01(\x03\"Q\n\x1aGetMessagesInGroupResponse\x12\x33\n\x0blst_message\x18\x01 \x03(\x0b\x32\x1e.message.MessageObjectResponse\"\xaf\x01\n\x0ePublishRequest\x12\x14\n\x0c\x66romClientId\x18\x01 \x01(\t\x12!\n\x19\x66romClientWorkspaceDomain\x18\x02 \x01(\t\x12\x10\n\x08\x63lientId\x18\x03 \x01(\t\x12\x1d\n\x15\x63lientWorkspaceDomain\x18\x04 \x01(\t\x12\x0f\n\x07groupId\x18\x05 \x01(\x03\x12\x11\n\tgroupType\x18\x06 \x01(\t\x12\x0f\n\x07message\x18\x07 \x01(\x0c\"$\n\x10SubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"&\n\x12UnSubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"!\n\rListenRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"-\n\x13ReadMessagesRequest\x12\x16\n\x0elst_message_id\x18\x04 \x03(\t2\xbd\x03\n\x07Message\x12\x62\n\x15get_messages_in_group\x12\".message.GetMessagesInGroupRequest\x1a#.message.GetMessagesInGroupResponse\"\x00\x12=\n\tSubscribe\x12\x19.message.SubscribeRequest\x1a\x15.message.BaseResponse\x12\x41\n\x0bUnSubscribe\x12\x1b.message.UnSubscribeRequest\x1a\x15.message.BaseResponse\x12\x42\n\x06Listen\x12\x16.message.ListenRequest\x1a\x1e.message.MessageObjectResponse0\x01\x12\x42\n\x07Publish\x12\x17.message.PublishRequest\x1a\x1e.message.MessageObjectResponse\x12\x44\n\rread_messages\x12\x1c.message.ReadMessagesRequest\x1a\x15.message.BaseResponseb\x06proto3'
+  serialized_pb=b'\n\x14protos/message.proto\x12\x07message\"\xa8\x02\n\x15MessageObjectResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x12\n\ngroup_type\x18\x03 \x01(\t\x12\x16\n\x0e\x66rom_client_id\x18\x04 \x01(\t\x12$\n\x1c\x66rom_client_workspace_domain\x18\x05 \x01(\t\x12\x11\n\tclient_id\x18\x06 \x01(\t\x12\x1f\n\x17\x63lient_workspace_domain\x18\x07 \x01(\t\x12\x0f\n\x07message\x18\x08 \x01(\x0c\x12\x32\n\x0flst_client_read\x18\t \x03(\x0b\x32\x19.message.ClientReadObject\x12\x12\n\ncreated_at\x18\n \x01(\x03\x12\x12\n\nupdated_at\x18\x0b \x01(\x03\"D\n\x10\x43lientReadObject\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x03 \x01(\t\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"B\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12!\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x11.message.ErrorRes\"W\n\x19GetMessagesInGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x0f\n\x07off_set\x18\x02 \x01(\x05\x12\x17\n\x0flast_message_at\x18\x03 \x01(\x03\"Q\n\x1aGetMessagesInGroupResponse\x12\x33\n\x0blst_message\x18\x01 \x03(\x0b\x32\x1e.message.MessageObjectResponse\"Z\n\x0ePublishRequest\x12\x14\n\x0c\x66romClientId\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x0f\n\x07groupId\x18\x03 \x01(\x03\x12\x0f\n\x07message\x18\x04 \x01(\x0c\"\xdd\x01\n\x17WorkspacePublishRequest\x12\x16\n\x0e\x66rom_client_id\x18\x01 \x01(\t\x12$\n\x1c\x66rom_client_workspace_domain\x18\x02 \x01(\t\x12\x11\n\tclient_id\x18\x03 \x01(\t\x12\x10\n\x08group_id\x18\x04 \x01(\x03\x12\x12\n\ngroup_type\x18\x05 \x01(\t\x12\x12\n\nmessage_id\x18\x06 \x01(\t\x12\x0f\n\x07message\x18\x07 \x01(\x0c\x12\x12\n\ncreated_at\x18\x08 \x01(\x03\x12\x12\n\nupdated_at\x18\t \x01(\x03\"$\n\x10SubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"&\n\x12UnSubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"!\n\rListenRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"-\n\x13ReadMessagesRequest\x12\x16\n\x0elst_message_id\x18\x04 \x03(\t\"}\n\x12\x45\x64itMessageRequest\x12\x14\n\x0c\x66romClientId\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x0f\n\x07groupId\x18\x03 \x01(\x03\x12\x11\n\tgroupType\x18\x04 \x01(\t\x12\x0f\n\x07message\x18\x05 \x01(\x0c\x12\n\n\x02id\x18\x06 \x01(\t2\x94\x04\n\x07Message\x12\x62\n\x15get_messages_in_group\x12\".message.GetMessagesInGroupRequest\x1a#.message.GetMessagesInGroupResponse\"\x00\x12=\n\tSubscribe\x12\x19.message.SubscribeRequest\x1a\x15.message.BaseResponse\x12\x41\n\x0bUnSubscribe\x12\x1b.message.UnSubscribeRequest\x1a\x15.message.BaseResponse\x12\x42\n\x06Listen\x12\x16.message.ListenRequest\x1a\x1e.message.MessageObjectResponse0\x01\x12\x42\n\x07Publish\x12\x17.message.PublishRequest\x1a\x1e.message.MessageObjectResponse\x12\x44\n\rread_messages\x12\x1c.message.ReadMessagesRequest\x1a\x15.message.BaseResponse\x12U\n\x11workspace_publish\x12 .message.WorkspacePublishRequest\x1a\x1e.message.MessageObjectResponseb\x06proto3'
 )
 
 
@@ -345,43 +345,22 @@ _PUBLISHREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fromClientWorkspaceDomain', full_name='message.PublishRequest.fromClientWorkspaceDomain', index=1,
+      name='clientId', full_name='message.PublishRequest.clientId', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='clientId', full_name='message.PublishRequest.clientId', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='clientWorkspaceDomain', full_name='message.PublishRequest.clientWorkspaceDomain', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='groupId', full_name='message.PublishRequest.groupId', index=4,
-      number=5, type=3, cpp_type=2, label=1,
+      name='groupId', full_name='message.PublishRequest.groupId', index=2,
+      number=3, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupType', full_name='message.PublishRequest.groupType', index=5,
-      number=6, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message', full_name='message.PublishRequest.message', index=6,
-      number=7, type=12, cpp_type=9, label=1,
+      name='message', full_name='message.PublishRequest.message', index=3,
+      number=4, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -398,8 +377,96 @@ _PUBLISHREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=686,
-  serialized_end=861,
+  serialized_start=685,
+  serialized_end=775,
+)
+
+
+_WORKSPACEPUBLISHREQUEST = _descriptor.Descriptor(
+  name='WorkspacePublishRequest',
+  full_name='message.WorkspacePublishRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='from_client_id', full_name='message.WorkspacePublishRequest.from_client_id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='from_client_workspace_domain', full_name='message.WorkspacePublishRequest.from_client_workspace_domain', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_id', full_name='message.WorkspacePublishRequest.client_id', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='group_id', full_name='message.WorkspacePublishRequest.group_id', index=3,
+      number=4, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='group_type', full_name='message.WorkspacePublishRequest.group_type', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='message_id', full_name='message.WorkspacePublishRequest.message_id', index=5,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='message', full_name='message.WorkspacePublishRequest.message', index=6,
+      number=7, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='created_at', full_name='message.WorkspacePublishRequest.created_at', index=7,
+      number=8, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='updated_at', full_name='message.WorkspacePublishRequest.updated_at', index=8,
+      number=9, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=778,
+  serialized_end=999,
 )
 
 
@@ -430,8 +497,8 @@ _SUBSCRIBEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=863,
-  serialized_end=899,
+  serialized_start=1001,
+  serialized_end=1037,
 )
 
 
@@ -462,8 +529,8 @@ _UNSUBSCRIBEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=901,
-  serialized_end=939,
+  serialized_start=1039,
+  serialized_end=1077,
 )
 
 
@@ -494,8 +561,8 @@ _LISTENREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=941,
-  serialized_end=974,
+  serialized_start=1079,
+  serialized_end=1112,
 )
 
 
@@ -526,8 +593,75 @@ _READMESSAGESREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=976,
-  serialized_end=1021,
+  serialized_start=1114,
+  serialized_end=1159,
+)
+
+
+_EDITMESSAGEREQUEST = _descriptor.Descriptor(
+  name='EditMessageRequest',
+  full_name='message.EditMessageRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='fromClientId', full_name='message.EditMessageRequest.fromClientId', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='clientId', full_name='message.EditMessageRequest.clientId', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='groupId', full_name='message.EditMessageRequest.groupId', index=2,
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='groupType', full_name='message.EditMessageRequest.groupType', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='message', full_name='message.EditMessageRequest.message', index=4,
+      number=5, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='id', full_name='message.EditMessageRequest.id', index=5,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1161,
+  serialized_end=1286,
 )
 
 _MESSAGEOBJECTRESPONSE.fields_by_name['lst_client_read'].message_type = _CLIENTREADOBJECT
@@ -540,10 +674,12 @@ DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
 DESCRIPTOR.message_types_by_name['GetMessagesInGroupRequest'] = _GETMESSAGESINGROUPREQUEST
 DESCRIPTOR.message_types_by_name['GetMessagesInGroupResponse'] = _GETMESSAGESINGROUPRESPONSE
 DESCRIPTOR.message_types_by_name['PublishRequest'] = _PUBLISHREQUEST
+DESCRIPTOR.message_types_by_name['WorkspacePublishRequest'] = _WORKSPACEPUBLISHREQUEST
 DESCRIPTOR.message_types_by_name['SubscribeRequest'] = _SUBSCRIBEREQUEST
 DESCRIPTOR.message_types_by_name['UnSubscribeRequest'] = _UNSUBSCRIBEREQUEST
 DESCRIPTOR.message_types_by_name['ListenRequest'] = _LISTENREQUEST
 DESCRIPTOR.message_types_by_name['ReadMessagesRequest'] = _READMESSAGESREQUEST
+DESCRIPTOR.message_types_by_name['EditMessageRequest'] = _EDITMESSAGEREQUEST
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 MessageObjectResponse = _reflection.GeneratedProtocolMessageType('MessageObjectResponse', (_message.Message,), {
@@ -595,6 +731,13 @@ PublishRequest = _reflection.GeneratedProtocolMessageType('PublishRequest', (_me
   })
 _sym_db.RegisterMessage(PublishRequest)
 
+WorkspacePublishRequest = _reflection.GeneratedProtocolMessageType('WorkspacePublishRequest', (_message.Message,), {
+  'DESCRIPTOR' : _WORKSPACEPUBLISHREQUEST,
+  '__module__' : 'protos.message_pb2'
+  # @@protoc_insertion_point(class_scope:message.WorkspacePublishRequest)
+  })
+_sym_db.RegisterMessage(WorkspacePublishRequest)
+
 SubscribeRequest = _reflection.GeneratedProtocolMessageType('SubscribeRequest', (_message.Message,), {
   'DESCRIPTOR' : _SUBSCRIBEREQUEST,
   '__module__' : 'protos.message_pb2'
@@ -623,6 +766,13 @@ ReadMessagesRequest = _reflection.GeneratedProtocolMessageType('ReadMessagesRequ
   })
 _sym_db.RegisterMessage(ReadMessagesRequest)
 
+EditMessageRequest = _reflection.GeneratedProtocolMessageType('EditMessageRequest', (_message.Message,), {
+  'DESCRIPTOR' : _EDITMESSAGEREQUEST,
+  '__module__' : 'protos.message_pb2'
+  # @@protoc_insertion_point(class_scope:message.EditMessageRequest)
+  })
+_sym_db.RegisterMessage(EditMessageRequest)
+
 
 
 _MESSAGE = _descriptor.ServiceDescriptor(
@@ -632,8 +782,8 @@ _MESSAGE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1024,
-  serialized_end=1469,
+  serialized_start=1289,
+  serialized_end=1821,
   methods=[
   _descriptor.MethodDescriptor(
     name='get_messages_in_group',
@@ -692,6 +842,16 @@ _MESSAGE = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_READMESSAGESREQUEST,
     output_type=_BASERESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='workspace_publish',
+    full_name='message.Message.workspace_publish',
+    index=6,
+    containing_service=None,
+    input_type=_WORKSPACEPUBLISHREQUEST,
+    output_type=_MESSAGEOBJECTRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

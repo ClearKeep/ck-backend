@@ -1,8 +1,7 @@
 from __future__ import print_function
-
 import grpc
-
 from protos import group_pb2, group_pb2_grpc
+from utils.logger import *
 
 
 class ClientGroup:
@@ -13,12 +12,50 @@ class ClientGroup:
         channel = grpc.insecure_channel(workspace_domain)
         return group_pb2_grpc.GroupStub(channel)
 
-    def create_group_workspace(self, group_name, group_type, client_id, owner_group_id, owner_workspace_domain):
+    def create_group_workspace(self, request):
         try:
-            request = group_pb2.CreateGroupWorkspaceRequest(group_name=group_name, group_type=group_type,
-                                                            client_id=client_id, owner_group_id=owner_group_id,
-                                                            owner_workspace_domain=owner_workspace_domain)
             response = self.stub.create_group_workspace(request)
             return response
-        except:
+        except Exception as e:
+            logger.error(e)
+            return None
+
+    def add_member(self, request):
+        try:
+            response = self.stub.add_member(request)
+            return response
+        except Exception as e:
+            logger.error(e)
+            return None
+
+    def workspace_add_member(self, request):
+        try:
+            response = self.stub.workspace_add_member(request)
+            return response
+        except Exception as e:
+            logger.error(e)
+            return None
+
+    def get_group(self, request):
+        try:
+            response = self.stub.get_group(request)
+            return response
+        except Exception as e:
+            logger.error(e)
+            return None
+
+    def leave_group(self, request):
+        try:
+            response = self.stub.leave_group(request)
+            return response
+        except Exception as e:
+            logger.error(e)
+            return None
+
+    def workspace_leave_group(self, request):
+        try:
+            response = self.stub.workspace_leave_group(request)
+            return response
+        except Exception as e:
+            logger.error(e)
             return None

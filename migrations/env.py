@@ -1,46 +1,30 @@
-import sys
-sys.path.append('.')
+from __future__ import with_statement
+
+import logging
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from flask import current_app
 
 from alembic import context
-
-from src.models.base import db
-from src.models.base import app
-from utils.config import get_system_config
-from src.models.user import User
-from src.models.message import Message
-from src.models.notify import Notify
-from src.models.notify_token import NotifyToken
-from src.models.signal_peer_key import PeerClientKey
-from src.models.signal_group_key import GroupClientKey
-from src.models.group import GroupChat
-from src.models.server_info import ServerInfo
-
-db_config = get_system_config()['db']
-db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(
-    user=db_config['username'],
-    pw=db_config['password'],
-    host=db_config['host'],
-    port=db_config['port'],
-    db=db_config['name']
-)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-config.set_main_option("sqlalchemy.url", db_connection)
+
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
+logger = logging.getLogger('alembic.env')
 
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = db.metadata
+config.set_main_option(
+    'sqlalchemy.url',
+    str(current_app.extensions['migrate'].db.get_engine().url).replace(
+        '%', '%%'))
+target_metadata = current_app.extensions['migrate'].db.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -62,10 +46,7 @@ def run_migrations_offline():
     """
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=url,
-        target_metadata=target_metadata,
-        literal_binds=True,
-        dialect_opts={"paramstyle": "named"},
+        url=url, target_metadata=target_metadata, literal_binds=True
     )
 
     with context.begin_transaction():
@@ -79,15 +60,25 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    connectable = engine_from_config(
-        config.get_section(config.config_ini_section),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
+
+    # this callback is used to prevent an auto-migration from being generated
+    # when there are no changes to the schema
+    # reference: http://alembic.zzzcomputing.com/en/latest/cookbook.html
+    def process_revision_directives(context, revision, directives):
+        if getattr(config.cmd_opts, 'autogenerate', False):
+            script = directives[0]
+            if script.upgrade_ops.is_empty():
+                directives[:] = []
+                logger.info('No changes in schema detected.')
+
+    connectable = current_app.extensions['migrate'].db.get_engine()
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection,
+            target_metadata=target_metadata,
+            process_revision_directives=process_revision_directives,
+            **current_app.extensions['migrate'].configure_args
         )
 
         with context.begin_transaction():
@@ -98,9 +89,3 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
-    alembic_config = config.get_section(config.config_ini_section)
-    alembic_config['sqlalchemy.url'] = app.config['SQLALCHEMY_DATABASE_URI']
-    engine = engine_from_config(
-        alembic_config,
-        prefix='sqlalchemy.',
-        poolclass=pool.NullPool)
