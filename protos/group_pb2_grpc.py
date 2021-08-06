@@ -40,14 +40,29 @@ class GroupStub(object):
                 request_serializer=protos_dot_group__pb2.GetJoinedGroupsRequest.SerializeToString,
                 response_deserializer=protos_dot_group__pb2.GetJoinedGroupsResponse.FromString,
                 )
-        self.invite_to_group = channel.unary_unary(
-                '/group.Group/invite_to_group',
-                request_serializer=protos_dot_group__pb2.InviteToGroupRequest.SerializeToString,
-                response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
-                )
         self.join_group = channel.unary_unary(
                 '/group.Group/join_group',
                 request_serializer=protos_dot_group__pb2.JoinGroupRequest.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
+                )
+        self.add_member = channel.unary_unary(
+                '/group.Group/add_member',
+                request_serializer=protos_dot_group__pb2.AddMemberRequest.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
+                )
+        self.leave_group = channel.unary_unary(
+                '/group.Group/leave_group',
+                request_serializer=protos_dot_group__pb2.LeaveGroupRequest.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
+                )
+        self.workspace_add_member = channel.unary_unary(
+                '/group.Group/workspace_add_member',
+                request_serializer=protos_dot_group__pb2.AddMemberWorkspaceRequest.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.AddMemberWorkspaceResponse.FromString,
+                )
+        self.workspace_leave_group = channel.unary_unary(
+                '/group.Group/workspace_leave_group',
+                request_serializer=protos_dot_group__pb2.WorkspaceLeaveGroupRequest.SerializeToString,
                 response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
                 )
 
@@ -86,13 +101,32 @@ class GroupServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def invite_to_group(self, request, context):
+    def join_group(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def join_group(self, request, context):
+    def add_member(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def leave_group(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def workspace_add_member(self, request, context):
+        """workspace call
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def workspace_leave_group(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -126,14 +160,29 @@ def add_GroupServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_group__pb2.GetJoinedGroupsRequest.FromString,
                     response_serializer=protos_dot_group__pb2.GetJoinedGroupsResponse.SerializeToString,
             ),
-            'invite_to_group': grpc.unary_unary_rpc_method_handler(
-                    servicer.invite_to_group,
-                    request_deserializer=protos_dot_group__pb2.InviteToGroupRequest.FromString,
-                    response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
-            ),
             'join_group': grpc.unary_unary_rpc_method_handler(
                     servicer.join_group,
                     request_deserializer=protos_dot_group__pb2.JoinGroupRequest.FromString,
+                    response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
+            ),
+            'add_member': grpc.unary_unary_rpc_method_handler(
+                    servicer.add_member,
+                    request_deserializer=protos_dot_group__pb2.AddMemberRequest.FromString,
+                    response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
+            ),
+            'leave_group': grpc.unary_unary_rpc_method_handler(
+                    servicer.leave_group,
+                    request_deserializer=protos_dot_group__pb2.LeaveGroupRequest.FromString,
+                    response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
+            ),
+            'workspace_add_member': grpc.unary_unary_rpc_method_handler(
+                    servicer.workspace_add_member,
+                    request_deserializer=protos_dot_group__pb2.AddMemberWorkspaceRequest.FromString,
+                    response_serializer=protos_dot_group__pb2.AddMemberWorkspaceResponse.SerializeToString,
+            ),
+            'workspace_leave_group': grpc.unary_unary_rpc_method_handler(
+                    servicer.workspace_leave_group,
+                    request_deserializer=protos_dot_group__pb2.WorkspaceLeaveGroupRequest.FromString,
                     response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
             ),
     }
@@ -233,23 +282,6 @@ class Group(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def invite_to_group(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/group.Group/invite_to_group',
-            protos_dot_group__pb2.InviteToGroupRequest.SerializeToString,
-            protos_dot_group__pb2.BaseResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
     def join_group(request,
             target,
             options=(),
@@ -262,6 +294,74 @@ class Group(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/group.Group/join_group',
             protos_dot_group__pb2.JoinGroupRequest.SerializeToString,
+            protos_dot_group__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def add_member(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/group.Group/add_member',
+            protos_dot_group__pb2.AddMemberRequest.SerializeToString,
+            protos_dot_group__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def leave_group(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/group.Group/leave_group',
+            protos_dot_group__pb2.LeaveGroupRequest.SerializeToString,
+            protos_dot_group__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def workspace_add_member(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/group.Group/workspace_add_member',
+            protos_dot_group__pb2.AddMemberWorkspaceRequest.SerializeToString,
+            protos_dot_group__pb2.AddMemberWorkspaceResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def workspace_leave_group(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/group.Group/workspace_leave_group',
+            protos_dot_group__pb2.WorkspaceLeaveGroupRequest.SerializeToString,
             protos_dot_group__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

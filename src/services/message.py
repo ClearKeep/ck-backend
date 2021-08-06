@@ -8,6 +8,7 @@ from datetime import datetime
 from queue import Queue
 import uuid
 import asyncio
+from utils.config import *
 
 client_message_queue = {}
 
@@ -18,15 +19,13 @@ class MessageService(BaseService):
         self.service_group = GroupChat()
         self.message_read_model = MessageUserRead()
 
-    def store_message(self, group_id, from_client_id, client_id, message):
-        # store message to database
-        message_id = str(uuid.uuid4())
-        created_at = datetime.now()
+    def store_message(self, message_id, created_at, group_id, group_type, from_client_id, from_client_workspace_domain, client_id, message):
         # init new message
         self.model = Message(
             id=message_id,
             group_id=group_id,
             from_client_id=from_client_id,
+            from_client_workspace_domain=from_client_workspace_domain,
             client_id=client_id,
             message=message,
             created_at=created_at
@@ -43,7 +42,9 @@ class MessageService(BaseService):
         res_obj = message_pb2.MessageObjectResponse(
             id=new_message.id,
             group_id=new_message.group_id,
+            group_type=group_type,
             from_client_id=new_message.from_client_id,
+            from_client_workspace_domain=new_message.from_client_workspace_domain,
             message=message,
             created_at=int(new_message.created_at.timestamp() * 1000)
         )
@@ -51,6 +52,34 @@ class MessageService(BaseService):
             res_obj.client_id = new_message.client_id
         if new_message.updated_at:
             res_obj.updated_at = int(new_message.updated_at.timestamp() * 1000)
+
+        res_obj.client_workspace_domain = get_owner_workspace_domain()
+
+        return res_obj
+
+    def update_message(
+            self,
+            group_id,
+            from_client_id,
+            client_id,
+            message,
+            message_id):
+        self.model = Message().get(message_id)
+        updated_at = datetime.now()
+        self.model.updated_at = updated_at
+        self.model.update()
+        edited_message = self.model
+        res_obj = message_pb2.MessageObjectResponse(
+            id=edited_message.id,
+            group_id=edited_message.group_id,
+            from_client_id=edited_message.from_client_id,
+            message=message,
+            created_at=int(edited_message.created_at.timestamp() * 1000)
+        )
+        if edited_message.client_id:
+            res_obj.client_id = edited_message.client_id
+        if edited_message.updated_at:
+            res_obj.updated_at = int(edited_message.updated_at.timestamp() * 1000)
 
         if client_id:
             res_obj.group_type = "peer"
@@ -74,6 +103,7 @@ class MessageService(BaseService):
                 group_id=obj.group_id,
                 group_type=group_type.group_type,
                 from_client_id=obj.from_client_id,
+                from_client_workspace_domain=obj.from_client_workspace_domain,
                 message=obj.message,
                 created_at=int(obj.created_at.timestamp() * 1000)
             )

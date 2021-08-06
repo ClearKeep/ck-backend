@@ -60,7 +60,7 @@ class NotifyPushController(BaseController):
             payload = json.loads(str_payload)
             to_client_id = request.to_client_id
 
-            self.service.push_voip_client(to_client_id=to_client_id, payload=payload)
+            await self.service.push_voip_client(to_client_id=to_client_id, payload=payload)
             return notify_push_pb2.BaseResponse(success=True)
 
         except Exception as e:

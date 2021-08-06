@@ -45,6 +45,11 @@ class MessageStub(object):
                 request_serializer=protos_dot_message__pb2.ReadMessagesRequest.SerializeToString,
                 response_deserializer=protos_dot_message__pb2.BaseResponse.FromString,
                 )
+        self.workspace_publish = channel.unary_unary(
+                '/message.Message/workspace_publish',
+                request_serializer=protos_dot_message__pb2.WorkspacePublishRequest.SerializeToString,
+                response_deserializer=protos_dot_message__pb2.MessageObjectResponse.FromString,
+                )
 
 
 class MessageServicer(object):
@@ -88,6 +93,14 @@ class MessageServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def workspace_publish(self, request, context):
+        """
+        rpc edit_message (EditMessageRequest) returns (MessageObjectResponse);
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MessageServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -120,6 +133,11 @@ def add_MessageServicer_to_server(servicer, server):
                     servicer.read_messages,
                     request_deserializer=protos_dot_message__pb2.ReadMessagesRequest.FromString,
                     response_serializer=protos_dot_message__pb2.BaseResponse.SerializeToString,
+            ),
+            'workspace_publish': grpc.unary_unary_rpc_method_handler(
+                    servicer.workspace_publish,
+                    request_deserializer=protos_dot_message__pb2.WorkspacePublishRequest.FromString,
+                    response_serializer=protos_dot_message__pb2.MessageObjectResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -231,5 +249,22 @@ class Message(object):
         return grpc.experimental.unary_unary(request, target, '/message.Message/read_messages',
             protos_dot_message__pb2.ReadMessagesRequest.SerializeToString,
             protos_dot_message__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def workspace_publish(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/message.Message/workspace_publish',
+            protos_dot_message__pb2.WorkspacePublishRequest.SerializeToString,
+            protos_dot_message__pb2.MessageObjectResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

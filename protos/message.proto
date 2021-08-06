@@ -48,15 +48,23 @@ message GetMessagesInGroupResponse {
 // Request: publish a message
 message PublishRequest {
   string fromClientId = 1;
-  string fromClientWorkspaceDomain = 2;
-  string clientId = 3;
-  string clientWorkspaceDomain = 4;
-  int64 groupId = 5;
-  string groupType = 6;
-  bytes message = 7;
+  string clientId = 2;
+  int64 groupId = 3;
+  bytes message = 4;
 }
 //response: BaseResponse
 
+message WorkspacePublishRequest {
+  string from_client_id = 1;
+  string from_client_workspace_domain = 2;
+  string client_id = 3;
+  int64 group_id = 4;
+  string group_type = 5;
+  string message_id = 6;
+  bytes message = 7;
+  int64 created_at = 8;
+  int64 updated_at = 9;
+}
 
 // Request: subcribe
 message SubscribeRequest {
@@ -82,6 +90,14 @@ message ReadMessagesRequest {
 }
 // Response: groupObjectResponse
 
+message EditMessageRequest {
+  string fromClientId = 1;
+  string clientId = 2;
+  int64 groupId = 3;
+  string groupType = 4;
+  bytes message = 5;
+  string id = 6;
+}
 
 // Method
 service Message {
@@ -92,4 +108,7 @@ service Message {
     rpc Listen (ListenRequest) returns (stream MessageObjectResponse);
     rpc Publish (PublishRequest) returns (MessageObjectResponse);
     rpc read_messages (ReadMessagesRequest) returns (BaseResponse);
+    //
+    rpc workspace_publish (WorkspacePublishRequest) returns (MessageObjectResponse);
+    //rpc edit_message (EditMessageRequest) returns (MessageObjectResponse);
 }

@@ -2,6 +2,7 @@ from datetime import datetime
 from src.models.base import Database
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from src.models.user import User
 
 
 class MessageUserRead(Database.get().Model):

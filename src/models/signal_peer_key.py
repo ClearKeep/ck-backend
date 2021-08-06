@@ -31,6 +31,14 @@ class PeerClientKey(Database.get().Model):
         self.signed_prekey_signature = signed_prekey_signature
         return self
 
+    def get(self, group_id, client_id):
+        client = Database.get_session().query(PeerClientKey) \
+            .filter(PeerClientKey.group_id == group_id,
+                    PeerClientKey.client_id == client_id) \
+            .one_or_none()
+        Database.get().session.remove()
+        return client
+
     def add(self):
         client = self.get_by_client_id(client_id=self.client_id)
         if client is not None:
@@ -54,6 +62,14 @@ class PeerClientKey(Database.get().Model):
     def update(self):
         try:
             Database.get_session().merge(self)
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            logger.error(e)
+
+    def delete(self):
+        try:
+            Database.get_session().delete(self)
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()

@@ -31,13 +31,19 @@ class SignalService(BaseService):
         return self.peer_model.get_by_client_id(client_id)
 
     def group_register_client_key(self, request):
-        client_group_key = GroupClientKey().set_key(request.groupId, request.clientId, request.deviceId,
+        client_group_key = GroupClientKey().set_key(request.groupId, request.clientId, None, None, request.deviceId,
                                                     request.clientKeyDistribution)
         client_group_key.add()
 
     def group_get_client_key(self, group_id, client_id):
         client_key = self.group_client_key_model.get(group_id, client_id)
-        if client_key and client_key.client_key:
+        if client_key:
+            return client_key
+        return None
+
+    def group_by_owner_get_client_key(self, group_id, client_id):
+        client_key = self.group_chat_model.get_client_key_by_owner_group(group_id, client_id)
+        if client_key:
             return client_key
         return None
 

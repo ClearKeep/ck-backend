@@ -31,10 +31,12 @@ class GroupClientKey(Database.get().Model):
         if client is not None:
             self.id = client.id
             self.update()
+            return self
         else:
             try:
                 Database.get_session().add(self)
                 Database.get_session().commit()
+                return self
             except Exception as e:
                 Database.get_session().rollback()
                 logger.error(e)
@@ -59,8 +61,8 @@ class GroupClientKey(Database.get().Model):
         return client
 
     def get_clients_in_groups(self, group_ids):
-        result = Database.get_session().query(GroupClientKey.group_id, User) \
-            .join(User, GroupClientKey.client_id == User.id) \
+        result = Database.get_session().query(GroupClientKey, User) \
+            .join(User, GroupClientKey.client_id == User.id,  isouter=True) \
             .filter(GroupClientKey.group_id.in_(group_ids)) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
@@ -69,7 +71,7 @@ class GroupClientKey(Database.get().Model):
 
     def get_clients_in_group(self, group_id):
         result = Database.get_session().query(GroupClientKey, User) \
-            .join(User, GroupClientKey.client_id == User.id) \
+            .join(User, GroupClientKey.client_id == User.id, isouter=True) \
             .filter(GroupClientKey.group_id == group_id) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
@@ -87,6 +89,14 @@ class GroupClientKey(Database.get().Model):
     def update(self):
         try:
             Database.get_session().merge(self)
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            logger.error(e)
+
+    def delete(self):
+        try:
+            Database.get_session().delete(self)
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
