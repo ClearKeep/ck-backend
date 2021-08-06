@@ -20,6 +20,7 @@ message UserProfileResponse {
     string email = 3;
     string first_name = 4;
     string last_name = 5;
+    string phone_number = 6;
 }
 
 // Request: get my info
@@ -32,6 +33,7 @@ message UpdateProfileRequest {
     string first_name = 1;
     string last_name = 2;
     string avatar = 3;
+    string phone_number = 6;
 }
 // Response: UserObjectResponse
 
@@ -104,6 +106,19 @@ message GetClientsStatusRequest {
    string status = 3;
  }
 
+// << profile >>
+message UploadAvatarRequest {
+    string file_name = 1;
+    string file_content_type = 2;
+    bytes file_data = 3;
+    string file_hash = 4;
+  }
+  
+  message UploadAvatarResponse {
+    string file_url = 1;
+  }
+  
+
 service User {
     //----- FROM MY ACCOUNT -----
     rpc get_profile(Empty) returns (UserProfileResponse) {};
@@ -111,9 +126,8 @@ service User {
     rpc change_password(ChangePasswordRequest) returns (BaseResponse) {};
     rpc update_status(SetUserStatusRequest) returns (BaseResponse) {};
     rpc ping_request(PingRequest) returns (BaseResponse) {};
-
-    //----- FROM BOTH -----
     rpc get_clients_status(GetClientsStatusRequest) returns (GetClientsStatusResponse) {};
+    rpc upload_avatar(UploadAvatarRequest) returns (UploadAvatarResponse) {};
 
     //----- FROM OTHER ACCOUNT -----
     rpc get_user_info(GetUserRequest) returns (UserInfoResponse) {};
