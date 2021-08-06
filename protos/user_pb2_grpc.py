@@ -39,10 +39,25 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.PingRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
                 )
-        self.change_mfa_status = channel.stream_stream(
-                '/user.User/change_mfa_status',
-                request_serializer=protos_dot_user__pb2.ChangeMfaState.SerializeToString,
-                response_deserializer=protos_dot_user__pb2.MfaChangingStateResponse.FromString,
+        self.enable_mfa = channel.unary_unary(
+                '/user.User/enable_mfa',
+                request_serializer=protos_dot_user__pb2.MfaChangingStateRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
+                )
+        self.disable_mfa = channel.unary_unary(
+                '/user.User/disable_mfa',
+                request_serializer=protos_dot_user__pb2.MfaChangingStateRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
+                )
+        self.mfa_validate_password = channel.unary_unary(
+                '/user.User/mfa_validate_password',
+                request_serializer=protos_dot_user__pb2.MfaValidatePasswordRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
+                )
+        self.mfa_validate_otp = channel.unary_unary(
+                '/user.User/mfa_validate_otp',
+                request_serializer=protos_dot_user__pb2.MfaValidateOtpRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
                 )
         self.get_clients_status = channel.unary_unary(
                 '/user.User/get_clients_status',
@@ -100,7 +115,26 @@ class UserServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def change_mfa_status(self, request_iterator, context):
+    def enable_mfa(self, request, context):
+        """----- MFA FLOW -----
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def disable_mfa(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def mfa_validate_password(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def mfa_validate_otp(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -160,10 +194,25 @@ def add_UserServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_user__pb2.PingRequest.FromString,
                     response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
             ),
-            'change_mfa_status': grpc.stream_stream_rpc_method_handler(
-                    servicer.change_mfa_status,
-                    request_deserializer=protos_dot_user__pb2.ChangeMfaState.FromString,
-                    response_serializer=protos_dot_user__pb2.MfaChangingStateResponse.SerializeToString,
+            'enable_mfa': grpc.unary_unary_rpc_method_handler(
+                    servicer.enable_mfa,
+                    request_deserializer=protos_dot_user__pb2.MfaChangingStateRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
+            ),
+            'disable_mfa': grpc.unary_unary_rpc_method_handler(
+                    servicer.disable_mfa,
+                    request_deserializer=protos_dot_user__pb2.MfaChangingStateRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
+            ),
+            'mfa_validate_password': grpc.unary_unary_rpc_method_handler(
+                    servicer.mfa_validate_password,
+                    request_deserializer=protos_dot_user__pb2.MfaValidatePasswordRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
+            ),
+            'mfa_validate_otp': grpc.unary_unary_rpc_method_handler(
+                    servicer.mfa_validate_otp,
+                    request_deserializer=protos_dot_user__pb2.MfaValidateOtpRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
             ),
             'get_clients_status': grpc.unary_unary_rpc_method_handler(
                     servicer.get_clients_status,
@@ -281,7 +330,7 @@ class User(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def change_mfa_status(request_iterator,
+    def enable_mfa(request,
             target,
             options=(),
             channel_credentials=None,
@@ -291,9 +340,60 @@ class User(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_stream(request_iterator, target, '/user.User/change_mfa_status',
-            protos_dot_user__pb2.ChangeMfaState.SerializeToString,
-            protos_dot_user__pb2.MfaChangingStateResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/user.User/enable_mfa',
+            protos_dot_user__pb2.MfaChangingStateRequest.SerializeToString,
+            protos_dot_user__pb2.MfaBaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def disable_mfa(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/disable_mfa',
+            protos_dot_user__pb2.MfaChangingStateRequest.SerializeToString,
+            protos_dot_user__pb2.MfaBaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def mfa_validate_password(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/mfa_validate_password',
+            protos_dot_user__pb2.MfaValidatePasswordRequest.SerializeToString,
+            protos_dot_user__pb2.MfaBaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def mfa_validate_otp(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/mfa_validate_otp',
+            protos_dot_user__pb2.MfaValidateOtpRequest.SerializeToString,
+            protos_dot_user__pb2.MfaBaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

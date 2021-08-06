@@ -1,6 +1,6 @@
 from src.services.base import BaseService
 from src.models.user import User
-from src.models.mfa import MfaSetting
+from src.models.authen_setting import AuthenSetting
 from utils.encrypt import EncryptUtils
 from utils.keycloak import KeyCloakUtils
 from protos import user_pb2
@@ -17,7 +17,7 @@ client_records_list_in_memory = {}
 class UserService(BaseService):
     def __init__(self):
         super().__init__(User())
-        self.mfa_setting = MfaSetting()
+        self.authen_setting = AuthenSetting()
         self.otp_server = OTPServer()
         # self.workspace_domain = get_system_domain()
 
@@ -84,104 +84,101 @@ class UserService(BaseService):
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.CHANGE_PASSWORD_FAILED)
 
-    def init_mfa_state_changing(self, request_enable, user_id):
+    def init_mfa_state_enabling(self, user_id):
         user_info = self.model.get(user_id)
-        user_mfa_setting = self.mfa_setting.get(user_id)
-        # in case user_info is created but not user_info
-        if user_mfa_setting is None and user_info is not None:
-            self.mfa_setting = MfaSetting(
-                id = user_id
-            )
-            self.mfa_setting.add()
-            user_mfa_setting = self.mfa_setting.get(user_id)
-        # when service start, we dont know number of remain_step so we set it to None
-        if user_mfa_setting.mfa_enable == request_enable:
-            # checking if mfa request state is the same with server
-            remain_step = 0
-        elif not request_enable:
-            # in case disable mfa, we just turn off it directly without any additional checking
-            user_mfa_setting.mfa_enable = request_enable
-            user_mfa_setting.update()
-            remain_step = 0
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting is None:
+            self.authen_setting = AuthenSetting(id=user_id)
+            self.authen_setting.add()
+            user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting.mfa_enable:
+            next_step = ''
+        elif user_info.phone_number is None:
+            raise Exception(Message.PHONE_NUMBER_NOT_FOUND)
         else:
-            # the final case when we enable mfa, we must verify phone_number here
-            remain_step = 3
-            if user_info.phone_number is None:
-                raise Exception(Message.PHONE_NUMBER_NOT_FOUND)
-            remain_step = 2
-        return remain_step
+            user_authen_setting.otp_changing_state = 1
+            user_authen_setting.update()
+            next_step = 'mfa_validate_password'
+        return next_step
 
-    def init_otp(self, user_id):
+    def init_mfa_state_disabling(self, user_id):
         user_info = self.model.get(user_id)
-        user_mfa_setting = self.mfa_setting.get(user_id)
-        if user_mfa_setting.otp_frozen_time is not None and user_mfa_setting.otp_frozen_time > datetime.datetime.now():
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting is None:
+            self.authen_setting = AuthenSetting(id=user_id)
+            self.authen_setting.add()
+            user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting.mfa_enable:
+            user_authen_setting.mfa_enable = False
+            user_authen_setting.update()
+        next_step = ''
+        return next_step
+
+    def init_otp_and_update(self, user_id, valid_time=60):
+        user_info = self.model.get(user_id)
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting.otp_frozen_time is not None and user_authen_setting.otp_frozen_time > datetime.datetime.now():
             raise Exception(Message.NUMBER_OF_ATTEMPTS_OTP_EXCEEDED)
         otp = self.otp_server(user_info.phone_number)
-        user_mfa_setting.otp = otp
-        user_mfa_setting.otp_tried_times += 1
-        user_mfa_setting.otp_created_time = datetime.datetime.now()
-        user_mfa_setting.update()
+        user_authen_setting.otp = otp
+        user_authen_setting.otp_trying_times += 1
+        user_authen_setting.otp_valid_time = datetime.datetime.now() + datetime.timedelta(seconds=valid_time)
+        user_authen_setting.update()
         return otp
 
-    def freeze_otp(self, user_id, frozen_time=600):
-        user_mfa_setting = self.mfa_setting.get(user_id)
-        user_mfa_setting.otp_tried_times = 0
-        user_mfa_setting.otp = None
+    def reset_otp_and_update(self, user_id):
+        user_authen_setting = self.authen_setting.get(user_id)
+        user_authen_setting.otp_trying_times = 0
+        user_authen_setting.otp = None
+        user_authen_setting.update()
+
+    def freeze_otp_and_update(self, user_id, frozen_time=600):
+        user_authen_setting = self.authen_setting.get(user_id)
         # freeze otp service for 10 minutes
-        user_mfa_setting.otp_frozen_time = datetime.datetime.now() + datetime.timedelta(seconds=frozen_time)
+        user_authen_setting.otp_frozen_time = datetime.datetime.now() + datetime.timedelta(seconds=frozen_time)
+        self.reset_otp_and_update(user_id)
         return True
 
     def validate_password(self, user_id, password):
         user_info = self.model.get(user_id)
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting.otp_changing_state != 1:
+            raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
         try:
             token = KeyCloakUtils.token(user_info.email, password)
             logger.info(user_info.email, password)
             if token:
-                self.init_otp(user_id)
-                return True
+                user_authen_setting.otp_changing_state = 2
+                user_authen_setting.update()
+                self.init_otp_and_update(user_id)
+                next_step = 'mfa_validate_otp'
             else:
-                return False
-                # raise Exception(Message.AUTH_USER_NOT_FOUND)
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            return next_step
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
-            return
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
 
-    def validate_otp_and_enable_mfa(self, otp, user_id, valid_time=60, max_trying_times=5):
+    def validate_otp(self, user_id, otp, valid_time=60, max_trying_times=5):
         valid_time = datetime.timedelta(seconds=valid_time)
-        user_mfa_setting = self.mfa_setting.get(user_id)
-        if otp == user_mfa_setting.otp and datetime.datetime.now() < user_mfa_setting.otp_created_time + valid_time:
-            user_mfa_setting.mfa_enable = True
-        elif user_mfa_setting.otp_tried_times < max_trying_times:
-            self.init_otp(user_id)
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting.otp_changing_state != 2:
+            raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
+        if otp == user_authen_setting.otp and datetime.datetime.now() < user_authen_setting.otp_valid_time:
+            user_authen_setting.mfa_enable = True
+            user_authen_setting.otp_changing_state = 0
+            user_authen_setting.update()
+            self.reset_otp_and_update(user_id)
+            next_step = ''
+        elif user_authen_setting.otp_trying_times < max_trying_times:
+            self.init_otp_and_update(user_id)
+            next_step = 'mfa_validate_otp'
         else:
-            self.freeze_otp(user_id)
+            next_step = ''
+            user_authen_setting.otp_changing_state = 0
+            self.freeze_otp_and_update(user_id)
             raise Exception(Message.NUMBER_OF_ATTEMPTS_OTP_EXCEEDED)
-        return user_mfa_setting.mfa_enable
-
-    def change_mfa_state(self, request, state_keyword, user_id, remain_step=None):
-        # we always start the mfa enable requesting with remain_step is None
-        # remain_step must be handle only in server, client could only take it for knowing current state in
-        # should re code to remove new_remain_step
-        new_remain_step = 3
-        if remain_step is None:
-            # when service start, we dont know number of remain_step so we set it to None
-            is_enable_request = state_keyword == "1"
-            new_remain_step = self.init_mfa_state_changing(is_enable_request, user_id)
-        elif remain_step == 2:
-            # this remain_step specify that state_keyword must be the password of user
-            if self.validate_password(user_id, state_keyword):
-                new_remain_step = 1
-            else:
-                new_remain_step = 2
-        elif remain_step == 1:
-            if self.validate_otp_and_enable_mfa(state_keyword, user_id):
-                new_remain_step = 0
-            else:
-                new_remain_step = 1
-        else:
-            # currently not taking any action for wrong passing remain_step
-            new_remain_step = 0
-        return new_remain_step
+        return next_step
 
     def get_profile(self, user_id, hash_key):
         try:

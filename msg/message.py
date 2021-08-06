@@ -85,6 +85,7 @@ class Message:
     # otp setting
     PHONE_NUMBER_NOT_FOUND = 1050
     NUMBER_OF_ATTEMPTS_OTP_EXCEEDED = 1051
+    AUTHEN_SETTING_FLOW_NOT_FOUND = 1052
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -158,6 +159,7 @@ class Message:
 
         PHONE_NUMBER_NOT_FOUND: "User must provide phone number to enable this feature.",
         NUMBER_OF_ATTEMPTS_OTP_EXCEEDED: "Exceeded the number of attempts otp. Please wait for 30 minutes and try agains",
+        AUTHEN_SETTING_FLOW_NOT_FOUND: "Cannot find current flow of changing otp. Please check the workflow"
     }
 
     @staticmethod

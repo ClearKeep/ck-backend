@@ -5,14 +5,15 @@ from src.models.base import Database
 from utils.logger import *
 
 
-class MfaSetting(Database.get().Model):
-    __tablename__ = 'mfa_setting'
+class AuthenSetting(Database.get().Model):
+    __tablename__ = 'authen_setting'
     id = Database.get().Column(Database.get().String(36), primary_key=True)
     mfa_enable = Database.get().Column(Database.get().Boolean, unique=False, default=False)
     otp = Database.get().Column(Database.get().String(6), unique=False, nullable=True)
-    otp_tried_times = Database.get().Column(Database.get().INTEGER, unique=False, default=0)
-    otp_created_time = Database.get().Column(Database.get().DateTime, unique=False, nullable=True)
-    otp_frozen_time = Database.get().Column(Database.get().DateTime, unique=False, nullable=True)
+    otp_trying_times = Database.get().Column(Database.get().INTEGER, unique=False, default=0)
+    otp_valid_time = Database.get().Column(Database.get().DateTime, unique=False, nullable=True)
+    otp_changing_state = Database.get().Column(Database.get().INTEGER, unique=False, default=0)
+    otp_frozen_time = Database.get().Column(Database.get().DateTime, unique=False, default=datetime.min)
 
     def add(self):
         try:
@@ -31,20 +32,10 @@ class MfaSetting(Database.get().Model):
             logger.error(e)
 
     def get(self, client_id):
-        mfa_setting = Database.get_session().query(MfaSetting) \
-            .filter(MfaSetting.id == client_id) \
+        mfa_setting = Database.get_session().query(AuthenSetting) \
+            .filter(AuthenSetting.id == client_id) \
             .one_or_none()
         Database.get().session.remove()
-        return mfa_setting
-
-    def get_with_default(self, client_id):
-        mfa_setting = Database.get_session().query(MfaSetting) \
-            .filter(MfaSetting.id == client_id) \
-            .one_or_none()
-        Database.get().session.remove()
-        if mfa_setting is None:
-            mfa_setting = MfaSetting(id=client_id)
-            mfa_setting.add()
         return mfa_setting
 
     def __repr__(self):

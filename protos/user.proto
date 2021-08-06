@@ -22,11 +22,6 @@ message UserProfileResponse {
     string last_name = 5;
 }
 
-message MfaChangingStateResponse {
-    int64 remain_step = 1;
-}
-
-
 // Request: get my info
 message Empty {}
 // Response: UserObjectResponse
@@ -47,11 +42,6 @@ message ChangePasswordRequest {
 }
 // Response: BaseResponse
 
-// Request: change mfa state
-message ChangeMfaState {
-  string state_keyword = 1;
-}
-// Response: MfaChangingStateResponse
 
 //----- FROM ANOTHER ACCOUNT -----
 message UserInfoResponse {
@@ -65,7 +55,6 @@ message GetUserRequest {
     string client_id = 1;
     string workspace_domain = 2;
 }
-
 // Response: UserObjectResponse
 
 // Request: Search User
@@ -114,6 +103,27 @@ message GetClientsStatusRequest {
    string status = 3;
  }
 
+//----- MFA FLOW -----
+ message MfaBaseResponse{
+     bool success = 1;
+     string next_step = 2;
+     ErrorRes errors = 3;
+ }
+
+message MfaChangingStateRequest {
+}
+// Response: MfaBaseResponse
+
+message MfaValidatePasswordRequest {
+     string password = 1;
+}
+// Response: MfaBaseResponse
+
+message MfaValidateOtpRequest {
+     string otp = 1;
+}
+// Response: MfaBaseResponse
+
 service User {
     //----- FROM MY ACCOUNT -----
     rpc get_profile(Empty) returns (UserProfileResponse) {};
@@ -121,7 +131,13 @@ service User {
     rpc change_password(ChangePasswordRequest) returns (BaseResponse) {};
     rpc update_status(SetUserStatusRequest) returns (BaseResponse) {};
     rpc ping_request(PingRequest) returns (BaseResponse) {};
-    rpc change_mfa_status(stream ChangeMfaState) returns (stream MfaChangingStateResponse) {};
+
+    //----- MFA FLOW -----
+    rpc enable_mfa(MfaChangingStateRequest) returns (MfaBaseResponse) {};
+    rpc disable_mfa(MfaChangingStateRequest) returns (MfaBaseResponse) {};
+    rpc mfa_validate_password(MfaValidatePasswordRequest) returns (MfaBaseResponse) {};
+    rpc mfa_validate_otp(MfaValidateOtpRequest) returns (MfaBaseResponse) {};
+
 
     //----- FROM BOTH -----
     rpc get_clients_status(GetClientsStatusRequest) returns (GetClientsStatusResponse) {};

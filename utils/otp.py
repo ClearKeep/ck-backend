@@ -15,7 +15,7 @@ from utils.logger import *
 class OTPServer(object):
     def __init__(self):
         account_sid = 'AC282f3cc1b6a21094bf363790734daff1'
-        auth_token = '722879b6fe16ed3c12c0fef65423e421'
+        auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
         self.client = Client(account_sid, auth_token)
         self.existing_time = 60 # 1 minutes
         self.message_form = 'Your OTP code is {}'
