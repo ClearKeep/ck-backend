@@ -20,7 +20,7 @@ class AuthService:
             if token:
                 return token
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             response_code = e.response_code
             check_error = json.loads(e.args[0]).get("error")
             if check_error == "invalid_grant" and response_code == 400:
@@ -36,21 +36,21 @@ class AuthService:
             else:
                 return token
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.AUTH_USER_NOT_FOUND)
 
     def logout(self, refresh_token):
         try:
             KeyCloakUtils.logout(refresh_token)
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             # raise Exception(Message.UNAUTHENTICATED)
 
     def remove_token(self, client_id, device_id):
         try:
             NotifyPushService().delete_token(client_id=client_id, device_id=device_id)
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.UNAUTHENTICATED)
 
     def register_user(self, email, password, display_name):
@@ -60,14 +60,14 @@ class AuthService:
             if user_id:
                 return user_id
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def delete_user(self, userid):
         try:
             KeyCloakUtils.delete_user(user_id=userid)
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.UNAUTHENTICATED)
 
 
@@ -75,7 +75,7 @@ class AuthService:
         try:
             return KeyCloakUtils.get_user_by_email(email)
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.USER_NOT_FOUND)
 
     def send_forgot_password(self, email):
@@ -84,7 +84,7 @@ class AuthService:
             if not user:
                 raise Exception(Message.USER_NOT_FOUND)
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.USER_NOT_FOUND)
         else:
             auth_source = Database.get_session().query(User) \
@@ -134,7 +134,7 @@ class AuthService:
                                                           auth_source='google')
                 return token
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.GOOGLE_AUTH_FAILED)
 
     # login office
@@ -175,7 +175,7 @@ class AuthService:
                                                           auth_source='office')
                 return token
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.OFFICE_AUTH_FAILED)
 
     # login facebook
@@ -220,7 +220,7 @@ class AuthService:
                                                           auth_source='facebook')
                 return token
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.FACEBOOK_AUTH_FAILED)
 
     def exchange_token(self, user_id):
