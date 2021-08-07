@@ -33,10 +33,11 @@ message DeleteNoteRequest {
 message Empty {}
 
 message UserNoteResponse {
-  string title = 1;
-  bytes content = 2;
-  string note_type = 3;
-  int64 created_at = 4;
+  string id = 1;
+  string title = 2;
+  bytes content = 3;
+  string note_type = 4;
+  int64 created_at = 5;
 }
 
 message GetUserNotesRequest {

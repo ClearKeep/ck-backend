@@ -34,6 +34,7 @@ class NoteController(BaseController):
                 request.note_type
             )
             return note_pb2.UserNoteResponse(
+                id=note.id,
                 title=note.title,
                 content=note.content,
                 note_type=note.note_type,
@@ -110,6 +111,7 @@ class NoteController(BaseController):
             )
             return note_pb2.GetUserNotesResponse(
                 user_notes=[note_pb2.UserNoteResponse(
+                    id=note.id,
                     title=note.title,
                     content=note.content,
                     note_type=note.note_type,

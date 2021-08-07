@@ -58,7 +58,7 @@ class UserService(BaseService):
             #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
             self.model.add()
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def get_google_user(self, email, auth_source):
@@ -81,7 +81,7 @@ class UserService(BaseService):
 
             return user_info.update()
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.CHANGE_PASSWORD_FAILED)
 
     def init_mfa_state_enabling(self, user_id):
@@ -111,6 +111,7 @@ class UserService(BaseService):
         if user_authen_setting.mfa_enable:
             user_authen_setting.mfa_enable = False
             user_authen_setting.update()
+            self.reset_otp_and_update()
         next_step = ''
         return next_step
 
@@ -130,6 +131,7 @@ class UserService(BaseService):
         user_authen_setting = self.authen_setting.get(user_id)
         user_authen_setting.otp_trying_times = 0
         user_authen_setting.otp = None
+        user_authen_setting.otp_valid_time = datetime.datetime.now()
         user_authen_setting.update()
 
     def freeze_otp_and_update(self, user_id, frozen_time=600):
@@ -174,6 +176,7 @@ class UserService(BaseService):
             self.init_otp_and_update(user_id)
             next_step = 'mfa_validate_otp'
         else:
+            # freezing otp services
             next_step = ''
             user_authen_setting.otp_changing_state = 0
             self.freeze_otp_and_update(user_id)
@@ -199,7 +202,7 @@ class UserService(BaseService):
             else:
                 return None
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.GET_PROFILE_FAILED)
 
     def update_profile(self, request, user_id, hash_key):
@@ -218,7 +221,7 @@ class UserService(BaseService):
 
             return user_info.update()
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.UPDATE_PROFILE_FAILED)
 
     def get_user_info(self, client_id, workspace_domain):
@@ -233,7 +236,7 @@ class UserService(BaseService):
             else:
                 raise Exception(Message.GET_USER_INFO_FAILED)
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.GET_USER_INFO_FAILED)
 
     def search_user(self, keyword, client_id):
@@ -252,7 +255,7 @@ class UserService(BaseService):
             )
             return response
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.SEARCH_USER_FAILED)
 
     def get_users(self, client_id, workspace_domain):
@@ -272,7 +275,7 @@ class UserService(BaseService):
             )
             return response
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
             raise Exception(Message.GET_USER_INFO_FAILED)
 
     def update_last_login(self, user_id):
@@ -281,7 +284,7 @@ class UserService(BaseService):
             user_info.last_login_at = datetime.datetime.now()
             user_info.update()
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.info(e)
 
     def set_user_status(self, client_id, status):
         try:
