@@ -21,6 +21,7 @@ class AuthController(BaseController):
             token = self.service.token(request.email, request.password)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             user_id = introspect_token['sub']
+            ### check if login require otp check
             user_sessions = KeyCloakUtils.get_sessions(user_id=user_id)
             for user_session in user_sessions:
                 if user_session['id'] != introspect_token['session_state']:
