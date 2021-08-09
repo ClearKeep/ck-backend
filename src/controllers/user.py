@@ -62,7 +62,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
             
-            self.service.update_profile(client_id, email, display_name, phone_number, avatar, header_data['hash_key'])
+            self.service.update_profile(client_id, display_name, phone_number, avatar)
             return user_messages.BaseResponse(success=True)
         except Exception as e:
             logger.error(e)

@@ -110,18 +110,16 @@ class UserService(BaseService):
             raise Exception(Message.GET_PROFILE_FAILED)
 
 
-    def update_profile(self,  user_id, email, display_name, phone_number, avatar, hash_key):
+    def update_profile(self,  user_id, display_name, phone_number, avatar):
         try:
             profile = self.model.get(user_id)
-            
-            if email:
-                user_info.email = email
+
             if display_name:
-                user_info.display_name = display_name
+                profile.display_name = display_name
             if phone_number:
-                user_info.phone_number = phone_number
+                profile.phone_number = phone_number
             if avatar:
-                user_info.avatar = avatar
+                profile.avatar = avatar
             return profile.update()
         
         except Exception as e:
