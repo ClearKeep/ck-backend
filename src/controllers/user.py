@@ -33,11 +33,11 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-            next_step = self.service.init_mfa_state_enabling(client_id)
-            return user_messages.MfaBaseResponse(success=True, next_step=next_step)
+            success, next_step = self.service.init_mfa_state_enabling(client_id)
+            return user_messages.MfaBaseResponse(success=success, next_step=next_step)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.PHONE_NUMBER_NOT_FOUND)]
+            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -49,8 +49,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
 
-            self.service.init_mfa_state_disabling(client_id)
-            return user_messages.MfaBaseResponse(success=True, next_step='')
+            success, next_step = self.service.init_mfa_state_disabling(client_id)
+            return user_messages.MfaBaseResponse(success=success, next_step=next_step)
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
@@ -64,8 +64,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-            next_step = self.service.validate_password(client_id, request.password)
-            return user_messages.MfaBaseResponse(success=True, next_step=next_step)
+            success, next_step = self.service.validate_password(client_id, request.password)
+            return user_messages.MfaBaseResponse(success=success, next_step=next_step)
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
@@ -79,9 +79,22 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-            next_step = self.service.validate_otp(client_id, request.otp)
-            success = next_step == ''
-            return user_messages.MfaBaseResponse(success=True, next_step=next_step)
+            success, next_step = self.service.validate_otp(client_id, request.otp)
+            return user_messages.MfaBaseResponse(success=success, next_step=next_step)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    async def mfa_resend_otp(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            success, next_step = self.service.re_init_otp(client_id)
+            return user_messages.MfaBaseResponse(success=success, next_step=next_step)
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]

@@ -59,6 +59,11 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.MfaValidateOtpRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
                 )
+        self.mfa_resend_otp = channel.unary_unary(
+                '/user.User/mfa_resend_otp',
+                request_serializer=protos_dot_user__pb2.Empty.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
+                )
         self.get_clients_status = channel.unary_unary(
                 '/user.User/get_clients_status',
                 request_serializer=protos_dot_user__pb2.GetClientsStatusRequest.SerializeToString,
@@ -140,6 +145,12 @@ class UserServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def mfa_resend_otp(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def get_clients_status(self, request, context):
         """----- FROM BOTH -----
         """
@@ -212,6 +223,11 @@ def add_UserServicer_to_server(servicer, server):
             'mfa_validate_otp': grpc.unary_unary_rpc_method_handler(
                     servicer.mfa_validate_otp,
                     request_deserializer=protos_dot_user__pb2.MfaValidateOtpRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
+            ),
+            'mfa_resend_otp': grpc.unary_unary_rpc_method_handler(
+                    servicer.mfa_resend_otp,
+                    request_deserializer=protos_dot_user__pb2.Empty.FromString,
                     response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
             ),
             'get_clients_status': grpc.unary_unary_rpc_method_handler(
@@ -393,6 +409,23 @@ class User(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/user.User/mfa_validate_otp',
             protos_dot_user__pb2.MfaValidateOtpRequest.SerializeToString,
+            protos_dot_user__pb2.MfaBaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def mfa_resend_otp(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/mfa_resend_otp',
+            protos_dot_user__pb2.Empty.SerializeToString,
             protos_dot_user__pb2.MfaBaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

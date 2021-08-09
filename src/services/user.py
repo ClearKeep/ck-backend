@@ -88,58 +88,35 @@ class UserService(BaseService):
         user_info = self.model.get(user_id)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
-            self.authen_setting = AuthenSetting(id=user_id)
-            self.authen_setting.add()
-            user_authen_setting = self.authen_setting.get(user_id)
+            user_authen_setting = AuthenSetting(id=user_id)
+            user_authen_setting = user_authen_setting.add()
         if user_authen_setting.mfa_enable:
             next_step = ''
         elif user_info.phone_number is None:
-            raise Exception(Message.PHONE_NUMBER_NOT_FOUND)
+            success = False
+            next_step = 'mfa_update_phone_number'
         else:
             user_authen_setting.otp_changing_state = 1
             user_authen_setting.update()
+            success = False
             next_step = 'mfa_validate_password'
-        return next_step
+        return success, next_step
 
     def init_mfa_state_disabling(self, user_id):
         user_info = self.model.get(user_id)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
-            self.authen_setting = AuthenSetting(id=user_id)
-            self.authen_setting.add()
-            user_authen_setting = self.authen_setting.get(user_id)
+            # in case user authen setting is not initilized but still found user_info
+            user_authen_setting = AuthenSetting(id=user_id)
+            user_authen_setting = user_authen_setting.add()
         if user_authen_setting.mfa_enable:
             user_authen_setting.mfa_enable = False
+            user_authen_setting.otp = None
+            user_authen_setting.otp_valid_time = datetime.datetime.now()
             user_authen_setting.update()
-            self.reset_otp_and_update()
+        success = True
         next_step = ''
-        return next_step
-
-    def init_otp_and_update(self, user_id, valid_time=60):
-        user_info = self.model.get(user_id)
-        user_authen_setting = self.authen_setting.get(user_id)
-        if user_authen_setting.otp_frozen_time is not None and user_authen_setting.otp_frozen_time > datetime.datetime.now():
-            raise Exception(Message.NUMBER_OF_ATTEMPTS_OTP_EXCEEDED)
-        otp = self.otp_server(user_info.phone_number)
-        user_authen_setting.otp = otp
-        user_authen_setting.otp_trying_times += 1
-        user_authen_setting.otp_valid_time = datetime.datetime.now() + datetime.timedelta(seconds=valid_time)
-        user_authen_setting.update()
-        return otp
-
-    def reset_otp_and_update(self, user_id):
-        user_authen_setting = self.authen_setting.get(user_id)
-        user_authen_setting.otp_trying_times = 0
-        user_authen_setting.otp = None
-        user_authen_setting.otp_valid_time = datetime.datetime.now()
-        user_authen_setting.update()
-
-    def freeze_otp_and_update(self, user_id, frozen_time=600):
-        user_authen_setting = self.authen_setting.get(user_id)
-        # freeze otp service for 10 minutes
-        user_authen_setting.otp_frozen_time = datetime.datetime.now() + datetime.timedelta(seconds=frozen_time)
-        self.reset_otp_and_update(user_id)
-        return True
+        return success, next_step
 
     def validate_password(self, user_id, password):
         user_info = self.model.get(user_id)
@@ -151,12 +128,17 @@ class UserService(BaseService):
             logger.info(user_info.email, password)
             if token:
                 user_authen_setting.otp_changing_state = 2
+                otp = self.otp_server(user_info.phone_number)
+                user_authen_setting.otp = otp
+                user_authen_setting.otp_valid_time = self.otp_server.get_valid_time()
                 user_authen_setting.update()
-                self.init_otp_and_update(user_id)
+                success = True
                 next_step = 'mfa_validate_otp'
             else:
+                success = False
+                next_step = 'mfa_validate_password'
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
-            return next_step
+            return success, next_step
         except Exception as e:
             logger.info(bytes(str(e), encoding='utf-8'))
             raise Exception(Message.AUTH_USER_NOT_FOUND)
@@ -169,19 +151,31 @@ class UserService(BaseService):
         if otp == user_authen_setting.otp and datetime.datetime.now() < user_authen_setting.otp_valid_time:
             user_authen_setting.mfa_enable = True
             user_authen_setting.otp_changing_state = 0
+            user_authen_setting.otp_valid_time = datetime.datetime.now()
             user_authen_setting.update()
-            self.reset_otp_and_update(user_id)
+            success = True
             next_step = ''
-        elif user_authen_setting.otp_trying_times < max_trying_times:
-            self.init_otp_and_update(user_id)
-            next_step = 'mfa_validate_otp'
         else:
-            # freezing otp services
-            next_step = ''
-            user_authen_setting.otp_changing_state = 0
-            self.freeze_otp_and_update(user_id)
-            raise Exception(Message.NUMBER_OF_ATTEMPTS_OTP_EXCEEDED)
-        return next_step
+            success = False
+            next_step = 'mfa_validate_otp'
+        return success, next_step
+
+    def re_init_otp(self, user_id):
+        user_info = self.model.get(user_id)
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting.otp_changing_state != 2:
+            raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
+        try:
+            otp = self.otp_server(user_info.phone_number)
+            user_authen_setting.otp = otp
+            user_authen_setting.otp_valid_time = self.otp_server.get_valid_time()
+            user_authen_setting.update()
+            success = True
+            next_step = 'mfa_validate_otp'
+            return success, next_step
+        except Exception as e:
+            logger.info(bytes(str(e), encoding='utf-8'))
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
 
     def get_profile(self, user_id, hash_key):
         try:

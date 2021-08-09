@@ -17,7 +17,7 @@ class OTPServer(object):
         account_sid = 'AC282f3cc1b6a21094bf363790734daff1'
         auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
         self.client = Client(account_sid, auth_token)
-        self.existing_time = 60 # 1 minutes
+        self.life_time = datetime.timedelta(seconds=60) # for testing. in product it should be set as 1800s
         self.message_form = 'Your OTP code is {}'
         # set up a phone number for sending
         self.n_number = 6
@@ -33,6 +33,8 @@ class OTPServer(object):
         otp = ''.join(random.choices(string.digits, k=self.n_number))
         return otp
 
+    def get_valid_time(self):
+        return datetime.datetime.now() + self.life_time
 
     def _otp_message_sending(self, otp, phone_number):
         try:

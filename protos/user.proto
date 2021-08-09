@@ -137,7 +137,7 @@ service User {
     rpc disable_mfa(MfaChangingStateRequest) returns (MfaBaseResponse) {};
     rpc mfa_validate_password(MfaValidatePasswordRequest) returns (MfaBaseResponse) {};
     rpc mfa_validate_otp(MfaValidateOtpRequest) returns (MfaBaseResponse) {};
-
+    rpc mfa_resend_otp(Empty) returns (MfaBaseResponse) {};
 
     //----- FROM BOTH -----
     rpc get_clients_status(GetClientsStatusRequest) returns (GetClientsStatusResponse) {};

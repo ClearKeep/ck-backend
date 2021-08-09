@@ -10,15 +10,14 @@ class AuthenSetting(Database.get().Model):
     id = Database.get().Column(Database.get().String(36), primary_key=True)
     mfa_enable = Database.get().Column(Database.get().Boolean, unique=False, default=False)
     otp = Database.get().Column(Database.get().String(6), unique=False, nullable=True)
-    otp_trying_times = Database.get().Column(Database.get().INTEGER, unique=False, default=0)
     otp_valid_time = Database.get().Column(Database.get().DateTime, unique=False, nullable=True)
     otp_changing_state = Database.get().Column(Database.get().INTEGER, unique=False, default=0)
-    otp_frozen_time = Database.get().Column(Database.get().DateTime, unique=False, default=datetime.min)
 
     def add(self):
         try:
             Database.get_session().add(self)
             Database.get_session().commit()
+            return self
         except:
             Database.get_session().rollback()
             raise
