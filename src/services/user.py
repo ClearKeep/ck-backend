@@ -91,8 +91,10 @@ class UserService(BaseService):
                     id=user_info.id,
                     display_name=user_info.display_name
                 )
-                if user_info.email:
-                    obj_res.email = user_info.email
+                # if user_info.email:
+                #     obj_res.email = user_info.email                
+                if user_info.avatar:
+                    obj_res.avatar = user_info.avatar
                 if user_info.phone_number:
                     obj_res.phone_number = user_info.phone_number
                 # if user_info.first_name:
@@ -108,25 +110,20 @@ class UserService(BaseService):
             raise Exception(Message.GET_PROFILE_FAILED)
 
 
-    def update_profile(self, request, user_id, hash_key):
+    def update_profile(self,  user_id, email, display_name, phone_number, avatar, hash_key):
         try:
             profile = self.model.get(user_id)
-            if request.display_name:
-                profile.display_name = request.display_name
-            if request.avatar:
-                profile.avatar = request.avatar
-            if request.phone_number:
-                profile.phone_number = request.phone_number
-                
-            # if request.email:
-            #     user_info.email = EncryptUtils.encrypt_with_hash(request.email, hash_key)
-            # if request.first_name:
-            #     user_info.first_name = EncryptUtils.encrypt_with_hash(request.first_name, hash_key)
-            #
-            # if request.last_name:
-            #     user_info.last_name = EncryptUtils.encrypt_with_hash(request.last_name, hash_key)
-
+            
+            if email:
+                user_info.email = email
+            if display_name:
+                user_info.display_name = display_name
+            if phone_number:
+                user_info.phone_number = phone_number
+            if avatar:
+                user_info.avatar = avatar
             return profile.update()
+        
         except Exception as e:
             logger.info(e)
             raise Exception(Message.UPDATE_PROFILE_FAILED)

@@ -54,11 +54,15 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def update_profile(self, request, context):
         logger.info("user update_profile api")
         try:
+            display_name = request.display_name
+            avatar = request.avatar
+            phone_number = request.phone_number
+            
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-
-            self.service.update_profile(request, client_id, header_data['hash_key'])
+            
+            self.service.update_profile(client_id, email, display_name, phone_number, avatar, header_data['hash_key'])
             return user_messages.BaseResponse(success=True)
         except Exception as e:
             logger.error(e)
