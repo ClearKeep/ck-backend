@@ -128,7 +128,7 @@ class UserService(BaseService):
 
             return profile.update()
         except Exception as e:
-            logger.info()
+            logger.info(e)
             raise Exception(Message.UPDATE_PROFILE_FAILED)
 
     def get_user_info(self, client_id, workspace_domain):

@@ -127,6 +127,10 @@ class KeyCloakUtils:
     def active_user(user_id):
         return keycloak_admin.update_user(user_id=user_id, payload={'emailVerified': True})
 
+    @staticmethod
+    def delete_user(user_id):
+        return keycloak_admin.delete_user(user_id=user_id)
+
 
     @staticmethod
     def remove_user_sessions(user_id):

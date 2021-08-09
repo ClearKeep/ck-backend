@@ -39,8 +39,8 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.PingRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
                 )
-        self.get_client_status = channel.unary_unary(
-                '/user.User/get_client_status',
+        self.get_clients_status = channel.unary_unary(
+                '/user.User/get_clients_status',
                 request_serializer=protos_dot_user__pb2.GetClientsStatusRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.GetClientsStatusResponse.FromString,
                 )
@@ -95,7 +95,7 @@ class UserServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def get_client_status(self, request, context):
+    def get_clients_status(self, request, context):
         """----- FROM BOTH -----
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -149,8 +149,8 @@ def add_UserServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_user__pb2.PingRequest.FromString,
                     response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
             ),
-            'get_client_status': grpc.unary_unary_rpc_method_handler(
-                    servicer.get_client_status,
+            'get_clients_status': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_clients_status,
                     request_deserializer=protos_dot_user__pb2.GetClientsStatusRequest.FromString,
                     response_serializer=protos_dot_user__pb2.GetClientsStatusResponse.SerializeToString,
             ),
@@ -265,7 +265,7 @@ class User(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def get_client_status(request,
+    def get_clients_status(request,
             target,
             options=(),
             channel_credentials=None,
@@ -275,7 +275,7 @@ class User(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/user.User/get_client_status',
+        return grpc.experimental.unary_unary(request, target, '/user.User/get_clients_status',
             protos_dot_user__pb2.GetClientsStatusRequest.SerializeToString,
             protos_dot_user__pb2.GetClientsStatusResponse.FromString,
             options, channel_credentials,
