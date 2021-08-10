@@ -18,8 +18,8 @@ message UserProfileResponse {
     string id = 1;
     string display_name = 2;
     string email = 3;
-    string first_name = 4;
-    string last_name = 5;
+    string phone_number = 4;
+    string avatar = 5;
 }
 
 // Request: get my info
@@ -29,9 +29,9 @@ message Empty {}
 
 // Request: update my info
 message UpdateProfileRequest {
-    string first_name = 1;
-    string last_name = 2;
-    string avatar = 3;
+    string display_name = 1;
+    string avatar = 2;
+    string phone_number = 3;
 }
 // Response: UserObjectResponse
 
@@ -55,7 +55,6 @@ message GetUserRequest {
     string client_id = 1;
     string workspace_domain = 2;
 }
-
 // Response: UserObjectResponse
 
 // Request: Search User
@@ -87,36 +86,89 @@ message PingRequest {}
 message GetClientsStatusRequest {
     repeated MemberInfoRequest lst_client = 1;
  }
- 
+
  message MemberInfoRequest {
    string client_id = 1;
    string workspace_domain = 2;
  }
- 
- 
+
+
  message GetClientsStatusResponse {
     repeated MemberInfoRes lst_client = 1;
  }
- 
+
  message MemberInfoRes {
    string client_id = 1;
    string workspace_domain = 2;
    string status = 3;
  }
 
+// << profile >>
+message UploadAvatarRequest {
+    string file_name = 1;
+    string file_content_type = 2;
+    bytes file_data = 3;
+    string file_hash = 4;
+  }
+
+message UploadAvatarResponse {
+  string file_url = 1;
+}
+
+//----- MFA FLOW -----
+ message MfaBaseResponse{
+     bool success = 1;
+     string next_step = 2;
+     ErrorRes errors = 3;
+ }
+
+message MfaStateResponse{
+    bool mfa_enable = 1;
+}
+
+message MfaGetStateRequest {}
+// Response: MfaStateResponse
+
+message MfaChangingStateRequest {
+}
+// Response: MfaBaseResponse
+
+message MfaValidatePasswordRequest {
+     string password = 1;
+}
+// Response: MfaBaseResponse
+
+message MfaValidateOtpRequest {
+     string otp = 1;
+}
+// Response: MfaBaseResponse
+
+message MfaResendOtpRequest {}
+// Response: MfaBaseResponse
+
 service User {
     //----- FROM MY ACCOUNT -----
+    // => profile api
     rpc get_profile(Empty) returns (UserProfileResponse) {};
     rpc update_profile(UpdateProfileRequest) returns (BaseResponse) {};
+    rpc upload_avatar(UploadAvatarRequest) returns (UploadAvatarResponse) {};
+
     rpc change_password(ChangePasswordRequest) returns (BaseResponse) {};
     rpc update_status(SetUserStatusRequest) returns (BaseResponse) {};
     rpc ping_request(PingRequest) returns (BaseResponse) {};
-
-    //----- FROM BOTH -----
     rpc get_clients_status(GetClientsStatusRequest) returns (GetClientsStatusResponse) {};
+
 
     //----- FROM OTHER ACCOUNT -----
     rpc get_user_info(GetUserRequest) returns (UserInfoResponse) {};
     rpc search_user(SearchUserRequest) returns (SearchUserResponse) {};
     rpc get_users(Empty) returns (GetUsersResponse) {};
+
+    //----- MFA ENABLE FLOW -----
+    rpc get_mfa_state(MfaGetStateRequest) returns (MfaStateResponse) {};
+    rpc enable_mfa(MfaChangingStateRequest) returns (MfaBaseResponse) {};
+    rpc disable_mfa(MfaChangingStateRequest) returns (MfaBaseResponse) {};
+    rpc mfa_validate_password(MfaValidatePasswordRequest) returns (MfaBaseResponse) {};
+    rpc mfa_validate_otp(MfaValidateOtpRequest) returns (MfaBaseResponse) {};
+    rpc mfa_resend_otp(MfaResendOtpRequest) returns (MfaBaseResponse) {};
 }

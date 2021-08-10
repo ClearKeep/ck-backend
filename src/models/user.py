@@ -8,11 +8,13 @@ class User(Database.get().Model):
     __tablename__ = 'user'
     id = Database.get().Column(Database.get().String(36), primary_key=True)
     email = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
+    phone_number = Database.get().Column(Database.get().String(15), unique=False, nullable=True)
     display_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     first_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     last_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     status = Database.get().Column(Database.get().String(256), unique=False, nullable=True)
     avatar = Database.get().Column(Database.get().String(256), unique=False, nullable=True)
+    phone_number = Database.get().Column(Database.get().String(20), unique=False, nullable=True)
     auth_source = Database.get().Column(Database.get().String(50), unique=False, nullable=True)
     active = Database.get().Column(Database.get().Boolean, unique=False, nullable=True, default=True)
     last_active_at = Database.get().Column(Database.get().DateTime, nullable=True)
