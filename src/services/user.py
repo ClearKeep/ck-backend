@@ -10,7 +10,10 @@ import datetime
 from utils.config import get_system_config, get_owner_workspace_domain
 from utils.otp import OTPServer
 from client.client_user import ClientUser
-
+import base64
+import boto3
+import os
+import hashlib
 client_records_list_in_memory = {}
 
 
@@ -203,8 +206,12 @@ class UserService(BaseService):
                     id=user_info.id,
                     display_name=user_info.display_name
                 )
-                if user_info.email:
-                    obj_res.email = user_info.email
+                # if user_info.email:
+                #     obj_res.email = user_info.email                
+                if user_info.avatar:
+                    obj_res.avatar = user_info.avatar
+                if user_info.phone_number:
+                    obj_res.phone_number = user_info.phone_number
                 # if user_info.first_name:
                 #     obj_res.first_name = EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key),
                 # if user_info.last_name:
@@ -217,21 +224,19 @@ class UserService(BaseService):
             logger.info(e)
             raise Exception(Message.GET_PROFILE_FAILED)
 
-    def update_profile(self, request, user_id, hash_key):
+
+    def update_profile(self,  user_id, display_name, phone_number, avatar):
         try:
-            user_info = self.model.get(user_id)
-            if request.display_name:
-                user_info.display_name = request.display_name
+            profile = self.model.get(user_id)
 
-            # if request.email:
-            #     user_info.email = EncryptUtils.encrypt_with_hash(request.email, hash_key)
-            # if request.first_name:
-            #     user_info.first_name = EncryptUtils.encrypt_with_hash(request.first_name, hash_key)
-            #
-            # if request.last_name:
-            #     user_info.last_name = EncryptUtils.encrypt_with_hash(request.last_name, hash_key)
-
-            return user_info.update()
+            if display_name:
+                profile.display_name = display_name
+            if phone_number:
+                profile.phone_number = phone_number
+            if avatar:
+                profile.avatar = avatar
+            return profile.update()
+        
         except Exception as e:
             logger.info(e)
             raise Exception(Message.UPDATE_PROFILE_FAILED)
@@ -331,7 +336,6 @@ class UserService(BaseService):
             raise Exception(Message.PING_PONG_SERVER_FAILED)
 
     def categorize_workspace_domains(self, list_clients):
-        domain_local = get_owner_workspace_domain()
         workspace_domains_dictionary = {}
 
         for client in list_clients:
@@ -376,7 +380,6 @@ class UserService(BaseService):
             raise Exception(Message.GET_USER_STATUS_FAILED)
 
     def get_owner_workspace_client_status(self, client_id):
-        logger.info("get_client_status")
         client_record = client_records_list_in_memory.get(str(client_id), None)
 
         if client_record is not None:
@@ -388,7 +391,7 @@ class UserService(BaseService):
                 if client_record["user_status"] is not None:
                     user_status = client_record["user_status"]
                 else:
-                    user_status = "Active"
+                    user_status = "Online"
         else:
             user_status = "Undefined"
         return user_status
@@ -410,3 +413,33 @@ class UserService(BaseService):
                 server_error_resp.append(tmp_client_response)
             return server_error_resp
         return client_resp.lst_client
+
+    def base64_enconding_text_to_string(self, text):
+        text_bytes = text.encode("ascii")
+        encoded_text_bytes = base64.b64encode(text_bytes)
+        return encoded_text_bytes.decode('ascii')
+        
+    def upload_avatar(self, client_id, file_name, file_content, file_type, file_hash):
+        m = hashlib.new('md5', file_content).hexdigest()
+        if m != file_hash:
+            raise Exception(Message.UPLOAD_FILE_DATA_LOSS)
+        # start upload to s3 and resize if needed
+        tmp_file_name, file_ext = os.path.splitext(file_name)
+        avatar_file_name = self.base64_enconding_text_to_string(client_id) + file_ext
+        
+        avatar_url = self.upload_to_s3(avatar_file_name, file_content, file_type)
+        obj_res = user_pb2.UploadAvatarResponse(
+            file_url=avatar_url
+        )
+        return obj_res
+    
+    def upload_to_s3(self, file_name, file_data, content_type):
+        s3_config = get_system_config()['storage_s3']
+        file_path = os.path.join(s3_config.get('avatar_folder'), file_name)
+        s3_client = boto3.client('s3', aws_access_key_id=s3_config.get('access_key_id'),
+                                 aws_secret_access_key=s3_config.get('access_key_secret'))
+        
+        s3_client.put_object(Body=file_data, Bucket=s3_config.get('bucket'), Key=file_path, ContentType=content_type,
+                             ACL='public-read')
+        uploaded_file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)
+        return uploaded_file_url
