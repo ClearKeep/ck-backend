@@ -13,11 +13,11 @@ class OTPServer(object):
         account_sid = get_otp_server()["twilio_account_sid"]
         auth_token =  get_otp_server()["twilio_auth_token"]
         self.client = Client(account_sid, auth_token)
-        self.life_time = datetime.timedelta(seconds=60) # for testing. in product it should be set as 1800s
+        self.life_time = datetime.timedelta(seconds=get_otp_server()["life_time"])
         self.message_form = 'Your OTP code is {}'
         # set up a phone number for sending
-        self.n_number = 4
-        self.from_phone = '+15394242840'
+        self.n_number =get_otp_server()["otp_code_length"]
+        self.from_phone = get_otp_server()["server_phone_number"]
 
     def get_otp(self, phone_number):
         otp = self._create_otp()
