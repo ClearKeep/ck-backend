@@ -91,6 +91,7 @@ class UserService(BaseService):
             user_authen_setting = AuthenSetting(id=user_id)
             user_authen_setting = user_authen_setting.add()
         if user_authen_setting.mfa_enable:
+            success = False
             next_step = ''
         elif user_info.phone_number is None:
             success = False
@@ -98,7 +99,7 @@ class UserService(BaseService):
         else:
             user_authen_setting.otp_changing_state = 1
             user_authen_setting.update()
-            success = False
+            success = True
             next_step = 'mfa_validate_password'
         return success, next_step
 
