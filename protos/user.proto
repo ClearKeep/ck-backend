@@ -126,6 +126,9 @@ message MfaStateResponse{
     bool mfa_enable = 1;
 }
 
+message MfaGetStateRequest {}
+// Response: MfaStateResponse
+
 message MfaChangingStateRequest {
 }
 // Response: MfaBaseResponse
@@ -138,6 +141,9 @@ message MfaValidatePasswordRequest {
 message MfaValidateOtpRequest {
      string otp = 1;
 }
+// Response: MfaBaseResponse
+
+message MfaResendOtpRequest {}
 // Response: MfaBaseResponse
 
 service User {
@@ -159,10 +165,10 @@ service User {
     rpc get_users(Empty) returns (GetUsersResponse) {};
 
     //----- MFA ENABLE FLOW -----
-    rpc get_mfa_state(Empty) returns (MfaStateResponse) {};
+    rpc get_mfa_state(MfaGetStateRequest) returns (MfaStateResponse) {};
     rpc enable_mfa(MfaChangingStateRequest) returns (MfaBaseResponse) {};
     rpc disable_mfa(MfaChangingStateRequest) returns (MfaBaseResponse) {};
     rpc mfa_validate_password(MfaValidatePasswordRequest) returns (MfaBaseResponse) {};
     rpc mfa_validate_otp(MfaValidateOtpRequest) returns (MfaBaseResponse) {};
-    rpc mfa_resend_otp(Empty) returns (MfaBaseResponse) {};
+    rpc mfa_resend_otp(MfaResendOtpRequest) returns (MfaBaseResponse) {};
 }

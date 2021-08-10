@@ -95,7 +95,6 @@ class UserService(BaseService):
                     raise Exception(Message.AUTH_USER_NOT_FOUND)
                 user_authen_setting = AuthenSetting(id=user_id)
                 user_authen_setting = user_authen_setting.add()
-
             return user_pb2.MfaStateResponse(
                 mfa_enable=user_authen_setting.mfa_enable,
             )
@@ -105,8 +104,12 @@ class UserService(BaseService):
 
     def init_mfa_state_enabling(self, user_id):
         user_info = self.model.get(user_id)
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
+            if user_info is None:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
             user_authen_setting = AuthenSetting(id=user_id)
             user_authen_setting = user_authen_setting.add()
         if user_authen_setting.mfa_enable:
@@ -123,9 +126,11 @@ class UserService(BaseService):
         return success, next_step
 
     def init_mfa_state_disabling(self, user_id):
-        user_info = self.model.get(user_id)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
+            user_info = self.model.get(user_id)
+            if user_info is None:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
             # in case user authen setting is not initilized but still found user_info
             user_authen_setting = AuthenSetting(id=user_id)
             user_authen_setting = user_authen_setting.add()
@@ -155,16 +160,13 @@ class UserService(BaseService):
                 success = True
                 next_step = 'mfa_validate_otp'
             else:
-                success = False
-                next_step = 'mfa_validate_password'
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             return success, next_step
         except Exception as e:
             logger.error(e)
             raise Exception(Message.AUTH_USER_NOT_FOUND)
 
-    def validate_otp(self, user_id, otp, valid_time=60, max_trying_times=5):
-        valid_time = datetime.timedelta(seconds=valid_time)
+    def validate_otp(self, user_id, otp):
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting.otp_changing_state != 2:
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
@@ -181,7 +183,6 @@ class UserService(BaseService):
         return success, next_step
 
     def re_init_otp(self, user_id):
-        user_info = self.model.get(user_id)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting.otp_changing_state != 2:
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)

@@ -24,6 +24,11 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.UpdateProfileRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
                 )
+        self.upload_avatar = channel.unary_unary(
+                '/user.User/upload_avatar',
+                request_serializer=protos_dot_user__pb2.UploadAvatarRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.UploadAvatarResponse.FromString,
+                )
         self.change_password = channel.unary_unary(
                 '/user.User/change_password',
                 request_serializer=protos_dot_user__pb2.ChangePasswordRequest.SerializeToString,
@@ -39,9 +44,29 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.PingRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
                 )
+        self.get_clients_status = channel.unary_unary(
+                '/user.User/get_clients_status',
+                request_serializer=protos_dot_user__pb2.GetClientsStatusRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.GetClientsStatusResponse.FromString,
+                )
+        self.get_user_info = channel.unary_unary(
+                '/user.User/get_user_info',
+                request_serializer=protos_dot_user__pb2.GetUserRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.UserInfoResponse.FromString,
+                )
+        self.search_user = channel.unary_unary(
+                '/user.User/search_user',
+                request_serializer=protos_dot_user__pb2.SearchUserRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.SearchUserResponse.FromString,
+                )
+        self.get_users = channel.unary_unary(
+                '/user.User/get_users',
+                request_serializer=protos_dot_user__pb2.Empty.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.GetUsersResponse.FromString,
+                )
         self.get_mfa_state = channel.unary_unary(
                 '/user.User/get_mfa_state',
-                request_serializer=protos_dot_user__pb2.Empty.SerializeToString,
+                request_serializer=protos_dot_user__pb2.MfaGetStateRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.MfaStateResponse.FromString,
                 )
         self.enable_mfa = channel.unary_unary(
@@ -66,28 +91,8 @@ class UserStub(object):
                 )
         self.mfa_resend_otp = channel.unary_unary(
                 '/user.User/mfa_resend_otp',
-                request_serializer=protos_dot_user__pb2.Empty.SerializeToString,
+                request_serializer=protos_dot_user__pb2.MfaResendOtpRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
-                )
-        self.get_clients_status = channel.unary_unary(
-                '/user.User/get_clients_status',
-                request_serializer=protos_dot_user__pb2.GetClientsStatusRequest.SerializeToString,
-                response_deserializer=protos_dot_user__pb2.GetClientsStatusResponse.FromString,
-                )
-        self.get_user_info = channel.unary_unary(
-                '/user.User/get_user_info',
-                request_serializer=protos_dot_user__pb2.GetUserRequest.SerializeToString,
-                response_deserializer=protos_dot_user__pb2.UserInfoResponse.FromString,
-                )
-        self.search_user = channel.unary_unary(
-                '/user.User/search_user',
-                request_serializer=protos_dot_user__pb2.SearchUserRequest.SerializeToString,
-                response_deserializer=protos_dot_user__pb2.SearchUserResponse.FromString,
-                )
-        self.get_users = channel.unary_unary(
-                '/user.User/get_users',
-                request_serializer=protos_dot_user__pb2.Empty.SerializeToString,
-                response_deserializer=protos_dot_user__pb2.GetUsersResponse.FromString,
                 )
 
 
@@ -96,12 +101,19 @@ class UserServicer(object):
 
     def get_profile(self, request, context):
         """----- FROM MY ACCOUNT -----
+        => profile api
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def update_profile(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def upload_avatar(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -120,6 +132,31 @@ class UserServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def ping_request(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def get_clients_status(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def get_user_info(self, request, context):
+        """----- FROM OTHER ACCOUNT -----
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def search_user(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def get_users(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -162,32 +199,6 @@ class UserServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def get_clients_status(self, request, context):
-        """----- FROM BOTH -----
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def get_user_info(self, request, context):
-        """----- FROM OTHER ACCOUNT -----
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def search_user(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def get_users(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
 
 def add_UserServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -200,6 +211,11 @@ def add_UserServicer_to_server(servicer, server):
                     servicer.update_profile,
                     request_deserializer=protos_dot_user__pb2.UpdateProfileRequest.FromString,
                     response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
+            ),
+            'upload_avatar': grpc.unary_unary_rpc_method_handler(
+                    servicer.upload_avatar,
+                    request_deserializer=protos_dot_user__pb2.UploadAvatarRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.UploadAvatarResponse.SerializeToString,
             ),
             'change_password': grpc.unary_unary_rpc_method_handler(
                     servicer.change_password,
@@ -216,9 +232,29 @@ def add_UserServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_user__pb2.PingRequest.FromString,
                     response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
             ),
+            'get_clients_status': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_clients_status,
+                    request_deserializer=protos_dot_user__pb2.GetClientsStatusRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.GetClientsStatusResponse.SerializeToString,
+            ),
+            'get_user_info': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_user_info,
+                    request_deserializer=protos_dot_user__pb2.GetUserRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.UserInfoResponse.SerializeToString,
+            ),
+            'search_user': grpc.unary_unary_rpc_method_handler(
+                    servicer.search_user,
+                    request_deserializer=protos_dot_user__pb2.SearchUserRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.SearchUserResponse.SerializeToString,
+            ),
+            'get_users': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_users,
+                    request_deserializer=protos_dot_user__pb2.Empty.FromString,
+                    response_serializer=protos_dot_user__pb2.GetUsersResponse.SerializeToString,
+            ),
             'get_mfa_state': grpc.unary_unary_rpc_method_handler(
                     servicer.get_mfa_state,
-                    request_deserializer=protos_dot_user__pb2.Empty.FromString,
+                    request_deserializer=protos_dot_user__pb2.MfaGetStateRequest.FromString,
                     response_serializer=protos_dot_user__pb2.MfaStateResponse.SerializeToString,
             ),
             'enable_mfa': grpc.unary_unary_rpc_method_handler(
@@ -243,28 +279,8 @@ def add_UserServicer_to_server(servicer, server):
             ),
             'mfa_resend_otp': grpc.unary_unary_rpc_method_handler(
                     servicer.mfa_resend_otp,
-                    request_deserializer=protos_dot_user__pb2.Empty.FromString,
+                    request_deserializer=protos_dot_user__pb2.MfaResendOtpRequest.FromString,
                     response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
-            ),
-            'get_clients_status': grpc.unary_unary_rpc_method_handler(
-                    servicer.get_clients_status,
-                    request_deserializer=protos_dot_user__pb2.GetClientsStatusRequest.FromString,
-                    response_serializer=protos_dot_user__pb2.GetClientsStatusResponse.SerializeToString,
-            ),
-            'get_user_info': grpc.unary_unary_rpc_method_handler(
-                    servicer.get_user_info,
-                    request_deserializer=protos_dot_user__pb2.GetUserRequest.FromString,
-                    response_serializer=protos_dot_user__pb2.UserInfoResponse.SerializeToString,
-            ),
-            'search_user': grpc.unary_unary_rpc_method_handler(
-                    servicer.search_user,
-                    request_deserializer=protos_dot_user__pb2.SearchUserRequest.FromString,
-                    response_serializer=protos_dot_user__pb2.SearchUserResponse.SerializeToString,
-            ),
-            'get_users': grpc.unary_unary_rpc_method_handler(
-                    servicer.get_users,
-                    request_deserializer=protos_dot_user__pb2.Empty.FromString,
-                    response_serializer=protos_dot_user__pb2.GetUsersResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -307,6 +323,23 @@ class User(object):
         return grpc.experimental.unary_unary(request, target, '/user.User/update_profile',
             protos_dot_user__pb2.UpdateProfileRequest.SerializeToString,
             protos_dot_user__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def upload_avatar(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/upload_avatar',
+            protos_dot_user__pb2.UploadAvatarRequest.SerializeToString,
+            protos_dot_user__pb2.UploadAvatarResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -362,6 +395,74 @@ class User(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def get_clients_status(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/get_clients_status',
+            protos_dot_user__pb2.GetClientsStatusRequest.SerializeToString,
+            protos_dot_user__pb2.GetClientsStatusResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def get_user_info(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/get_user_info',
+            protos_dot_user__pb2.GetUserRequest.SerializeToString,
+            protos_dot_user__pb2.UserInfoResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def search_user(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/search_user',
+            protos_dot_user__pb2.SearchUserRequest.SerializeToString,
+            protos_dot_user__pb2.SearchUserResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def get_users(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/get_users',
+            protos_dot_user__pb2.Empty.SerializeToString,
+            protos_dot_user__pb2.GetUsersResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def get_mfa_state(request,
             target,
             options=(),
@@ -373,7 +474,7 @@ class User(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/user.User/get_mfa_state',
-            protos_dot_user__pb2.Empty.SerializeToString,
+            protos_dot_user__pb2.MfaGetStateRequest.SerializeToString,
             protos_dot_user__pb2.MfaStateResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -458,75 +559,7 @@ class User(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/user.User/mfa_resend_otp',
-            protos_dot_user__pb2.Empty.SerializeToString,
+            protos_dot_user__pb2.MfaResendOtpRequest.SerializeToString,
             protos_dot_user__pb2.MfaBaseResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def get_clients_status(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/user.User/get_clients_status',
-            protos_dot_user__pb2.GetClientsStatusRequest.SerializeToString,
-            protos_dot_user__pb2.GetClientsStatusResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def get_user_info(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/user.User/get_user_info',
-            protos_dot_user__pb2.GetUserRequest.SerializeToString,
-            protos_dot_user__pb2.UserInfoResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def search_user(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/user.User/search_user',
-            protos_dot_user__pb2.SearchUserRequest.SerializeToString,
-            protos_dot_user__pb2.SearchUserResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def get_users(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/user.User/get_users',
-            protos_dot_user__pb2.Empty.SerializeToString,
-            protos_dot_user__pb2.GetUsersResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
