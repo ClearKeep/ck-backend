@@ -21,7 +21,6 @@ class UserService(BaseService):
     def __init__(self):
         super().__init__(User())
         self.authen_setting = AuthenSetting()
-        self.otp_server = OTPServer()
         # self.workspace_domain = get_system_domain()
 
     def create_new_user(self, id, email, display_name, auth_source):
@@ -146,12 +145,12 @@ class UserService(BaseService):
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
         try:
             token = KeyCloakUtils.token(user_info.email, password)
-            logger.info(user_info.email, password)
             if token:
                 user_authen_setting.otp_changing_state = 2
-                otp = self.otp_server(user_info.phone_number)
+                otp_server = OTPServer()
+                otp = otp_server.get_otp(user_info.phone_number)
                 user_authen_setting.otp = otp
-                user_authen_setting.otp_valid_time = self.otp_server.get_valid_time()
+                user_authen_setting.otp_valid_time = otp_server.get_valid_time()
                 user_authen_setting.update()
                 success = True
                 next_step = 'mfa_validate_otp'
@@ -187,9 +186,10 @@ class UserService(BaseService):
         if user_authen_setting.otp_changing_state != 2:
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
         try:
-            otp = self.otp_server(user_info.phone_number)
+            otp_server = OTPServer()
+            otp = otp_server.get_otp(user_info.phone_number)
             user_authen_setting.otp = otp
-            user_authen_setting.otp_valid_time = self.otp_server.get_valid_time()
+            user_authen_setting.otp_valid_time = otp_server.get_valid_time()
             user_authen_setting.update()
             success = True
             next_step = 'mfa_validate_otp'

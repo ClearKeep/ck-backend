@@ -3,6 +3,7 @@ import random
 import string
 import datetime
 from twilio.rest import Client
+from utils.config import get_otp_server
 from utils.logger import *
 
 # for testing only
@@ -14,8 +15,8 @@ from utils.logger import *
 
 class OTPServer(object):
     def __init__(self):
-        account_sid = 'AC282f3cc1b6a21094bf363790734daff1'
-        auth_token = os.environ.get('TWILIO_AUTH_TOKEN')
+        account_sid = get_otp_server()["twilio_account_sid"]
+        auth_token =  get_otp_server()["twilio_auth_token"]
         self.client = Client(account_sid, auth_token)
         self.life_time = datetime.timedelta(seconds=60) # for testing. in product it should be set as 1800s
         self.message_form = 'Your OTP code is {}'
@@ -23,7 +24,7 @@ class OTPServer(object):
         self.n_number = 4
         self.from_phone = '+15394242840'
 
-    def __call__(self, phone_number):
+    def get_otp(self, phone_number):
         otp = self._create_otp()
         logger.info('{} sent to {}'.format(self.message_form.format(otp), phone_number))
         self._otp_message_sending(otp, phone_number)
