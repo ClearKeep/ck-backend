@@ -8,11 +8,6 @@ from utils.logger import *
 
 # for testing only
 
-# account_sid = 'AC282f3cc1b6a21094bf363790734daff1'
-# auth_token = '9cccf653a58c593f0de2ff39c3440628'
-# client = Client(account_sid, auth_token)
-# need an option to generate access token and return to user
-
 class OTPServer(object):
     def __init__(self):
         account_sid = get_otp_server()["twilio_account_sid"]
