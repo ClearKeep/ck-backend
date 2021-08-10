@@ -101,7 +101,7 @@ class UserService(BaseService):
                 mfa_enable=user_authen_setting.mfa_enable,
             )
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(e)
             raise Exception(Message.GET_MFA_STATE_FALED)
 
     def init_mfa_state_enabling(self, user_id):
@@ -161,7 +161,7 @@ class UserService(BaseService):
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             return success, next_step
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(e)
             raise Exception(Message.AUTH_USER_NOT_FOUND)
 
     def validate_otp(self, user_id, otp, valid_time=60, max_trying_times=5):
@@ -195,7 +195,7 @@ class UserService(BaseService):
             next_step = 'mfa_validate_otp'
             return success, next_step
         except Exception as e:
-            logger.info(bytes(str(e), encoding='utf-8'))
+            logger.error(e)
             raise Exception(Message.AUTH_USER_NOT_FOUND)
 
     def get_profile(self, user_id, hash_key):
@@ -207,7 +207,7 @@ class UserService(BaseService):
                     display_name=user_info.display_name
                 )
                 # if user_info.email:
-                #     obj_res.email = user_info.email                
+                #     obj_res.email = user_info.email
                 if user_info.avatar:
                     obj_res.avatar = user_info.avatar
                 if user_info.phone_number:
@@ -236,7 +236,7 @@ class UserService(BaseService):
             if avatar:
                 profile.avatar = avatar
             return profile.update()
-        
+
         except Exception as e:
             logger.info(e)
             raise Exception(Message.UPDATE_PROFILE_FAILED)
@@ -418,7 +418,7 @@ class UserService(BaseService):
         text_bytes = text.encode("ascii")
         encoded_text_bytes = base64.b64encode(text_bytes)
         return encoded_text_bytes.decode('ascii')
-        
+
     def upload_avatar(self, client_id, file_name, file_content, file_type, file_hash):
         m = hashlib.new('md5', file_content).hexdigest()
         if m != file_hash:
@@ -426,19 +426,19 @@ class UserService(BaseService):
         # start upload to s3 and resize if needed
         tmp_file_name, file_ext = os.path.splitext(file_name)
         avatar_file_name = self.base64_enconding_text_to_string(client_id) + file_ext
-        
+
         avatar_url = self.upload_to_s3(avatar_file_name, file_content, file_type)
         obj_res = user_pb2.UploadAvatarResponse(
             file_url=avatar_url
         )
         return obj_res
-    
+
     def upload_to_s3(self, file_name, file_data, content_type):
         s3_config = get_system_config()['storage_s3']
         file_path = os.path.join(s3_config.get('avatar_folder'), file_name)
         s3_client = boto3.client('s3', aws_access_key_id=s3_config.get('access_key_id'),
                                  aws_secret_access_key=s3_config.get('access_key_secret'))
-        
+
         s3_client.put_object(Body=file_data, Bucket=s3_config.get('bucket'), Key=file_path, ContentType=content_type,
                              ACL='public-read')
         uploaded_file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)
