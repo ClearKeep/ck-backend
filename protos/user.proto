@@ -110,6 +110,10 @@ message GetClientsStatusRequest {
      ErrorRes errors = 3;
  }
 
+message MfaStateResponse{
+    bool mfa_enable = 1;
+}
+
 message MfaChangingStateRequest {
 }
 // Response: MfaBaseResponse
@@ -132,7 +136,8 @@ service User {
     rpc update_status(SetUserStatusRequest) returns (BaseResponse) {};
     rpc ping_request(PingRequest) returns (BaseResponse) {};
 
-    //----- MFA FLOW -----
+    //----- MFA ENABLE FLOW -----
+    rpc get_mfa_state(Empty) returns (MfaStateResponse) {};
     rpc enable_mfa(MfaChangingStateRequest) returns (MfaBaseResponse) {};
     rpc disable_mfa(MfaChangingStateRequest) returns (MfaBaseResponse) {};
     rpc mfa_validate_password(MfaValidatePasswordRequest) returns (MfaBaseResponse) {};

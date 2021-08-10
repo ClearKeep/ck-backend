@@ -20,7 +20,7 @@ class OTPServer(object):
         self.life_time = datetime.timedelta(seconds=60) # for testing. in product it should be set as 1800s
         self.message_form = 'Your OTP code is {}'
         # set up a phone number for sending
-        self.n_number = 6
+        self.n_number = 4
         self.from_phone = '+15394242840'
 
     def __call__(self, phone_number):

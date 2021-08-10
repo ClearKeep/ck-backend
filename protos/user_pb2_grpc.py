@@ -39,6 +39,11 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.PingRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
                 )
+        self.get_mfa_state = channel.unary_unary(
+                '/user.User/get_mfa_state',
+                request_serializer=protos_dot_user__pb2.Empty.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaStateResponse.FromString,
+                )
         self.enable_mfa = channel.unary_unary(
                 '/user.User/enable_mfa',
                 request_serializer=protos_dot_user__pb2.MfaChangingStateRequest.SerializeToString,
@@ -120,9 +125,15 @@ class UserServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def enable_mfa(self, request, context):
-        """----- MFA FLOW -----
+    def get_mfa_state(self, request, context):
+        """----- MFA ENABLE FLOW -----
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def enable_mfa(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -204,6 +215,11 @@ def add_UserServicer_to_server(servicer, server):
                     servicer.ping_request,
                     request_deserializer=protos_dot_user__pb2.PingRequest.FromString,
                     response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
+            ),
+            'get_mfa_state': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_mfa_state,
+                    request_deserializer=protos_dot_user__pb2.Empty.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaStateResponse.SerializeToString,
             ),
             'enable_mfa': grpc.unary_unary_rpc_method_handler(
                     servicer.enable_mfa,
@@ -342,6 +358,23 @@ class User(object):
         return grpc.experimental.unary_unary(request, target, '/user.User/ping_request',
             protos_dot_user__pb2.PingRequest.SerializeToString,
             protos_dot_user__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def get_mfa_state(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/get_mfa_state',
+            protos_dot_user__pb2.Empty.SerializeToString,
+            protos_dot_user__pb2.MfaStateResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

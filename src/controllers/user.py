@@ -27,6 +27,20 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    async def get_mfa_state(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            mfa_state_message = self.service.get_mfa_state(client_id)
+            return mfa_state_message
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
     # @auth_required
     async def enable_mfa(self, request, context):
         try:

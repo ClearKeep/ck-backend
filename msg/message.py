@@ -84,7 +84,7 @@ class Message:
 
     # otp setting
     PHONE_NUMBER_NOT_FOUND = 1064
-    NUMBER_OF_ATTEMPTS_OTP_EXCEEDED = 1065
+    GET_MFA_STATE_FALED = 1065
     AUTHEN_SETTING_FLOW_NOT_FOUND = 1066
 
     msg_dict = {
@@ -158,7 +158,7 @@ class Message:
         GET_USER_STATUS_FAILED :"Get user status failed. Please try again",
 
         PHONE_NUMBER_NOT_FOUND: "User must provide phone number to enable this feature.",
-        NUMBER_OF_ATTEMPTS_OTP_EXCEEDED: "Exceeded the number of attempts otp. Please wait for 30 minutes and try agains",
+        GET_MFA_STATE_FALED: "Cannot get mfa state of user. Please try again",
         AUTHEN_SETTING_FLOW_NOT_FOUND: "Cannot find current flow of changing otp. Please check the workflow"
     }
 
