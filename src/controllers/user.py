@@ -54,11 +54,15 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def update_profile(self, request, context):
         logger.info("user update_profile api")
         try:
+            display_name = request.display_name
+            avatar = request.avatar
+            phone_number = request.phone_number
+            
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-
-            self.service.update_profile(request, client_id, header_data['hash_key'])
+            
+            self.service.update_profile(client_id, display_name, phone_number, avatar)
             return user_messages.BaseResponse(success=True)
         except Exception as e:
             logger.error(e)
@@ -193,3 +197,25 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def upload_avatar(self, request, context):
+        logger.info("upload_avatar api")
+        try:
+            file_name = request.file_name
+            file_content = request.file_data
+            file_content_type = request.file_content_type
+            file_hash = request.file_hash
+            # client_id from headers
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            obj_res = self.service.upload_avatar(client_id, file_name, file_content, file_content_type, file_hash)
+            return obj_res
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.GET_USER_STATUS_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+            
