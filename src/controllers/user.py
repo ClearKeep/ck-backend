@@ -27,6 +27,95 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    async def get_mfa_state(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            mfa_state_message = self.service.get_mfa_state(client_id)
+            return mfa_state_message
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    # @auth_required
+    async def enable_mfa(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            success, next_step = self.service.init_mfa_state_enabling(client_id)
+            return user_messages.MfaBaseResponse(success=success, next_step=next_step)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    # @auth_required
+    async def disable_mfa(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+
+            success, next_step = self.service.init_mfa_state_disabling(client_id)
+            return user_messages.MfaBaseResponse(success=success, next_step=next_step)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    # @auth_required
+    async def mfa_validate_password(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            success, next_step = self.service.validate_password(client_id, request.password)
+            return user_messages.MfaBaseResponse(success=success, next_step=next_step)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    # @auth_required
+    async def mfa_validate_otp(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            success, next_step = self.service.validate_otp(client_id, request.otp)
+            return user_messages.MfaBaseResponse(success=success, next_step=next_step)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    async def mfa_resend_otp(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            success, next_step = self.service.re_init_otp(client_id)
+            return user_messages.MfaBaseResponse(success=success, next_step=next_step)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
     # @auth_required
     # @request_logged
     async def get_profile(self, request, context):
@@ -57,11 +146,11 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             display_name = request.display_name
             avatar = request.avatar
             phone_number = request.phone_number
-            
+
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-            
+
             self.service.update_profile(client_id, display_name, phone_number, avatar)
             return user_messages.BaseResponse(success=True)
         except Exception as e:
@@ -218,4 +307,3 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-            

@@ -1,5 +1,6 @@
 from src.services.base import BaseService
 from src.models.user import User
+from src.models.authen_setting import AuthenSetting
 from utils.encrypt import EncryptUtils
 from utils.keycloak import KeyCloakUtils
 from protos import user_pb2
@@ -7,6 +8,7 @@ from utils.logger import *
 from msg.message import Message
 import datetime
 from utils.config import get_system_config, get_owner_workspace_domain
+from utils.otp import OTPServer
 from client.client_user import ClientUser
 import base64
 import boto3
@@ -18,6 +20,7 @@ client_records_list_in_memory = {}
 class UserService(BaseService):
     def __init__(self):
         super().__init__(User())
+        self.authen_setting = AuthenSetting()
         # self.workspace_domain = get_system_domain()
 
     def create_new_user(self, id, email, display_name, auth_source):
@@ -83,6 +86,119 @@ class UserService(BaseService):
             logger.info(e)
             raise Exception(Message.CHANGE_PASSWORD_FAILED)
 
+    def get_mfa_state(self, user_id):
+        try:
+            user_authen_setting = self.authen_setting.get(user_id)
+            if user_authen_setting is None:
+                user_info = self.model.get(user_id)
+                if user_info is None:
+                    raise Exception(Message.AUTH_USER_NOT_FOUND)
+                user_authen_setting = AuthenSetting(id=user_id)
+                user_authen_setting = user_authen_setting.add()
+            return user_pb2.MfaStateResponse(
+                mfa_enable=user_authen_setting.mfa_enable,
+            )
+        except Exception as e:
+            logger.error(e)
+            raise Exception(Message.GET_MFA_STATE_FALED)
+
+    def init_mfa_state_enabling(self, user_id):
+        user_info = self.model.get(user_id)
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting is None:
+            if user_info is None:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            user_authen_setting = AuthenSetting(id=user_id)
+            user_authen_setting = user_authen_setting.add()
+        if user_authen_setting.mfa_enable:
+            success = False
+            next_step = ''
+        elif user_info.phone_number is None:
+            success = False
+            next_step = 'mfa_update_phone_number'
+        else:
+            user_authen_setting.otp_changing_state = 1
+            user_authen_setting.update()
+            success = True
+            next_step = 'mfa_validate_password'
+        return success, next_step
+
+    def init_mfa_state_disabling(self, user_id):
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting is None:
+            user_info = self.model.get(user_id)
+            if user_info is None:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            # in case user authen setting is not initilized but still found user_info
+            user_authen_setting = AuthenSetting(id=user_id)
+            user_authen_setting = user_authen_setting.add()
+        if user_authen_setting.mfa_enable:
+            user_authen_setting.mfa_enable = False
+            user_authen_setting.otp = None
+            user_authen_setting.otp_valid_time = datetime.datetime.now()
+            user_authen_setting.update()
+        success = True
+        next_step = ''
+        return success, next_step
+
+    def validate_password(self, user_id, password):
+        user_info = self.model.get(user_id)
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting.otp_changing_state != 1:
+            raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
+        try:
+            token = KeyCloakUtils.token(user_info.email, password)
+            if token:
+                user_authen_setting.otp_changing_state = 2
+                otp_server = OTPServer()
+                otp = otp_server.get_otp(user_info.phone_number)
+                user_authen_setting.otp = otp
+                user_authen_setting.otp_valid_time = otp_server.get_valid_time()
+                user_authen_setting.update()
+                success = True
+                next_step = 'mfa_validate_otp'
+            else:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            return success, next_step
+        except Exception as e:
+            logger.error(e)
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
+
+    def validate_otp(self, user_id, otp):
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting.otp_changing_state != 2:
+            raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
+        if otp == user_authen_setting.otp and datetime.datetime.now() < user_authen_setting.otp_valid_time:
+            user_authen_setting.mfa_enable = True
+            user_authen_setting.otp_changing_state = 0
+            user_authen_setting.otp_valid_time = datetime.datetime.now()
+            user_authen_setting.update()
+            success = True
+            next_step = ''
+        else:
+            success = False
+            next_step = 'mfa_validate_otp'
+        return success, next_step
+
+    def re_init_otp(self, user_id):
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting.otp_changing_state != 2:
+            raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
+        try:
+            otp_server = OTPServer()
+            otp = otp_server.get_otp(user_info.phone_number)
+            user_authen_setting.otp = otp
+            user_authen_setting.otp_valid_time = otp_server.get_valid_time()
+            user_authen_setting.update()
+            success = True
+            next_step = 'mfa_validate_otp'
+            return success, next_step
+        except Exception as e:
+            logger.error(e)
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
+
     def get_profile(self, user_id, hash_key):
         try:
             user_info = self.model.get(user_id)
@@ -92,7 +208,7 @@ class UserService(BaseService):
                     display_name=user_info.display_name
                 )
                 # if user_info.email:
-                #     obj_res.email = user_info.email                
+                #     obj_res.email = user_info.email
                 if user_info.avatar:
                     obj_res.avatar = user_info.avatar
                 if user_info.phone_number:
@@ -121,7 +237,7 @@ class UserService(BaseService):
             if avatar:
                 profile.avatar = avatar
             return profile.update()
-        
+
         except Exception as e:
             logger.info(e)
             raise Exception(Message.UPDATE_PROFILE_FAILED)
@@ -303,7 +419,7 @@ class UserService(BaseService):
         text_bytes = text.encode("ascii")
         encoded_text_bytes = base64.b64encode(text_bytes)
         return encoded_text_bytes.decode('ascii')
-        
+
     def upload_avatar(self, client_id, file_name, file_content, file_type, file_hash):
         m = hashlib.new('md5', file_content).hexdigest()
         if m != file_hash:
@@ -311,19 +427,19 @@ class UserService(BaseService):
         # start upload to s3 and resize if needed
         tmp_file_name, file_ext = os.path.splitext(file_name)
         avatar_file_name = self.base64_enconding_text_to_string(client_id) + file_ext
-        
+
         avatar_url = self.upload_to_s3(avatar_file_name, file_content, file_type)
         obj_res = user_pb2.UploadAvatarResponse(
             file_url=avatar_url
         )
         return obj_res
-    
+
     def upload_to_s3(self, file_name, file_data, content_type):
         s3_config = get_system_config()['storage_s3']
         file_path = os.path.join(s3_config.get('avatar_folder'), file_name)
         s3_client = boto3.client('s3', aws_access_key_id=s3_config.get('access_key_id'),
                                  aws_secret_access_key=s3_config.get('access_key_secret'))
-        
+
         s3_client.put_object(Body=file_data, Bucket=s3_config.get('bucket'), Key=file_path, ContentType=content_type,
                              ACL='public-read')
         uploaded_file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)
