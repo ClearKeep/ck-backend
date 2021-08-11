@@ -16,7 +16,7 @@ class AuthService:
 
     def token(self, email, password):
         try:
-            token = KeyCloakUtils.token(email, password)
+            token = KeyCloakUtils.token(email, password)#, grant_type=["gen_otp"])
             if token:
                 return token
         except Exception as e:
