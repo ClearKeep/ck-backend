@@ -1,3 +1,4 @@
+import datetime
 from msg.message import Message
 from utils.keycloak import KeyCloakUtils
 from utils.logger import *
@@ -5,18 +6,21 @@ from src.services.notify_push import NotifyPushService
 import json
 from src.services.user import UserService
 from src.models.base import Database
-from src.models.user import User
+from src.models.authen_setting import AuthenSetting
 from utils.config import get_system_config
+from utils.jwt_helper import JWTFactory
 import requests
 
 
 class AuthService:
     def __init__(self):
         super().__init__()
+        self.user_db = UserService()
+        self.authen_setting = AuthenSetting()
 
     def token(self, email, password):
         try:
-            token = KeyCloakUtils.token(email, password)#, grant_type=["gen_otp"])
+            token = KeyCloakUtils.token(email, password)
             if token:
                 return token
         except Exception as e:
@@ -251,3 +255,38 @@ class AuthService:
             return user_token_info
         else:
             return None
+
+    def create_otp_service(self, client_id, access_token):
+        try:
+            user_info = self.user_db.get(client_id)
+            user_authen_setting = self.authen_setting.get(client_id)
+            otp = OTPServer.get_otp(user_info.phone_number)
+            action_token, signature = JWTFactory.re_signed(access_token)
+            user_authen_setting.otp = otp
+            user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
+            user_authen_setting.signature = signature
+            user_authen_setting.update()
+            success = True
+            return action_token
+        except Exception as e:
+            logger.info(e)
+            raise Exception(Message.GET_MFA_STATE_FALED)
+
+    def verify_otp(self, action_token, otp):
+        try:
+            client_id = JWTFactory.get_unverified_payload(action_token)["sub"]
+            user_authen_setting = self.authen_setting.get(client_id)
+            # verify action_token
+            success, access_token = JWTFactory.verify_and_reclaim(action_token, user_authen_setting.signature)
+            # verify valid otp
+            if not success or otp != user_authen_setting.otp or datetime.datetime.now() > user_authen_setting.otp_valid_time:
+                success = False
+                access_token = ""
+            else:
+                user_authen_setting.otp = None
+                user_authen_setting.otp_valid_time = datetime.datetime.now()
+                user_authen_setting.signature = None
+            return success, access_token
+        except Exception as e:
+            logger.info(e)
+            raise Exception(Message.GET_MFA_STATE_FALED)

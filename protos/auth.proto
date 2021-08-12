@@ -42,8 +42,8 @@ message AuthRes {
     string session_state = 8;
     string scope = 9;
     string hash_key = 10;
-
     BaseResponse base_response = 11;
+    string require_action = 12;
 }
 
 //Register message struct
@@ -80,12 +80,16 @@ message FacebookLoginReq {
     string access_token = 2;
 }
 
+message MfaValidateOtpRequest {
+    string otp_code = 1;
+}
 
 service Auth {
     rpc login(AuthReq) returns (AuthRes) {};
     rpc login_google(GoogleLoginReq) returns (AuthRes) {};
     rpc login_office(OfficeLoginReq) returns (AuthRes) {};
     rpc login_facebook(FacebookLoginReq) returns (AuthRes) {};
+    rpc validate_otp(MfaValidateOtpRequest) returns (AuthRes) {};
     rpc register(RegisterReq) returns (RegisterRes) {};
     rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
     rpc logout(LogoutReq) returns (BaseResponse) {};

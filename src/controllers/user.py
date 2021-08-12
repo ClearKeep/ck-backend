@@ -32,8 +32,10 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-            mfa_state_message = self.service.get_mfa_state(client_id)
-            return mfa_state_message
+            mfa_enable = self.service.get_mfa_state(client_id)
+            return  user_messages.MfaStateResponse(
+                mfa_enable=mfa_enable,
+            )
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]

@@ -19,21 +19,28 @@ class AuthController(BaseController):
     async def login(self, request, context):
         try:
             token = self.service.token(request.email, request.password)
-            introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            user_id = introspect_token['sub']
-            ### check if login require otp check
-            user_sessions = KeyCloakUtils.get_sessions(user_id=user_id)
-            for user_session in user_sessions:
-                if user_session['id'] != introspect_token['session_state']:
-                    KeyCloakUtils.remove_session(
-                        session_id=user_session['id']
-                    )
             if token:
-                self.user_service.update_last_login(user_id=user_id)
+                introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+                user_id = introspect_token['sub']
+                mfa_state = self.user_service.get_mfa_state(user_id=user_id)
+                if not mfa_state:
+                    ### check if login require otp check
+                    user_sessions = KeyCloakUtils.get_sessions(user_id=user_id)
+                    for user_session in user_sessions:
+                        if user_session['id'] != introspect_token['session_state']:
+                            KeyCloakUtils.remove_session(
+                                session_id=user_session['id']
+                            )
+                    self.user_service.update_last_login(user_id=user_id)
+                    action_token = token['access_token']
+                    require_action = ""
+                else:
+                    action_token = self.service.create_otp_service(user_id, token)
+                    require_action = "mfa_validate_otp"
                 return auth_messages.AuthRes(
                     workspace_domain=get_owner_workspace_domain(),
                     workspace_name=get_system_config()['server_name'],
-                    access_token=token['access_token'],
+                    access_token=action_token,
                     expires_in=token['expires_in'],
                     refresh_expires_in=token['refresh_expires_in'],
                     refresh_token=token['refresh_token'],
@@ -43,7 +50,8 @@ class AuthController(BaseController):
                     hash_key=EncryptUtils.encoded_hash(
                         request.password, user_id
                     ),
-                    base_response=auth_messages.BaseResponse(success=True)
+                    base_response=auth_messages.BaseResponse(success=True),
+                    require_action = require_action
                 )
             else:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
@@ -267,3 +275,29 @@ class AuthController(BaseController):
                     message=errors[0].message
                 )
             )
+
+    async def validate_otp(self, request, context):
+        header_data = dict(context.invocation_metadata())
+        success_status, token = self.service.verify_otp(header_data["access_token"], request.otp_code)
+        introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+        user_id = introspect_token['sub']
+        user_sessions = KeyCloakUtils.get_sessions(user_id=user_id)
+        for user_session in user_sessions:
+            if user_session['id'] != introspect_token['session_state']:
+                KeyCloakUtils.remove_session(
+                    session_id=user_session['id']
+                )
+        return auth_messages.AuthRes(
+            access_token=token,
+            expires_in=token['expires_in'],
+            refresh_expires_in=token['refresh_expires_in'],
+            refresh_token=token['refresh_token'],
+            token_type=token['token_type'],
+            session_state=token['session_state'],
+            scope=token['scope'],
+            hash_key=EncryptUtils.encoded_hash(
+                request.password, user_id
+            ),
+            base_response=auth_messages.BaseResponse(success=True),
+            require_action = "require_action"
+        )
