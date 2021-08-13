@@ -1,4 +1,5 @@
 import datetime
+from hashlib import md5
 from msg.message import Message
 from utils.keycloak import KeyCloakUtils
 from utils.logger import *
@@ -9,7 +10,6 @@ from src.models.base import Database
 from src.models.user import User
 from src.models.authen_setting import AuthenSetting
 from utils.config import get_system_config
-from utils.jwt_helper import JWTFactory
 from utils.otp import OTPServer
 import requests
 
@@ -258,38 +258,34 @@ class AuthService:
         else:
             return None
 
-    def create_otp_service(self, client_id, access_token):
+    def create_otp_service(self, client_id):
         try:
             user_info = self.user_db.get(client_id)
             user_authen_setting = self.authen_setting.get(client_id)
             otp = OTPServer.get_otp(user_info.phone_number)
-            action_token, signature = JWTFactory.re_signed(access_token)
             user_authen_setting.otp = otp
             user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
-            user_authen_setting.signature = signature
             user_authen_setting.update()
             success = True
-            return action_token
+            hash_key = OTPServer.hash_uid(client_id)
+            return hash_key
         except Exception as e:
             logger.info(e)
             raise Exception(Message.GET_MFA_STATE_FALED)
 
-    def verify_otp(self, action_token, otp):
+    def verify_otp(self, client_id, hash_key, otp):
         try:
-            client_id = JWTFactory.get_unverified_payload(action_token)["sub"]
-            user_authen_setting = self.authen_setting.get(client_id)
-            # verify action_token
-            success, access_token = JWTFactory.verify_and_reclaim(action_token, user_authen_setting.signature)
             # verify valid otp
+            user_authen_setting = self.authen_setting.get(client_id)
+            success = OTPServer.verify_hash_code(client_id, hash_key)
             if not success or otp != user_authen_setting.otp or datetime.datetime.now() > user_authen_setting.otp_valid_time:
                 success = False
-                access_token = ""
+                token = {}
             else:
                 user_authen_setting.otp = None
                 user_authen_setting.otp_valid_time = datetime.datetime.now()
-                user_authen_setting.signature = None
-            return success, access_token
+                token = self.exchange_token(client_id)
+            return success, token
         except Exception as e:
             logger.info(e)
-            logger.info(action_token)
             raise Exception(Message.GET_MFA_STATE_FALED)

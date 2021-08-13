@@ -2,6 +2,8 @@ import os
 import random
 import string
 import datetime
+from hashlib import md5
+from hmac import compare_digest as compare_hash
 from twilio.rest import Client
 from utils.config import get_otp_server
 from utils.logger import *
@@ -14,6 +16,7 @@ message_form = 'Your OTP code is {}'
 # set up a phone number for sending
 code_length = get_otp_server()["otp_code_length"]
 from_phone = get_otp_server()["server_phone_number"]
+secret_key = get_otp_server()["secret_key"]
 
 class OTPServer(object):
 
@@ -32,6 +35,18 @@ class OTPServer(object):
     @staticmethod
     def get_valid_time():
         return datetime.datetime.now() + life_time
+
+    @staticmethod
+    def hash_uid(user_id):
+        secret_string = user_id + secret_key
+        hash_string = md5(secret_string.encode("utf-8")).hexdigest()
+        return hash_string
+
+    @staticmethod
+    def verify_hash_code(user_id, hash_string):
+        verify_secret_string = user_id + secret_key
+        verify_hash_string = md5(verify_secret_string.encode("utf-8")).hexdigest()
+        return compare_hash(verify_hash_string, hash_string)
 
     @staticmethod
     def _otp_message_sending(otp, phone_number):
