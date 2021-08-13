@@ -278,7 +278,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         logger.info("get_client_status api")
         try:
             list_clients = request.lst_client
-            list_user_status = self.service.get_list_clients_status(list_clients)
+            should_get_profile = request.should_get_profile
+            list_user_status = self.service.get_list_clients_status(list_clients,should_get_profile)
             return list_user_status
         except Exception as e:
             logger.error(e)
