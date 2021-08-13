@@ -35,7 +35,7 @@ class AuthController(BaseController):
                     action_token = token['access_token']
                     require_action = ""
                 else:
-                    action_token = self.service.create_otp_service(user_id, token)
+                    action_token = self.service.create_otp_service(user_id, token['access_token'])
                     require_action = "mfa_validate_otp"
                 return auth_messages.AuthRes(
                     workspace_domain=get_owner_workspace_domain(),
@@ -278,8 +278,8 @@ class AuthController(BaseController):
 
     async def validate_otp(self, request, context):
         header_data = dict(context.invocation_metadata())
-        success_status, token = self.service.verify_otp(header_data["access_token"], request.otp_code)
-        introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+        success_status, access_token = self.service.verify_otp(header_data["access_token"], request.otp_code)
+        introspect_token = KeyCloakUtils.introspect_token(access_token)
         user_id = introspect_token['sub']
         user_sessions = KeyCloakUtils.get_sessions(user_id=user_id)
         for user_session in user_sessions:
@@ -288,16 +288,7 @@ class AuthController(BaseController):
                     session_id=user_session['id']
                 )
         return auth_messages.AuthRes(
-            access_token=token,
-            expires_in=token['expires_in'],
-            refresh_expires_in=token['refresh_expires_in'],
-            refresh_token=token['refresh_token'],
-            token_type=token['token_type'],
-            session_state=token['session_state'],
-            scope=token['scope'],
-            hash_key=EncryptUtils.encoded_hash(
-                request.password, user_id
-            ),
+            access_token=access_token,
             base_response=auth_messages.BaseResponse(success=True),
-            require_action = "require_action"
+            require_action = ""
         )

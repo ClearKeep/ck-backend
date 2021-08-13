@@ -6,16 +6,18 @@ from src.services.notify_push import NotifyPushService
 import json
 from src.services.user import UserService
 from src.models.base import Database
+from src.models.user import User
 from src.models.authen_setting import AuthenSetting
 from utils.config import get_system_config
 from utils.jwt_helper import JWTFactory
+from utils.otp import OTPServer
 import requests
 
 
 class AuthService:
     def __init__(self):
         super().__init__()
-        self.user_db = UserService()
+        self.user_db = User()
         self.authen_setting = AuthenSetting()
 
     def token(self, email, password):
@@ -289,4 +291,5 @@ class AuthService:
             return success, access_token
         except Exception as e:
             logger.info(e)
+            logger.info(action_token)
             raise Exception(Message.GET_MFA_STATE_FALED)

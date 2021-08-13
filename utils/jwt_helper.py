@@ -37,7 +37,7 @@ class JWTFactory(object):
     @staticmethod
     def get_unverified_payload(action_token):
         header_segment, claims_segment, signing_input, crypto_segment = JWTFactory._get_new_segment_data(action_token)
-        payload = JWTFactory._load_public_segment(header_segment)
+        payload = JWTFactory._load_public_segment(claims_segment)
         return payload
 
     @staticmethod
