@@ -1,6 +1,5 @@
 from src.services.base import BaseService
 from src.models.user import User
-from src.models.authen_setting import AuthenSetting
 from utils.encrypt import EncryptUtils
 from utils.keycloak import KeyCloakUtils
 from protos import user_pb2
@@ -8,7 +7,6 @@ from utils.logger import *
 from msg.message import Message
 import datetime
 from utils.config import get_system_config, get_owner_workspace_domain
-from utils.otp import OTPServer
 from client.client_user import ClientUser
 import base64
 import boto3
@@ -20,7 +18,6 @@ client_records_list_in_memory = {}
 class UserService(BaseService):
     def __init__(self):
         super().__init__(User())
-        self.authen_setting = AuthenSetting()
         # self.workspace_domain = get_system_domain()
 
     def create_new_user(self, id, email, display_name, auth_source):
