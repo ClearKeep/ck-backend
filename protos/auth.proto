@@ -43,7 +43,9 @@ message AuthRes {
     string scope = 9;
     string hash_key = 10;
     BaseResponse base_response = 11;
-    string require_action = 12;
+    string sub = 12;
+    string otp_hash = 13;
+    string require_action = 14;
 }
 
 //Register message struct
@@ -82,6 +84,8 @@ message FacebookLoginReq {
 
 message MfaValidateOtpRequest {
     string otp_code = 1;
+    string user_id = 2;
+    string otp_hash = 3;
 }
 
 service Auth {

@@ -23,6 +23,9 @@ class AuthController(BaseController):
                 introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = introspect_token['sub']
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
+                hash_key = EncryptUtils.encoded_hash(
+                    request.password, user_id
+                )
                 if not mfa_state:
                     ### check if login require otp check
                     user_sessions = KeyCloakUtils.get_sessions(user_id=user_id)
@@ -33,18 +36,16 @@ class AuthController(BaseController):
                             )
                     self.user_service.update_last_login(user_id=user_id)
                     action_token = token['access_token']
-                    hash_key = EncryptUtils.encoded_hash(
-                        request.password, user_id
-                    )
+                    otp_hash = ""
                     require_action = ""
                 else:
-                    hash_key = self.service.create_otp_service(user_id)
-                    action_token = user_id
+                    action_token = ""
+                    otp_hash = self.service.create_otp_service(user_id)
                     require_action = "mfa_validate_otp"
                 return auth_messages.AuthRes(
                     workspace_domain=get_owner_workspace_domain(),
                     workspace_name=get_system_config()['server_name'],
-                    access_token=user_id,
+                    access_token=action_token,
                     expires_in=token['expires_in'],
                     refresh_expires_in=token['refresh_expires_in'],
                     refresh_token=token['refresh_token'],
@@ -53,6 +54,8 @@ class AuthController(BaseController):
                     scope=token['scope'],
                     hash_key=hash_key,
                     base_response=auth_messages.BaseResponse(success=True),
+                    sub = introspect_token['sub'],
+                    otp_hash = otp_hash,
                     require_action = require_action
                 )
             else:
@@ -281,33 +284,27 @@ class AuthController(BaseController):
     async def validate_otp(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            success_status, token = self.service.verify_otp(header_data["access_token"], header_data["hash_key"], request.otp_code)
+            success_status, token = self.service.verify_otp(request.user_id, request.otp_hash, request.otp_code)
             if not success_status:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             introspect_token = KeyCloakUtils.introspect_token(token["access_token"])
-            user_id = introspect_token['sub']
-            # user_id = header_data["access_token"]
-            user_sessions = KeyCloakUtils.get_sessions(user_id=user_id)
+            user_sessions = KeyCloakUtils.get_sessions(user_id=request.user_id)
             for user_session in user_sessions:
                 if user_session['id'] != introspect_token['session_state']:
                     KeyCloakUtils.remove_session(
                         session_id=user_session['id']
                     )
-            hash_key = EncryptUtils.encoded_hash(
-                request.otp_code, user_id
-            )
             require_action = ""
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
                 workspace_name=get_system_config()['server_name'],
-                access_token=user_id,
+                access_token=token["access_token"],
                 expires_in=token['expires_in'],
                 refresh_expires_in=token['refresh_expires_in'],
                 refresh_token=token['refresh_token'],
                 token_type=token['token_type'],
                 session_state=token['session_state'],
                 scope=token['scope'],
-                hash_key=hash_key,
                 base_response=auth_messages.BaseResponse(success=True),
                 require_action = require_action
             )

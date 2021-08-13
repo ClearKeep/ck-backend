@@ -16,7 +16,7 @@ message_form = 'Your OTP code is {}'
 # set up a phone number for sending
 code_length = get_otp_server()["otp_code_length"]
 from_phone = get_otp_server()["server_phone_number"]
-secret_key = get_otp_server()["secret_key"]
+secret_key = get_otp_server()["otp_secret_key"]
 
 class OTPServer(object):
 

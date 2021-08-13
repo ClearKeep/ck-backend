@@ -274,18 +274,16 @@ class AuthService:
             raise Exception(Message.GET_MFA_STATE_FALED)
 
     def verify_otp(self, client_id, hash_key, otp):
-        try:
-            # verify valid otp
-            user_authen_setting = self.authen_setting.get(client_id)
-            success = OTPServer.verify_hash_code(client_id, hash_key)
-            if not success or otp != user_authen_setting.otp or datetime.datetime.now() > user_authen_setting.otp_valid_time:
-                success = False
-                token = {}
-            else:
-                user_authen_setting.otp = None
-                user_authen_setting.otp_valid_time = datetime.datetime.now()
-                token = self.exchange_token(client_id)
-            return success, token
-        except Exception as e:
-            logger.info(e)
-            raise Exception(Message.GET_MFA_STATE_FALED)
+        success = OTPServer.verify_hash_code(client_id, hash_key)
+        if not success:
+            raise Exception(Message.GET_VALIDATE_HASH_OTP_FAILED)
+
+        user_authen_setting = self.authen_setting.get(client_id)
+        if otp != user_authen_setting.otp or datetime.datetime.now() > user_authen_setting.otp_valid_time:
+            success = False
+            token = {}
+        else:
+            user_authen_setting.otp = None
+            user_authen_setting.otp_valid_time = datetime.datetime.now()
+            token = self.exchange_token(client_id)
+        return success, token
