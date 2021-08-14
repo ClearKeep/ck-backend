@@ -87,6 +87,7 @@ class Message:
     PHONE_NUMBER_NOT_FOUND = 1064
     GET_MFA_STATE_FALED = 1065
     AUTHEN_SETTING_FLOW_NOT_FOUND = 1066
+    GET_VALIDATE_HASH_OTP_FAILED = 1067
 
     # Workspace info
     GET_WORKSPACE_INFO_FAILED = 1066
@@ -164,6 +165,7 @@ class Message:
         PHONE_NUMBER_NOT_FOUND: "User must provide phone number to enable this feature.",
         GET_MFA_STATE_FALED: "Cannot get mfa state of user. Please try again",
         AUTHEN_SETTING_FLOW_NOT_FOUND: "Cannot find current flow of changing otp. Please check the workflow",
+        GET_VALIDATE_HASH_OTP_FAILED: "Cannot validate hash_key. Please try again",
 
         GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again"
     }

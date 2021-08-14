@@ -37,14 +37,14 @@ class OTPServer(object):
         return datetime.datetime.now() + life_time
 
     @staticmethod
-    def hash_uid(user_id):
-        secret_string = user_id + secret_key
+    def hash_uid(user_id, valid_time):
+        secret_string = "{}{}{}".format(user_id, valid_time, secret_key)
         hash_string = md5(secret_string.encode("utf-8")).hexdigest()
         return hash_string
 
     @staticmethod
-    def verify_hash_code(user_id, hash_string):
-        verify_secret_string = user_id + secret_key
+    def verify_hash_code(user_id, valid_time, hash_string):
+        verify_secret_string = "{}{}{}".format(user_id, valid_time, secret_key)
         verify_hash_string = md5(verify_secret_string.encode("utf-8")).hexdigest()
         return compare_hash(verify_hash_string, hash_string)
 

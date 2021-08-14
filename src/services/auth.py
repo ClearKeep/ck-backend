@@ -267,18 +267,19 @@ class AuthService:
             user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
             user_authen_setting.update()
             success = True
-            hash_key = OTPServer.hash_uid(client_id)
+            # we create hash_key with valid_time to make hash_key will change each request
+            hash_key = OTPServer.hash_uid(client_id, user_authen_setting.otp_valid_time)
             return hash_key
         except Exception as e:
             logger.info(e)
             raise Exception(Message.GET_MFA_STATE_FALED)
 
     def verify_otp(self, client_id, hash_key, otp):
-        success = OTPServer.verify_hash_code(client_id, hash_key)
+        user_authen_setting = self.authen_setting.get(client_id)
+        success = OTPServer.verify_hash_code(client_id, user_authen_setting.otp_valid_time, hash_key)
         if not success:
             raise Exception(Message.GET_VALIDATE_HASH_OTP_FAILED)
 
-        user_authen_setting = self.authen_setting.get(client_id)
         if otp != user_authen_setting.otp or datetime.datetime.now() > user_authen_setting.otp_valid_time:
             success = False
             token = {}

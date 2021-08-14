@@ -35,29 +35,30 @@ class AuthController(BaseController):
                                 session_id=user_session['id']
                             )
                     self.user_service.update_last_login(user_id=user_id)
-                    action_token = token['access_token']
-                    otp_hash = ""
-                    require_action = ""
+                    auth_message = auth_messages.AuthRes(
+                                        workspace_domain=get_owner_workspace_domain(),
+                                        workspace_name=get_system_config()['server_name'],
+                                        access_token=token['access_token'],
+                                        expires_in=token['expires_in'],
+                                        refresh_expires_in=token['refresh_expires_in'],
+                                        refresh_token=token['refresh_token'],
+                                        token_type=token['token_type'],
+                                        session_state=token['session_state'],
+                                        scope=token['scope'],
+                                        hash_key=hash_key,
+                                        base_response=auth_messages.BaseResponse(success=True)
+                                    )
                 else:
-                    action_token = ""
                     otp_hash = self.service.create_otp_service(user_id)
-                    require_action = "mfa_validate_otp"
-                return auth_messages.AuthRes(
-                    workspace_domain=get_owner_workspace_domain(),
-                    workspace_name=get_system_config()['server_name'],
-                    access_token=action_token,
-                    expires_in=token['expires_in'],
-                    refresh_expires_in=token['refresh_expires_in'],
-                    refresh_token=token['refresh_token'],
-                    token_type=token['token_type'],
-                    session_state=token['session_state'],
-                    scope=token['scope'],
-                    hash_key=hash_key,
-                    base_response=auth_messages.BaseResponse(success=True),
-                    sub = introspect_token['sub'],
-                    otp_hash = otp_hash,
-                    require_action = require_action
-                )
+                    auth_message = auth_messages.AuthRes(
+                                        workspace_domain=get_owner_workspace_domain(),
+                                        workspace_name=get_system_config()['server_name'],
+                                        base_response=auth_messages.BaseResponse(success=True),
+                                        sub=user_id,
+                                        otp_hash=otp_hash,
+                                        require_action="mfa_validate_otp"
+                                    )
+                return auth_message
             else:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
 
