@@ -95,9 +95,7 @@ class UserService(BaseService):
                     raise Exception(Message.AUTH_USER_NOT_FOUND)
                 user_authen_setting = AuthenSetting(id=user_id)
                 user_authen_setting = user_authen_setting.add()
-            return user_pb2.MfaStateResponse(
-                mfa_enable=user_authen_setting.mfa_enable,
-            )
+            return user_authen_setting.mfa_enable
         except Exception as e:
             logger.error(e)
             raise Exception(Message.GET_MFA_STATE_FALED)
@@ -152,10 +150,9 @@ class UserService(BaseService):
             token = KeyCloakUtils.token(user_info.email, password)
             if token:
                 user_authen_setting.otp_changing_state = 2
-                otp_server = OTPServer()
-                otp = otp_server.get_otp(user_info.phone_number)
+                otp = OTPServer.get_otp(user_info.phone_number)
                 user_authen_setting.otp = otp
-                user_authen_setting.otp_valid_time = otp_server.get_valid_time()
+                user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
                 user_authen_setting.update()
                 success = True
                 next_step = 'mfa_validate_otp'
@@ -187,10 +184,9 @@ class UserService(BaseService):
         if user_authen_setting.otp_changing_state != 2:
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
         try:
-            otp_server = OTPServer()
-            otp = otp_server.get_otp(user_info.phone_number)
+            otp = OTPServer.get_otp(user_info.phone_number)
             user_authen_setting.otp = otp
-            user_authen_setting.otp_valid_time = otp_server.get_valid_time()
+            user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
             user_authen_setting.update()
             success = True
             next_step = 'mfa_validate_otp'
