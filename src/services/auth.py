@@ -286,5 +286,6 @@ class AuthService:
         else:
             user_authen_setting.otp = None
             user_authen_setting.otp_valid_time = datetime.datetime.now()
+            user_authen_setting.update()
             token = self.exchange_token(client_id)
         return success, token
