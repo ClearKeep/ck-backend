@@ -55,7 +55,6 @@ message GetUserRequest {
     string client_id = 1;
     string workspace_domain = 2;
 }
-
 // Response: UserObjectResponse
 
 // Request: Search User
@@ -87,17 +86,17 @@ message PingRequest {}
 message GetClientsStatusRequest {
     repeated MemberInfoRequest lst_client = 1;
  }
- 
+
  message MemberInfoRequest {
    string client_id = 1;
    string workspace_domain = 2;
  }
- 
- 
+
+
  message GetClientsStatusResponse {
     repeated MemberInfoRes lst_client = 1;
  }
- 
+
  message MemberInfoRes {
    string client_id = 1;
    string workspace_domain = 2;
@@ -111,11 +110,41 @@ message UploadAvatarRequest {
     bytes file_data = 3;
     string file_hash = 4;
   }
-  
-  message UploadAvatarResponse {
-    string file_url = 1;
-  }
-  
+
+message UploadAvatarResponse {
+  string file_url = 1;
+}
+
+//----- MFA FLOW -----
+ message MfaBaseResponse{
+     bool success = 1;
+     string next_step = 2;
+     ErrorRes errors = 3;
+ }
+
+message MfaStateResponse{
+    bool mfa_enable = 1;
+}
+
+message MfaGetStateRequest {}
+// Response: MfaStateResponse
+
+message MfaChangingStateRequest {
+}
+// Response: MfaBaseResponse
+
+message MfaValidatePasswordRequest {
+     string password = 1;
+}
+// Response: MfaBaseResponse
+
+message MfaValidateOtpRequest {
+     string otp = 1;
+}
+// Response: MfaBaseResponse
+
+message MfaResendOtpRequest {}
+// Response: MfaBaseResponse
 
 service User {
     //----- FROM MY ACCOUNT -----
@@ -128,10 +157,18 @@ service User {
     rpc update_status(SetUserStatusRequest) returns (BaseResponse) {};
     rpc ping_request(PingRequest) returns (BaseResponse) {};
     rpc get_clients_status(GetClientsStatusRequest) returns (GetClientsStatusResponse) {};
-    
+
 
     //----- FROM OTHER ACCOUNT -----
     rpc get_user_info(GetUserRequest) returns (UserInfoResponse) {};
     rpc search_user(SearchUserRequest) returns (SearchUserResponse) {};
     rpc get_users(Empty) returns (GetUsersResponse) {};
+
+    //----- MFA ENABLE FLOW -----
+    rpc get_mfa_state(MfaGetStateRequest) returns (MfaStateResponse) {};
+    rpc enable_mfa(MfaChangingStateRequest) returns (MfaBaseResponse) {};
+    rpc disable_mfa(MfaChangingStateRequest) returns (MfaBaseResponse) {};
+    rpc mfa_validate_password(MfaValidatePasswordRequest) returns (MfaBaseResponse) {};
+    rpc mfa_validate_otp(MfaValidateOtpRequest) returns (MfaBaseResponse) {};
+    rpc mfa_resend_otp(MfaResendOtpRequest) returns (MfaBaseResponse) {};
 }

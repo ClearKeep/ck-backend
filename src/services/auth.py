@@ -1,3 +1,5 @@
+import datetime
+from hashlib import md5
 from msg.message import Message
 from utils.keycloak import KeyCloakUtils
 from utils.logger import *
@@ -6,13 +8,17 @@ import json
 from src.services.user import UserService
 from src.models.base import Database
 from src.models.user import User
+from src.models.authen_setting import AuthenSetting
 from utils.config import get_system_config
+from utils.otp import OTPServer
 import requests
 
 
 class AuthService:
     def __init__(self):
         super().__init__()
+        self.user_db = User()
+        self.authen_setting = AuthenSetting()
 
     def token(self, email, password):
         try:
@@ -251,3 +257,35 @@ class AuthService:
             return user_token_info
         else:
             return None
+
+    def create_otp_service(self, client_id):
+        try:
+            user_info = self.user_db.get(client_id)
+            user_authen_setting = self.authen_setting.get(client_id)
+            otp = OTPServer.get_otp(user_info.phone_number)
+            user_authen_setting.otp = otp
+            user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
+            user_authen_setting.update()
+            success = True
+            # we create hash_key with valid_time to make hash_key will change each request
+            hash_key = OTPServer.hash_uid(client_id, user_authen_setting.otp_valid_time)
+            return hash_key
+        except Exception as e:
+            logger.info(e)
+            raise Exception(Message.GET_MFA_STATE_FALED)
+
+    def verify_otp(self, client_id, hash_key, otp):
+        user_authen_setting = self.authen_setting.get(client_id)
+        success = OTPServer.verify_hash_code(client_id, user_authen_setting.otp_valid_time, hash_key)
+        if not success:
+            raise Exception(Message.GET_VALIDATE_HASH_OTP_FAILED)
+
+        if otp != user_authen_setting.otp or datetime.datetime.now() > user_authen_setting.otp_valid_time:
+            success = False
+            token = {}
+        else:
+            user_authen_setting.otp = None
+            user_authen_setting.otp_valid_time = datetime.datetime.now()
+            user_authen_setting.update()
+            token = self.exchange_token(client_id)
+        return success, token
