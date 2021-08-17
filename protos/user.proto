@@ -85,6 +85,7 @@ message PingRequest {}
 
 message GetClientsStatusRequest {
     repeated MemberInfoRequest lst_client = 1;
+    bool should_get_profile = 2;
  }
 
  message MemberInfoRequest {
@@ -101,6 +102,9 @@ message GetClientsStatusRequest {
    string client_id = 1;
    string workspace_domain = 2;
    string status = 3;
+   string display_name = 4;
+   string avatar = 5;
+   string phone_number = 6;
  }
 
 // << profile >>
