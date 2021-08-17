@@ -203,24 +203,20 @@ class UserService(BaseService):
                     id=user_info.id,
                     display_name=user_info.display_name
                 )
-                # if user_info.email:
-                #     obj_res.email = user_info.email
-                if user_info.avatar:
-                    obj_res.avatar = user_info.avatar
+           
+                if user_info.email:
+                    obj_res.email = user_info.email
                 if user_info.phone_number:
                     obj_res.phone_number = user_info.phone_number
-                # if user_info.first_name:
-                #     obj_res.first_name = EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key),
-                # if user_info.last_name:
-                #     obj_res.last_name = EncryptUtils.decrypt_with_hash(user_info.last_name, hash_key),
-
+                if user_info.avatar:
+                    obj_res.avatar = user_info.avatar
+    
                 return obj_res
             else:
                 return None
         except Exception as e:
             logger.info(e)
             raise Exception(Message.GET_PROFILE_FAILED)
-
 
     def update_profile(self,  user_id, display_name, phone_number, avatar):
         try:
@@ -233,7 +229,7 @@ class UserService(BaseService):
             if avatar:
                 profile.avatar = avatar
             return profile.update()
-
+        
         except Exception as e:
             logger.info(e)
             raise Exception(Message.UPDATE_PROFILE_FAILED)
@@ -344,14 +340,14 @@ class UserService(BaseService):
                 })
         return workspace_domains_dictionary
 
-    def get_list_clients_status(self, list_clients):
+    def get_list_clients_status(self, list_clients, should_get_profile):
         logger.info("get_list_clients_status")
         try:
             owner_workspace_domain = get_owner_workspace_domain()
             list_clients_status = []
 
             workspace_domains_dictionary = self.categorize_workspace_domains(list_clients)
-
+                                                                                                                                    
             for workspace_domain in workspace_domains_dictionary.keys():
                 list_client = workspace_domains_dictionary[workspace_domain]
                 if workspace_domain == owner_workspace_domain:
@@ -363,6 +359,19 @@ class UserService(BaseService):
                             workspace_domain=workspace_domain,
                             status=user_status,
                         )
+                        
+                        # add profile for response
+                        if should_get_profile is True:
+                            user_info = self.model.get(client.client_id)
+                            print ("user_info",user_info)
+                            if user_info is not None:
+                                if user_info.display_name:
+                                    tmp_client_response.display_name = user_info.display_name
+                                if user_info.phone_number:
+                                    tmp_client_response.phone_number = user_info.phone_number
+                                if user_info.avatar:
+                                    tmp_client_response.avatar = user_info.avatar
+                                    
                         list_clients_status.append(tmp_client_response)
                 else:
                     other_clients_response = self.get_other_workspace_clients_status(workspace_domain, list_client)
@@ -375,6 +384,8 @@ class UserService(BaseService):
         except Exception as e:
             logger.error(e)
             raise Exception(Message.GET_USER_STATUS_FAILED)
+
+
 
     def get_owner_workspace_client_status(self, client_id):
         client_record = client_records_list_in_memory.get(str(client_id), None)
@@ -410,12 +421,15 @@ class UserService(BaseService):
                 server_error_resp.append(tmp_client_response)
             return server_error_resp
         return client_resp.lst_client
+    
+    
+    # profile api
 
     def base64_enconding_text_to_string(self, text):
         text_bytes = text.encode("ascii")
         encoded_text_bytes = base64.b64encode(text_bytes)
         return encoded_text_bytes.decode('ascii')
-
+        
     def upload_avatar(self, client_id, file_name, file_content, file_type, file_hash):
         m = hashlib.new('md5', file_content).hexdigest()
         if m != file_hash:
@@ -423,19 +437,19 @@ class UserService(BaseService):
         # start upload to s3 and resize if needed
         tmp_file_name, file_ext = os.path.splitext(file_name)
         avatar_file_name = self.base64_enconding_text_to_string(client_id) + file_ext
-
+        
         avatar_url = self.upload_to_s3(avatar_file_name, file_content, file_type)
         obj_res = user_pb2.UploadAvatarResponse(
             file_url=avatar_url
         )
         return obj_res
-
+    
     def upload_to_s3(self, file_name, file_data, content_type):
         s3_config = get_system_config()['storage_s3']
         file_path = os.path.join(s3_config.get('avatar_folder'), file_name)
         s3_client = boto3.client('s3', aws_access_key_id=s3_config.get('access_key_id'),
                                  aws_secret_access_key=s3_config.get('access_key_secret'))
-
+        
         s3_client.put_object(Body=file_data, Bucket=s3_config.get('bucket'), Key=file_path, ContentType=content_type,
                              ACL='public-read')
         uploaded_file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)
