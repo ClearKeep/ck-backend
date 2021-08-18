@@ -88,12 +88,24 @@ message MfaValidateOtpRequest {
     string otp_hash = 3;
 }
 
+// we still need user_id and otp_hash for author and authen user
+message MfaResendOtpReq {
+    string user_id = 1;
+    string otp_hash = 2;
+}
+
+message MfaResendOtpRes{
+    string otp_hash = 13;
+    string require_action = 14;
+}
+
 service Auth {
     rpc login(AuthReq) returns (AuthRes) {};
     rpc login_google(GoogleLoginReq) returns (AuthRes) {};
     rpc login_office(OfficeLoginReq) returns (AuthRes) {};
     rpc login_facebook(FacebookLoginReq) returns (AuthRes) {};
     rpc validate_otp(MfaValidateOtpRequest) returns (AuthRes) {};
+    rpc resend_otp(MfaResendOtpReq) returns (MfaResendOtpRes) {};
     rpc register(RegisterReq) returns (RegisterRes) {};
     rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
     rpc logout(LogoutReq) returns (BaseResponse) {};

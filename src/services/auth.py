@@ -292,3 +292,24 @@ class AuthService:
             user_authen_setting.update()
             token = self.exchange_token(client_id)
         return success, token
+
+    def resend_otp(self, client_id, hash_key):
+        user_authen_setting = self.authen_setting.get(client_id)
+        if user_authen_setting is None:
+            raise Exception(Message.GET_MFA_STATE_FALED)
+        success = OTPServer.verify_hash_code(client_id, user_authen_setting.otp_valid_time, hash_key)
+        if not success:
+            raise Exception(Message.GET_VALIDATE_HASH_OTP_FAILED)
+        try:
+            user_info = self.user_db.get(client_id)
+            otp = OTPServer.get_otp(user_info.phone_number)
+            user_authen_setting.otp = otp
+            user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
+            user_authen_setting.update()
+            success = True
+            # we create hash_key with valid_time to make hash_key will change each request
+            hash_key = OTPServer.hash_uid(client_id, user_authen_setting.otp_valid_time)
+            return hash_key
+        except Exception as e:
+            logger.info(e)
+            raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
