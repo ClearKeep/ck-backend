@@ -272,15 +272,18 @@ class AuthService:
             return hash_key
         except Exception as e:
             logger.info(e)
-            raise Exception(Message.GET_MFA_STATE_FALED)
+            raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def verify_otp(self, client_id, hash_key, otp):
         user_authen_setting = self.authen_setting.get(client_id)
+        if user_authen_setting is None:
+            raise Exception(Message.GET_MFA_STATE_FALED)
         success = OTPServer.verify_hash_code(client_id, user_authen_setting.otp_valid_time, hash_key)
         if not success:
             raise Exception(Message.GET_VALIDATE_HASH_OTP_FAILED)
-
-        if otp != user_authen_setting.otp or datetime.datetime.now() > user_authen_setting.otp_valid_time:
+        if datetime.datetime.now() > user_authen_setting.otp_valid_time:
+            raise Exception(Message.EXPIRED_OTP)
+        if otp != user_authen_setting.otp:
             success = False
             token = {}
         else:

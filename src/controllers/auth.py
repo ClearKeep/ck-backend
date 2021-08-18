@@ -53,6 +53,7 @@ class AuthController(BaseController):
                     auth_message = auth_messages.AuthRes(
                                         workspace_domain=get_owner_workspace_domain(),
                                         workspace_name=get_system_config()['server_name'],
+                                        hash_key=hash_key,
                                         base_response=auth_messages.BaseResponse(success=True),
                                         sub=user_id,
                                         otp_hash=otp_hash,

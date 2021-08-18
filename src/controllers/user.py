@@ -38,7 +38,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             )
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -53,7 +53,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -69,7 +69,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -84,7 +84,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -99,7 +99,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -113,7 +113,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)

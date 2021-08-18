@@ -88,6 +88,9 @@ class Message:
     GET_MFA_STATE_FALED = 1065
     AUTHEN_SETTING_FLOW_NOT_FOUND = 1066
     GET_VALIDATE_HASH_OTP_FAILED = 1067
+    EXPIRED_OTP = 1068
+    FROZEN_OTP_SERVICE_STATE = 1069
+    OTP_SERVER_NOT_RESPONDING = 1070
 
     # Workspace info
     GET_WORKSPACE_INFO_FAILED = 1066
@@ -166,6 +169,8 @@ class Message:
         GET_MFA_STATE_FALED: "Cannot get mfa state of user. Please try again",
         AUTHEN_SETTING_FLOW_NOT_FOUND: "Cannot find current flow of changing otp. Please check the workflow",
         GET_VALIDATE_HASH_OTP_FAILED: "Cannot validate hash_key. Please try again",
+        EXPIRED_OTP: "OTP code is expired. When you ready, please request resend otp and try again",
+        FROZEN_STATE_OTP_SERVICE: "You have requested your code too many times. Please try again later",
 
         GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again"
     }

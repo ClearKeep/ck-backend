@@ -88,16 +88,16 @@ class UserService(BaseService):
 
     def get_mfa_state(self, user_id):
         try:
+            user_info = self.model.get(user_id)
+            if user_info is None:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
             user_authen_setting = self.authen_setting.get(user_id)
             if user_authen_setting is None:
-                user_info = self.model.get(user_id)
-                if user_info is None:
-                    raise Exception(Message.AUTH_USER_NOT_FOUND)
-                user_authen_setting = AuthenSetting(id=user_id)
-                user_authen_setting = user_authen_setting.add()
+                user_authen_setting = AuthenSetting(id=user_id).add()
             return user_authen_setting.mfa_enable
         except Exception as e:
             logger.error(e)
+            # redirect message to end user
             raise Exception(Message.GET_MFA_STATE_FALED)
 
     def init_mfa_state_enabling(self, user_id):
@@ -106,10 +106,7 @@ class UserService(BaseService):
             raise Exception(Message.AUTH_USER_NOT_FOUND)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
-            if user_info is None:
-                raise Exception(Message.AUTH_USER_NOT_FOUND)
-            user_authen_setting = AuthenSetting(id=user_id)
-            user_authen_setting = user_authen_setting.add()
+            user_authen_setting = AuthenSetting(id=user_id).add()
         if user_authen_setting.mfa_enable:
             success = False
             next_step = ''
@@ -124,14 +121,12 @@ class UserService(BaseService):
         return success, next_step
 
     def init_mfa_state_disabling(self, user_id):
+        user_info = self.model.get(user_id)
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
-            user_info = self.model.get(user_id)
-            if user_info is None:
-                raise Exception(Message.AUTH_USER_NOT_FOUND)
-            # in case user authen setting is not initilized but still found user_info
-            user_authen_setting = AuthenSetting(id=user_id)
-            user_authen_setting = user_authen_setting.add()
+            user_authen_setting = AuthenSetting(id=user_id).add()
         if user_authen_setting.mfa_enable:
             user_authen_setting.mfa_enable = False
             user_authen_setting.otp = None
@@ -143,31 +138,40 @@ class UserService(BaseService):
 
     def validate_password(self, user_id, password):
         user_info = self.model.get(user_id)
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting.otp_changing_state != 1:
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
         try:
             token = KeyCloakUtils.token(user_info.email, password)
-            if token:
-                user_authen_setting.otp_changing_state = 2
-                otp = OTPServer.get_otp(user_info.phone_number)
-                user_authen_setting.otp = otp
-                user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
-                user_authen_setting.update()
-                success = True
-                next_step = 'mfa_validate_otp'
-            else:
-                raise Exception(Message.AUTH_USER_NOT_FOUND)
-            return success, next_step
         except Exception as e:
             logger.error(e)
             raise Exception(Message.AUTH_USER_NOT_FOUND)
+        if not token:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
+        try:
+            user_authen_setting.otp_changing_state = 2
+            otp = OTPServer.get_otp(user_info.phone_number)
+            user_authen_setting.otp = otp
+            user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
+            user_authen_setting.update()
+            success = True
+            next_step = 'mfa_validate_otp'
+            return success, next_step
+        except Exception as e:
+            logger.error(e)
+            raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def validate_otp(self, user_id, otp):
         user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
         if user_authen_setting.otp_changing_state != 2:
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
-        if otp == user_authen_setting.otp and datetime.datetime.now() < user_authen_setting.otp_valid_time:
+        if datetime.datetime.now() < user_authen_setting.otp_valid_time:
+            raise Exception(Message.EXPIRED_OTP)
+        if otp == user_authen_setting.otp:
             user_authen_setting.mfa_enable = True
             user_authen_setting.otp_changing_state = 0
             user_authen_setting.otp_valid_time = datetime.datetime.now()
@@ -180,6 +184,9 @@ class UserService(BaseService):
         return success, next_step
 
     def re_init_otp(self, user_id):
+        user_info = self.model.get(user_id)
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting.otp_changing_state != 2:
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
@@ -193,7 +200,7 @@ class UserService(BaseService):
             return success, next_step
         except Exception as e:
             logger.error(e)
-            raise Exception(Message.AUTH_USER_NOT_FOUND)
+            raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def get_profile(self, user_id, hash_key):
         try:
@@ -225,7 +232,6 @@ class UserService(BaseService):
     def update_profile(self,  user_id, display_name, phone_number, avatar):
         try:
             profile = self.model.get(user_id)
-
             if display_name:
                 profile.display_name = display_name
             if phone_number:
