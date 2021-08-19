@@ -155,20 +155,3 @@ class KeyCloakUtils:
             data=None
         )
         return raise_error_from_response(data_raw, KeycloakGetError, expected_codes=[204])
-
-if __name__ == "__main__":
-    #refresh user
-    try:
-        token = KeyCloakUtils.token("trungdq1109@gmail.com", "Hello")
-        introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-        user_id = introspect_token['sub']
-        KeyCloakUtils.delete_user(user_id)
-    except:
-        pass
-    try:
-        token = KeyCloakUtils.token("trungdq1@vmodev.com", "NHATle1109")
-        introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-        user_id = introspect_token['sub']
-        KeyCloakUtils.delete_user(user_id)
-    except:
-        pass
