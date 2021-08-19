@@ -259,9 +259,18 @@ class AuthService:
             return None
 
     def create_otp_service(self, client_id):
+        user_info = self.user_db.get(client_id)
+        user_authen_setting = self.authen_setting.get(client_id)
+        n_times = user_authen_setting.otp_request_counter + 1
+        if n_times > OTPServer.valid_resend_time:
+            # reset counter and put otp service into frozen state
+            user_authen_setting.otp_tried_time = 0
+            user_authen_setting.otp_request_counter = 0
+            user_authen_setting.otp_frozen_time = OTPServer.cal_frozen_time()
+            user_authen_setting.update()
+        if user_authen_setting.otp_frozen_time > datetime.datetime.now():
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
         try:
-            user_info = self.user_db.get(client_id)
-            user_authen_setting = self.authen_setting.get(client_id)
             otp = OTPServer.get_otp(user_info.phone_number)
             user_authen_setting.otp = otp
             user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
@@ -281,14 +290,19 @@ class AuthService:
         success = OTPServer.verify_hash_code(client_id, user_authen_setting.otp_valid_time, hash_key)
         if not success:
             raise Exception(Message.GET_VALIDATE_HASH_OTP_FAILED)
-        if datetime.datetime.now() > user_authen_setting.otp_valid_time:
+        if user_authen_setting.otp_frozen_time > datetime.datetime.now():
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
+        if user_authen_setting.otp_tried_time > OTPServer.valid_trying_time or datetime.datetime.now() > user_authen_setting.otp_valid_time:
             raise Exception(Message.EXPIRED_OTP)
         if otp != user_authen_setting.otp:
-            success = False
-            token = {}
+            user_authen_setting.otp_tried_time += 1
+            user_authen_setting.update()
+            raise Exception(Message.WRONG_OTP)
         else:
             user_authen_setting.otp = None
             user_authen_setting.otp_valid_time = datetime.datetime.now()
+            user_authen_setting.otp_request_counter = 0
+            user_authen_setting.otp_tried_time = 0
             user_authen_setting.update()
             token = self.exchange_token(client_id)
         return success, token
@@ -300,6 +314,15 @@ class AuthService:
         success = OTPServer.verify_hash_code(client_id, user_authen_setting.otp_valid_time, hash_key)
         if not success:
             raise Exception(Message.GET_VALIDATE_HASH_OTP_FAILED)
+        n_times = user_authen_setting.otp_request_counter + 1
+        if n_times > OTPServer.valid_resend_time:
+            # reset counter and put otp service into frozen state
+            user_authen_setting.otp_tried_time = 0
+            user_authen_setting.otp_request_counter = 0
+            user_authen_setting.otp_frozen_time = OTPServer.cal_frozen_time()
+            user_authen_setting.update()
+        if user_authen_setting.otp_frozen_time > datetime.datetime.now():
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
         try:
             user_info = self.user_db.get(client_id)
             otp = OTPServer.get_otp(user_info.phone_number)

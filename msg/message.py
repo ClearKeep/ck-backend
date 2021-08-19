@@ -91,6 +91,7 @@ class Message:
     EXPIRED_OTP = 1068
     FROZEN_STATE_OTP_SERVICE = 1069
     OTP_SERVER_NOT_RESPONDING = 1070
+    WRONG_OTP = 1071
 
     # Workspace info
     GET_WORKSPACE_INFO_FAILED = 1066
@@ -171,6 +172,7 @@ class Message:
         GET_VALIDATE_HASH_OTP_FAILED: "Cannot validate hash_key. Please try again",
         EXPIRED_OTP: "OTP code is expired. When you ready, please request resend otp and try again",
         FROZEN_STATE_OTP_SERVICE: "You have requested your code too many times. Please try again later",
+        WRONG_OTP: "Wrong OTP. Please check and try again"
 
         GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again"
     }

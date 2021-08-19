@@ -12,6 +12,9 @@ class AuthenSetting(Database.get().Model):
     otp = Database.get().Column(Database.get().String(6), unique=False, nullable=True)
     otp_valid_time = Database.get().Column(Database.get().DateTime, unique=False, nullable=True)
     otp_changing_state = Database.get().Column(Database.get().INTEGER, unique=False, default=0)
+    otp_tried_time = Database.get().Column(Database.get().INTEGER, unique=False, default=0)
+    otp_request_counter = Database.get().Column(Database.get().INTEGER, unique=False, default=0)
+    otp_frozen_time = Database.get().Column(Database.get().DateTime, unique=False, nullable=True)
 
     def add(self):
         try:
