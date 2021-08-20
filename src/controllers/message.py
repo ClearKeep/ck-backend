@@ -30,7 +30,7 @@ class MessageController(BaseController):
             owner_workspace_domain = get_owner_workspace_domain()
 
             group = GroupService().get_group_info(group_id)
-            if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
+            if group and group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
                 request.group_id = group.owner_group_id
                 obj_res = ClientMessage(group.owner_workspace_domain).get_messages_in_group(request)
                 if obj_res and obj_res.lst_message:
@@ -419,3 +419,4 @@ class MessageController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
