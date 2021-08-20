@@ -11,14 +11,20 @@ from utils.logger import *
 account_sid = get_otp_server()["twilio_account_sid"]
 auth_token =  get_otp_server()["twilio_auth_token"]
 client = Client(account_sid, auth_token)
-life_time = datetime.timedelta(seconds=get_otp_server()["life_time"])
+life_time = datetime.timedelta(seconds=get_otp_server()["otp_life_time"])
 message_form = 'Your OTP code is {}'
 # set up a phone number for sending
 code_length = get_otp_server()["otp_code_length"]
-from_phone = get_otp_server()["server_phone_number"]
+from_phone = get_otp_server()["otp_server_phone_number"]
 secret_key = get_otp_server()["otp_secret_key"]
 
 class OTPServer(object):
+    valid_trying_time = get_otp_server()["input_otp_per_validate"]
+    valid_resend_time = get_otp_server()["request_otp_server_per_day"]
+
+    @staticmethod
+    def cal_frozen_time():
+        return datetime.datetime.now().replace(hour=0, minute=0,second=0, microsecond=0) + datetime.timedelta(days=1)
 
     @staticmethod
     def get_otp(phone_number):

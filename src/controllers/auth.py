@@ -53,6 +53,7 @@ class AuthController(BaseController):
                     auth_message = auth_messages.AuthRes(
                                         workspace_domain=get_owner_workspace_domain(),
                                         workspace_name=get_system_config()['server_name'],
+                                        hash_key=hash_key,
                                         base_response=auth_messages.BaseResponse(success=True),
                                         sub=user_id,
                                         otp_hash=otp_hash,
@@ -284,7 +285,6 @@ class AuthController(BaseController):
 
     async def validate_otp(self, request, context):
         try:
-            header_data = dict(context.invocation_metadata())
             success_status, token = self.service.verify_otp(request.user_id, request.otp_hash, request.otp_code)
             if not success_status:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
@@ -309,6 +309,24 @@ class AuthController(BaseController):
                 base_response=auth_messages.BaseResponse(success=True),
                 require_action = require_action
             )
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(e.args[0])]
+            return auth_messages.BaseResponse(
+                success=False,
+                errors=auth_messages.ErrorRes(
+                    code=errors[0].code,
+                    message=errors[0].message
+                )
+            )
+
+    async def resend_otp(self, request, context):
+        try:
+            otp_hash = self.service.resend_otp(request.user_id, request.otp_hash)
+            return auth_messages.MfaResendOtpRes(
+                                otp_hash=otp_hash,
+                                require_action="mfa_validate_otp"
+                            )
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
