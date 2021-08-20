@@ -39,19 +39,19 @@ class Message(Database.get().Model):
         return message
 
     def get_message_in_group(self, group_id, offset, from_time):
-        client = Database.get_session().query(Message) \
+        message = Database.get_session().query(Message) \
             .options(joinedload(Message.users_read).joinedload(MessageUserRead.user)) \
             .filter(Message.group_id == group_id)
 
         if from_time != 0:
             dt = datetime.fromtimestamp(from_time / 1000)  # from time in milisecond => second
-            client = client.filter(Message.created_at > dt)
-        client = client.order_by(Message.created_at.desc())
+            message = message.filter(Message.created_at > dt)
+        message = message.order_by(Message.created_at.desc())
 
         # if offset != 0:
         #     limit = get_system_config()['page_limit']
         #     client = client.offset(offset).limit(limit)
-        result = client.all()
+        result = message.all()
         Database.get().session.remove()
         return result
 
