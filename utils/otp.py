@@ -23,10 +23,6 @@ class OTPServer(object):
     valid_resend_time = get_otp_server()["request_otp_server_per_day"]
 
     @staticmethod
-    def cal_frozen_time():
-        return datetime.datetime.now().replace(hour=0, minute=0,second=0, microsecond=0) + datetime.timedelta(days=1)
-
-    @staticmethod
     def get_otp(phone_number):
         otp = OTPServer._create_otp()
         logger.info('{} sent to {}'.format(message_form.format(otp), phone_number))
