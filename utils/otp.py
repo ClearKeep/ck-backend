@@ -23,10 +23,6 @@ class OTPServer(object):
     valid_resend_time = get_otp_server()["request_otp_server_per_day"]
 
     @staticmethod
-    def cal_frozen_time():
-        return datetime.datetime.now().replace(hour=0, minute=0,second=0, microsecond=0) + datetime.timedelta(days=1)
-
-    @staticmethod
     def get_otp(phone_number):
         otp = OTPServer._create_otp()
         logger.info('{} sent to {}'.format(message_form.format(otp), phone_number))
@@ -47,6 +43,10 @@ class OTPServer(object):
         secret_string = "{}{}{}".format(user_id, valid_time, secret_key)
         hash_string = md5(secret_string.encode("utf-8")).hexdigest()
         return hash_string
+
+    @staticmethod
+    def cal_frozen_time():
+        return datetime.datetime.now().replace(hour=0, minute=0,second=0, microsecond=0) + datetime.timedelta(days=1)
 
     @staticmethod
     def verify_hash_code(user_id, valid_time, hash_string):

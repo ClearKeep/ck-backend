@@ -242,22 +242,12 @@ class UserService(BaseService):
                     id=user_info.id,
                     display_name=user_info.display_name
                 )
-<<<<<<< HEAD
-
-=======
-           
->>>>>>> development
                 if user_info.email:
                     obj_res.email = user_info.email
                 if user_info.phone_number:
                     obj_res.phone_number = user_info.phone_number
                 if user_info.avatar:
                     obj_res.avatar = user_info.avatar
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> development
                 return obj_res
             else:
                 return None
@@ -275,7 +265,7 @@ class UserService(BaseService):
             if avatar:
                 profile.avatar = avatar
             return profile.update()
-        
+
         except Exception as e:
             logger.info(e)
             raise Exception(Message.UPDATE_PROFILE_FAILED)
@@ -393,7 +383,7 @@ class UserService(BaseService):
             list_clients_status = []
 
             workspace_domains_dictionary = self.categorize_workspace_domains(list_clients)
-                                                                                                                                    
+
             for workspace_domain in workspace_domains_dictionary.keys():
                 list_client = workspace_domains_dictionary[workspace_domain]
                 if workspace_domain == owner_workspace_domain:
@@ -405,12 +395,6 @@ class UserService(BaseService):
                             workspace_domain=workspace_domain,
                             status=user_status,
                         )
-<<<<<<< HEAD
-
-=======
-                        
->>>>>>> development
-                        # add profile for response
                         if should_get_profile is True:
                             user_info = self.model.get(client.client_id)
                             print ("user_info",user_info)
@@ -421,11 +405,6 @@ class UserService(BaseService):
                                     tmp_client_response.phone_number = user_info.phone_number
                                 if user_info.avatar:
                                     tmp_client_response.avatar = user_info.avatar
-<<<<<<< HEAD
-
-=======
-                                    
->>>>>>> development
                         list_clients_status.append(tmp_client_response)
                 else:
                     other_clients_response = self.get_other_workspace_clients_status(workspace_domain, list_client)
@@ -475,8 +454,8 @@ class UserService(BaseService):
                 server_error_resp.append(tmp_client_response)
             return server_error_resp
         return client_resp.lst_client
-    
-    
+
+
     # profile api
 
 
@@ -486,7 +465,7 @@ class UserService(BaseService):
         text_bytes = text.encode("ascii")
         encoded_text_bytes = base64.b64encode(text_bytes)
         return encoded_text_bytes.decode('ascii')
-        
+
     def upload_avatar(self, client_id, file_name, file_content, file_type, file_hash):
         m = hashlib.new('md5', file_content).hexdigest()
         if m != file_hash:
@@ -494,19 +473,19 @@ class UserService(BaseService):
         # start upload to s3 and resize if needed
         tmp_file_name, file_ext = os.path.splitext(file_name)
         avatar_file_name = self.base64_enconding_text_to_string(client_id) + file_ext
-        
+
         avatar_url = self.upload_to_s3(avatar_file_name, file_content, file_type)
         obj_res = user_pb2.UploadAvatarResponse(
             file_url=avatar_url
         )
         return obj_res
-    
+
     def upload_to_s3(self, file_name, file_data, content_type):
         s3_config = get_system_config()['storage_s3']
         file_path = os.path.join(s3_config.get('avatar_folder'), file_name)
         s3_client = boto3.client('s3', aws_access_key_id=s3_config.get('access_key_id'),
                                  aws_secret_access_key=s3_config.get('access_key_secret'))
-        
+
         s3_client.put_object(Body=file_data, Bucket=s3_config.get('bucket'), Key=file_path, ContentType=content_type,
                              ACL='public-read')
         uploaded_file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)
