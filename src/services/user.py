@@ -180,9 +180,13 @@ class UserService(BaseService):
             raise Exception(Message.AUTH_USER_NOT_FOUND)
         if user_authen_setting.otp_changing_state != 2:
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
-        if user_authen_setting.otp_frozen_time > datetime.datetime.now():
-            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
-        if user_authen_setting.otp_tried_time >= OTPServer.valid_trying_time or datetime.datetime.now() > user_authen_setting.otp_valid_time:
+        if user_authen_setting.otp_tried_time >= OTPServer.valid_trying_time:
+            user_authen_setting.otp = None
+            user_authen_setting.update()
+            raise Exception(Message.EXCEED_MAXIMUM_TRIED_TIMES_OTP)
+        if datetime.datetime.now() > user_authen_setting.otp_valid_time:
+            user_authen_setting.otp = None
+            user_authen_setting.update()
             raise Exception(Message.EXPIRED_OTP)
         if otp == user_authen_setting.otp:
             user_authen_setting.mfa_enable = True
@@ -238,16 +242,13 @@ class UserService(BaseService):
                     id=user_info.id,
                     display_name=user_info.display_name
                 )
-                # if user_info.email:
-                #     obj_res.email = user_info.email
-                if user_info.avatar:
-                    obj_res.avatar = user_info.avatar
+
+                if user_info.email:
+                    obj_res.email = user_info.email
                 if user_info.phone_number:
                     obj_res.phone_number = user_info.phone_number
-                # if user_info.first_name:
-                #     obj_res.first_name = EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key),
-                # if user_info.last_name:
-                #     obj_res.last_name = EncryptUtils.decrypt_with_hash(user_info.last_name, hash_key),
+                if user_info.avatar:
+                    obj_res.avatar = user_info.avatar
 
                 return obj_res
             else:
@@ -255,7 +256,6 @@ class UserService(BaseService):
         except Exception as e:
             logger.info(e)
             raise Exception(Message.GET_PROFILE_FAILED)
-
 
     def update_profile(self,  user_id, display_name, phone_number, avatar):
         try:
@@ -378,7 +378,7 @@ class UserService(BaseService):
                 })
         return workspace_domains_dictionary
 
-    def get_list_clients_status(self, list_clients):
+    def get_list_clients_status(self, list_clients, should_get_profile):
         logger.info("get_list_clients_status")
         try:
             owner_workspace_domain = get_owner_workspace_domain()
@@ -397,6 +397,19 @@ class UserService(BaseService):
                             workspace_domain=workspace_domain,
                             status=user_status,
                         )
+
+                        # add profile for response
+                        if should_get_profile is True:
+                            user_info = self.model.get(client.client_id)
+                            print ("user_info",user_info)
+                            if user_info is not None:
+                                if user_info.display_name:
+                                    tmp_client_response.display_name = user_info.display_name
+                                if user_info.phone_number:
+                                    tmp_client_response.phone_number = user_info.phone_number
+                                if user_info.avatar:
+                                    tmp_client_response.avatar = user_info.avatar
+
                         list_clients_status.append(tmp_client_response)
                 else:
                     other_clients_response = self.get_other_workspace_clients_status(workspace_domain, list_client)
@@ -409,6 +422,8 @@ class UserService(BaseService):
         except Exception as e:
             logger.error(e)
             raise Exception(Message.GET_USER_STATUS_FAILED)
+
+
 
     def get_owner_workspace_client_status(self, client_id):
         client_record = client_records_list_in_memory.get(str(client_id), None)
@@ -444,6 +459,9 @@ class UserService(BaseService):
                 server_error_resp.append(tmp_client_response)
             return server_error_resp
         return client_resp.lst_client
+
+
+    # profile api
 
     def base64_enconding_text_to_string(self, text):
         text_bytes = text.encode("ascii")

@@ -292,9 +292,13 @@ class AuthService:
         success = OTPServer.verify_hash_code(client_id, user_authen_setting.otp_valid_time, hash_key)
         if not success:
             raise Exception(Message.GET_VALIDATE_HASH_OTP_FAILED)
-        if user_authen_setting.otp_frozen_time > datetime.datetime.now():
-            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
-        if user_authen_setting.otp_tried_time >= OTPServer.valid_trying_time or datetime.datetime.now() > user_authen_setting.otp_valid_time:
+        if user_authen_setting.otp_tried_time >= OTPServer.valid_trying_time:
+            user_authen_setting.otp = None
+            user_authen_setting.update()
+            raise Exception(Message.EXCEED_MAXIMUM_TRIED_TIMES_OTP)
+        if datetime.datetime.now() > user_authen_setting.otp_valid_time:
+            user_authen_setting.otp = None
+            user_authen_setting.update()
             raise Exception(Message.EXPIRED_OTP)
         if otp != user_authen_setting.otp:
             user_authen_setting.otp_tried_time += 1
