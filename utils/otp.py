@@ -45,6 +45,10 @@ class OTPServer(object):
         return hash_string
 
     @staticmethod
+    def cal_frozen_time():
+        return datetime.datetime.now().replace(hour=0, minute=0,second=0, microsecond=0) + datetime.timedelta(days=1)
+
+    @staticmethod
     def verify_hash_code(user_id, valid_time, hash_string):
         verify_secret_string = "{}{}{}".format(user_id, valid_time, secret_key)
         verify_hash_string = md5(verify_secret_string.encode("utf-8")).hexdigest()
