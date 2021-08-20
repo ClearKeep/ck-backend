@@ -268,12 +268,14 @@ class AuthService:
             user_authen_setting.otp_request_counter = 0
             user_authen_setting.otp_frozen_time = OTPServer.cal_frozen_time()
             user_authen_setting.update()
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
         if user_authen_setting.otp_frozen_time > datetime.datetime.now():
             raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
         try:
             otp = OTPServer.get_otp(user_info.phone_number)
             user_authen_setting.otp = otp
             user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
+            user_authen_setting.otp_request_counter = n_times
             user_authen_setting.update()
             success = True
             # we create hash_key with valid_time to make hash_key will change each request
@@ -321,6 +323,7 @@ class AuthService:
             user_authen_setting.otp_request_counter = 0
             user_authen_setting.otp_frozen_time = OTPServer.cal_frozen_time()
             user_authen_setting.update()
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
         if user_authen_setting.otp_frozen_time > datetime.datetime.now():
             raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
         try:
@@ -328,6 +331,7 @@ class AuthService:
             otp = OTPServer.get_otp(user_info.phone_number)
             user_authen_setting.otp = otp
             user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
+            user_authen_setting.otp_request_counter = n_times
             user_authen_setting.update()
             success = True
             # we create hash_key with valid_time to make hash_key will change each request
