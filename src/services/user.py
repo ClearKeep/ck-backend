@@ -182,7 +182,7 @@ class UserService(BaseService):
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
         if user_authen_setting.otp_frozen_time > datetime.datetime.now():
             raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
-        if user_authen_setting.otp_tried_time > OTPServer.valid_trying_time or datetime.datetime.now() > user_authen_setting.otp_valid_time:
+        if user_authen_setting.otp_tried_time >= OTPServer.valid_trying_time or datetime.datetime.now() > user_authen_setting.otp_valid_time:
             raise Exception(Message.EXPIRED_OTP)
         if otp == user_authen_setting.otp:
             user_authen_setting.mfa_enable = True

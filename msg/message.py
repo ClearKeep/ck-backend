@@ -172,7 +172,7 @@ class Message:
         GET_VALIDATE_HASH_OTP_FAILED: "Cannot validate hash_key. Please try again",
         EXPIRED_OTP: "OTP code is expired. When you ready, please request resend otp and try again",
         FROZEN_STATE_OTP_SERVICE: "You have requested your code too many times. Please try again later",
-        WRONG_OTP: "Wrong OTP. Please check and try again"
+        WRONG_OTP: "Wrong OTP. Please check and try again",
 
         GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again"
     }

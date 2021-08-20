@@ -24,7 +24,7 @@ class OTPServer(object):
 
     @staticmethod
     def cal_frozen_time():
-        return datetime.datetime.now().replace(hour=0, minute=0,second=0, microsecond=0) + timedelta(days=1)
+        return datetime.datetime.now().replace(hour=0, minute=0,second=0, microsecond=0) + datetime.timedelta(days=1)
 
     @staticmethod
     def get_otp(phone_number):
