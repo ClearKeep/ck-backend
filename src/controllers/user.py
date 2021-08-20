@@ -31,7 +31,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            if not introspect_token:
+            if not introspect_token or 'sub' not in introspect_token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
             mfa_enable = self.service.get_mfa_state(client_id)
@@ -50,7 +50,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            if not introspect_token:
+            if not introspect_token or 'sub' not in introspect_token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
             success, next_step = self.service.init_mfa_state_enabling(client_id)
