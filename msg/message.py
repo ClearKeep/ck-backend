@@ -92,6 +92,7 @@ class Message:
     FROZEN_STATE_OTP_SERVICE = 1069
     OTP_SERVER_NOT_RESPONDING = 1070
     WRONG_OTP = 1071
+    EXCEED_MAXIMUM_TRIED_TIMES_OTP = 1072
 
     # Workspace info
     GET_WORKSPACE_INFO_FAILED = 1066
@@ -170,7 +171,8 @@ class Message:
         GET_MFA_STATE_FALED: "Cannot get mfa state of user. Please try again",
         AUTHEN_SETTING_FLOW_NOT_FOUND: "Cannot find current flow of changing otp. Please check the workflow",
         GET_VALIDATE_HASH_OTP_FAILED: "Cannot validate hash_key. Please try again",
-        EXPIRED_OTP: "OTP code is expired. When you ready, please request resend otp and try again",
+        EXPIRED_OTP: "OTP code is invalid due to reach expired time. When you ready, please request resend otp and try again",
+        EXCEED_MAXIMUM_TRIED_TIMES_OTP: "OTP code is invalid due to exceed maximum trying. Please request resend otp and try again",
         FROZEN_STATE_OTP_SERVICE: "You have requested your code too many times. Please try again later",
         WRONG_OTP: "Wrong OTP. Please check and try again",
 
