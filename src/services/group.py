@@ -1,6 +1,7 @@
 from src.services.base import BaseService
 from src.models.group import GroupChat
 from src.models.user import User
+from src.models.message_user_read import MessageUserRead
 from src.models.signal_group_key import GroupClientKey
 from src.models.signal_peer_key import PeerClientKey
 from src.models.message import Message as MessageClass
@@ -272,9 +273,10 @@ class GroupService(BaseService):
             )
             if obj.updated_at is not None:
                 res_obj.updated_at = int(obj.updated_at.timestamp() * 1000)
-
+            
             # list client in group
             group_clients = json.loads(obj.group_clients)
+            
             for client in group_clients:
                 client_in = group_pb2.ClientInGroupResponse(
                     id=client['id'],
@@ -391,7 +393,6 @@ class GroupService(BaseService):
         lst_obj_res = []
         group_ids = (group.GroupChat.id for group in lst_group)
         lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
-
         for item in lst_group:
             obj = item.GroupChat
             obj_res = group_pb2.GroupObjectResponse(
@@ -410,7 +411,15 @@ class GroupService(BaseService):
 
             if obj.updated_at:
                 obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
-
+            
+            # check if this group has an unread message
+            if obj.last_message_id:
+                is_read = MessageUserRead().get_by_message_id(obj.last_message_id)
+                if is_read:
+                    obj_res.has_unread_message = False
+                else:
+                    obj_res.has_unread_message = True
+                    
             group_clients = json.loads(obj.group_clients)
             for client in group_clients:
                 client_in = group_pb2.ClientInGroupResponse(
@@ -888,3 +897,8 @@ class GroupService(BaseService):
                         leave_member_group.delete()
 
         return group_pb2.BaseResponse(success=True)
+
+
+
+
+
