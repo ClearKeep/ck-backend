@@ -86,7 +86,8 @@ message ListenRequest {
 
 // Request: read message
 message ReadMessagesRequest {
-  repeated string lst_message_id = 4;
+  repeated string client_id = 1;
+  repeated string lst_message_id = 2;
 }
 // Response: groupObjectResponse
 
