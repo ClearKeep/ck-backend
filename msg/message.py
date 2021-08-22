@@ -178,7 +178,7 @@ class Message:
         FROZEN_STATE_OTP_SERVICE: "You have requested your code too many times. Please try again later",
         WRONG_OTP: "Wrong OTP. Please check and try again",
 
-        GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again",
+        GET_WORKSPACE_INFO_FAILED: "14 UNAVAILABLE: failed to connect to all addresses",
         MESSAGE_READ_FAILED: "Read Message falied. Please try again"
     }
 
