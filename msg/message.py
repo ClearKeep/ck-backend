@@ -23,7 +23,7 @@ class Message:
     GET_GROUP_CHAT_FAILED = 1018
     SEARCH_GROUP_CHAT_FAILED = 1019
     CLIENT_QUEUE_NOT_FOUND = 1020
-
+    
     # notify
     GET_CLIENT_NOTIFIES_FAILED = 1021
     CLIENT_READ_NOTIFY_FAILED = 1022
@@ -90,8 +90,10 @@ class Message:
     GET_VALIDATE_HASH_OTP_FAILED = 1067
 
     # Workspace info
-    GET_WORKSPACE_INFO_FAILED = 1066
-
+    GET_WORKSPACE_INFO_FAILED = 1068
+    MESSAGE_READ_FAILED = 1069
+    
+    
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
         AUTH_USER_NOT_FOUND: "Login information is not correct. Please try again",
@@ -167,7 +169,8 @@ class Message:
         AUTHEN_SETTING_FLOW_NOT_FOUND: "Cannot find current flow of changing otp. Please check the workflow",
         GET_VALIDATE_HASH_OTP_FAILED: "Cannot validate hash_key. Please try again",
 
-        GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again"
+        GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again",
+        MESSAGE_READ_FAILED: "Read Message falied. Please try again"
     }
 
     @staticmethod

@@ -1,6 +1,7 @@
 from __future__ import print_function
 import grpc
 from protos import message_pb2_grpc
+from protos import message_pb2
 from utils.logger import *
 
 
@@ -32,6 +33,15 @@ class ClientMessage:
     def workspace_publish_message(self, request):
         try:
             response = self.stub.workspace_publish(request)
+            return response
+        except Exception as e:
+            logger.error(e)
+            return None
+        
+    def read_messages(self, client_id, lst_message_id):
+        try:
+            request = message_pb2.ReadMessagesRequest(client_id= client_id, lst_message_id=lst_message_id)
+            response = self.stub.read_messages(request)
             return response
         except Exception as e:
             logger.error(e)
