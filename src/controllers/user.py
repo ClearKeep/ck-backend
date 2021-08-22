@@ -274,9 +274,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def ping_request(self, request, context):
         logger.info("ping_request api")
         try:
-            header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            client_id = introspect_token['sub']
+            client_id = request.client_id
             self.service.update_client_record(client_id)
             return user_messages.BaseResponse(success=True)
         except Exception as e:

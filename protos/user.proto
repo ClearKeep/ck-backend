@@ -80,7 +80,9 @@ message SetUserStatusRequest {
 
 // << get user status >>
 // Request: get my info
-message PingRequest {}
+message PingRequest {
+    string client_id = 1;
+}
 
 
 message GetClientsStatusRequest {
