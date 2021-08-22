@@ -9,6 +9,7 @@ from queue import Queue
 import uuid
 import asyncio
 from utils.config import *
+from client.client_message import ClientMessage
 
 client_message_queue = {}
 
@@ -18,7 +19,7 @@ class MessageService(BaseService):
         super().__init__(Message())
         self.service_group = GroupChat()
         self.message_read_model = MessageUserRead()
-
+        
     def store_message(self, message_id, created_at, group_id, group_type, from_client_id, from_client_workspace_domain, client_id, message):
         # init new message
         self.model = Message(
@@ -111,12 +112,10 @@ class MessageService(BaseService):
                 obj_res.client_id = obj.client_id
             if obj.updated_at is not None:
                 obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
-
             for client_read_item in obj.users_read:
                 client_read = message_pb2.ClientReadObject(
                     id=client_read_item.user.id,
-                    display_name=client_read_item.user.display_name,
-                    avatar=client_read_item.user.avatar
+    
                 )
                 obj_res.lst_client_read.append(client_read)
 
@@ -143,8 +142,15 @@ class MessageService(BaseService):
 
     def read_messages(self, client_id, lst_message_id):
         for mess_id in lst_message_id:
-            MessageUserRead(
-                message_id=mess_id,
-                client_id=client_id
-            ).add()
-
+            message = self.model.get(mess_id)
+            if message and message.from_client_workspace_domain is not None:
+                if message.from_client_workspace_domain == get_owner_workspace_domain():
+                    MessageUserRead(
+                        message_id=mess_id,
+                        client_id=client_id
+                    ).add()
+                else:
+                    client_message = ClientMessage(message.from_client_workspace_domain)
+                    client_message.read_messages(client_id, lst_message_id)
+            else:
+                raise

@@ -129,4 +129,4 @@ class GroupChat(Database.get().Model):
         return result
 
     def __repr__(self):
-        return '<Item(id=%s, username=%s, email=%s)>' % (self.id, self.username, self.email)
+        return '<Item(id=%s, group_name=%s, owner_group_id=%s)>' % (self.id, self.group_name, self.owner_group_id)

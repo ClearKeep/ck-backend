@@ -28,9 +28,9 @@ class MessageController(BaseController):
             last_message_at = request.last_message_at
 
             owner_workspace_domain = get_owner_workspace_domain()
-
             group = GroupService().get_group_info(group_id)
-            if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
+            
+            if group and group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
                 request.group_id = group.owner_group_id
                 obj_res = ClientMessage(group.owner_workspace_domain).get_messages_in_group(request)
                 if obj_res and obj_res.lst_message:
@@ -344,16 +344,17 @@ class MessageController(BaseController):
     @request_logged
     async def read_messages(self, request, context):
         try:
-            header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            client_id = introspect_token['sub']
+            # header_data = dict(context.invocation_metadata())
+            # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # client_id = introspect_token['sub']
+            client_id = request.client_id
             lst_message_id = request.lst_message_id
             self.service.read_messages(client_id, lst_message_id)
 
             return message_pb2.BaseResponse(success=True)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
+            errors = [Message.get_error_object(Message.MESSAGE_READ_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -419,3 +420,4 @@ class MessageController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+

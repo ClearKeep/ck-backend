@@ -23,7 +23,7 @@ class Message:
     GET_GROUP_CHAT_FAILED = 1018
     SEARCH_GROUP_CHAT_FAILED = 1019
     CLIENT_QUEUE_NOT_FOUND = 1020
-
+    
     # notify
     GET_CLIENT_NOTIFIES_FAILED = 1021
     CLIENT_READ_NOTIFY_FAILED = 1022
@@ -95,8 +95,10 @@ class Message:
     EXCEED_MAXIMUM_TRIED_TIMES_OTP = 1072
 
     # Workspace info
-    GET_WORKSPACE_INFO_FAILED = 1066
-
+    GET_WORKSPACE_INFO_FAILED = 1068
+    MESSAGE_READ_FAILED = 1069
+    
+    
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
         AUTH_USER_NOT_FOUND: "Login information is not correct. Please try again",
@@ -176,7 +178,8 @@ class Message:
         FROZEN_STATE_OTP_SERVICE: "You have requested your code too many times. Please try again later",
         WRONG_OTP: "Wrong OTP. Please check and try again",
 
-        GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again"
+        GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again",
+        MESSAGE_READ_FAILED: "Read Message falied. Please try again"
     }
 
     @staticmethod
