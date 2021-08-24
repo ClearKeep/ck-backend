@@ -10,6 +10,7 @@ import uuid
 import asyncio
 from utils.config import *
 from client.client_message import ClientMessage
+from utils.logger import *
 
 client_message_queue = {}
 
@@ -95,35 +96,58 @@ class MessageService(BaseService):
         # return True
 
     def get_message_in_group(self, group_id, offset=0, from_time=0):
+        owner_workspace_domain = get_owner_workspace_domain()
         lst_message = self.model.get_message_in_group(group_id, offset, from_time)
         group_type = self.service_group.get_group_type(group_id=group_id)
         lst_obj_res = []
-        for obj in lst_message:
+        
+        for message in lst_message:
             obj_res = message_pb2.MessageObjectResponse(
-                id=obj.id,
-                group_id=obj.group_id,
+                id=message.id,
+                group_id=message.group_id,
                 group_type=group_type.group_type,
-                from_client_id=obj.from_client_id,
-                from_client_workspace_domain=obj.from_client_workspace_domain,
-                message=obj.message,
-                created_at=int(obj.created_at.timestamp() * 1000)
+                from_client_id=message.from_client_id,
+                from_client_workspace_domain=message.from_client_workspace_domain,
+                message=message.message,
+                created_at=int(message.created_at.timestamp() * 1000)
             )
-            if obj.client_id:
-                obj_res.client_id = obj.client_id
-            if obj.updated_at is not None:
-                obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
-            for client_read_item in obj.users_read:
-                client_read = message_pb2.ClientReadObject(
-                    id=client_read_item.user.id,
-    
-                )
-                obj_res.lst_client_read.append(client_read)
+            if message.client_id:
+                obj_res.client_id = message.client_id
+            if message.updated_at is not None:
+                obj_res.updated_at = int(message.updated_at.timestamp() * 1000)
+            # get list user_read of this message
+            if message.from_client_workspace_domain and message.from_client_workspace_domain != owner_workspace_domain:
+                client_message = ClientMessage(message.from_client_workspace_domain)
+                response = client_message.get_list_clients_read_messages(message.id)
+                obj_res.lst_client_read.extend(response)
+            else:
+                for client_read_item in message.users_read:
+                    client_read = message_pb2.ClientReadObject(
+                        id=client_read_item.user.id,
+                    )
+                    obj_res.lst_client_read.append(client_read)
 
             lst_obj_res.append(obj_res)
 
         response = message_pb2.GetMessagesInGroupResponse(
             lst_message=lst_obj_res
         )
+        return response
+    
+    def get_list_clients_read_messages(self, message_id):
+        list_client_read = []
+        list_users_read = self.message_read_model.get_by_message_id(message_id)
+        
+        if list_users_read:
+            for user_read in list_users_read:
+                client_read = message_pb2.ClientReadObject(
+                    id=user_read.client_id,
+                )
+                list_client_read.append(client_read)
+                
+        response = message_pb2.GetListClientsReadResponse(
+                lst_client=list_client_read
+            )
         return response
 
     async def subscribe(self, client_id):
@@ -141,6 +165,7 @@ class MessageService(BaseService):
             del client_message_queue[message_channel]
 
     def read_messages(self, client_id, lst_message_id):
+        logger.info("read_messages")
         for mess_id in lst_message_id:
             message = self.model.get(mess_id)
             if message and message.from_client_workspace_domain is not None:

@@ -55,6 +55,7 @@ class Message(Database.get().Model):
         Database.get().session.remove()
         return result
 
+
     def update(self):
         try:
             Database.get_session().merge(self)

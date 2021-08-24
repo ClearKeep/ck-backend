@@ -95,9 +95,9 @@ class Message:
     EXCEED_MAXIMUM_TRIED_TIMES_OTP = 1072
 
     # Workspace info
-    GET_WORKSPACE_INFO_FAILED = 1068
-    MESSAGE_READ_FAILED = 1069
-    
+    GET_WORKSPACE_INFO_FAILED = 1076
+    MESSAGE_READ_FAILED = 1075
+    GET_LIST_CLIENT_FAILED = 1077
     
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
@@ -179,7 +179,8 @@ class Message:
         WRONG_OTP: "Wrong OTP. Please check and try again",
 
         GET_WORKSPACE_INFO_FAILED: "14 UNAVAILABLE: failed to connect to all addresses",
-        MESSAGE_READ_FAILED: "Read Message falied. Please try again"
+        MESSAGE_READ_FAILED: "Read Message falied. Please try again",
+        GET_LIST_CLIENT_FAILED: "Get list client falied. Please try again",
     }
 
     @staticmethod

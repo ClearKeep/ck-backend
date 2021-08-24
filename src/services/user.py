@@ -14,6 +14,9 @@ import base64
 import boto3
 import os
 import hashlib
+from utils.logger import *
+
+
 client_records_list_in_memory = {}
 
 
@@ -417,8 +420,6 @@ class UserService(BaseService):
         except Exception as e:
             logger.error(e)
             raise Exception(Message.GET_USER_STATUS_FAILED)
-
-
 
     def get_owner_workspace_client_status(self, client_id):
         client_record = client_records_list_in_memory.get(str(client_id), None)

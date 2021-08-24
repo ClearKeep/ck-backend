@@ -40,9 +40,20 @@ class ClientMessage:
         
     def read_messages(self, client_id, lst_message_id):
         try:
-            request = message_pb2.ReadMessagesRequest(client_id= client_id, lst_message_id=lst_message_id)
+            request = message_pb2.ReadMessagesRequest(client_id=client_id, lst_message_id=lst_message_id)
             response = self.stub.read_messages(request)
             return response
         except Exception as e:
             logger.error(e)
             return None
+        
+    def get_list_clients_read_messages(self, message_id):
+        try:
+            request = message_pb2.GetListClientsReadRequest(message_id=message_id)
+            response = self.stub.get_list_clients_read_messages(request)
+            return response
+        except Exception as e:
+            logger.error(e)
+            return None
+
+    

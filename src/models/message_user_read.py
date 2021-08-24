@@ -24,7 +24,7 @@ class MessageUserRead(Database.get().Model):
     def get_by_message_id(self, message_id):
         message_user_read = Database.get_session().query(MessageUserRead) \
             .filter(MessageUserRead.message_id == message_id) \
-            .one_or_none()
+            .all()
         if message_user_read:
             message_user_read.get().session.remove()
         return message_user_read

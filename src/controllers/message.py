@@ -421,3 +421,16 @@ class MessageController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    
+    @request_logged
+    async def get_list_clients_read_messages(self, request,context):
+        try:
+            message_id = request.message_id
+            obj_res = self.service.get_list_clients_read_messages(message_id=message_id)
+            return obj_res
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(Message.GET_LIST_CLIENT_FAILED)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
