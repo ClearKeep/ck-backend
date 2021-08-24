@@ -39,8 +39,7 @@ class AuthController(BaseController):
                                         token_type=token['token_type'],
                                         session_state=token['session_state'],
                                         scope=token['scope'],
-                                        hash_key=hash_key,
-                                        base_response=auth_messages.BaseResponse(success=True)
+                                        hash_key=hash_key
                                     )
                 else:
                     otp_hash = self.service.create_otp_service(user_id)
@@ -48,7 +47,6 @@ class AuthController(BaseController):
                                         workspace_domain=get_owner_workspace_domain(),
                                         workspace_name=get_system_config()['server_name'],
                                         hash_key=hash_key,
-                                        base_response=auth_messages.BaseResponse(success=True),
                                         sub=user_id,
                                         otp_hash=otp_hash,
                                         require_action="mfa_validate_otp"
@@ -60,14 +58,9 @@ class AuthController(BaseController):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.AuthRes(
-                base_response=auth_messages.BaseResponse(
-                    success=False,
-                    errors=auth_messages.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                ))
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
     async def login_google(self, request, context):
@@ -81,8 +74,7 @@ class AuthController(BaseController):
                     workspace_name=get_system_config()['server_name'],
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
-                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
-                    base_response=auth_messages.BaseResponse(success=True)
+                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
                 )
                 if token['refresh_token']:
                     auth_response.refresh_token = token['refresh_token']
@@ -102,14 +94,9 @@ class AuthController(BaseController):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.AuthRes(
-                base_response=auth_messages.BaseResponse(
-                    success=False,
-                    errors=auth_messages.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                ))
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
     async def login_office(self, request, context):
@@ -123,8 +110,7 @@ class AuthController(BaseController):
                     workspace_name=get_system_config()['server_name'],
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
-                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
-                    base_response=auth_messages.BaseResponse(success=True)
+                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
                 )
                 if token['refresh_token']:
                     auth_response.refresh_token = token['refresh_token']
@@ -144,14 +130,9 @@ class AuthController(BaseController):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.AuthRes(
-                base_response=auth_messages.BaseResponse(
-                    success=False,
-                    errors=auth_messages.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                ))
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
     async def login_facebook(self, request, context):
@@ -165,8 +146,7 @@ class AuthController(BaseController):
                     workspace_name=get_system_config()['server_name'],
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
-                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
-                    base_response=auth_messages.BaseResponse(success=True)
+                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
                 )
                 if token['refresh_token']:
                     auth_response.refresh_token = token['refresh_token']
@@ -186,14 +166,9 @@ class AuthController(BaseController):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.AuthRes(
-                base_response=auth_messages.BaseResponse(
-                    success=False,
-                    errors=auth_messages.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                ))
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
     async def register(self, request, context):
@@ -294,20 +269,14 @@ class AuthController(BaseController):
                 token_type=token['token_type'],
                 session_state=token['session_state'],
                 scope=token['scope'],
-                base_response=auth_messages.BaseResponse(success=True),
                 require_action = require_action
             )
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.AuthRes(
-                base_response=auth_messages.BaseResponse(
-                    success=False,
-                    errors=auth_messages.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                ))
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     async def resend_otp(self, request, context):
         try:
@@ -319,10 +288,6 @@ class AuthController(BaseController):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.MfaResendOtpRes(
-                success=False,
-                errors=auth_messages.ErrorRes(
-                    code=errors[0].code,
-                    message=errors[0].message
-                )
-            )
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)

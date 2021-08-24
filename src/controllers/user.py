@@ -60,13 +60,9 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            return user_messages.MfaBaseResponse(
-                        success=False,
-                        errors=user_messages.ErrorRes(
-                            code=errors[0].code,
-                            message=errors[0].message
-                        )
-                    )
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     # @auth_required
     async def disable_mfa(self, request, context):
@@ -83,13 +79,9 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            return user_messages.MfaBaseResponse(
-                        success=False,
-                        errors=user_messages.ErrorRes(
-                            code=errors[0].code,
-                            message=errors[0].message
-                        )
-                    )
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     # @auth_required
     async def mfa_validate_password(self, request, context):
@@ -105,13 +97,9 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            return user_messages.MfaBaseResponse(
-                        success=False,
-                        errors=user_messages.ErrorRes(
-                            code=errors[0].code,
-                            message=errors[0].message
-                        )
-                    )
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     # @auth_required
     async def mfa_validate_otp(self, request, context):
@@ -127,13 +115,9 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            return user_messages.MfaBaseResponse(
-                        success=False,
-                        errors=user_messages.ErrorRes(
-                            code=errors[0].code,
-                            message=errors[0].message
-                        )
-                    )
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     async def mfa_resend_otp(self, request, context):
         try:
@@ -148,13 +132,9 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            return user_messages.MfaBaseResponse(
-                        success=False,
-                        errors=user_messages.ErrorRes(
-                            code=errors[0].code,
-                            message=errors[0].message
-                        )
-                    )
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     # @auth_required
     # @request_logged
