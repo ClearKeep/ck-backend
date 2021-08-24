@@ -96,7 +96,8 @@ message MfaResendOtpReq {
 
 message MfaResendOtpRes{
     string otp_hash = 1;
-    string require_action = 2;
+    bool success = 2;
+    ErrorRes errors = 3;
 }
 
 service Auth {

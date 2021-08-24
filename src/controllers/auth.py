@@ -300,25 +300,26 @@ class AuthController(BaseController):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.BaseResponse(
-                success=False,
-                errors=auth_messages.ErrorRes(
-                    code=errors[0].code,
-                    message=errors[0].message
-                )
-            )
+            return auth_messages.AuthRes(
+                base_response=auth_messages.BaseResponse(
+                    success=False,
+                    errors=auth_messages.ErrorRes(
+                        code=errors[0].code,
+                        message=errors[0].message
+                    )
+                ))
 
     async def resend_otp(self, request, context):
         try:
             otp_hash = self.service.resend_otp(request.user_id, request.otp_hash)
             return auth_messages.MfaResendOtpRes(
-                                otp_hash=otp_hash,
-                                require_action="mfa_validate_otp"
+                                success=True,
+                                otp_hash=otp_hash
                             )
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.BaseResponse(
+            return auth_messages.MfaResendOtpRes(
                 success=False,
                 errors=auth_messages.ErrorRes(
                     code=errors[0].code,

@@ -58,16 +58,21 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
+            return user_messages.MfaBaseResponse(
+                        success=False,
+                        errors=user_messages.ErrorRes(
+                            code=errors[0].code,
+                            message=errors[0].message
+                        )
+                    )
 
     # @auth_required
     async def disable_mfa(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            if not introspect_token:
+            logger.info(introspect_token)
+            if not introspect_token or 'sub' not in introspect_token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
             success, next_step = self.service.init_mfa_state_disabling(client_id)
@@ -75,16 +80,20 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
+            return user_messages.MfaBaseResponse(
+                        success=False,
+                        errors=user_messages.ErrorRes(
+                            code=errors[0].code,
+                            message=errors[0].message
+                        )
+                    )
 
     # @auth_required
     async def mfa_validate_password(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            if not introspect_token:
+            if not introspect_token or 'sub' not in introspect_token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
             success, next_step = self.service.validate_password(client_id, request.password)
@@ -92,16 +101,20 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
+            return user_messages.MfaBaseResponse(
+                        success=False,
+                        errors=user_messages.ErrorRes(
+                            code=errors[0].code,
+                            message=errors[0].message
+                        )
+                    )
 
     # @auth_required
     async def mfa_validate_otp(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            if not introspect_token:
+            if not introspect_token or 'sub' not in introspect_token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
             success, next_step = self.service.validate_otp(client_id, request.otp)
@@ -109,15 +122,19 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
+            return user_messages.MfaBaseResponse(
+                        success=False,
+                        errors=user_messages.ErrorRes(
+                            code=errors[0].code,
+                            message=errors[0].message
+                        )
+                    )
 
     async def mfa_resend_otp(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            if not introspect_token:
+            if not introspect_token or 'sub' not in introspect_token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
             success, next_step = self.service.re_init_otp(client_id)
@@ -125,9 +142,13 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
+            return user_messages.MfaBaseResponse(
+                        success=False,
+                        errors=user_messages.ErrorRes(
+                            code=errors[0].code,
+                            message=errors[0].message
+                        )
+                    )
 
     # @auth_required
     # @request_logged
