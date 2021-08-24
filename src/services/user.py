@@ -87,18 +87,13 @@ class UserService(BaseService):
             raise Exception(Message.CHANGE_PASSWORD_FAILED)
 
     def get_mfa_state(self, user_id):
-        try:
-            user_info = self.model.get(user_id)
-            if user_info is None:
-                raise Exception(Message.AUTH_USER_NOT_FOUND)
-            user_authen_setting = self.authen_setting.get(user_id)
-            if user_authen_setting is None:
-                user_authen_setting = AuthenSetting(id=user_id).add()
-            return user_authen_setting.mfa_enable
-        except Exception as e:
-            logger.error(e)
-            # redirect message to end user
-            raise Exception(Message.GET_MFA_STATE_FALED)
+        user_info = self.model.get(user_id)
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting is None:
+            user_authen_setting = AuthenSetting(id=user_id).add()
+        return user_authen_setting.mfa_enable
 
     def init_mfa_state_enabling(self, user_id):
         user_info = self.model.get(user_id)

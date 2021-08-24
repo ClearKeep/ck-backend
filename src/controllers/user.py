@@ -30,7 +30,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def get_mfa_state(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # get introspect_token with default empty value if header_data was wrong
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
             if not introspect_token or 'sub' not in introspect_token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
@@ -49,7 +50,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def enable_mfa(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # get introspect_token with default empty value if header_data was wrong
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
             if not introspect_token or 'sub' not in introspect_token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
@@ -70,7 +72,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def disable_mfa(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # get introspect_token with default empty value if header_data was wrong
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
             logger.info(introspect_token)
             if not introspect_token or 'sub' not in introspect_token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
@@ -92,7 +95,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def mfa_validate_password(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # get introspect_token with default empty value if header_data was wrong
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
             if not introspect_token or 'sub' not in introspect_token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
@@ -113,7 +117,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def mfa_validate_otp(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # get introspect_token with default empty value if header_data was wrong
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
             if not introspect_token or 'sub' not in introspect_token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
@@ -133,7 +138,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def mfa_resend_otp(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # get introspect_token with default empty value if header_data was wrong
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
             if not introspect_token or 'sub' not in introspect_token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
