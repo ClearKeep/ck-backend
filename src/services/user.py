@@ -110,6 +110,8 @@ class UserService(BaseService):
         if user_authen_setting.mfa_enable:
             success = False
             next_step = ''
+        if user_authen_setting.otp_frozen_time > datetime.datetime.now():
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
         elif user_info.phone_number is None:
             success = False
             next_step = 'mfa_update_phone_number'
