@@ -28,12 +28,6 @@ class AuthController(BaseController):
                 )
                 if not mfa_state:
                     ### check if login require otp check
-                    user_sessions = KeyCloakUtils.get_sessions(user_id=user_id)
-                    for user_session in user_sessions:
-                        if user_session['id'] != introspect_token['session_state']:
-                            KeyCloakUtils.remove_session(
-                                session_id=user_session['id']
-                            )
                     self.user_service.update_last_login(user_id=user_id)
                     auth_message = auth_messages.AuthRes(
                                         workspace_domain=get_owner_workspace_domain(),
@@ -289,12 +283,6 @@ class AuthController(BaseController):
             if not success_status:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             introspect_token = KeyCloakUtils.introspect_token(token["access_token"])
-            user_sessions = KeyCloakUtils.get_sessions(user_id=request.user_id)
-            for user_session in user_sessions:
-                if user_session['id'] != introspect_token['session_state']:
-                    KeyCloakUtils.remove_session(
-                        session_id=user_session['id']
-                    )
             require_action = ""
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
