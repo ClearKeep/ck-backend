@@ -178,7 +178,7 @@ class Message:
         FROZEN_STATE_OTP_SERVICE: "You have requested your code too many times. Please try again later",
         WRONG_OTP: "Wrong OTP. Please check and try again",
 
-        GET_WORKSPACE_INFO_FAILED: "14 UNAVAILABLE: failed to connect to all addresses",
+        GET_WORKSPACE_INFO_FAILED: "Read Message falied. Please try again",
         MESSAGE_READ_FAILED: "Read Message falied. Please try again",
         GET_LIST_CLIENT_FAILED: "Get list client falied. Please try again",
     }
@@ -186,6 +186,12 @@ class Message:
     @staticmethod
     def get_message(code):
         return Message.msg_dict[code]
+
+    @staticmethod
+    def get_error_code_and_message(code):
+        return {"code" : code,
+                "message" : Message.msg_dict[code]
+                }
 
     @staticmethod
     def get_error_object(code):
