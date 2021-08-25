@@ -26,13 +26,16 @@ class WorkspaceController(BaseController):
                 if response:
                     return response
                 else:
-                    return workspace_pb2.WorkspaceInfoResponse(error=Message.GET_WORKSPACE_INFO_FAILED)
+                    raise Exception(Message.GET_WORKSPACE_INFO_FAILED)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.GET_WORKSPACE_INFO_FAILED)]
+            errors = [
+                e,
+                Message.get_error_object(Message.GET_WORKSPACE_INFO_FAILED)
+            ]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
+            context.set_code(grpc.StatusCode.UNAVAILABLE)
 
     @request_logged
     async def leave_workspace(self, request, context):
