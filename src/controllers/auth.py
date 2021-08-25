@@ -57,7 +57,11 @@ class AuthController(BaseController):
 
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -93,7 +97,11 @@ class AuthController(BaseController):
 
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -129,7 +137,11 @@ class AuthController(BaseController):
 
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -165,7 +177,11 @@ class AuthController(BaseController):
 
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -271,9 +287,14 @@ class AuthController(BaseController):
                 scope=token['scope'],
                 require_action = require_action
             )
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -285,9 +306,14 @@ class AuthController(BaseController):
                                 success=True,
                                 otp_hash=otp_hash
                             )
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
