@@ -42,10 +42,10 @@ message AuthRes {
     string session_state = 8;
     string scope = 9;
     string hash_key = 10;
-    string error = 11;
-    string sub = 12;
-    string otp_hash = 13;
-    string require_action = 14;
+    string sub = 11;
+    string otp_hash = 12;
+    string require_action = 13;
+    string error = 14;
 }
 
 //Register message struct
