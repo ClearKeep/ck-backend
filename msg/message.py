@@ -86,13 +86,13 @@ class Message:
     # otp setting
     PHONE_NUMBER_NOT_FOUND = 1064
     GET_MFA_STATE_FALED = 1065
-    AUTHEN_SETTING_FLOW_NOT_FOUND = 1066
     GET_VALIDATE_HASH_OTP_FAILED = 1067
     EXPIRED_OTP = 1068
     FROZEN_STATE_OTP_SERVICE = 1069
     OTP_SERVER_NOT_RESPONDING = 1070
     WRONG_OTP = 1071
     EXCEED_MAXIMUM_TRIED_TIMES_OTP = 1072
+    AUTHEN_SETTING_FLOW_NOT_FOUND = 1073
 
     # Workspace info
     GET_WORKSPACE_INFO_FAILED = 1066
@@ -175,6 +175,7 @@ class Message:
         EXCEED_MAXIMUM_TRIED_TIMES_OTP: "OTP code is invalid due to exceed maximum trying. Please request resend otp and try again",
         FROZEN_STATE_OTP_SERVICE: "You have requested your code too many times. Please try again later",
         WRONG_OTP: "Wrong OTP. Please check and try again",
+        OTP_SERVER_NOT_RESPONDING : "OTP server is currently not responding to request. Please contact with admin or try again later",
 
         GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again"
     }

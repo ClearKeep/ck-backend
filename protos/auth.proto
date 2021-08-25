@@ -1,7 +1,7 @@
 syntax = "proto3";
 package auth;
 
-//errors response
+//error response
 message ErrorRes {
     int64 code = 1;
     string message = 2;
@@ -9,7 +9,7 @@ message ErrorRes {
 
 message BaseResponse {
     bool success = 1;
-    ErrorRes errors = 2;
+    ErrorRes error = 2;
 }
 
 
@@ -42,7 +42,7 @@ message AuthRes {
     string session_state = 8;
     string scope = 9;
     string hash_key = 10;
-    BaseResponse base_response = 11;
+    string error = 11;
     string sub = 12;
     string otp_hash = 13;
     string require_action = 14;
@@ -96,7 +96,8 @@ message MfaResendOtpReq {
 
 message MfaResendOtpRes{
     string otp_hash = 1;
-    string require_action = 2;
+    bool success = 2;
+    string error = 3;
 }
 
 service Auth {
