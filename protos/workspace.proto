@@ -18,12 +18,15 @@ message WorkspaceInfoRequest {
   string workspace_domain = 1;
 }
 
+message WorkspaceInfoResponse { 
+    string error = 1;
+}
+
 // Request: leave workspace
 message LeaveWorkspaceRequest {
 }
 
-
 service Workspace {
-    rpc workspace_info(WorkspaceInfoRequest) returns (BaseResponse) {};
+    rpc workspace_info(WorkspaceInfoRequest) returns (WorkspaceInfoResponse) {};
     rpc leave_workspace(LeaveWorkspaceRequest) returns (BaseResponse) {};
 }
