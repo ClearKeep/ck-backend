@@ -36,7 +36,10 @@ class VideoCallController(BaseController):
                 return await self.call_to_group_owner(request, group, from_client_id)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_REQUEST_CALL_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_REQUEST_CALL_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -120,11 +123,15 @@ class VideoCallController(BaseController):
             )
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_REQUEST_CALL_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_REQUEST_CALL_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+            
     async def call_to_group_owner(self, request, group_obj, from_client_id):
         from_client_name = ""
         owner_workspace_domain = get_owner_workspace_domain()
@@ -280,7 +287,10 @@ class VideoCallController(BaseController):
                 return await self.update_call_to_group_owner(request, from_client_id)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_UPDATE_CALL_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_UPDATE_CALL_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -330,7 +340,10 @@ class VideoCallController(BaseController):
             )
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_UPDATE_CALL_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_UPDATE_CALL_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
