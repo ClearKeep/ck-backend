@@ -464,6 +464,76 @@ class GroupService(BaseService):
         )
         return response
 
+    def get_group_info(self, group_id):
+        group = self.model.get_group(group_id)
+        if group is None:
+            raise Exception(Message.GET_GROUP_CHAT_FAILED)
+        if group.owner_workspace_domain and group.owner_group_id:
+            obj_res = ClientGroup(group.owner_workspace_domain).get_group_info(group.owner_group_id)
+        else:
+            obj_res = group_pb2.GroupObjectResponse(
+                group_id=group.id,
+                group_type=group.group_type,
+                created_by_client_id=group.created_by,
+                created_at=int(group.created_at.timestamp() * 1000),
+                updated_by_client_id=group.updated_by,
+                group_rtc_token=group.group_rtc_token
+            )
+            if group.group_name:
+                obj_res.group_name = group.group_name
+
+            if group.group_avatar:
+                obj_res.group_avatar = group.group_avatar
+
+            if group.updated_at:
+                obj_res.updated_at = int(group.updated_at.timestamp() * 1000)
+            
+            # check if this group has an unread message
+            if group.last_message_id:
+                is_read = MessageUserRead().get_by_message_id(group.last_message_id)
+                if is_read:
+                    obj_res.has_unread_message = False
+                else:
+                    obj_res.has_unread_message = True
+                    
+            group_clients = json.loads(group.group_clients)
+            for client in group_clients:
+                client_in = group_pb2.ClientInGroupResponse(
+                    id=client['id'],
+                    display_name=client['display_name'],
+                    workspace_domain=client['workspace_domain'],
+                    status=client['status']
+                )
+                obj_res.lst_client.append(client_in)
+
+            if group.last_message_at:
+                obj_res.last_message_at = int(group.last_message_at.timestamp() * 1000)
+                
+            if group.last_message_id:
+                last_message = group.Message
+                obj_res.last_message.id = last_message.id
+                obj_res.last_message.group_id = last_message.group_id
+                obj_res.last_message.from_client_id = last_message.from_client_id
+                obj_res.last_message.message = last_message.message
+                obj_res.last_message.created_at = int(last_message.created_at.timestamp() * 1000)
+
+                if last_message.client_id:
+                    obj_res.last_message.client_id = last_message.client_id
+                if last_message.updated_at:
+                    obj_res.last_message.updated_at = int(last_message.updated_at.timestamp() * 1000)
+                if last_message.client_id:
+                    obj_res.last_message.group_type = "peer"
+                else:
+                    obj_res.last_message.group_type = "group"
+
+                for client_read_item in last_message.users_read:
+                    client_read = group_pb2.ClientReadObject(
+                        id=client_read_item.user.id,
+                    )
+                    obj_res.last_message.lst_client_read.append(client_read)
+                    
+        return obj_res
+                    
     def check_joined(self, create_by, list_client):
         lst_group_peer = self.model.get_joined_group_type(client_id=create_by, group_type="peer")
         for member in list_client:
