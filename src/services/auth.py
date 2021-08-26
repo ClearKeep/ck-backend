@@ -337,6 +337,7 @@ class AuthService:
             user_info = self.user_db.get(client_id)
             otp = OTPServer.get_otp(user_info.phone_number)
             user_authen_setting.otp = otp
+            user_authen_setting.otp_tried_time = 0
             user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
             user_authen_setting.otp_request_counter = n_times
             user_authen_setting.update()
