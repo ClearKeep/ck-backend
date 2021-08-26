@@ -80,6 +80,7 @@ class GroupChat(Database.get().Model):
         return result
 
 
+
     def get_joined_group_type(self, client_id, group_type):
         result = Database.get_session().query(GroupChat, GroupClientKey.id, GroupChat.group_clients) \
             .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \

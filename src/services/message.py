@@ -115,15 +115,10 @@ class MessageService(BaseService):
                 obj_res.client_id = message.client_id
             if message.updated_at is not None:
                 obj_res.updated_at = int(message.updated_at.timestamp() * 1000)
-            # get list user_read of this message
-            if message.from_client_workspace_domain and message.from_client_workspace_domain != owner_workspace_domain:
-                client_message = ClientMessage(message.from_client_workspace_domain)
-                response = client_message.get_list_clients_read_messages(message.id)
-                obj_res.lst_client_read.extend(response)
-            else:
+            if message.users_read:
                 for client_read_item in message.users_read:
                     client_read = message_pb2.ClientReadObject(
-                        id=client_read_item.user.id,
+                        id=client_read_item.client_id,
                     )
                     obj_res.lst_client_read.append(client_read)
 
@@ -166,16 +161,15 @@ class MessageService(BaseService):
 
     def read_messages(self, client_id, lst_message_id):
         logger.info("read_messages")
+        list_users_read = []
         for mess_id in lst_message_id:
             message = self.model.get(mess_id)
-            if message and message.from_client_workspace_domain is not None:
-                if message.from_client_workspace_domain == get_owner_workspace_domain():
-                    MessageUserRead(
-                        message_id=mess_id,
-                        client_id=client_id
-                    ).add()
-                else:
-                    client_message = ClientMessage(message.from_client_workspace_domain)
-                    client_message.read_messages(client_id, lst_message_id)
-            else:
-                raise
+            if not message:
+                raise Exception(Message.MESSAGE_READ_FAILED)
+            list_users_read.append(
+                MessageUserRead(
+                    message_id=mess_id,
+                    client_id=client_id
+                    )   
+                )
+        self.message_read_model.add_all(list_users_read)

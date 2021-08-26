@@ -40,7 +40,7 @@ class Message(Database.get().Model):
 
     def get_message_in_group(self, group_id, offset, from_time):
         message = Database.get_session().query(Message) \
-            .options(joinedload(Message.users_read).joinedload(MessageUserRead.user)) \
+            .options(joinedload(Message.users_read)) \
             .filter(Message.group_id == group_id)
 
         if from_time != 0:
@@ -64,3 +64,5 @@ class Message(Database.get().Model):
         except Exception as e:
             Database.get_session().rollback()
             logger.error(e)
+
+

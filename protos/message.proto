@@ -17,8 +17,6 @@ message MessageObjectResponse {
 
 message ClientReadObject {
   string id = 1;
-  string display_name = 2;
-  string avatar = 3;
 }
 
 
@@ -43,19 +41,7 @@ message GetMessagesInGroupResponse {
   repeated MessageObjectResponse lst_message = 1;
 }
 
-// Request: get list client read of a message 
-message GetListClientsReadRequest { 
-  string message_id = 1;
-}
 
-// Response: get list client read of a message 
-message GetListClientsReadResponse { 
-  repeated ClientReadResponse lst_client = 1;
-}
-
-message ClientReadResponse {
-  string id = 1;
-}
 
 // ----- PUBLISH AND SUBCRIBE MESSAGE -----
 // Request: publish a message
@@ -99,8 +85,9 @@ message ListenRequest {
 
 // Request: read message
 message ReadMessagesRequest {
-  repeated string client_id = 1;
-  repeated string lst_message_id = 2;
+  string client_id = 1;
+  string group_id = 2;
+  repeated string lst_message_id = 3;
 }
 // Response: groupObjectResponse
 
@@ -116,7 +103,6 @@ message EditMessageRequest {
 // Method
 service Message {
     rpc get_messages_in_group(GetMessagesInGroupRequest) returns (GetMessagesInGroupResponse) {};
-    rpc get_list_clients_read_messages(GetListClientsReadRequest) returns (GetListClientsReadResponse) {};
     //action
     rpc Subscribe (SubscribeRequest) returns (BaseResponse);
     rpc UnSubscribe (UnSubscribeRequest) returns (BaseResponse);

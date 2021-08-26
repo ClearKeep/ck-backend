@@ -39,16 +39,20 @@ class MessageController(BaseController):
                         obj.client_workspace_domain = owner_workspace_domain
                     return obj_res
                 else:
-                    raise
+                    raise Exception(Message.CREATE_GROUP_CHAT_FAILED)
             else:
                 obj_res = self.service.get_message_in_group(group_id, off_set, last_message_at)
                 return obj_res
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
+            context.set_code(grpc.StatusCode.UNAVAILABLE)
 
     @request_logged
     async def Publish(self, request, context):
@@ -344,14 +348,26 @@ class MessageController(BaseController):
     @request_logged
     async def read_messages(self, request, context):
         try:
-            # header_data = dict(context.invocation_metadata())
-            # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            # client_id = introspect_token['sub']
             client_id = request.client_id
+            group_id = request.group_id
             lst_message_id = request.lst_message_id
-            self.service.read_messages(client_id, lst_message_id)
-
-            return message_pb2.BaseResponse(success=True)
+            owner_workspace_domain = get_owner_workspace_domain()
+            group = GroupService().get_group_info(group_id)
+            
+            if group and group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
+                request.group_id = group.owner_group_id
+                obj_res = ClientMessage(group.owner_workspace_domain).read_messages(request)
+                if obj_res and obj_res.lst_message:
+                    return obj_res
+                else:
+                    raise Exception(Message.MESSAGE_READ_FAILED)
+                
+            if group and group.owner_workspace_domain == None:
+                self.service.read_messages(client_id, lst_message_id)
+                return message_pb2.BaseResponse(success=True)
+            else:
+                raise Exception(Message.MESSAGE_READ_FAILED)
+            
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(Message.MESSAGE_READ_FAILED)]
@@ -422,15 +438,3 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     
-    @request_logged
-    async def get_list_clients_read_messages(self, request,context):
-        try:
-            message_id = request.message_id
-            obj_res = self.service.get_list_clients_read_messages(message_id=message_id)
-            return obj_res
-        except Exception as e:
-            logger.error(e)
-            errors = [Message.get_error_object(Message.GET_LIST_CLIENT_FAILED)]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)

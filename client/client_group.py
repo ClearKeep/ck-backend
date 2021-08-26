@@ -59,3 +59,11 @@ class ClientGroup:
         except Exception as e:
             logger.error(e)
             return None
+
+    def get_group_info(self, request):
+        try:
+            response = self.stub.workspace_leave_group(request)
+            return response
+        except Exception as e:
+            logger.error(e)
+            return None

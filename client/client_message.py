@@ -38,9 +38,9 @@ class ClientMessage:
             logger.error(e)
             return None
         
-    def read_messages(self, client_id, lst_message_id):
+    def read_messages(self, client_id, group_id, lst_message_id):
         try:
-            request = message_pb2.ReadMessagesRequest(client_id=client_id, lst_message_id=lst_message_id)
+            request = message_pb2.ReadMessagesRequest(client_id=client_id, group_id=group_id, lst_message_id=lst_message_id)
             response = self.stub.read_messages(request)
             return response
         except Exception as e:

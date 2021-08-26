@@ -29,5 +29,6 @@ class MessageUserRead(Database.get().Model):
             message_user_read.get().session.remove()
         return message_user_read
 
-    # def add_all(self, lst_message):
-    #     Database.get_session().add_all(lst_message)
+    def add_all(self, lst_message):
+        Database.get_session().add_all(lst_message)
+        Database.get_session().commit()
