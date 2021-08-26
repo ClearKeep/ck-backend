@@ -22,7 +22,11 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CHANGE_PASSWORD_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.CHANGE_PASSWORD_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -179,9 +183,14 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 context.set_details(json.dumps(
                     errors, default=lambda x: x.__dict__))
                 context.set_code(grpc.StatusCode.NOT_FOUND)
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.GET_PROFILE_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_PROFILE_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -200,9 +209,14 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
             self.service.update_profile(client_id, display_name, phone_number, avatar)
             return user_messages.BaseResponse(success=True)
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.UPDATE_PROFILE_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.UPDATE_PROFILE_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -228,9 +242,14 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 context.set_details(json.dumps(
                     errors, default=lambda x: x.__dict__))
                 context.set_code(grpc.StatusCode.NOT_FOUND)
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.GET_USER_INFO_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_USER_INFO_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -246,9 +265,14 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
             obj_res = self.service.search_user(keyword, client_id)
             return obj_res
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -264,9 +288,14 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
             obj_res = self.service.get_users(client_id, owner_workspace_domain)
             return obj_res
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -278,9 +307,14 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             domain = "server.domain2"
             obj_res = self.service.get_users_domain(domain=domain)
             return obj_res
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -297,9 +331,14 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
             self.service.set_user_status(client_id, status)
             return user_messages.BaseResponse(success=True)
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.UPDATE_USER_STATUS_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.UPDATE_USER_STATUS_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -313,9 +352,14 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             client_id = introspect_token['sub']
             self.service.update_client_record(client_id)
             return user_messages.BaseResponse(success=True)
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.PING_PONG_SERVER_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.PING_PONG_SERVER_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -328,9 +372,14 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             should_get_profile = request.should_get_profile
             list_user_status = self.service.get_list_clients_status(list_clients,should_get_profile)
             return list_user_status
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.GET_USER_STATUS_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_USER_STATUS_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -349,9 +398,14 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             client_id = introspect_token['sub']
             obj_res = self.service.upload_avatar(client_id, file_name, file_content, file_content_type, file_hash)
             return obj_res
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.GET_USER_STATUS_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_USER_STATUS_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
