@@ -28,12 +28,6 @@ class AuthController(BaseController):
                 )
                 if not mfa_state:
                     ### check if login require otp check
-                    user_sessions = KeyCloakUtils.get_sessions(user_id=user_id)
-                    for user_session in user_sessions:
-                        if user_session['id'] != introspect_token['session_state']:
-                            KeyCloakUtils.remove_session(
-                                session_id=user_session['id']
-                            )
                     self.user_service.update_last_login(user_id=user_id)
                     auth_message = auth_messages.AuthRes(
                                         workspace_domain=get_owner_workspace_domain(),
@@ -45,8 +39,7 @@ class AuthController(BaseController):
                                         token_type=token['token_type'],
                                         session_state=token['session_state'],
                                         scope=token['scope'],
-                                        hash_key=hash_key,
-                                        base_response=auth_messages.BaseResponse(success=True)
+                                        hash_key=hash_key
                                     )
                 else:
                     otp_hash = self.service.create_otp_service(user_id)
@@ -54,7 +47,6 @@ class AuthController(BaseController):
                                         workspace_domain=get_owner_workspace_domain(),
                                         workspace_name=get_system_config()['server_name'],
                                         hash_key=hash_key,
-                                        base_response=auth_messages.BaseResponse(success=True),
                                         sub=user_id,
                                         otp_hash=otp_hash,
                                         require_action="mfa_validate_otp"
@@ -65,15 +57,14 @@ class AuthController(BaseController):
 
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.AuthRes(
-                base_response=auth_messages.BaseResponse(
-                    success=False,
-                    errors=auth_messages.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                ))
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
     async def login_google(self, request, context):
@@ -87,8 +78,7 @@ class AuthController(BaseController):
                     workspace_name=get_system_config()['server_name'],
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
-                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
-                    base_response=auth_messages.BaseResponse(success=True)
+                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
                 )
                 if token['refresh_token']:
                     auth_response.refresh_token = token['refresh_token']
@@ -107,15 +97,14 @@ class AuthController(BaseController):
 
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.AuthRes(
-                base_response=auth_messages.BaseResponse(
-                    success=False,
-                    errors=auth_messages.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                ))
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
     async def login_office(self, request, context):
@@ -129,8 +118,7 @@ class AuthController(BaseController):
                     workspace_name=get_system_config()['server_name'],
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
-                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
-                    base_response=auth_messages.BaseResponse(success=True)
+                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
                 )
                 if token['refresh_token']:
                     auth_response.refresh_token = token['refresh_token']
@@ -149,15 +137,14 @@ class AuthController(BaseController):
 
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.AuthRes(
-                base_response=auth_messages.BaseResponse(
-                    success=False,
-                    errors=auth_messages.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                ))
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
     async def login_facebook(self, request, context):
@@ -171,8 +158,7 @@ class AuthController(BaseController):
                     workspace_name=get_system_config()['server_name'],
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
-                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
-                    base_response=auth_messages.BaseResponse(success=True)
+                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
                 )
                 if token['refresh_token']:
                     auth_response.refresh_token = token['refresh_token']
@@ -191,15 +177,14 @@ class AuthController(BaseController):
 
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.AuthRes(
-                base_response=auth_messages.BaseResponse(
-                    success=False,
-                    errors=auth_messages.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                ))
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
     async def register(self, request, context):
@@ -289,12 +274,6 @@ class AuthController(BaseController):
             if not success_status:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             introspect_token = KeyCloakUtils.introspect_token(token["access_token"])
-            user_sessions = KeyCloakUtils.get_sessions(user_id=request.user_id)
-            for user_session in user_sessions:
-                if user_session['id'] != introspect_token['session_state']:
-                    KeyCloakUtils.remove_session(
-                        session_id=user_session['id']
-                    )
             require_action = ""
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
@@ -306,34 +285,35 @@ class AuthController(BaseController):
                 token_type=token['token_type'],
                 session_state=token['session_state'],
                 scope=token['scope'],
-                base_response=auth_messages.BaseResponse(success=True),
                 require_action = require_action
             )
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.BaseResponse(
-                success=False,
-                errors=auth_messages.ErrorRes(
-                    code=errors[0].code,
-                    message=errors[0].message
-                )
-            )
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     async def resend_otp(self, request, context):
         try:
             otp_hash = self.service.resend_otp(request.user_id, request.otp_hash)
             return auth_messages.MfaResendOtpRes(
-                                otp_hash=otp_hash,
-                                require_action="mfa_validate_otp"
+                                success=True,
+                                otp_hash=otp_hash
                             )
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.BaseResponse(
-                success=False,
-                errors=auth_messages.ErrorRes(
-                    code=errors[0].code,
-                    message=errors[0].message
-                )
-            )
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
