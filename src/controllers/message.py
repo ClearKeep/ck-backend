@@ -305,7 +305,7 @@ class MessageController(BaseController):
                     await context.write(message_response)
                 await asyncio.sleep(0.5)
             except:
-                logger.error('Client {} is disconnected'.format(client_id))
+                logger.info('Client {} is disconnected'.format(client_id))
                 client_message_queue[message_channel] = None
                 del client_message_queue[message_channel]
                 # push text notification for client
