@@ -40,6 +40,7 @@ message GroupObjectResponse {
   string updated_by_client_id = 10;
   int64 updated_at = 11;
   string group_rtc_token = 12;
+  bool has_unread_message = 13;
 }
 
 //errors response
@@ -196,6 +197,7 @@ message WorkspaceLeaveGroupRequest {
   MemberInfo leave_member_by = 2;
   GroupInfo owner_group = 3;
 }
+
 
 // Method
 service Group {
