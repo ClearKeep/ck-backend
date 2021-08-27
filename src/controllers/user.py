@@ -28,7 +28,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     async def get_mfa_state(self, request, context):
-        try:
+        # try:
             header_data = dict(context.invocation_metadata())
             # get introspect_token with default empty value if header_data was wrong
             introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
@@ -40,16 +40,16 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 mfa_enable=mfa_enable,
             )
 
-        except Exception as e:
-            logger.error(e)
-            if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
-                errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
-            else:
-                errors = [Message.get_error_object(e.args[0])]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
+        # except Exception as e:
+        #     logger.error(e)
+        #     if not e.args or e.args[0] not in Message.msg_dict:
+        #         # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+        #         errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
+        #     else:
+        #         errors = [Message.get_error_object(e.args[0])]
+        #     context.set_details(json.dumps(
+        #         errors, default=lambda x: x.__dict__))
+        #     context.set_code(grpc.StatusCode.INTERNAL)
 
     # @auth_required
     async def enable_mfa(self, request, context):

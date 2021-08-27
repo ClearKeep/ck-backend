@@ -22,6 +22,7 @@ class AuthController(BaseController):
             if token:
                 introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = introspect_token['sub']
+                print("user_id",user_id)
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
                 hash_key = EncryptUtils.encoded_hash(
                     request.password, user_id
@@ -213,7 +214,7 @@ class AuthController(BaseController):
             return auth_messages.RegisterRes(
                 base_response=auth_messages.BaseResponse(
                     success=False,
-                    errors=auth_messages.ErrorRes(
+                    error=auth_messages.ErrorRes(
                         code=errors[0].code,
                         message=errors[0].message
                     )
