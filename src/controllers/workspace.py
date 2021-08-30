@@ -22,7 +22,7 @@ class WorkspaceController(BaseController):
             if request.workspace_domain == owner_workspace_domain:
                 return workspace_pb2.WorkspaceInfoResponse(error=None)
             else:
-                response = ClientWorkspace().get_workspace_info(request.workspace_domain)
+                response = ClientWorkspace(request.workspace_domain).get_workspace_info(request.workspace_domain)
                 if response:
                     return response
                 else:
