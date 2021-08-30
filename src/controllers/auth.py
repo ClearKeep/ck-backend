@@ -213,7 +213,7 @@ class AuthController(BaseController):
             return auth_messages.RegisterRes(
                 base_response=auth_messages.BaseResponse(
                     success=False,
-                    errors=auth_messages.ErrorRes(
+                    error=auth_messages.ErrorRes(
                         code=errors[0].code,
                         message=errors[0].message
                     )
@@ -231,7 +231,7 @@ class AuthController(BaseController):
             errors = [Message.get_error_object(e.args[0])]
             return auth_messages.BaseResponse(
                 success=False,
-                errors=auth_messages.ErrorRes(
+                error=auth_messages.ErrorRes(
                     code=errors[0].code,
                     message=errors[0].message
                 )
@@ -262,7 +262,7 @@ class AuthController(BaseController):
             errors = [Message.get_error_object(e.args[0])]
             return auth_messages.BaseResponse(
                 success=False,
-                errors=auth_messages.ErrorRes(
+                error=auth_messages.ErrorRes(
                     code=errors[0].code,
                     message=errors[0].message
                 )
