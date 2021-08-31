@@ -261,51 +261,40 @@ class GroupService(BaseService):
         group = self.model.get(group_id)
         if group is not None:
             obj = group.GroupChat
-            res_obj = group_pb2.GroupObjectResponse(
-                group_id=obj.id,
-                group_name=obj.group_name,
-                group_type=obj.group_type,
-                group_avatar=obj.group_avatar,
-                created_by_client_id=obj.created_by,
-                created_at=int(obj.created_at.timestamp() * 1000),
-                updated_by_client_id=obj.updated_by,
-                group_rtc_token=obj.group_rtc_token
-            )
-            if obj.updated_at is not None:
-                res_obj.updated_at = int(obj.updated_at.timestamp() * 1000)
-            
-            # list client in group
-            group_clients = json.loads(obj.group_clients)
-            
-            for client in group_clients:
-                client_in = group_pb2.ClientInGroupResponse(
-                    id=client['id'],
-                    display_name=client['display_name'],
-                    workspace_domain=client['workspace_domain'],
-                    status=client['status']
+            if obj.owner_workspace_domain and obj.owner_group_id:
+                client = ClientGroup(obj.owner_workspace_domain)
+                get_group_request = group_pb2.GetGroupRequest(
+                    group_id=obj.owner_group_id,
                 )
-                res_obj.lst_client.append(client_in)
-            # lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
-            # owner_workspace_domain = get_owner_workspace_domain()
-            #
-            # for client in lst_client_in_group:
-            #     if client.GroupClientKey.client_workspace_domain is None:
-            #         client_in = group_pb2.ClientInGroupResponse(
-            #             id=client.User.id,
-            #             display_name=client.User.display_name,
-            #             workspace_domain=owner_workspace_domain,
-            #         )
-            #         res_obj.lst_client.append(client_in)
-            #     else:
-            #         #call to other workspace domain to get client
-            #         client_in_workspace = ClientUser(client.GroupClientKey.client_workspace_domain).get_user_info(client.GroupClientKey.client_id, client.GroupClientKey.client_workspace_domain )
-            #         client_in = group_pb2.ClientInGroupResponse(
-            #             id=client_in_workspace.id,
-            #             display_name=client_in_workspace.display_name,
-            #             workspace_domain=client.GroupClientKey.client_workspace_domain
-            #         )
-            #         res_obj.lst_client.append(client_in)
-
+                response = client.get_group(get_group_request)
+                return response
+            else:
+                
+                res_obj = group_pb2.GroupObjectResponse(
+                    group_id=obj.id,
+                    group_name=obj.group_name,
+                    group_type=obj.group_type,
+                    group_avatar=obj.group_avatar,
+                    created_by_client_id=obj.created_by,
+                    created_at=int(obj.created_at.timestamp() * 1000),
+                    updated_by_client_id=obj.updated_by,
+                    group_rtc_token=obj.group_rtc_token
+                )
+                if obj.updated_at is not None:
+                    res_obj.updated_at = int(obj.updated_at.timestamp() * 1000)
+                
+                # list client in group
+                group_clients = json.loads(obj.group_clients)
+                
+                for client in group_clients:
+                    client_in = group_pb2.ClientInGroupResponse(
+                        id=client['id'],
+                        display_name=client['display_name'],
+                        workspace_domain=client['workspace_domain'],
+                        status=client['status']
+                    )
+                    res_obj.lst_client.append(client_in)
+                    
             if obj.last_message_at:
                 res_obj.last_message_at = int(obj.last_message_at.timestamp() * 1000)
 
@@ -313,11 +302,12 @@ class GroupService(BaseService):
             if group.Message:
                 last_message = group.Message
                 res_obj.last_message.id = last_message.id
+                
                 res_obj.last_message.group_id = last_message.group_id
                 res_obj.last_message.from_client_id = last_message.from_client_id
                 res_obj.last_message.message = last_message.message
                 res_obj.last_message.created_at = int(last_message.created_at.timestamp() * 1000)
-
+             
                 if last_message.client_id:
                     res_obj.last_message.client_id = last_message.client_id
                 if last_message.updated_at:
@@ -326,7 +316,13 @@ class GroupService(BaseService):
                     res_obj.last_message.group_type = "peer"
                 else:
                     res_obj.last_message.group_type = "group"
-
+                
+                if last_message.users_read:
+                    for client_read in last_message.users_read:
+                        client_read_item = group_pb2.ClientReadObject(
+                        id=client_read.client_id,
+                        )
+                        res_obj.last_message.lst_client_read.append(client_read_item)
             return res_obj
         else:
             return None
@@ -412,14 +408,6 @@ class GroupService(BaseService):
             if obj.updated_at:
                 obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
             
-            # check if this group has an unread message
-            if obj.last_message_id:
-                is_read = MessageUserRead().get_by_message_id(obj.last_message_id)
-                if is_read:
-                    obj_res.has_unread_message = False
-                else:
-                    obj_res.has_unread_message = True
-                    
             group_clients = json.loads(obj.group_clients)
             for client in group_clients:
                 client_in = group_pb2.ClientInGroupResponse(
@@ -464,76 +452,7 @@ class GroupService(BaseService):
         )
         return response
 
-    def get_group_info(self, group_id):
-        group = self.model.get_group(group_id)
-        if group is None:
-            raise Exception(Message.GET_GROUP_CHAT_FAILED)
-        if group.owner_workspace_domain and group.owner_group_id:
-            obj_res = ClientGroup(group.owner_workspace_domain).get_group_info(group.owner_group_id)
-        else:
-            obj_res = group_pb2.GroupObjectResponse(
-                group_id=group.id,
-                group_type=group.group_type,
-                created_by_client_id=group.created_by,
-                created_at=int(group.created_at.timestamp() * 1000),
-                updated_by_client_id=group.updated_by,
-                group_rtc_token=group.group_rtc_token
-            )
-            if group.group_name:
-                obj_res.group_name = group.group_name
-
-            if group.group_avatar:
-                obj_res.group_avatar = group.group_avatar
-
-            if group.updated_at:
-                obj_res.updated_at = int(group.updated_at.timestamp() * 1000)
-            
-            # check if this group has an unread message
-            if group.last_message_id:
-                is_read = MessageUserRead().get_by_message_id(group.last_message_id)
-                if is_read:
-                    obj_res.has_unread_message = False
-                else:
-                    obj_res.has_unread_message = True
-                    
-            group_clients = json.loads(group.group_clients)
-            for client in group_clients:
-                client_in = group_pb2.ClientInGroupResponse(
-                    id=client['id'],
-                    display_name=client['display_name'],
-                    workspace_domain=client['workspace_domain'],
-                    status=client['status']
-                )
-                obj_res.lst_client.append(client_in)
-
-            if group.last_message_at:
-                obj_res.last_message_at = int(group.last_message_at.timestamp() * 1000)
-                
-            if group.last_message_id:
-                last_message = group.Message
-                obj_res.last_message.id = last_message.id
-                obj_res.last_message.group_id = last_message.group_id
-                obj_res.last_message.from_client_id = last_message.from_client_id
-                obj_res.last_message.message = last_message.message
-                obj_res.last_message.created_at = int(last_message.created_at.timestamp() * 1000)
-
-                if last_message.client_id:
-                    obj_res.last_message.client_id = last_message.client_id
-                if last_message.updated_at:
-                    obj_res.last_message.updated_at = int(last_message.updated_at.timestamp() * 1000)
-                if last_message.client_id:
-                    obj_res.last_message.group_type = "peer"
-                else:
-                    obj_res.last_message.group_type = "group"
-
-                for client_read_item in last_message.users_read:
-                    client_read = group_pb2.ClientReadObject(
-                        id=client_read_item.user.id,
-                    )
-                    obj_res.last_message.lst_client_read.append(client_read)
-                    
-        return obj_res
-                    
+                   
     def check_joined(self, create_by, list_client):
         lst_group_peer = self.model.get_joined_group_type(client_id=create_by, group_type="peer")
         for member in list_client:

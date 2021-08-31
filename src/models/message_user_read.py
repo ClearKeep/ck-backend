@@ -25,8 +25,7 @@ class MessageUserRead(Database.get().Model):
         message_user_read = Database.get_session().query(MessageUserRead) \
             .filter(MessageUserRead.message_id == message_id) \
             .all()
-        if message_user_read:
-            message_user_read.get().session.remove()
+        Database.get().session.remove()
         return message_user_read
 
     def add_all(self, lst_message):

@@ -40,6 +40,7 @@ class GroupChat(Database.get().Model):
     def get(self, group_id):
         group = Database.get_session().query(GroupChat, Message) \
             .join(Message, GroupChat.last_message_id == Message.id, isouter=True) \
+            .options(joinedload(Message.users_read))\
             .filter(GroupChat.id == group_id) \
             .one_or_none()
         Database.get().session.remove()
