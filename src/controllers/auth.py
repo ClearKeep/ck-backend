@@ -201,9 +201,8 @@ class AuthController(BaseController):
                 # create new user in database
                 UserService().create_new_user(new_user, request.email, request.display_name,  'account')
                 return auth_messages.RegisterRes(
-                    base_response=auth_messages.BaseResponse(
-                        success=True
-                    ))
+                    success=True
+                    )
             else:
                 self.service.delete_user(new_user)
                 raise Exception(Message.REGISTER_USER_FAILED)
