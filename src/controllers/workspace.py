@@ -36,7 +36,7 @@ class WorkspaceController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-           
+
 
     @request_logged
     async def leave_workspace(self, request, context):
@@ -69,9 +69,14 @@ class WorkspaceController(BaseController):
             KeyCloakUtils.delete_user(client_id)
 
             return workspace_pb2.BaseResponse(success=True)
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.LEAVE_WORKSPACE_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.LEAVE_WORKSPACE_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
