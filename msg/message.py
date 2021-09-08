@@ -13,6 +13,7 @@ class Message:
     GET_USER_INFO_FAILED = 1008
     SEARCH_USER_FAILED = 1009
     REGISTER_CLIENT_SIGNAL_KEY_FAILED = 1010
+    MESSAGE_READ_FAILED = 1074
     GET_CLIENT_SIGNAL_KEY_FAILED = 1011
     CLIENT_SIGNAL_KEY_NOT_FOUND = 1012
     CLIENT_PUBLISH_MESSAGE_FAILED = 1013
@@ -86,8 +87,13 @@ class Message:
     # otp setting
     PHONE_NUMBER_NOT_FOUND = 1064
     GET_MFA_STATE_FALED = 1065
-    AUTHEN_SETTING_FLOW_NOT_FOUND = 1066
     GET_VALIDATE_HASH_OTP_FAILED = 1067
+    EXPIRED_OTP = 1068
+    FROZEN_STATE_OTP_SERVICE = 1069
+    OTP_SERVER_NOT_RESPONDING = 1070
+    WRONG_OTP = 1071
+    EXCEED_MAXIMUM_TRIED_TIMES_OTP = 1072
+    AUTHEN_SETTING_FLOW_NOT_FOUND = 1073
 
     # Workspace info
     GET_WORKSPACE_INFO_FAILED = 1066
@@ -115,6 +121,7 @@ class Message:
         GET_GROUP_CHAT_FAILED: "Get group failed. Please try again",
         SEARCH_GROUP_CHAT_FAILED: "Search group failed. Please try again",
         CLIENT_QUEUE_NOT_FOUND: "Client queue not found",
+        MESSAGE_READ_FAILED: "Can not read the message",
 
         GET_CLIENT_NOTIFIES_FAILED: "Get client notify failed. Please try again",
         CLIENT_READ_NOTIFY_FAILED: "Client read notify failed. Please try again",
@@ -166,6 +173,11 @@ class Message:
         GET_MFA_STATE_FALED: "Cannot get mfa state of user. Please try again",
         AUTHEN_SETTING_FLOW_NOT_FOUND: "Cannot find current flow of changing otp. Please check the workflow",
         GET_VALIDATE_HASH_OTP_FAILED: "Cannot validate hash_key. Please try again",
+        EXPIRED_OTP: "OTP code is invalid due to reach expired time. When you ready, please request resend otp and try again",
+        EXCEED_MAXIMUM_TRIED_TIMES_OTP: "OTP code is invalid due to exceed maximum trying. Please request resend otp and try again",
+        FROZEN_STATE_OTP_SERVICE: "You have requested your code too many times. Please try again later",
+        WRONG_OTP: "Wrong OTP. Please check and try again",
+        OTP_SERVER_NOT_RESPONDING : "OTP server is currently not responding to request. Please contact with admin or try again later",
 
         GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again"
     }

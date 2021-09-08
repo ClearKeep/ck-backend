@@ -30,15 +30,23 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def get_mfa_state(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # get introspect_token with default empty value if header_data was wrong
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
+            if not introspect_token or 'sub' not in introspect_token:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
             mfa_enable = self.service.get_mfa_state(client_id)
             return  user_messages.MfaStateResponse(
                 mfa_enable=mfa_enable,
             )
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -47,59 +55,88 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def enable_mfa(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # get introspect_token with default empty value if header_data was wrong
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
+            if not introspect_token or 'sub' not in introspect_token:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
             success, next_step = self.service.init_mfa_state_enabling(client_id)
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-
     # @auth_required
     async def disable_mfa(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # get introspect_token with default empty value if header_data was wrong
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
+            logger.info(introspect_token)
+            if not introspect_token or 'sub' not in introspect_token:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
-
             success, next_step = self.service.init_mfa_state_disabling(client_id)
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-
     # @auth_required
     async def mfa_validate_password(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # get introspect_token with default empty value if header_data was wrong
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
+            if not introspect_token or 'sub' not in introspect_token:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
             success, next_step = self.service.validate_password(client_id, request.password)
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.OTP_SERVER_NOT_RESPONDING)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-
     # @auth_required
     async def mfa_validate_otp(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # get introspect_token with default empty value if header_data was wrong
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
+            if not introspect_token or 'sub' not in introspect_token:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
             success, next_step = self.service.validate_otp(client_id, request.otp)
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -107,13 +144,21 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def mfa_resend_otp(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # get introspect_token with default empty value if header_data was wrong
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
+            if not introspect_token or 'sub' not in introspect_token:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
             success, next_step = self.service.re_init_otp(client_id)
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.OTP_SERVER_NOT_RESPONDING)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)

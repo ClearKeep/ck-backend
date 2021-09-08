@@ -87,18 +87,13 @@ class UserService(BaseService):
             raise Exception(Message.CHANGE_PASSWORD_FAILED)
 
     def get_mfa_state(self, user_id):
-        try:
-            user_authen_setting = self.authen_setting.get(user_id)
-            if user_authen_setting is None:
-                user_info = self.model.get(user_id)
-                if user_info is None:
-                    raise Exception(Message.AUTH_USER_NOT_FOUND)
-                user_authen_setting = AuthenSetting(id=user_id)
-                user_authen_setting = user_authen_setting.add()
-            return user_authen_setting.mfa_enable
-        except Exception as e:
-            logger.error(e)
-            raise Exception(Message.GET_MFA_STATE_FALED)
+        user_info = self.model.get(user_id)
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting is None:
+            user_authen_setting = AuthenSetting(id=user_id).add()
+        return user_authen_setting.mfa_enable
 
     def init_mfa_state_enabling(self, user_id):
         user_info = self.model.get(user_id)
@@ -106,13 +101,12 @@ class UserService(BaseService):
             raise Exception(Message.AUTH_USER_NOT_FOUND)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
-            if user_info is None:
-                raise Exception(Message.AUTH_USER_NOT_FOUND)
-            user_authen_setting = AuthenSetting(id=user_id)
-            user_authen_setting = user_authen_setting.add()
+            user_authen_setting = AuthenSetting(id=user_id).add()
         if user_authen_setting.mfa_enable:
             success = False
             next_step = ''
+        if user_authen_setting.otp_frozen_time > datetime.datetime.now():
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
         elif user_info.phone_number is None:
             success = False
             next_step = 'mfa_update_phone_number'
@@ -124,14 +118,12 @@ class UserService(BaseService):
         return success, next_step
 
     def init_mfa_state_disabling(self, user_id):
+        user_info = self.model.get(user_id)
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
-            user_info = self.model.get(user_id)
-            if user_info is None:
-                raise Exception(Message.AUTH_USER_NOT_FOUND)
-            # in case user authen setting is not initilized but still found user_info
-            user_authen_setting = AuthenSetting(id=user_id)
-            user_authen_setting = user_authen_setting.add()
+            user_authen_setting = AuthenSetting(id=user_id).add()
         if user_authen_setting.mfa_enable:
             user_authen_setting.mfa_enable = False
             user_authen_setting.otp = None
@@ -143,57 +135,102 @@ class UserService(BaseService):
 
     def validate_password(self, user_id, password):
         user_info = self.model.get(user_id)
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting.otp_changing_state != 1:
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
         try:
             token = KeyCloakUtils.token(user_info.email, password)
-            if token:
-                user_authen_setting.otp_changing_state = 2
-                otp = OTPServer.get_otp(user_info.phone_number)
-                user_authen_setting.otp = otp
-                user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
-                user_authen_setting.update()
-                success = True
-                next_step = 'mfa_validate_otp'
-            else:
-                raise Exception(Message.AUTH_USER_NOT_FOUND)
-            return success, next_step
         except Exception as e:
             logger.error(e)
             raise Exception(Message.AUTH_USER_NOT_FOUND)
+        if not token:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
+        n_times = user_authen_setting.otp_request_counter + 1
+        if n_times > OTPServer.valid_resend_time:
+            # reset counter and put otp service into frozen state
+            user_authen_setting.otp_tried_time = 0
+            user_authen_setting.otp_request_counter = 0
+            user_authen_setting.otp_frozen_time = OTPServer.cal_frozen_time()
+            user_authen_setting.update()
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
+        if user_authen_setting.otp_frozen_time > datetime.datetime.now():
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
+        try:
+            user_authen_setting.otp_changing_state = 2
+            otp = OTPServer.get_otp(user_info.phone_number)
+            user_authen_setting.otp = otp
+            user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
+            user_authen_setting.otp_request_counter = n_times
+            user_authen_setting.update()
+            success = True
+            next_step = 'mfa_validate_otp'
+            return success, next_step
+        except Exception as e:
+            logger.error(e)
+            raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def validate_otp(self, user_id, otp):
         user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
         if user_authen_setting.otp_changing_state != 2:
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
-        if otp == user_authen_setting.otp and datetime.datetime.now() < user_authen_setting.otp_valid_time:
+        if user_authen_setting.otp_tried_time >= OTPServer.valid_trying_time:
+            user_authen_setting.otp = None
+            user_authen_setting.update()
+            raise Exception(Message.EXCEED_MAXIMUM_TRIED_TIMES_OTP)
+        if datetime.datetime.now() > user_authen_setting.otp_valid_time:
+            user_authen_setting.otp = None
+            user_authen_setting.update()
+            raise Exception(Message.EXPIRED_OTP)
+        if otp == user_authen_setting.otp:
             user_authen_setting.mfa_enable = True
+            user_authen_setting.otp = None
             user_authen_setting.otp_changing_state = 0
             user_authen_setting.otp_valid_time = datetime.datetime.now()
+            user_authen_setting.otp_request_counter = 0
+            user_authen_setting.otp_tried_time = 0
             user_authen_setting.update()
             success = True
             next_step = ''
         else:
-            success = False
-            next_step = 'mfa_validate_otp'
+            user_authen_setting.otp_tried_time += 1
+            user_authen_setting.update()
+            raise Exception(Message.WRONG_OTP)
         return success, next_step
 
     def re_init_otp(self, user_id):
+        user_info = self.model.get(user_id)
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting.otp_changing_state != 2:
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
+        n_times = user_authen_setting.otp_request_counter + 1
+        if n_times > OTPServer.valid_resend_time:
+            # reset counter and put otp service into frozen state
+            user_authen_setting.otp_tried_time = 0
+            user_authen_setting.otp_request_counter = 0
+            user_authen_setting.otp_frozen_time = OTPServer.cal_frozen_time()
+            user_authen_setting.update()
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
+        if user_authen_setting.otp_frozen_time > datetime.datetime.now():
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
         try:
             otp = OTPServer.get_otp(user_info.phone_number)
             user_authen_setting.otp = otp
+            user_authen_setting.otp_tried_time = 0
             user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
+            user_authen_setting.otp_request_counter = n_times
             user_authen_setting.update()
             success = True
             next_step = 'mfa_validate_otp'
             return success, next_step
         except Exception as e:
             logger.error(e)
-            raise Exception(Message.AUTH_USER_NOT_FOUND)
+            raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def get_profile(self, user_id, hash_key):
         try:
@@ -203,14 +240,12 @@ class UserService(BaseService):
                     id=user_info.id,
                     display_name=user_info.display_name
                 )
-           
                 if user_info.email:
                     obj_res.email = user_info.email
                 if user_info.phone_number:
                     obj_res.phone_number = user_info.phone_number
                 if user_info.avatar:
                     obj_res.avatar = user_info.avatar
-    
                 return obj_res
             else:
                 return None
@@ -221,7 +256,6 @@ class UserService(BaseService):
     def update_profile(self,  user_id, display_name, phone_number, avatar):
         try:
             profile = self.model.get(user_id)
-
             if display_name:
                 profile.display_name = display_name
             if phone_number:
@@ -229,7 +263,7 @@ class UserService(BaseService):
             if avatar:
                 profile.avatar = avatar
             return profile.update()
-        
+
         except Exception as e:
             logger.info(e)
             raise Exception(Message.UPDATE_PROFILE_FAILED)
@@ -347,7 +381,7 @@ class UserService(BaseService):
             list_clients_status = []
 
             workspace_domains_dictionary = self.categorize_workspace_domains(list_clients)
-                                                                                                                                    
+
             for workspace_domain in workspace_domains_dictionary.keys():
                 list_client = workspace_domains_dictionary[workspace_domain]
                 if workspace_domain == owner_workspace_domain:
@@ -359,8 +393,6 @@ class UserService(BaseService):
                             workspace_domain=workspace_domain,
                             status=user_status,
                         )
-                        
-                        # add profile for response
                         if should_get_profile is True:
                             user_info = self.model.get(client.client_id)
                             print ("user_info",user_info)
@@ -371,7 +403,6 @@ class UserService(BaseService):
                                     tmp_client_response.phone_number = user_info.phone_number
                                 if user_info.avatar:
                                     tmp_client_response.avatar = user_info.avatar
-                                    
                         list_clients_status.append(tmp_client_response)
                 else:
                     other_clients_response = self.get_other_workspace_clients_status(workspace_domain, list_client)
@@ -421,15 +452,18 @@ class UserService(BaseService):
                 server_error_resp.append(tmp_client_response)
             return server_error_resp
         return client_resp.lst_client
-    
-    
+
+
+    # profile api
+
+
     # profile api
 
     def base64_enconding_text_to_string(self, text):
         text_bytes = text.encode("ascii")
         encoded_text_bytes = base64.b64encode(text_bytes)
         return encoded_text_bytes.decode('ascii')
-        
+
     def upload_avatar(self, client_id, file_name, file_content, file_type, file_hash):
         m = hashlib.new('md5', file_content).hexdigest()
         if m != file_hash:
@@ -437,19 +471,19 @@ class UserService(BaseService):
         # start upload to s3 and resize if needed
         tmp_file_name, file_ext = os.path.splitext(file_name)
         avatar_file_name = self.base64_enconding_text_to_string(client_id) + file_ext
-        
+
         avatar_url = self.upload_to_s3(avatar_file_name, file_content, file_type)
         obj_res = user_pb2.UploadAvatarResponse(
             file_url=avatar_url
         )
         return obj_res
-    
+
     def upload_to_s3(self, file_name, file_data, content_type):
         s3_config = get_system_config()['storage_s3']
         file_path = os.path.join(s3_config.get('avatar_folder'), file_name)
         s3_client = boto3.client('s3', aws_access_key_id=s3_config.get('access_key_id'),
                                  aws_secret_access_key=s3_config.get('access_key_secret'))
-        
+
         s3_client.put_object(Body=file_data, Bucket=s3_config.get('bucket'), Key=file_path, ContentType=content_type,
                              ACL='public-read')
         uploaded_file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)

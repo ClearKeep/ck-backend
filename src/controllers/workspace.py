@@ -20,19 +20,23 @@ class WorkspaceController(BaseController):
         try:
             owner_workspace_domain = get_owner_workspace_domain()
             if request.workspace_domain == owner_workspace_domain:
-                return workspace_pb2.BaseResponse(success=True)
+                return workspace_pb2.WorkspaceInfoResponse(error=None)
             else:
-                workspace_info = ClientWorkspace().get_workspace_info(request.workspace_domain)
-                if workspace_info:
-                    return workspace_info
+                response = ClientWorkspace(request.workspace_domain).get_workspace_info(request.workspace_domain)
+                if response:
+                    return response
                 else:
-                    return workspace_pb2.BaseResponse(success=False)
+                    raise Exception(Message.GET_WORKSPACE_INFO_FAILED)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.GET_WORKSPACE_INFO_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.GET_WORKSPACE_INFO_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+           
 
     @request_logged
     async def leave_workspace(self, request, context):
@@ -71,4 +75,3 @@ class WorkspaceController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-
