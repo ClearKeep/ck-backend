@@ -122,6 +122,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+            
     # @auth_required
     async def mfa_validate_otp(self, request, context):
         try:

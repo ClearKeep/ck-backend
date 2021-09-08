@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x17protos/video_call.proto\x12\nvideo_call\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"E\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12$\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x14.video_call.ErrorRes\"\xb0\x01\n\x0eServerResponse\x12\x15\n\rgroup_rtc_url\x18\x01 \x01(\t\x12\x14\n\x0cgroup_rtc_id\x18\x02 \x01(\x03\x12\x17\n\x0fgroup_rtc_token\x18\x03 \x01(\t\x12+\n\x0bstun_server\x18\x04 \x01(\x0b\x32\x16.video_call.StunServer\x12+\n\x0bturn_server\x18\x05 \x01(\x0b\x32\x16.video_call.TurnServer\"*\n\nStunServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\"S\n\nTurnServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\x12\x0c\n\x04type\x18\x03 \x01(\t\x12\x0c\n\x04user\x18\x04 \x01(\t\x12\x0b\n\x03pwd\x18\x05 \x01(\t\"J\n\x10VideoCallRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x11\n\tcall_type\x18\x03 \x01(\t\"\xc7\x01\n\x19WorkspaceVideoCallRequest\x12\x16\n\x0e\x66rom_client_id\x18\x01 \x01(\t\x12\x18\n\x10\x66rom_client_name\x18\x02 \x01(\t\x12\x1a\n\x12\x66rom_client_avatar\x18\x03 \x01(\t\x12$\n\x1c\x66rom_client_workspace_domain\x18\x04 \x01(\t\x12\x11\n\tclient_id\x18\x05 \x01(\t\x12\x10\n\x08group_id\x18\x06 \x01(\x03\x12\x11\n\tcall_type\x18\x07 \x01(\t\"M\n\x11UpdateCallRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x13\n\x0bupdate_type\x18\x03 \x01(\t\"\xca\x01\n\x1aWorkspaceUpdateCallRequest\x12\x16\n\x0e\x66rom_client_id\x18\x01 \x01(\t\x12\x18\n\x10\x66rom_client_name\x18\x02 \x01(\t\x12\x1a\n\x12\x66rom_client_avatar\x18\x03 \x01(\t\x12$\n\x1c\x66rom_client_workspace_domain\x18\x04 \x01(\t\x12\x11\n\tclient_id\x18\x05 \x01(\t\x12\x10\n\x08group_id\x18\x06 \x01(\x03\x12\x13\n\x0bupdate_type\x18\x07 \x01(\t2\xd7\x02\n\tVideoCall\x12H\n\nvideo_call\x12\x1c.video_call.VideoCallRequest\x1a\x1a.video_call.ServerResponse\"\x00\x12H\n\x0bupdate_call\x12\x1d.video_call.UpdateCallRequest\x1a\x18.video_call.BaseResponse\"\x00\x12Y\n\x14workspace_video_call\x12%.video_call.WorkspaceVideoCallRequest\x1a\x1a.video_call.ServerResponse\x12[\n\x15workspace_update_call\x12&.video_call.WorkspaceUpdateCallRequest\x1a\x18.video_call.BaseResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x17protos/video_call.proto\x12\nvideo_call\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"/\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0e\n\x06\x65rrors\x18\x02 \x01(\t\"\xb0\x01\n\x0eServerResponse\x12\x15\n\rgroup_rtc_url\x18\x01 \x01(\t\x12\x14\n\x0cgroup_rtc_id\x18\x02 \x01(\x03\x12\x17\n\x0fgroup_rtc_token\x18\x03 \x01(\t\x12+\n\x0bstun_server\x18\x04 \x01(\x0b\x32\x16.video_call.StunServer\x12+\n\x0bturn_server\x18\x05 \x01(\x0b\x32\x16.video_call.TurnServer\"*\n\nStunServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\"S\n\nTurnServer\x12\x0e\n\x06server\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\x03\x12\x0c\n\x04type\x18\x03 \x01(\t\x12\x0c\n\x04user\x18\x04 \x01(\t\x12\x0b\n\x03pwd\x18\x05 \x01(\t\"J\n\x10VideoCallRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x11\n\tcall_type\x18\x03 \x01(\t\"\xc7\x01\n\x19WorkspaceVideoCallRequest\x12\x16\n\x0e\x66rom_client_id\x18\x01 \x01(\t\x12\x18\n\x10\x66rom_client_name\x18\x02 \x01(\t\x12\x1a\n\x12\x66rom_client_avatar\x18\x03 \x01(\t\x12$\n\x1c\x66rom_client_workspace_domain\x18\x04 \x01(\t\x12\x11\n\tclient_id\x18\x05 \x01(\t\x12\x10\n\x08group_id\x18\x06 \x01(\x03\x12\x11\n\tcall_type\x18\x07 \x01(\t\"M\n\x11UpdateCallRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x13\n\x0bupdate_type\x18\x03 \x01(\t\"\xca\x01\n\x1aWorkspaceUpdateCallRequest\x12\x16\n\x0e\x66rom_client_id\x18\x01 \x01(\t\x12\x18\n\x10\x66rom_client_name\x18\x02 \x01(\t\x12\x1a\n\x12\x66rom_client_avatar\x18\x03 \x01(\t\x12$\n\x1c\x66rom_client_workspace_domain\x18\x04 \x01(\t\x12\x11\n\tclient_id\x18\x05 \x01(\t\x12\x10\n\x08group_id\x18\x06 \x01(\x03\x12\x13\n\x0bupdate_type\x18\x07 \x01(\t2\xd7\x02\n\tVideoCall\x12H\n\nvideo_call\x12\x1c.video_call.VideoCallRequest\x1a\x1a.video_call.ServerResponse\"\x00\x12H\n\x0bupdate_call\x12\x1d.video_call.UpdateCallRequest\x1a\x18.video_call.BaseResponse\"\x00\x12Y\n\x14workspace_video_call\x12%.video_call.WorkspaceVideoCallRequest\x1a\x1a.video_call.ServerResponse\x12[\n\x15workspace_update_call\x12&.video_call.WorkspaceUpdateCallRequest\x1a\x18.video_call.BaseResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -81,8 +81,8 @@ _BASERESPONSE = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='errors', full_name='video_call.BaseResponse.errors', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -99,7 +99,7 @@ _BASERESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=82,
-  serialized_end=151,
+  serialized_end=129,
 )
 
 
@@ -158,8 +158,8 @@ _SERVERRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=154,
-  serialized_end=330,
+  serialized_start=132,
+  serialized_end=308,
 )
 
 
@@ -197,8 +197,8 @@ _STUNSERVER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=332,
-  serialized_end=374,
+  serialized_start=310,
+  serialized_end=352,
 )
 
 
@@ -257,8 +257,8 @@ _TURNSERVER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=376,
-  serialized_end=459,
+  serialized_start=354,
+  serialized_end=437,
 )
 
 
@@ -303,8 +303,8 @@ _VIDEOCALLREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=461,
-  serialized_end=535,
+  serialized_start=439,
+  serialized_end=513,
 )
 
 
@@ -377,8 +377,8 @@ _WORKSPACEVIDEOCALLREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=538,
-  serialized_end=737,
+  serialized_start=516,
+  serialized_end=715,
 )
 
 
@@ -423,8 +423,8 @@ _UPDATECALLREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=739,
-  serialized_end=816,
+  serialized_start=717,
+  serialized_end=794,
 )
 
 
@@ -497,11 +497,10 @@ _WORKSPACEUPDATECALLREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=819,
-  serialized_end=1021,
+  serialized_start=797,
+  serialized_end=999,
 )
 
-_BASERESPONSE.fields_by_name['errors'].message_type = _ERRORRES
 _SERVERRESPONSE.fields_by_name['stun_server'].message_type = _STUNSERVER
 _SERVERRESPONSE.fields_by_name['turn_server'].message_type = _TURNSERVER
 DESCRIPTOR.message_types_by_name['ErrorRes'] = _ERRORRES
@@ -587,8 +586,8 @@ _VIDEOCALL = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1024,
-  serialized_end=1367,
+  serialized_start=1002,
+  serialized_end=1345,
   methods=[
   _descriptor.MethodDescriptor(
     name='video_call',

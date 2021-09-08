@@ -17,7 +17,7 @@ class WorkspaceStub(object):
         self.workspace_info = channel.unary_unary(
                 '/workspace.Workspace/workspace_info',
                 request_serializer=protos_dot_workspace__pb2.WorkspaceInfoRequest.SerializeToString,
-                response_deserializer=protos_dot_workspace__pb2.BaseResponse.FromString,
+                response_deserializer=protos_dot_workspace__pb2.WorkspaceInfoResponse.FromString,
                 )
         self.leave_workspace = channel.unary_unary(
                 '/workspace.Workspace/leave_workspace',
@@ -47,7 +47,7 @@ def add_WorkspaceServicer_to_server(servicer, server):
             'workspace_info': grpc.unary_unary_rpc_method_handler(
                     servicer.workspace_info,
                     request_deserializer=protos_dot_workspace__pb2.WorkspaceInfoRequest.FromString,
-                    response_serializer=protos_dot_workspace__pb2.BaseResponse.SerializeToString,
+                    response_serializer=protos_dot_workspace__pb2.WorkspaceInfoResponse.SerializeToString,
             ),
             'leave_workspace': grpc.unary_unary_rpc_method_handler(
                     servicer.leave_workspace,
@@ -77,7 +77,7 @@ class Workspace(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/workspace.Workspace/workspace_info',
             protos_dot_workspace__pb2.WorkspaceInfoRequest.SerializeToString,
-            protos_dot_workspace__pb2.BaseResponse.FromString,
+            protos_dot_workspace__pb2.WorkspaceInfoResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
