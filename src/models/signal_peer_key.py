@@ -15,11 +15,12 @@ class PeerClientKey(Database.get().Model):
     signed_prekey_id = Database.get().Column(Database.get().Integer, unique=False, nullable=False)
     signed_prekey = Database.get().Column(Database.get().Binary)
     signed_prekey_signature = Database.get().Column(Database.get().Binary)
+    identity_key_encrypted = Database.get().Column(Database.get().Binary)
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_at = Database.get().Column(Database.get().DateTime, default=datetime.now, onupdate=datetime.now)
 
     def set_key(self, client_id, registration_id, device_id, identity_key_public, prekey_id, prekey, signed_prekey_id,
-                signed_prekey, signed_prekey_signature):
+                signed_prekey, signed_prekey_signature, identity_key_encrypted):
         self.client_id = client_id
         self.registration_id = registration_id
         self.device_id = device_id
@@ -29,6 +30,7 @@ class PeerClientKey(Database.get().Model):
         self.signed_prekey_id = signed_prekey_id
         self.signed_prekey = signed_prekey
         self.signed_prekey_signature = signed_prekey_signature
+        self.identity_key_encrypted = identity_key_encrypted
         return self
 
     def get(self, group_id, client_id):

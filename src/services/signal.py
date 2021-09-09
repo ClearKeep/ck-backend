@@ -20,14 +20,12 @@ class SignalService(BaseService):
         client_peer_key = PeerClientKey().set_key(request.clientId, request.registrationId, request.deviceId,
                                                   request.identityKeyPublic, request.preKeyId, request.preKey,
                                                   request.signedPreKeyId, request.signedPreKey,
-                                                  request.signedPreKeySignature)
+                                                  request.signedPreKeySignature, request.identityKeyPrivateEncrypted)
         client_peer_key.add()
         # Check chatting available and push notify inapp for refreshing key
         self.client_update_key_notify(request.clientId)
 
     def peer_get_client_key(self, client_id):
-        # if client_id in client_store:
-        #     return client_store[client_id]
         return self.peer_model.get_by_client_id(client_id)
 
     def group_register_client_key(self, request):

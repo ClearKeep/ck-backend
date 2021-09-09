@@ -28,6 +28,8 @@ message PeerRegisterClientKeyRequest {
     bytes signedPreKey = 8;
 
     bytes signedPreKeySignature = 9;
+
+    bytes identityKeyEncrypted = 10;
 }
 // Response: BaseResponse
 
@@ -53,6 +55,8 @@ message PeerGetClientKeyResponse {
     bytes signedPreKey = 9;
 
     bytes signedPreKeySignature = 10;
+
+    bytes identityKeyEncrypted = 11;
 }
 
 // ----- SIGNAL GROUP KEY -----

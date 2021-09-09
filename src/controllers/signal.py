@@ -30,6 +30,10 @@ class SignalController(BaseController):
     
     @request_logged
     async def PeerGetClientKey(self, request, context):
+        header_data = dict(context.invocation_metadata())
+        introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+        user_id = introspect_token['sub']
+
         client_id = request.clientId
         client_workspace_domain = request.workspace_domain
         owner_workspace_domain = get_owner_workspace_domain()
@@ -51,6 +55,8 @@ class SignalController(BaseController):
                     signedPreKey=obj_resp.signed_prekey,
                     signedPreKeySignature=obj_resp.signed_prekey_signature
                 )
+                if user_id == client_id:
+                    response.identityKeyEncrypted = obj_resp.identity_key_encrypted
                 return response
 
             errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
