@@ -29,7 +29,10 @@ class GroupController(BaseController):
             return obj_res
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -50,7 +53,10 @@ class GroupController(BaseController):
             return obj_res
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -79,7 +85,10 @@ class GroupController(BaseController):
                 context.set_code(grpc.StatusCode.NOT_FOUND)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.GET_GROUP_CHAT_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.GET_GROUP_CHAT_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -92,7 +101,10 @@ class GroupController(BaseController):
             return obj_res
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.SEARCH_GROUP_CHAT_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.SEARCH_GROUP_CHAT_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -103,11 +115,15 @@ class GroupController(BaseController):
             # header_data = dict(context.invocation_metadata())
             # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             # client_id = introspect_token['sub']
-            obj_res = self.service.get_joined_group(request.client_id)
+            client_id = request.client_id
+            obj_res = self.service.get_joined_group(client_id)
             return obj_res
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -118,7 +134,10 @@ class GroupController(BaseController):
             pass
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -193,14 +212,14 @@ class GroupController(BaseController):
                 return response
         except Exception as e:
             logger.error(e)
-            errors = [
-                e,
-                Message.get_error_object(Message.ADD_MEMBER_FAILED)
-            ]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-
+            
     @request_logged
     async def workspace_add_member(self, request, context):
         try:
@@ -216,14 +235,14 @@ class GroupController(BaseController):
             return response
         except Exception as e:
             logger.error(e)
-            errors = [
-                e,
-                Message.get_error_object(Message.ADD_MEMBER_FAILED)
-            ]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-
+            
     @request_logged
     async def leave_group(self, request, context):
         try:
@@ -274,10 +293,10 @@ class GroupController(BaseController):
                 return response
         except Exception as e:
             logger.error(e)
-            errors = [
-                e,
-                Message.get_error_object(Message.LEAVE_GROUP_FAILED)
-            ]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.LEAVE_GROUP_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -297,10 +316,10 @@ class GroupController(BaseController):
             return response
         except Exception as e:
             logger.error(e)
-            errors = [
-                e,
-                Message.get_error_object(Message.ADD_MEMBER_FAILED)
-            ]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
