@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x11protos/note.proto\x12\x04note\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"?\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x1e\n\x06\x65rrors\x18\x02 \x01(\x0b\x32\x0e.note.ErrorRes\"F\n\x11\x43reateNoteRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\x0c\x12\x11\n\tnote_type\x18\x03 \x01(\t\"U\n\x0f\x45\x64itNoteRequest\x12\x0f\n\x07note_id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\x0c\x12\x11\n\tnote_type\x18\x04 \x01(\t\"$\n\x11\x44\x65leteNoteRequest\x12\x0f\n\x07note_id\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\"e\n\x10UserNoteResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\x0c\x12\x11\n\tnote_type\x18\x04 \x01(\t\x12\x12\n\ncreated_at\x18\x05 \x01(\x03\"\x15\n\x13GetUserNotesRequest\"m\n\x14GetUserNotesResponse\x12*\n\nuser_notes\x18\x01 \x03(\x0b\x32\x16.note.UserNoteResponse\x12)\n\rbase_response\x18\x02 \x01(\x0b\x32\x12.note.BaseResponse2\x83\x02\n\x04Note\x12>\n\x0b\x63reate_note\x12\x17.note.CreateNoteRequest\x1a\x16.note.UserNoteResponse\x12\x36\n\tedit_note\x12\x15.note.EditNoteRequest\x1a\x12.note.BaseResponse\x12:\n\x0b\x64\x65lete_note\x12\x17.note.DeleteNoteRequest\x1a\x12.note.BaseResponse\x12G\n\x0eget_user_notes\x12\x19.note.GetUserNotesRequest\x1a\x1a.note.GetUserNotesResponseb\x06proto3'
+  serialized_pb=b'\n\x11protos/note.proto\x12\x04note\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"/\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0e\n\x06\x65rrors\x18\x02 \x01(\t\"F\n\x11\x43reateNoteRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\x0c\x12\x11\n\tnote_type\x18\x03 \x01(\t\"U\n\x0f\x45\x64itNoteRequest\x12\x0f\n\x07note_id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\x0c\x12\x11\n\tnote_type\x18\x04 \x01(\t\"$\n\x11\x44\x65leteNoteRequest\x12\x0f\n\x07note_id\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\"e\n\x10UserNoteResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\x0c\x12\x11\n\tnote_type\x18\x04 \x01(\t\x12\x12\n\ncreated_at\x18\x05 \x01(\x03\"\x15\n\x13GetUserNotesRequest\"R\n\x14GetUserNotesResponse\x12*\n\nuser_notes\x18\x01 \x03(\x0b\x32\x16.note.UserNoteResponse\x12\x0e\n\x06\x65rrors\x18\x02 \x01(\t2\x83\x02\n\x04Note\x12>\n\x0b\x63reate_note\x12\x17.note.CreateNoteRequest\x1a\x16.note.UserNoteResponse\x12\x36\n\tedit_note\x12\x15.note.EditNoteRequest\x1a\x12.note.BaseResponse\x12:\n\x0b\x64\x65lete_note\x12\x17.note.DeleteNoteRequest\x1a\x12.note.BaseResponse\x12G\n\x0eget_user_notes\x12\x19.note.GetUserNotesRequest\x1a\x1a.note.GetUserNotesResponseb\x06proto3'
 )
 
 
@@ -81,8 +81,8 @@ _BASERESPONSE = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='errors', full_name='note.BaseResponse.errors', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -99,7 +99,7 @@ _BASERESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=70,
-  serialized_end=133,
+  serialized_end=117,
 )
 
 
@@ -144,8 +144,8 @@ _CREATENOTEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=135,
-  serialized_end=205,
+  serialized_start=119,
+  serialized_end=189,
 )
 
 
@@ -197,8 +197,8 @@ _EDITNOTEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=207,
-  serialized_end=292,
+  serialized_start=191,
+  serialized_end=276,
 )
 
 
@@ -229,8 +229,8 @@ _DELETENOTEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=294,
-  serialized_end=330,
+  serialized_start=278,
+  serialized_end=314,
 )
 
 
@@ -254,8 +254,8 @@ _EMPTY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=332,
-  serialized_end=339,
+  serialized_start=316,
+  serialized_end=323,
 )
 
 
@@ -314,8 +314,8 @@ _USERNOTERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=341,
-  serialized_end=442,
+  serialized_start=325,
+  serialized_end=426,
 )
 
 
@@ -339,8 +339,8 @@ _GETUSERNOTESREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=444,
-  serialized_end=465,
+  serialized_start=428,
+  serialized_end=449,
 )
 
 
@@ -360,9 +360,9 @@ _GETUSERNOTESRESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='base_response', full_name='note.GetUserNotesResponse.base_response', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      name='errors', full_name='note.GetUserNotesResponse.errors', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -378,13 +378,11 @@ _GETUSERNOTESRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=467,
-  serialized_end=576,
+  serialized_start=451,
+  serialized_end=533,
 )
 
-_BASERESPONSE.fields_by_name['errors'].message_type = _ERRORRES
 _GETUSERNOTESRESPONSE.fields_by_name['user_notes'].message_type = _USERNOTERESPONSE
-_GETUSERNOTESRESPONSE.fields_by_name['base_response'].message_type = _BASERESPONSE
 DESCRIPTOR.message_types_by_name['ErrorRes'] = _ERRORRES
 DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
 DESCRIPTOR.message_types_by_name['CreateNoteRequest'] = _CREATENOTEREQUEST
@@ -468,8 +466,8 @@ _NOTE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=579,
-  serialized_end=838,
+  serialized_start=536,
+  serialized_end=795,
   methods=[
   _descriptor.MethodDescriptor(
     name='create_note',
