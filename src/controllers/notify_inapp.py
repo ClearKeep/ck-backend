@@ -64,7 +64,7 @@ class NotifyInAppController(BaseController):
         logger.info('subscribe  {}'.format(request.client_id))
         try:
             await self.service.subscribe(request.client_id)
-            return notify_pb2.BaseResponse(success=True)
+            return notify_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -79,7 +79,7 @@ class NotifyInAppController(BaseController):
         try:
             logger.info('un_subscribe user: {}'.format(request.client_id))
             self.service.un_subscribe(request.client_id)
-            return notify_pb2.BaseResponse(success=True)
+            return notify_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -93,7 +93,7 @@ class NotifyInAppController(BaseController):
         try:
             notify_id = request.notify_id
             self.service.read_notify(notify_id)
-            return notify_pb2.BaseResponse(success=True)
+            return notify_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:

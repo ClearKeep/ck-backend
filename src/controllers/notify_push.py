@@ -20,7 +20,7 @@ class NotifyPushController(BaseController):
             device_type = request.device_type
 
             self.service.register_token(client_id, device_id, device_type, token)
-            return notify_push_pb2.BaseResponse(success=True)
+            return notify_push_pb2.BaseResponse()
 
         except Exception as e:
             logger.error(e)
@@ -44,7 +44,7 @@ class NotifyPushController(BaseController):
             custom_data = request.custom_data
             to_client_id = request.to_client_id
             self.service.push_text_to_client(to_client_id=to_client_id, title=title, body=body, notify_type=notify_type, data=custom_data)
-            return notify_push_pb2.BaseResponse(success=True)
+            return notify_push_pb2.BaseResponse()
 
         except Exception as e:
             logger.error(e)
@@ -67,7 +67,7 @@ class NotifyPushController(BaseController):
             to_client_id = request.to_client_id
 
             await self.service.push_voip_client(to_client_id=to_client_id, payload=payload)
-            return notify_push_pb2.BaseResponse(success=True)
+            return notify_push_pb2.BaseResponse()
 
         except Exception as e:
             logger.error(e)

@@ -273,10 +273,10 @@ class GroupService(BaseService):
             )
             if obj.updated_at is not None:
                 res_obj.updated_at = int(obj.updated_at.timestamp() * 1000)
-            
+
             # list client in group
             group_clients = json.loads(obj.group_clients)
-            
+
             for client in group_clients:
                 client_in = group_pb2.ClientInGroupResponse(
                     id=client['id'],
@@ -411,7 +411,7 @@ class GroupService(BaseService):
 
             if obj.updated_at:
                 obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
-            
+
             # check if this group has an unread message
             if obj.last_message_id:
                 is_read = MessageUserRead().get_by_message_id(obj.last_message_id)
@@ -419,7 +419,7 @@ class GroupService(BaseService):
                     obj_res.has_unread_message = False
                 else:
                     obj_res.has_unread_message = True
-                    
+
             group_clients = json.loads(obj.group_clients)
             for client in group_clients:
                 client_in = group_pb2.ClientInGroupResponse(
@@ -562,9 +562,8 @@ class GroupService(BaseService):
         )
         ClientGroup(group.owner_workspace_domain).add_member(add_member_request)
 
-        return group_pb2.BaseResponse(
-            success=True
-        )
+        # for compatible with old code, should be remove in future?
+        return group_pb2.BaseResponse()
 
     async def add_member_to_group_owner(self, added_member_info, adding_member_info, group):
 
@@ -639,9 +638,8 @@ class GroupService(BaseService):
                     group_client_key.client_workspace_group_id = response.ref_group_id
                     group_client_key.update()
 
-        return group_pb2.BaseResponse(
-            success=True
-        )
+        # for compatible with old code, should be remove in future?
+        return group_pb2.BaseResponse()
 
     async def workspace_add_member(self, added_member_info, adding_member_info, owner_group_info):
         logger.info('workspace_add_member')
@@ -781,9 +779,8 @@ class GroupService(BaseService):
                     "call leave member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
                 ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_leave_group(request)
 
-        return group_pb2.BaseResponse(
-            success=True
-        )
+        # for compatible with old code, should be remove in future?
+        return group_pb2.BaseResponse()
 
     async def leave_group_not_owner(self, leave_member, leave_member_by, group):
         logger.info('leave_group_not_owner')
@@ -840,9 +837,8 @@ class GroupService(BaseService):
             group_id=group.owner_group_id,
         )
         ClientGroup(group.owner_workspace_domain).leave_group(leave_group_request)
-        return group_pb2.BaseResponse(
-            success=True
-        )
+        # for compatible with old code, should be remove in future?
+        return group_pb2.BaseResponse()
 
     async def workspace_leave_group(self, leave_member, leave_member_by, group):
         logger.info('workspace_leave_group')
@@ -896,9 +892,5 @@ class GroupService(BaseService):
                     if leave_member_group:
                         leave_member_group.delete()
 
-        return group_pb2.BaseResponse(success=True)
-
-
-
-
-
+        # for compatible with old code, should be remove in future?
+        return group_pb2.BaseResponse()

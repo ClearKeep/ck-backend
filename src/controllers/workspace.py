@@ -20,7 +20,7 @@ class WorkspaceController(BaseController):
         try:
             owner_workspace_domain = get_owner_workspace_domain()
             if request.workspace_domain == owner_workspace_domain:
-                return workspace_pb2.WorkspaceInfoResponse(error=None)
+                return workspace_pb2.WorkspaceInfoResponse()
             else:
                 response = ClientWorkspace().get_workspace_info(request.workspace_domain)
                 if response:
@@ -68,7 +68,7 @@ class WorkspaceController(BaseController):
             user_info.delete()
             KeyCloakUtils.delete_user(client_id)
 
-            return workspace_pb2.BaseResponse(success=True)
+            return workspace_pb2.BaseResponse()
 
         except Exception as e:
             logger.error(e)
