@@ -4,7 +4,9 @@ from src.services.base import BaseService
 from src.services.message import client_message_queue
 from src.services.notify_inapp import NotifyInAppService
 from src.models.group import GroupChat
+from msg.message import Message
 import ast
+
 
 client_queue = {}
 
@@ -21,7 +23,22 @@ class SignalService(BaseService):
                                                   request.identityKeyPublic, request.preKeyId, request.preKey,
                                                   request.signedPreKeyId, request.signedPreKey,
                                                   request.signedPreKeySignature, request.identityKeyPrivateEncrypted)
-        client_peer_key.add()
+        key_added = client_peer_key.add()
+        if not key_added:
+            raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+        # Check chatting available and push notify inapp for refreshing key
+        self.client_update_key_notify(request.clientId)
+
+    def client_update_peer_key(self, request):
+        client = self.peer_model.get_by_client_id(request.clientId)
+        if client is None:
+            raise Exception(Message.UPDATE_CLIENT_SIGNAL_KEY_FAILED)
+
+        client.set_key(request.clientId, request.registrationId, request.deviceId,
+                                                  request.identityKeyPublic, request.preKeyId, request.preKey,
+                                                  request.signedPreKeyId, request.signedPreKey,
+                                                  request.signedPreKeySignature, request.identityKeyPrivateEncrypted)
+        client.update()
         # Check chatting available and push notify inapp for refreshing key
         self.client_update_key_notify(request.clientId)
 

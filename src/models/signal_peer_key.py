@@ -33,10 +33,9 @@ class PeerClientKey(Database.get().Model):
         self.identity_key_encrypted = identity_key_encrypted
         return self
 
-    def get(self, group_id, client_id):
+    def get(self, id):
         client = Database.get_session().query(PeerClientKey) \
-            .filter(PeerClientKey.group_id == group_id,
-                    PeerClientKey.client_id == client_id) \
+            .filter(PeerClientKey.id == id) \
             .one_or_none()
         Database.get().session.remove()
         return client
@@ -44,12 +43,12 @@ class PeerClientKey(Database.get().Model):
     def add(self):
         client = self.get_by_client_id(client_id=self.client_id)
         if client is not None:
-            self.id = client.id
-            self.update()
+            return False
         else:
             try:
                 Database.get_session().add(self)
                 Database.get_session().commit()
+                return True
             except Exception as e:
                 Database.get_session().rollback()
                 logger.error(e)

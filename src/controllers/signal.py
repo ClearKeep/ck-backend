@@ -27,7 +27,25 @@ class SignalController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    
+    @request_logged
+    async def ClientUpdatePeerKey(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            user_id = introspect_token['sub']
+            if user_id == request.client_id:
+                self.service.client_update_peer_key(request)
+            return signal_pb2.BaseResponse(success=True)
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
     @request_logged
     async def PeerGetClientKey(self, request, context):
         header_data = dict(context.invocation_metadata())
