@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x18protos/server_info.proto\x12\x0bserver_info\"*\n\x0cUpdateNTSReq\x12\x0c\n\x04stun\x18\x01 \x01(\t\x12\x0c\n\x04turn\x18\x02 \x01(\t\"\x1f\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"\x07\n\x05\x45mpty\"\"\n\x11GetThreadResponse\x12\r\n\x05total\x18\x01 \x01(\x03\x32\x98\x01\n\nServerInfo\x12\x44\n\nupdate_nts\x12\x19.server_info.UpdateNTSReq\x1a\x19.server_info.BaseResponse\"\x00\x12\x44\n\x0ctotal_thread\x12\x12.server_info.Empty\x1a\x1e.server_info.GetThreadResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x18protos/server_info.proto\x12\x0bserver_info\"*\n\x0cUpdateNTSReq\x12\x0c\n\x04stun\x18\x01 \x01(\t\x12\x0c\n\x04turn\x18\x02 \x01(\t\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\"\"\n\x11GetThreadResponse\x12\r\n\x05total\x18\x01 \x01(\x03\x32\x98\x01\n\nServerInfo\x12\x44\n\nupdate_nts\x12\x19.server_info.UpdateNTSReq\x1a\x19.server_info.BaseResponse\"\x00\x12\x44\n\x0ctotal_thread\x12\x12.server_info.Empty\x1a\x1e.server_info.GetThreadResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -73,9 +73,9 @@ _BASERESPONSE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='success', full_name='server_info.BaseResponse.success', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
+      name='error', full_name='server_info.BaseResponse.error', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -92,7 +92,7 @@ _BASERESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=85,
-  serialized_end=116,
+  serialized_end=114,
 )
 
 
@@ -116,8 +116,8 @@ _EMPTY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=118,
-  serialized_end=125,
+  serialized_start=116,
+  serialized_end=123,
 )
 
 
@@ -148,8 +148,8 @@ _GETTHREADRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=127,
-  serialized_end=161,
+  serialized_start=125,
+  serialized_end=159,
 )
 
 DESCRIPTOR.message_types_by_name['UpdateNTSReq'] = _UPDATENTSREQ
@@ -195,8 +195,8 @@ _SERVERINFO = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=164,
-  serialized_end=316,
+  serialized_start=162,
+  serialized_end=314,
   methods=[
   _descriptor.MethodDescriptor(
     name='update_nts',

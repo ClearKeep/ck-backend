@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x18protos/notify_push.proto\x12\x0bnotify_push\"M\n\x14RegisterTokenRequest\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x02 \x01(\t\x12\r\n\x05token\x18\x03 \x01(\t\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"/\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0e\n\x06\x65rrors\x18\x02 \x01(\t\"n\n\x0fPushTextRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0c\n\x04\x62ody\x18\x02 \x01(\t\x12\x13\n\x0bnotify_type\x18\x03 \x01(\t\x12\x13\n\x0b\x63ustom_data\x18\x04 \x01(\t\x12\x14\n\x0cto_client_id\x18\x05 \x01(\t\"8\n\x0fPushVoipRequest\x12\x14\n\x0cto_client_id\x18\x01 \x01(\t\x12\x0f\n\x07payload\x18\x02 \x01(\t2\xe8\x01\n\nNotifyPush\x12N\n\x0eregister_token\x12!.notify_push.RegisterTokenRequest\x1a\x19.notify_push.BaseResponse\x12\x44\n\tpush_text\x12\x1c.notify_push.PushTextRequest\x1a\x19.notify_push.BaseResponse\x12\x44\n\tpush_voip\x12\x1c.notify_push.PushVoipRequest\x1a\x19.notify_push.BaseResponseb\x06proto3'
+  serialized_pb=b'\n\x18protos/notify_push.proto\x12\x0bnotify_push\"M\n\x14RegisterTokenRequest\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x02 \x01(\t\x12\r\n\x05token\x18\x03 \x01(\t\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"n\n\x0fPushTextRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0c\n\x04\x62ody\x18\x02 \x01(\t\x12\x13\n\x0bnotify_type\x18\x03 \x01(\t\x12\x13\n\x0b\x63ustom_data\x18\x04 \x01(\t\x12\x14\n\x0cto_client_id\x18\x05 \x01(\t\"8\n\x0fPushVoipRequest\x12\x14\n\x0cto_client_id\x18\x01 \x01(\t\x12\x0f\n\x07payload\x18\x02 \x01(\t2\xe8\x01\n\nNotifyPush\x12N\n\x0eregister_token\x12!.notify_push.RegisterTokenRequest\x1a\x19.notify_push.BaseResponse\x12\x44\n\tpush_text\x12\x1c.notify_push.PushTextRequest\x1a\x19.notify_push.BaseResponse\x12\x44\n\tpush_voip\x12\x1c.notify_push.PushVoipRequest\x1a\x19.notify_push.BaseResponseb\x06proto3'
 )
 
 
@@ -71,24 +71,17 @@ _REGISTERTOKENREQUEST = _descriptor.Descriptor(
 )
 
 
-_ERRORRES = _descriptor.Descriptor(
-  name='ErrorRes',
-  full_name='notify_push.ErrorRes',
+_BASERESPONSE = _descriptor.Descriptor(
+  name='BaseResponse',
+  full_name='notify_push.BaseResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='code', full_name='notify_push.ErrorRes.code', index=0,
-      number=1, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message', full_name='notify_push.ErrorRes.message', index=1,
-      number=2, type=9, cpp_type=9, label=1,
+      name='error', full_name='notify_push.BaseResponse.error', index=0,
+      number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -106,46 +99,7 @@ _ERRORRES = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=120,
-  serialized_end=161,
-)
-
-
-_BASERESPONSE = _descriptor.Descriptor(
-  name='BaseResponse',
-  full_name='notify_push.BaseResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='success', full_name='notify_push.BaseResponse.success', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='errors', full_name='notify_push.BaseResponse.errors', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=163,
-  serialized_end=210,
+  serialized_end=149,
 )
 
 
@@ -204,8 +158,8 @@ _PUSHTEXTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=212,
-  serialized_end=322,
+  serialized_start=151,
+  serialized_end=261,
 )
 
 
@@ -243,12 +197,11 @@ _PUSHVOIPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=324,
-  serialized_end=380,
+  serialized_start=263,
+  serialized_end=319,
 )
 
 DESCRIPTOR.message_types_by_name['RegisterTokenRequest'] = _REGISTERTOKENREQUEST
-DESCRIPTOR.message_types_by_name['ErrorRes'] = _ERRORRES
 DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
 DESCRIPTOR.message_types_by_name['PushTextRequest'] = _PUSHTEXTREQUEST
 DESCRIPTOR.message_types_by_name['PushVoipRequest'] = _PUSHVOIPREQUEST
@@ -260,13 +213,6 @@ RegisterTokenRequest = _reflection.GeneratedProtocolMessageType('RegisterTokenRe
   # @@protoc_insertion_point(class_scope:notify_push.RegisterTokenRequest)
   })
 _sym_db.RegisterMessage(RegisterTokenRequest)
-
-ErrorRes = _reflection.GeneratedProtocolMessageType('ErrorRes', (_message.Message,), {
-  'DESCRIPTOR' : _ERRORRES,
-  '__module__' : 'protos.notify_push_pb2'
-  # @@protoc_insertion_point(class_scope:notify_push.ErrorRes)
-  })
-_sym_db.RegisterMessage(ErrorRes)
 
 BaseResponse = _reflection.GeneratedProtocolMessageType('BaseResponse', (_message.Message,), {
   'DESCRIPTOR' : _BASERESPONSE,
@@ -298,8 +244,8 @@ _NOTIFYPUSH = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=383,
-  serialized_end=615,
+  serialized_start=322,
+  serialized_end=554,
   methods=[
   _descriptor.MethodDescriptor(
     name='register_token',
