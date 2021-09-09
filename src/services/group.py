@@ -723,9 +723,7 @@ class GroupService(BaseService):
         if len(lst_client_in_group) == 1 and lst_client_in_group[0].GroupClientKey.client_id == leave_member.id:
             lst_client_in_group[0].GroupClientKey.delete()
             group.delete()
-            return group_pb2.BaseResponse(
-                success=True
-            )
+            return group_pb2.BaseResponse()
 
         for client in lst_client_in_group:
             if client.GroupClientKey.client_id == leave_member.id:
