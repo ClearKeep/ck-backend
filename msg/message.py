@@ -95,6 +95,7 @@ class Message:
     WRONG_OTP = 1071
     EXCEED_MAXIMUM_TRIED_TIMES_OTP = 1072
     AUTHEN_SETTING_FLOW_NOT_FOUND = 1073
+    GET_SERVER_INFO_FAILED = 1074
 
     # Workspace info
     GET_WORKSPACE_INFO_FAILED = 1066
@@ -181,7 +182,9 @@ class Message:
         WRONG_OTP: "Wrong OTP. Please check and try again",
         OTP_SERVER_NOT_RESPONDING : "OTP server is currently not responding to request. Please contact with admin or try again later",
 
-        GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again"
+        GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again",
+
+        GET_SERVER_INFO_FAILED: "Get server info failed."
     }
 
     @staticmethod

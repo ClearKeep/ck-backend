@@ -29,7 +29,7 @@ class MessageController(BaseController):
 
             owner_workspace_domain = get_owner_workspace_domain()
             group = GroupService().get_group_info(group_id)
-            
+
             if group and group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
                 request.group_id = group.owner_group_id
                 obj_res = ClientMessage(group.owner_workspace_domain).get_messages_in_group(request)
@@ -330,7 +330,7 @@ class MessageController(BaseController):
     async def Subscribe(self, request, context):
         try:
             await self.service.subscribe(request.clientId)
-            return message_pb2.BaseResponse(success=True)
+            return message_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -345,7 +345,7 @@ class MessageController(BaseController):
     async def UnSubscribe(self, request, context):
         try:
             self.service.un_subscribe(request.clientId)
-            return message_pb2.BaseResponse(success=True)
+            return message_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -366,7 +366,7 @@ class MessageController(BaseController):
             lst_message_id = request.lst_message_id
             self.service.read_messages(client_id, lst_message_id)
 
-            return message_pb2.BaseResponse(success=True)
+            return message_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:

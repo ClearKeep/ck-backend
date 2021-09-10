@@ -131,7 +131,7 @@ class VideoCallController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-            
+
     async def call_to_group_owner(self, request, group_obj, from_client_id):
         from_client_name = ""
         owner_workspace_domain = get_owner_workspace_domain()
@@ -335,9 +335,7 @@ class VideoCallController(BaseController):
                         ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                             json.dumps(new_push_payload))
                         #continue
-            return video_call_pb2.BaseResponse(
-                success=True
-            )
+            return video_call_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -394,9 +392,7 @@ class VideoCallController(BaseController):
                                                                                         json.dumps(new_push_payload))
                     #continue
 
-        return video_call_pb2.BaseResponse(
-            success=True
-        )
+        return video_call_pb2.BaseResponse()
 
     async def update_call_to_group_not_owner(self, request, group, from_client_id):
         logger.info("update_call_to_group_not_owner")
@@ -434,7 +430,4 @@ class VideoCallController(BaseController):
             update_type=update_type
         )
         obj_res = ClientVideoCall(group.owner_workspace_domain).workspace_update_call(request)
-        return video_call_pb2.BaseResponse(
-            success=True
-        )
-
+        return video_call_pb2.BaseResponse()

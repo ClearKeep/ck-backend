@@ -22,15 +22,8 @@ message ClientReadObject {
 }
 
 
-//errors response
-message ErrorRes {
-    int64 code = 1;
-    string message = 2;
-}
-
 message BaseResponse {
-    bool success = 1;
-    ErrorRes errors = 2;
+    string error = 1;
 }
 // Request: get list message group
 message GetMessagesInGroupRequest {
