@@ -19,11 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-<<<<<<< HEAD
-  serialized_pb=b'\n\x11protos/auth.proto\x12\x04\x61uth\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\".\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\r\n\x05\x65rror\x18\x02 \x01(\t\"W\n\x07\x41uthReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"5\n\tLogoutReq\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x15\n\rrefresh_token\x18\x02 \x01(\t\"\x1e\n\rFogotPassWord\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"\xaa\x02\n\x07\x41uthRes\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x16\n\x0eworkspace_name\x18\x02 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x03 \x01(\t\x12\x12\n\nexpires_in\x18\x04 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x05 \x01(\x03\x12\x15\n\rrefresh_token\x18\x06 \x01(\t\x12\x12\n\ntoken_type\x18\x07 \x01(\t\x12\x15\n\rsession_state\x18\x08 \x01(\t\x12\r\n\x05scope\x18\t \x01(\t\x12\x10\n\x08hash_key\x18\n \x01(\t\x12\x0b\n\x03sub\x18\x0b \x01(\t\x12\x10\n\x08otp_hash\x18\x0c \x01(\t\x12\x16\n\x0erequire_action\x18\r \x01(\t\x12\r\n\x05\x65rror\x18\x0e \x01(\t\"\x98\x01\n\x0bRegisterReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x10\n\x08password\x18\x04 \x01(\t\x12\x11\n\tauth_type\x18\x05 \x01(\x03\x12\x12\n\nfirst_name\x18\x06 \x01(\t\x12\x11\n\tlast_name\x18\x07 \x01(\t\"-\n\x0bRegisterRes\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\r\n\x05\x65rror\x18\x02 \x01(\t\"<\n\x0eGoogleLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08id_token\x18\x02 \x01(\t\"@\n\x0eOfficeLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"B\n\x10\x46\x61\x63\x65\x62ookLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"L\n\x15MfaValidateOtpRequest\x12\x10\n\x08otp_code\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x10\n\x08otp_hash\x18\x03 \x01(\t\"4\n\x0fMfaResendOtpReq\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x10\n\x08otp_hash\x18\x02 \x01(\t\"C\n\x0fMfaResendOtpRes\x12\x10\n\x08otp_hash\x18\x01 \x01(\t\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\r\n\x05\x65rror\x18\x03 \x01(\t2\xf6\x03\n\x04\x41uth\x12\'\n\x05login\x12\r.auth.AuthReq\x1a\r.auth.AuthRes\"\x00\x12\x35\n\x0clogin_google\x12\x14.auth.GoogleLoginReq\x1a\r.auth.AuthRes\"\x00\x12\x35\n\x0clogin_office\x12\x14.auth.OfficeLoginReq\x1a\r.auth.AuthRes\"\x00\x12\x39\n\x0elogin_facebook\x12\x16.auth.FacebookLoginReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0cvalidate_otp\x12\x1b.auth.MfaValidateOtpRequest\x1a\r.auth.AuthRes\"\x00\x12<\n\nresend_otp\x12\x15.auth.MfaResendOtpReq\x1a\x15.auth.MfaResendOtpRes\"\x00\x12\x32\n\x08register\x12\x11.auth.RegisterReq\x1a\x11.auth.RegisterRes\"\x00\x12;\n\x0e\x66ogot_password\x12\x13.auth.FogotPassWord\x1a\x12.auth.BaseResponse\"\x00\x12/\n\x06logout\x12\x0f.auth.LogoutReq\x1a\x12.auth.BaseResponse\"\x00\x62\x06proto3'
-=======
   serialized_pb=b'\n\x11protos/auth.proto\x12\x04\x61uth\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"W\n\x07\x41uthReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"5\n\tLogoutReq\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x15\n\rrefresh_token\x18\x02 \x01(\t\"\x1e\n\rFogotPassWord\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"\xaa\x02\n\x07\x41uthRes\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x16\n\x0eworkspace_name\x18\x02 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x03 \x01(\t\x12\x12\n\nexpires_in\x18\x04 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x05 \x01(\x03\x12\x15\n\rrefresh_token\x18\x06 \x01(\t\x12\x12\n\ntoken_type\x18\x07 \x01(\t\x12\x15\n\rsession_state\x18\x08 \x01(\t\x12\r\n\x05scope\x18\t \x01(\t\x12\x10\n\x08hash_key\x18\n \x01(\t\x12\x0b\n\x03sub\x18\x0b \x01(\t\x12\x10\n\x08otp_hash\x18\x0c \x01(\t\x12\x16\n\x0erequire_action\x18\r \x01(\t\x12\r\n\x05\x65rror\x18\x0e \x01(\t\"\x98\x01\n\x0bRegisterReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x10\n\x08password\x18\x04 \x01(\t\x12\x11\n\tauth_type\x18\x05 \x01(\x03\x12\x12\n\nfirst_name\x18\x06 \x01(\t\x12\x11\n\tlast_name\x18\x07 \x01(\t\"-\n\x0bRegisterRes\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\r\n\x05\x65rror\x18\x02 \x01(\t\"<\n\x0eGoogleLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08id_token\x18\x02 \x01(\t\"@\n\x0eOfficeLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"B\n\x10\x46\x61\x63\x65\x62ookLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"L\n\x15MfaValidateOtpRequest\x12\x10\n\x08otp_code\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x10\n\x08otp_hash\x18\x03 \x01(\t\"4\n\x0fMfaResendOtpReq\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x10\n\x08otp_hash\x18\x02 \x01(\t\"C\n\x0fMfaResendOtpRes\x12\x10\n\x08otp_hash\x18\x01 \x01(\t\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\r\n\x05\x65rror\x18\x03 \x01(\t2\xf6\x03\n\x04\x41uth\x12\'\n\x05login\x12\r.auth.AuthReq\x1a\r.auth.AuthRes\"\x00\x12\x35\n\x0clogin_google\x12\x14.auth.GoogleLoginReq\x1a\r.auth.AuthRes\"\x00\x12\x35\n\x0clogin_office\x12\x14.auth.OfficeLoginReq\x1a\r.auth.AuthRes\"\x00\x12\x39\n\x0elogin_facebook\x12\x16.auth.FacebookLoginReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0cvalidate_otp\x12\x1b.auth.MfaValidateOtpRequest\x1a\r.auth.AuthRes\"\x00\x12<\n\nresend_otp\x12\x15.auth.MfaResendOtpReq\x1a\x15.auth.MfaResendOtpRes\"\x00\x12\x32\n\x08register\x12\x11.auth.RegisterReq\x1a\x11.auth.RegisterRes\"\x00\x12;\n\x0e\x66ogot_password\x12\x13.auth.FogotPassWord\x1a\x12.auth.BaseResponse\"\x00\x12/\n\x06logout\x12\x0f.auth.LogoutReq\x1a\x12.auth.BaseResponse\"\x00\x62\x06proto3'
->>>>>>> development
 )
 
 
@@ -416,13 +412,8 @@ _REGISTERRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-<<<<<<< HEAD
-  serialized_start=750,
-  serialized_end=795,
-=======
   serialized_start=690,
   serialized_end=735,
->>>>>>> development
 )
 
 
@@ -460,13 +451,8 @@ _GOOGLELOGINREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-<<<<<<< HEAD
-  serialized_start=797,
-  serialized_end=857,
-=======
   serialized_start=737,
   serialized_end=797,
->>>>>>> development
 )
 
 
@@ -504,13 +490,8 @@ _OFFICELOGINREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-<<<<<<< HEAD
-  serialized_start=859,
-  serialized_end=923,
-=======
   serialized_start=799,
   serialized_end=863,
->>>>>>> development
 )
 
 
@@ -548,13 +529,8 @@ _FACEBOOKLOGINREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-<<<<<<< HEAD
-  serialized_start=925,
-  serialized_end=991,
-=======
   serialized_start=865,
   serialized_end=931,
->>>>>>> development
 )
 
 
@@ -599,13 +575,8 @@ _MFAVALIDATEOTPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-<<<<<<< HEAD
-  serialized_start=993,
-  serialized_end=1069,
-=======
   serialized_start=933,
   serialized_end=1009,
->>>>>>> development
 )
 
 
@@ -643,13 +614,8 @@ _MFARESENDOTPREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-<<<<<<< HEAD
-  serialized_start=1071,
-  serialized_end=1123,
-=======
   serialized_start=1011,
   serialized_end=1063,
->>>>>>> development
 )
 
 
@@ -694,18 +660,10 @@ _MFARESENDOTPRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-<<<<<<< HEAD
-  serialized_start=1125,
-  serialized_end=1192,
-)
-
-DESCRIPTOR.message_types_by_name['ErrorRes'] = _ERRORRES
-=======
   serialized_start=1065,
   serialized_end=1132,
 )
 
->>>>>>> development
 DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
 DESCRIPTOR.message_types_by_name['AuthReq'] = _AUTHREQ
 DESCRIPTOR.message_types_by_name['LogoutReq'] = _LOGOUTREQ
@@ -821,13 +779,8 @@ _AUTH = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-<<<<<<< HEAD
-  serialized_start=1195,
-  serialized_end=1697,
-=======
   serialized_start=1135,
   serialized_end=1637,
->>>>>>> development
   methods=[
   _descriptor.MethodDescriptor(
     name='login',

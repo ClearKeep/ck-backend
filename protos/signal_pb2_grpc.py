@@ -24,6 +24,11 @@ class SignalKeyDistributionStub(object):
                 request_serializer=protos_dot_signal__pb2.PeerGetClientKeyRequest.SerializeToString,
                 response_deserializer=protos_dot_signal__pb2.PeerGetClientKeyResponse.FromString,
                 )
+        self.ClientUpdatePeerKey = channel.unary_unary(
+                '/signal.SignalKeyDistribution/ClientUpdatePeerKey',
+                request_serializer=protos_dot_signal__pb2.PeerRegisterClientKeyRequest.SerializeToString,
+                response_deserializer=protos_dot_signal__pb2.BaseResponse.FromString,
+                )
         self.GroupRegisterClientKey = channel.unary_unary(
                 '/signal.SignalKeyDistribution/GroupRegisterClientKey',
                 request_serializer=protos_dot_signal__pb2.GroupRegisterClientKeyRequest.SerializeToString,
@@ -57,6 +62,12 @@ class SignalKeyDistributionServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def PeerGetClientKey(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ClientUpdatePeerKey(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -100,6 +111,11 @@ def add_SignalKeyDistributionServicer_to_server(servicer, server):
                     servicer.PeerGetClientKey,
                     request_deserializer=protos_dot_signal__pb2.PeerGetClientKeyRequest.FromString,
                     response_serializer=protos_dot_signal__pb2.PeerGetClientKeyResponse.SerializeToString,
+            ),
+            'ClientUpdatePeerKey': grpc.unary_unary_rpc_method_handler(
+                    servicer.ClientUpdatePeerKey,
+                    request_deserializer=protos_dot_signal__pb2.PeerRegisterClientKeyRequest.FromString,
+                    response_serializer=protos_dot_signal__pb2.BaseResponse.SerializeToString,
             ),
             'GroupRegisterClientKey': grpc.unary_unary_rpc_method_handler(
                     servicer.GroupRegisterClientKey,
@@ -162,6 +178,23 @@ class SignalKeyDistribution(object):
         return grpc.experimental.unary_unary(request, target, '/signal.SignalKeyDistribution/PeerGetClientKey',
             protos_dot_signal__pb2.PeerGetClientKeyRequest.SerializeToString,
             protos_dot_signal__pb2.PeerGetClientKeyResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ClientUpdatePeerKey(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/signal.SignalKeyDistribution/ClientUpdatePeerKey',
+            protos_dot_signal__pb2.PeerRegisterClientKeyRequest.SerializeToString,
+            protos_dot_signal__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
