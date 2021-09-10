@@ -222,9 +222,7 @@ class AuthController(BaseController):
     async def fogot_password(self, request, context):
         try:
             self.service.send_forgot_password(request.email)
-            return auth_messages.BaseResponse(
-                success=True
-            )
+            return auth_messages.BaseResponse()
 
         except Exception as e:
             logger.error(e)
@@ -254,9 +252,7 @@ class AuthController(BaseController):
             #     session_id=introspect_token['session_state']
             # )
 
-            return auth_messages.BaseResponse(
-                success=True
-            )
+            return auth_messages.BaseResponse()
 
         except Exception as e:
             logger.error(e)

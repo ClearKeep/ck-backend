@@ -16,7 +16,7 @@ class SignalController(BaseController):
     async def PeerRegisterClientKey(self, request, context):
         try:
             self.service.peer_register_client_key(request)
-            return signal_pb2.BaseResponse(success=True)
+            return signal_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -27,7 +27,7 @@ class SignalController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    
+
     @request_logged
     async def PeerGetClientKey(self, request, context):
         client_id = request.clientId
@@ -62,7 +62,7 @@ class SignalController(BaseController):
     async def GroupRegisterClientKey(self, request, context):
         try:
             self.service.group_register_client_key(request)
-            return signal_pb2.BaseResponse(success=True)
+            return signal_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:

@@ -19,29 +19,22 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x16protos/workspace.proto\x12\tworkspace\")\n\x08\x45rrorRes\x12\x0c\n\x04\x63ode\x18\x01 \x01(\x03\x12\x0f\n\x07message\x18\x02 \x01(\t\"/\n\x0c\x42\x61seResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0e\n\x06\x65rrors\x18\x02 \x01(\t\"0\n\x14WorkspaceInfoRequest\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\"&\n\x15WorkspaceInfoResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\x17\n\x15LeaveWorkspaceRequest2\xb2\x01\n\tWorkspace\x12U\n\x0eworkspace_info\x12\x1f.workspace.WorkspaceInfoRequest\x1a .workspace.WorkspaceInfoResponse\"\x00\x12N\n\x0fleave_workspace\x12 .workspace.LeaveWorkspaceRequest\x1a\x17.workspace.BaseResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x16protos/workspace.proto\x12\tworkspace\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x02 \x01(\t\"0\n\x14WorkspaceInfoRequest\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\"&\n\x15WorkspaceInfoResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\x17\n\x15LeaveWorkspaceRequest2\xb2\x01\n\tWorkspace\x12U\n\x0eworkspace_info\x12\x1f.workspace.WorkspaceInfoRequest\x1a .workspace.WorkspaceInfoResponse\"\x00\x12N\n\x0fleave_workspace\x12 .workspace.LeaveWorkspaceRequest\x1a\x17.workspace.BaseResponse\"\x00\x62\x06proto3'
 )
 
 
 
 
-_ERRORRES = _descriptor.Descriptor(
-  name='ErrorRes',
-  full_name='workspace.ErrorRes',
+_BASERESPONSE = _descriptor.Descriptor(
+  name='BaseResponse',
+  full_name='workspace.BaseResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='code', full_name='workspace.ErrorRes.code', index=0,
-      number=1, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message', full_name='workspace.ErrorRes.message', index=1,
+      name='error', full_name='workspace.BaseResponse.error', index=0,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -60,46 +53,7 @@ _ERRORRES = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=37,
-  serialized_end=78,
-)
-
-
-_BASERESPONSE = _descriptor.Descriptor(
-  name='BaseResponse',
-  full_name='workspace.BaseResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='success', full_name='workspace.BaseResponse.success', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='errors', full_name='workspace.BaseResponse.errors', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=80,
-  serialized_end=127,
+  serialized_end=66,
 )
 
 
@@ -130,8 +84,8 @@ _WORKSPACEINFOREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=129,
-  serialized_end=177,
+  serialized_start=68,
+  serialized_end=116,
 )
 
 
@@ -162,8 +116,8 @@ _WORKSPACEINFORESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=179,
-  serialized_end=217,
+  serialized_start=118,
+  serialized_end=156,
 )
 
 
@@ -187,23 +141,15 @@ _LEAVEWORKSPACEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=219,
-  serialized_end=242,
+  serialized_start=158,
+  serialized_end=181,
 )
 
-DESCRIPTOR.message_types_by_name['ErrorRes'] = _ERRORRES
 DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
 DESCRIPTOR.message_types_by_name['WorkspaceInfoRequest'] = _WORKSPACEINFOREQUEST
 DESCRIPTOR.message_types_by_name['WorkspaceInfoResponse'] = _WORKSPACEINFORESPONSE
 DESCRIPTOR.message_types_by_name['LeaveWorkspaceRequest'] = _LEAVEWORKSPACEREQUEST
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
-
-ErrorRes = _reflection.GeneratedProtocolMessageType('ErrorRes', (_message.Message,), {
-  'DESCRIPTOR' : _ERRORRES,
-  '__module__' : 'protos.workspace_pb2'
-  # @@protoc_insertion_point(class_scope:workspace.ErrorRes)
-  })
-_sym_db.RegisterMessage(ErrorRes)
 
 BaseResponse = _reflection.GeneratedProtocolMessageType('BaseResponse', (_message.Message,), {
   'DESCRIPTOR' : _BASERESPONSE,
@@ -242,8 +188,8 @@ _WORKSPACE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=245,
-  serialized_end=423,
+  serialized_start=184,
+  serialized_end=362,
   methods=[
   _descriptor.MethodDescriptor(
     name='workspace_info',

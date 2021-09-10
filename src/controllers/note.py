@@ -68,7 +68,7 @@ class NoteController(BaseController):
                 request.note_type,
                 user_id
             )
-            return note_pb2.BaseResponse(success=True)
+            return note_pb2.BaseResponse()
 
         except Exception as e:
             logger.error(e)
@@ -87,7 +87,7 @@ class NoteController(BaseController):
             self.service.delete_note(
                 request.note_id
             )
-            return note_pb2.BaseResponse(success=True)
+            return note_pb2.BaseResponse()
 
         except Exception as e:
             logger.error(e)
@@ -120,7 +120,7 @@ class NoteController(BaseController):
                     note_type=note.note_type,
                     created_at=int(note.created_at.timestamp() * 1000)
                 ) for note in user_notes],
-                base_response=note_pb2.BaseResponse(success=True)
+                base_response=note_pb2.BaseResponse()
             )
 
         except Exception as e:

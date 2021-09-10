@@ -18,7 +18,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             self.service.change_password(request, request.old_password, request.new_password, introspect_token['sub'])
-            return user_messages.BaseResponse(success=True)
+            return user_messages.BaseResponse()
 
         except Exception as e:
             logger.error(e)
@@ -40,9 +40,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
             mfa_enable = self.service.get_mfa_state(client_id)
-            return  user_messages.MfaStateResponse(
-                mfa_enable=mfa_enable,
-            )
+            return  user_messages.MfaStateResponse(mfa_enable=mfa_enable,)
 
         except Exception as e:
             logger.error(e)
@@ -122,7 +120,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-            
+
     # @auth_required
     async def mfa_validate_otp(self, request, context):
         try:
@@ -209,7 +207,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             client_id = introspect_token['sub']
 
             self.service.update_profile(client_id, display_name, phone_number, avatar)
-            return user_messages.BaseResponse(success=True)
+            return user_messages.BaseResponse()
 
         except Exception as e:
             logger.error(e)
@@ -331,7 +329,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             client_id = introspect_token['sub']
 
             self.service.set_user_status(client_id, status)
-            return user_messages.BaseResponse(success=True)
+            return user_messages.BaseResponse()
 
         except Exception as e:
             logger.error(e)
@@ -352,7 +350,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
             self.service.update_client_record(client_id)
-            return user_messages.BaseResponse(success=True)
+            return user_messages.BaseResponse()
 
         except Exception as e:
             logger.error(e)

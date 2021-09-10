@@ -3,7 +3,7 @@ from middlewares.permission import *
 from middlewares.request_logged import *
 from src.services.group import GroupService
 from utils.config import get_owner_workspace_domain
-from protos import group_pb2
+import protos.group_pb2 as group_messages
 from src.models.group import GroupChat
 from client.client_group import *
 from utils.keycloak import KeyCloakUtils
@@ -69,7 +69,7 @@ class GroupController(BaseController):
             # if not group.owner_workspace_domain:
             obj_res = self.service.get_group(group_id)
             # else:
-            #     get_group_request = group_pb2.GetGroupRequest(
+            #     get_group_request = group_messages.GetGroupRequest(
             #         group_id=group.owner_group_id
             #     )
             #     obj_res = ClientGroup(
@@ -196,20 +196,21 @@ class GroupController(BaseController):
 
             owner_workspace_domain = get_owner_workspace_domain()
 
+            # wait for service to add member to group, and return base response if no exception occured
             if (group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain):
-                response = await self.service.add_member_to_group_not_owner(
+                await self.service.add_member_to_group_not_owner(
                     added_member_info,
                     adding_member_info,
                     group,
                 )
-                return response
             else:
-                response = await self.service.add_member_to_group_owner(
+                await self.service.add_member_to_group_owner(
                     added_member_info,
                     adding_member_info,
                     group
                 )
-                return response
+
+            return group_messages.BaseResponse()
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -219,7 +220,7 @@ class GroupController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-            
+
     @request_logged
     async def workspace_add_member(self, request, context):
         try:
@@ -242,7 +243,7 @@ class GroupController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-            
+
     @request_logged
     async def leave_group(self, request, context):
         try:
@@ -277,20 +278,21 @@ class GroupController(BaseController):
 
             owner_workspace_domain = get_owner_workspace_domain()
 
+            # wait for service to leave group, and return base response if no exception occured
             if (group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain):
-                response = await self.service.leave_group_not_owner(
+                await self.service.leave_group_not_owner(
                     leave_member,
                     leave_member_by,
                     group,
                 )
-                return response
             else:
-                response = await self.service.leave_group_owner(
+                await self.service.leave_group_owner(
                     leave_member,
                     leave_member_by,
                     group,
                 )
-                return response
+
+            return group_messages.BaseResponse()
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -308,12 +310,13 @@ class GroupController(BaseController):
             leave_member_by = request.leave_member_by
             owner_group = request.owner_group
 
-            response = await self.service.workspace_leave_group(
+            # wait for service to call workspace leave group, and return base response if no exception occured
+            await self.service.workspace_leave_group(
                 leave_member,
                 leave_member_by,
                 owner_group
             )
-            return response
+            return group_messages.BaseResponse()
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
