@@ -3,26 +3,25 @@ package signal;
 
 
 message BaseResponse {
-    string error = 2;
+    string error = 1;
 }
 // ----- SIGNAL PEER TO PEER KEY -----
 // Request: register client key
 message PeerRegisterClientKeyRequest {
-    string clientId = 1;
-    int32 registrationId = 2;
-    int32 deviceId = 3;
+    int32 registrationId = 1;
+    int32 deviceId = 2;
 
-    bytes identityKeyPublic = 4;
+    bytes identityKeyPublic = 3;
 
-    int32 preKeyId = 5;
-    bytes preKey = 6;
+    int32 preKeyId = 4;
+    bytes preKey = 5;
 
-    int32 signedPreKeyId = 7;
-    bytes signedPreKey = 8;
+    int32 signedPreKeyId = 6;
+    bytes signedPreKey = 7;
 
-    bytes signedPreKeySignature = 9;
+    bytes signedPreKeySignature = 8;
 
-    bytes identityKeyEncrypted = 10;
+    bytes identityKeyEncrypted = 9;
 }
 // Response: BaseResponse
 

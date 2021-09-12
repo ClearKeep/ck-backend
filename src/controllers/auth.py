@@ -18,13 +18,13 @@ class AuthController(BaseController):
     @request_logged
     async def login(self, request, context):
         try:
-            token = self.service.token(request.email, request.password)
+            token = self.service.token(request.email, request.hash_password)
             if token:
                 introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = introspect_token['sub']
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
                 hash_key = EncryptUtils.encoded_hash(
-                    request.password, user_id
+                    request.hash_password, user_id
                 )
                 if not mfa_state:
                     ### check if login require otp check
@@ -194,18 +194,26 @@ class AuthController(BaseController):
             if exists_user:
                 raise Exception(Message.REGISTER_USER_ALREADY_EXISTS)
 
-            # register new user
-            new_user = self.service.register_user(request.email, request.password, request.display_name)
+            # register new user on keycloak
+            new_user = self.service.register_user(request.email, request.hash_password, request.display_name)
 
-            if new_user:
-                # create new user in database
-                UserService().create_new_user(new_user, request.email, request.display_name,  'account')
-                return auth_messages.RegisterRes(
-                    success=True
-                    )
-            else:
+            if not new_user:
                 self.service.delete_user(new_user)
                 raise Exception(Message.REGISTER_USER_FAILED)
+
+            # create new user in database
+            try:
+                UserService().create_new_user(new_user, request.email, request.display_name,  'account')
+            except Exception:
+                self.service.delete_user(new_user)
+                raise Exception(Message.REGISTER_USER_FAILED)
+            try:
+                SignalService().peer_register_client_key(new_user, request.client_key_peer)
+            except Exception:
+                self.service.delete_user(new_user)
+                UserService().delete_user(new_user)
+                raise Exception(Message.REGISTER_USER_FAILED)
+            return auth_messages.RegisterRes()
 
         except Exception as e:
             logger.error(e)

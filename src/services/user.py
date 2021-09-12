@@ -39,9 +39,10 @@ class UserService(BaseService):
             # if last_name:
             #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
             self.model.add()
+            return True
         except Exception as e:
             logger.error(e)
-            raise Exception(Message.REGISTER_USER_FAILED)
+            return False
 
     def create_user_social(self, id, email, display_name, auth_source):
         try:
@@ -488,3 +489,8 @@ class UserService(BaseService):
                              ACL='public-read')
         uploaded_file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)
         return uploaded_file_url
+
+    def delete_user(self, client_id):
+        user_info = self.model.get(user_id)
+        user_info.delete()
+        return True

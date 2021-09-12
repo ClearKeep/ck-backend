@@ -18,8 +18,8 @@ class SignalService(BaseService):
         self.peer_model = PeerClientKey()
         self.group_chat_model = GroupChat()
 
-    def peer_register_client_key(self, request):
-        client_peer_key = PeerClientKey().set_key(request.clientId, request.registrationId, request.deviceId,
+    def peer_register_client_key(self, client_id, request):
+        client_peer_key = PeerClientKey().set_key(client_id, request.registrationId, request.deviceId,
                                                   request.identityKeyPublic, request.preKeyId, request.preKey,
                                                   request.signedPreKeyId, request.signedPreKey,
                                                   request.signedPreKeySignature, request.identityKeyPrivateEncrypted)
@@ -29,18 +29,19 @@ class SignalService(BaseService):
         # Check chatting available and push notify inapp for refreshing key
         self.client_update_key_notify(request.clientId)
 
-    def client_update_peer_key(self, request):
-        client = self.peer_model.get_by_client_id(request.clientId)
+    def client_update_peer_key(self, client_id, request):
+        client = self.peer_model.get_by_client_id(client_id)
         if client is None:
             raise Exception(Message.UPDATE_CLIENT_SIGNAL_KEY_FAILED)
 
-        client.set_key(request.clientId, request.registrationId, request.deviceId,
-                                                  request.identityKeyPublic, request.preKeyId, request.preKey,
-                                                  request.signedPreKeyId, request.signedPreKey,
-                                                  request.signedPreKeySignature, request.identityKeyPrivateEncrypted)
+        client.set_key(clientId, request.registrationId, request.deviceId,
+                          request.identityKeyPublic, request.preKeyId, request.preKey,
+                          request.signedPreKeyId, request.signedPreKey,
+                          request.signedPreKeySignature, request.identityKeyPrivateEncrypted
+                          )
         client.update()
         # Check chatting available and push notify inapp for refreshing key
-        self.client_update_key_notify(request.clientId)
+        self.client_update_key_notify(client_id)
 
     def peer_get_client_key(self, client_id):
         return self.peer_model.get_by_client_id(client_id)

@@ -15,7 +15,10 @@ class SignalController(BaseController):
     @request_logged
     async def PeerRegisterClientKey(self, request, context):
         try:
-            self.service.peer_register_client_key(request)
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            user_id = introspect_token['sub']
+            self.service.peer_register_client_key(user_id, request)
             return signal_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
@@ -34,7 +37,7 @@ class SignalController(BaseController):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             user_id = introspect_token['sub']
             if user_id == request.client_id:
-                self.service.client_update_peer_key(request)
+                self.service.client_update_peer_key(user_id, request)
             return signal_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)

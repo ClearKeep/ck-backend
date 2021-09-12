@@ -7,6 +7,8 @@ from utils.logger import *
 class User(Database.get().Model):
     __tablename__ = 'user'
     id = Database.get().Column(Database.get().String(36), primary_key=True)
+    # for normal user, hash_code is hash_password. for social user, hash_code is hash_pincode 
+    hash_code = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     email = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     display_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     first_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)

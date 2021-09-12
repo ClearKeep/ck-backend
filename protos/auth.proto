@@ -6,12 +6,28 @@ message BaseResponse {
     string error = 1;
 }
 
+message PeerRegisterClientKeyRequest {
+    int32 registrationId = 1;
+    int32 deviceId = 2;
+
+    bytes identityKeyPublic = 3;
+
+    int32 preKeyId = 4;
+    bytes preKey = 5;
+
+    int32 signedPreKeyId = 6;
+    bytes signedPreKey = 7;
+
+    bytes signedPreKeySignature = 8;
+
+    bytes identityKeyEncrypted = 9;
+}
 
 //Login message struct
 message AuthReq {
     string workspace_domain = 1;
     string email = 2;
-    string password = 3;
+    string hash_password = 3;
     int64 auth_type = 4;
 }
 
@@ -47,15 +63,15 @@ message RegisterReq {
     string workspace_domain = 1;
     string email = 2;
     string display_name = 3;
-    string password = 4;
+    string hash_password = 4;
     int64 auth_type = 5;
     string first_name = 6;
     string last_name = 7;
+    PeerRegisterClientKeyRequest client_key_peer = 8;
 }
 
 message RegisterRes {
-    bool success = 1;
-    string error = 2;
+    string error = 1;
 }
 
 
