@@ -195,16 +195,15 @@ class AuthController(BaseController):
                 raise Exception(Message.REGISTER_USER_ALREADY_EXISTS)
 
             # register new user on keycloak
-            new_user = self.service.register_user(request.email, request.hash_password, request.display_name)
+            new_user_id = self.service.register_user(request.email, request.hash_password, request.display_name)
 
-            if not new_user:
-                self.service.delete_user(new_user)
+            if not new_user_id:
+                # self.service.delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
 
             # create new user in database
-            try:
-                UserService().create_new_user(new_user, request.email, request.display_name,  'account')
-            except Exception:
+            new_user = UserService().create_new_user(new_user, request.email, request.display_name, request.hash_password,  'account')
+            if new_user is None:
                 self.service.delete_user(new_user)
                 raise Exception(Message.REGISTER_USER_FAILED)
             try:
@@ -213,6 +212,7 @@ class AuthController(BaseController):
                 self.service.delete_user(new_user)
                 UserService().delete_user(new_user)
                 raise Exception(Message.REGISTER_USER_FAILED)
+
             return auth_messages.RegisterRes()
 
         except Exception as e:

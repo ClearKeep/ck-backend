@@ -67,7 +67,7 @@ class AuthService:
                 return user_id
         except Exception as e:
             logger.info(e)
-            raise Exception(Message.REGISTER_USER_FAILED)
+            return None
 
     def delete_user(self, userid):
         try:

@@ -5,6 +5,7 @@ from src.services.message import client_message_queue
 from src.services.notify_inapp import NotifyInAppService
 from src.models.group import GroupChat
 from msg.message import Message
+from utils.logger import *
 import ast
 
 
@@ -19,15 +20,17 @@ class SignalService(BaseService):
         self.group_chat_model = GroupChat()
 
     def peer_register_client_key(self, client_id, request):
-        client_peer_key = PeerClientKey().set_key(client_id, request.registrationId, request.deviceId,
-                                                  request.identityKeyPublic, request.preKeyId, request.preKey,
-                                                  request.signedPreKeyId, request.signedPreKey,
-                                                  request.signedPreKeySignature, request.identityKeyPrivateEncrypted)
-        key_added = client_peer_key.add()
-        if not key_added:
+        try:
+            client_peer_key = PeerClientKey().set_key(client_id, request.registrationId, request.deviceId,
+                                                      request.identityKeyPublic, request.preKeyId, request.preKey,
+                                                      request.signedPreKeyId, request.signedPreKey,
+                                                      request.signedPreKeySignature, request.identityKeyEncrypted)
+            key_added = client_peer_key.add()
+            # Check chatting available and push notify inapp for refreshing key
+            self.client_update_key_notify(request.clientId)
+        except Exception as e:
+            logger.error(e)
             raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
-        # Check chatting available and push notify inapp for refreshing key
-        self.client_update_key_notify(request.clientId)
 
     def client_update_peer_key(self, client_id, request):
         client = self.peer_model.get_by_client_id(client_id)
@@ -37,7 +40,7 @@ class SignalService(BaseService):
         client.set_key(clientId, request.registrationId, request.deviceId,
                           request.identityKeyPublic, request.preKeyId, request.preKey,
                           request.signedPreKeyId, request.signedPreKey,
-                          request.signedPreKeySignature, request.identityKeyPrivateEncrypted
+                          request.signedPreKeySignature, request.identityKeyEncrypted
                           )
         client.update()
         # Check chatting available and push notify inapp for refreshing key
@@ -67,13 +70,16 @@ class SignalService(BaseService):
         return self.group_client_key_model.get_all_in_group(group_id)
 
     def client_update_key_notify(self, client_id):
-        lst_group_peer = self.group_chat_model.get_joined_group_type(client_id, "peer")
-        notify_inapp_service = NotifyInAppService()
-        for group_peer in lst_group_peer:
-            if group_peer.group_clients:
-                lst_client_id = ast.literal_eval(group_peer.group_clients)
-                for client_peer_id in lst_client_id:
-                    if client_peer_id != client_id:
-                        message_channel = "{}/message".format(client_peer_id)
-                        if message_channel in client_message_queue:
-                            notify_inapp_service.notify_client_update_peer_key(client_peer_id, client_id, group_peer.id)
+        try:
+            lst_group_peer = self.group_chat_model.get_joined_group_type(client_id, "peer")
+            notify_inapp_service = NotifyInAppService()
+            for group_peer in lst_group_peer:
+                if group_peer.group_clients:
+                    lst_client_id = ast.literal_eval(group_peer.group_clients)
+                    for client_peer_id in lst_client_id:
+                        if client_peer_id != client_id:
+                            message_channel = "{}/message".format(client_peer_id)
+                            if message_channel in client_message_queue:
+                                notify_inapp_service.notify_client_update_peer_key(client_peer_id, client_id, group_peer.id)
+        except Exception as e:
+            logger.error(e)

@@ -23,13 +23,14 @@ class UserService(BaseService):
         self.authen_setting = AuthenSetting()
         # self.workspace_domain = get_system_domain()
 
-    def create_new_user(self, id, email, display_name, auth_source):
+    def create_new_user(self, id, email, display_name, hash_password, auth_source):
         # password, first_name, last_name,
         try:
             self.model = User(
                 id=id,
                 email=email,
                 display_name=display_name,
+                hash_code=hash_password,
                 auth_source=auth_source
             )
             # if email:
@@ -39,10 +40,10 @@ class UserService(BaseService):
             # if last_name:
             #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
             self.model.add()
-            return True
+            return self
         except Exception as e:
             logger.error(e)
-            return False
+            return None
 
     def create_user_social(self, id, email, display_name, auth_source):
         try:
