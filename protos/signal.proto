@@ -3,7 +3,7 @@ package signal;
 
 
 message BaseResponse {
-    string error = 2;
+    string error = 1;
 }
 // ----- SIGNAL PEER TO PEER KEY -----
 // Request: register client key
@@ -52,9 +52,9 @@ message PeerGetClientKeyResponse {
 // Request: register key of client when join to group
 message GroupRegisterClientKeyRequest {
     int64 groupId = 1;
-    string clientId = 2;
-    int32 deviceId = 3;
-    bytes clientKeyDistribution = 4;
+    int32 deviceId = 2;
+    bytes clientKeyDistribution = 3;
+    bytes identityKeyEncrypted = 4;
 }
 //response: BaseResponse
 

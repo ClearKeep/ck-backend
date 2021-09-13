@@ -8,6 +8,7 @@ from client.client_signal import *
 from utils.config import get_owner_workspace_domain
 
 
+
 class SignalController(BaseController):
     def __init__(self, *kwargs):
         self.service = SignalService()
@@ -61,7 +62,10 @@ class SignalController(BaseController):
     @request_logged
     async def GroupRegisterClientKey(self, request, context):
         try:
-            self.service.group_register_client_key(request)
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            user_id = introspect_token['sub']
+            self.service.group_register_client_key(user_id, request)
             return signal_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)

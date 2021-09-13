@@ -19,6 +19,7 @@ class Message:
     CLIENT_PUBLISH_MESSAGE_FAILED = 1013
     CLIENT_SUBCRIBE_FAILED = 1014
     REGISTER_CLIENT_GROUP_KEY_FAILED = 1015
+    REGISTER_CLIENT_GROUP_FAILED_AVAILABLE = 11015
     CREATE_GROUP_CHAT_FAILED = 1016
     GROUP_CHAT_NOT_FOUND = 1017
     GET_GROUP_CHAT_FAILED = 1018
@@ -117,6 +118,7 @@ class Message:
         CLIENT_PUBLISH_MESSAGE_FAILED: "Publish message failed. Please try again",
         CLIENT_SUBCRIBE_FAILED: "Subcribe failed. Please try again",
         REGISTER_CLIENT_GROUP_KEY_FAILED: "Register group key failed. Please try again",
+        REGISTER_CLIENT_GROUP_FAILED_AVAILABLE: "Register group key failed. Group key is available",
         CREATE_GROUP_CHAT_FAILED: "Create new group failed. Please try again",
         GROUP_CHAT_NOT_FOUND: "Group not found.",
         GET_GROUP_CHAT_FAILED: "Get group failed. Please try again",
