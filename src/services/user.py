@@ -235,6 +235,13 @@ class UserService(BaseService):
             logger.error(e)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
+    def validate_hash_pass(self, user_id, hash_pass):
+        user_info = self.model.get(user_id)
+        if hash_pass == user_info.hash_code:
+            return True, user_info.hash_code_salt
+        else:
+            return False, ""
+            
     def get_profile(self, user_id, hash_key):
         try:
             user_info = self.model.get(user_id)

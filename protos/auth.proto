@@ -55,7 +55,9 @@ message AuthRes {
     string sub = 11;
     string otp_hash = 12;
     string require_action = 13;
-    string error = 14;
+    bool require_update_client_key_peer = 14;
+    string salt = 15;
+    string error = 16;
 }
 
 //Register message struct
