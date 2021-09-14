@@ -3,7 +3,7 @@ from middlewares.permission import *
 from middlewares.request_logged import *
 from src.services.group import GroupService
 from utils.config import get_owner_workspace_domain
-from protos import group_pb2
+import protos.group_pb2 as group_messages
 from src.models.group import GroupChat
 from client.client_group import *
 from utils.keycloak import KeyCloakUtils
@@ -29,7 +29,10 @@ class GroupController(BaseController):
             return obj_res
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -50,7 +53,10 @@ class GroupController(BaseController):
             return obj_res
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -63,7 +69,7 @@ class GroupController(BaseController):
             # if not group.owner_workspace_domain:
             obj_res = self.service.get_group(group_id)
             # else:
-            #     get_group_request = group_pb2.GetGroupRequest(
+            #     get_group_request = group_messages.GetGroupRequest(
             #         group_id=group.owner_group_id
             #     )
             #     obj_res = ClientGroup(
@@ -79,7 +85,10 @@ class GroupController(BaseController):
                 context.set_code(grpc.StatusCode.NOT_FOUND)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.GET_GROUP_CHAT_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.GET_GROUP_CHAT_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -92,7 +101,10 @@ class GroupController(BaseController):
             return obj_res
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.SEARCH_GROUP_CHAT_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.SEARCH_GROUP_CHAT_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -103,11 +115,15 @@ class GroupController(BaseController):
             # header_data = dict(context.invocation_metadata())
             # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             # client_id = introspect_token['sub']
-            obj_res = self.service.get_joined_group(request.client_id)
+            client_id = request.client_id
+            obj_res = self.service.get_joined_group(client_id)
             return obj_res
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -118,7 +134,10 @@ class GroupController(BaseController):
             pass
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -177,26 +196,27 @@ class GroupController(BaseController):
 
             owner_workspace_domain = get_owner_workspace_domain()
 
+            # wait for service to add member to group, and return base response if no exception occured
             if (group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain):
-                response = await self.service.add_member_to_group_not_owner(
+                await self.service.add_member_to_group_not_owner(
                     added_member_info,
                     adding_member_info,
                     group,
                 )
-                return response
             else:
-                response = await self.service.add_member_to_group_owner(
+                await self.service.add_member_to_group_owner(
                     added_member_info,
                     adding_member_info,
                     group
                 )
-                return response
+
+            return group_messages.BaseResponse()
         except Exception as e:
             logger.error(e)
-            errors = [
-                e,
-                Message.get_error_object(Message.ADD_MEMBER_FAILED)
-            ]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -216,10 +236,10 @@ class GroupController(BaseController):
             return response
         except Exception as e:
             logger.error(e)
-            errors = [
-                e,
-                Message.get_error_object(Message.ADD_MEMBER_FAILED)
-            ]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -258,26 +278,27 @@ class GroupController(BaseController):
 
             owner_workspace_domain = get_owner_workspace_domain()
 
+            # wait for service to leave group, and return base response if no exception occured
             if (group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain):
-                response = await self.service.leave_group_not_owner(
+                await self.service.leave_group_not_owner(
                     leave_member,
                     leave_member_by,
                     group,
                 )
-                return response
             else:
-                response = await self.service.leave_group_owner(
+                await self.service.leave_group_owner(
                     leave_member,
                     leave_member_by,
                     group,
                 )
-                return response
+
+            return group_messages.BaseResponse()
         except Exception as e:
             logger.error(e)
-            errors = [
-                e,
-                Message.get_error_object(Message.LEAVE_GROUP_FAILED)
-            ]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.LEAVE_GROUP_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -289,18 +310,19 @@ class GroupController(BaseController):
             leave_member_by = request.leave_member_by
             owner_group = request.owner_group
 
-            response = await self.service.workspace_leave_group(
+            # wait for service to call workspace leave group, and return base response if no exception occured
+            await self.service.workspace_leave_group(
                 leave_member,
                 leave_member_by,
                 owner_group
             )
-            return response
+            return group_messages.BaseResponse()
         except Exception as e:
             logger.error(e)
-            errors = [
-                e,
-                Message.get_error_object(Message.ADD_MEMBER_FAILED)
-            ]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)

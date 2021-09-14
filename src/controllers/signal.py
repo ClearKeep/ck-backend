@@ -16,13 +16,17 @@ class SignalController(BaseController):
     async def PeerRegisterClientKey(self, request, context):
         try:
             self.service.peer_register_client_key(request)
-            return signal_pb2.BaseResponse(success=True)
+            return signal_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
 
     @request_logged
     async def PeerGetClientKey(self, request, context):
@@ -58,10 +62,13 @@ class SignalController(BaseController):
     async def GroupRegisterClientKey(self, request, context):
         try:
             self.service.group_register_client_key(request)
-            return signal_pb2.BaseResponse(success=True)
+            return signal_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.REGISTER_CLIENT_GROUP_KEY_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.REGISTER_CLIENT_GROUP_KEY_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -133,6 +140,7 @@ class SignalController(BaseController):
         context.set_details(json.dumps(
             errors, default=lambda x: x.__dict__))
         context.set_code(grpc.StatusCode.NOT_FOUND)
+
 
     @request_logged
     #not use for now

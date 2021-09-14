@@ -3,15 +3,8 @@ syntax = "proto3";
 
 package workspace;
 
-//errors response
-message ErrorRes {
-    int64 code = 1;
-    string message = 2;
-}
-
 message BaseResponse {
-    bool success = 1;
-    ErrorRes errors = 2;
+    string error = 2;
 }
 
 // Request: get workspace info
@@ -19,7 +12,7 @@ message WorkspaceInfoRequest {
   string workspace_domain = 1;
 }
 
-message WorkspaceInfoResponse { 
+message WorkspaceInfoResponse {
     string error = 1;
 }
 

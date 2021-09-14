@@ -21,7 +21,8 @@ class NotifyInAppController(BaseController):
             return lst_notify
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.GET_CLIENT_NOTIFIES_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.GET_CLIENT_NOTIFIES_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -63,10 +64,11 @@ class NotifyInAppController(BaseController):
         logger.info('subscribe  {}'.format(request.client_id))
         try:
             await self.service.subscribe(request.client_id)
-            return notify_pb2.BaseResponse(success=True)
+            return notify_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -77,10 +79,11 @@ class NotifyInAppController(BaseController):
         try:
             logger.info('un_subscribe user: {}'.format(request.client_id))
             self.service.un_subscribe(request.client_id)
-            return notify_pb2.BaseResponse(success=True)
+            return notify_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -90,10 +93,11 @@ class NotifyInAppController(BaseController):
         try:
             notify_id = request.notify_id
             self.service.read_notify(notify_id)
-            return notify_pb2.BaseResponse(success=True)
+            return notify_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_READ_NOTIFY_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_READ_NOTIFY_FAILED)]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)

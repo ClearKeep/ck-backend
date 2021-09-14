@@ -1,16 +1,9 @@
 syntax = "proto3";
-
 package note;
 
-// errors response
-message ErrorRes {
-  int64 code = 1;
-  string message = 2;
-}
 
 message BaseResponse {
-  bool success = 1;
-  ErrorRes errors = 2;
+  string error = 1;
 }
 
 message CreateNoteRequest {
@@ -46,7 +39,7 @@ message GetUserNotesRequest {
 
 message GetUserNotesResponse {
   repeated UserNoteResponse user_notes = 1;
-  BaseResponse base_response = 2;
+  string error = 2;
 }
 
 // gRPC methods

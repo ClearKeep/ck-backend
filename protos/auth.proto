@@ -1,15 +1,9 @@
 syntax = "proto3";
 package auth;
 
-//error response
-message ErrorRes {
-    int64 code = 1;
-    string message = 2;
-}
 
 message BaseResponse {
-    bool success = 1;
-    ErrorRes error = 2;
+    string error = 1;
 }
 
 
@@ -60,7 +54,8 @@ message RegisterReq {
 }
 
 message RegisterRes {
-    BaseResponse base_response = 1;
+    bool success = 1;
+    string error = 2;
 }
 
 

@@ -28,9 +28,9 @@ class MessageController(BaseController):
             last_message_at = request.last_message_at
 
             owner_workspace_domain = get_owner_workspace_domain()
-
             group = GroupService().get_group_info(group_id)
-            if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
+
+            if group and group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
                 request.group_id = group.owner_group_id
                 obj_res = ClientMessage(group.owner_workspace_domain).get_messages_in_group(request)
                 if obj_res and obj_res.lst_message:
@@ -45,7 +45,10 @@ class MessageController(BaseController):
                 return obj_res
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -64,7 +67,10 @@ class MessageController(BaseController):
                 return res_obj
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_PUBLISH_MESSAGE_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_PUBLISH_MESSAGE_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -142,7 +148,10 @@ class MessageController(BaseController):
 
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_PUBLISH_MESSAGE_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_PUBLISH_MESSAGE_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -321,10 +330,13 @@ class MessageController(BaseController):
     async def Subscribe(self, request, context):
         try:
             await self.service.subscribe(request.clientId)
-            return message_pb2.BaseResponse(success=True)
+            return message_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -333,10 +345,13 @@ class MessageController(BaseController):
     async def UnSubscribe(self, request, context):
         try:
             self.service.un_subscribe(request.clientId)
-            return message_pb2.BaseResponse(success=True)
+            return message_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -344,16 +359,20 @@ class MessageController(BaseController):
     @request_logged
     async def read_messages(self, request, context):
         try:
-            header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            client_id = introspect_token['sub']
+            # header_data = dict(context.invocation_metadata())
+            # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            # client_id = introspect_token['sub']
+            client_id = request.client_id
             lst_message_id = request.lst_message_id
             self.service.read_messages(client_id, lst_message_id)
 
-            return message_pb2.BaseResponse(success=True)
+            return message_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.MESSAGE_READ_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -414,8 +433,10 @@ class MessageController(BaseController):
 
         except Exception as e:
             logger.error(e)
-            errors =\
-                [Message.get_error_object(Message.CLIENT_EDIT_MESSAGE_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_EDIT_MESSAGE_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)

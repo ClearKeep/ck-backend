@@ -20,11 +20,14 @@ class NotifyPushController(BaseController):
             device_type = request.device_type
 
             self.service.register_token(client_id, device_id, device_type, token)
-            return notify_push_pb2.BaseResponse(success=True)
+            return notify_push_pb2.BaseResponse()
 
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_REGISTER_NOTIFY_TOKEN_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_REGISTER_NOTIFY_TOKEN_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -41,11 +44,14 @@ class NotifyPushController(BaseController):
             custom_data = request.custom_data
             to_client_id = request.to_client_id
             self.service.push_text_to_client(to_client_id=to_client_id, title=title, body=body, notify_type=notify_type, data=custom_data)
-            return notify_push_pb2.BaseResponse(success=True)
+            return notify_push_pb2.BaseResponse()
 
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_REGISTER_NOTIFY_TOKEN_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_REGISTER_NOTIFY_TOKEN_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -61,11 +67,14 @@ class NotifyPushController(BaseController):
             to_client_id = request.to_client_id
 
             await self.service.push_voip_client(to_client_id=to_client_id, payload=payload)
-            return notify_push_pb2.BaseResponse(success=True)
+            return notify_push_pb2.BaseResponse()
 
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_REGISTER_NOTIFY_TOKEN_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_REGISTER_NOTIFY_TOKEN_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
