@@ -332,3 +332,27 @@ class AuthController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
+    async def register_pincode(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            user_id = introspect_token['sub']
+            # get temp request
+            old_client_key_peer = SignalService().peer_get_client_key(user_id)
+            SignalService().peer_register_client_key(user_id, request.client_key_peer)
+            try:
+                UserService().update_hash_pin(user_id, request.hash_password, request.salt)
+            except Exception as e:
+                logger.error(e)
+                SignalService().peer_register_client_key(user_id, old_client_key_peer)
+                raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)

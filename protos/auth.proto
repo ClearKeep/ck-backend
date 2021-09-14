@@ -88,6 +88,14 @@ message GoogleLoginReq {
 message OfficeLoginReq {
     string workspace_domain = 1;
     string access_token = 2;
+    string hash_pincode = 3;
+}
+
+// Register a Pincode struct
+message RegisterPinCodeReq {
+    string hash_pincode = 1;
+    string salt = 2;
+    PeerRegisterClientKeyRequest client_key_peer = 3;
 }
 
 //Login Facebook message struct
@@ -124,4 +132,5 @@ service Auth {
     rpc register(RegisterReq) returns (RegisterRes) {};
     rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
     rpc logout(LogoutReq) returns (BaseResponse) {};
+    rpc register_pincode(RegisterPinCodeReq) returns (BaseResponse) {};
 }

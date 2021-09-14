@@ -236,11 +236,10 @@ class UserService(BaseService):
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def validate_hash_pass(self, user_id, hash_pass):
+        # compare current hash_password with stored hash_password in db, return boolean value for describe state of needing to update hash password
+        # also return hash_code_salt stored in db
         user_info = self.model.get(user_id)
-        if hash_pass == user_info.hash_code:
-            return True, user_info.hash_code_salt
-        else:
-            return False, user_info.hash_code_salt
+        return (hash_pass == user_info.hash_code, user_info.hash_code_salt)
 
     def get_profile(self, user_id, hash_key):
         try:
