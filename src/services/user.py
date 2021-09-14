@@ -240,8 +240,8 @@ class UserService(BaseService):
         if hash_pass == user_info.hash_code:
             return True, user_info.hash_code_salt
         else:
-            return False, ""
-            
+            return False, user_info.hash_code_salt
+
     def get_profile(self, user_id, hash_key):
         try:
             user_info = self.model.get(user_id)
