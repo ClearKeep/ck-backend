@@ -27,7 +27,7 @@ class SignalService(BaseService):
                                                       request.signedPreKeySignature, request.identityKeyEncrypted)
             key_added = client_peer_key.add()
             # Check chatting available and push notify inapp for refreshing key
-            self.client_update_key_notify(request.clientId)
+            self.client_update_key_notify(client_id)
         except Exception as e:
             logger.error(e)
             raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)

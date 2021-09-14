@@ -23,7 +23,7 @@ class UserService(BaseService):
         self.authen_setting = AuthenSetting()
         # self.workspace_domain = get_system_domain()
 
-    def create_new_user(self, id, email, display_name, hash_password, auth_source):
+    def create_new_user(self, id, email, display_name, hash_password, salt, auth_source):
         # password, first_name, last_name,
         try:
             self.model = User(
@@ -31,6 +31,7 @@ class UserService(BaseService):
                 email=email,
                 display_name=display_name,
                 hash_code=hash_password,
+                hash_code_salt=salt,
                 auth_source=auth_source
             )
             # if email:

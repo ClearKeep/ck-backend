@@ -3,6 +3,7 @@ from src.controllers.base import BaseController
 from src.services.auth import AuthService
 from src.services.user import UserService
 from src.services.message import MessageService
+from src.services.signal import SignalService
 from src.services.notify_inapp import NotifyInAppService
 from utils.encrypt import EncryptUtils
 from middlewares.permission import *
@@ -202,15 +203,15 @@ class AuthController(BaseController):
                 raise Exception(Message.REGISTER_USER_FAILED)
 
             # create new user in database
-            new_user = UserService().create_new_user(new_user, request.email, request.display_name, request.hash_password,  'account')
+            new_user = UserService().create_new_user(new_user_id, request.email, request.display_name, request.hash_password, request.salt,  'account')
             if new_user is None:
-                self.service.delete_user(new_user)
+                self.service.delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
             try:
-                SignalService().peer_register_client_key(new_user, request.client_key_peer)
+                SignalService().peer_register_client_key(new_user_id, request.client_key_peer)
             except Exception:
-                self.service.delete_user(new_user)
-                UserService().delete_user(new_user)
+                self.service.delete_user(new_user_id)
+                UserService().delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
 
             return auth_messages.RegisterRes()
