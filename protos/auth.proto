@@ -23,6 +23,27 @@ message PeerRegisterClientKeyRequest {
     bytes identityKeyEncrypted = 9;
 }
 
+
+// Response
+message PeerGetClientKeyResponse {
+    string clientId = 1;
+    string workspace_domain = 2;
+    int32 registrationId = 3;
+    int32 deviceId = 4;
+
+    bytes identityKeyPublic = 5;
+
+    int32 preKeyId = 6;
+    bytes preKey = 7;
+
+    int32 signedPreKeyId = 8;
+    bytes signedPreKey = 9;
+
+    bytes signedPreKeySignature = 10;
+
+    bytes identityKeyEncrypted = 11;
+}
+
 //Login message struct
 message AuthReq {
     string workspace_domain = 1;
@@ -55,8 +76,8 @@ message AuthRes {
     string sub = 11;
     string otp_hash = 12;
     string require_action = 13;
-    bool require_update_client_key_peer = 14;
-    string salt = 15;
+    string salt = 14;
+    PeerGetClientKeyResponse client_key_peer = 15;
     string error = 16;
 }
 
