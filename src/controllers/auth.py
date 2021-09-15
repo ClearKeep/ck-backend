@@ -23,7 +23,7 @@ class AuthController(BaseController):
             if token:
                 introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = introspect_token['sub']
-                require_update_client_key_peer, hash_password_salt = self.user_service.validate_hash_pass(user_id, request.hash_pass)
+                require_update_client_key, hash_password_salt = self.user_service.validate_hash_pass(user_id, request.hash_pass)
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
                 hash_key = EncryptUtils.encoded_hash(
                     request.hash_password, user_id
@@ -32,6 +32,7 @@ class AuthController(BaseController):
                     ### check if login require otp check
                     self.user_service.update_last_login(user_id=user_id)
                     client_key_peer = SignalService().peer_get_client_key(user_id)
+                    # update function gán lại vào response object
                     auth_message = auth_messages.AuthRes(
                                         workspace_domain=get_owner_workspace_domain(),
                                         workspace_name=get_system_config()['server_name'],
@@ -43,14 +44,14 @@ class AuthController(BaseController):
                                         session_state=token['session_state'],
                                         scope=token['scope'],
                                         hash_key=hash_key,
-                                        require_update_client_key_peer=require_update_client_key_peer,
+                                        require_update_client_key=require_update_client_key,
                                         salt=hash_password_salt,
                                         client_key_peer = client_key_peer
                                     )
                 else:
                     otp_hash = self.service.create_otp_service(user_id)
                     auth_message = auth_messages.AuthRes(
-                                        require_update_client_key_peer=require_update_client_key_peer,
+                                        require_update_client_key_peer=require_update_client_key,
                                         salt=hash_password_salt,
                                         workspace_domain=get_owner_workspace_domain(),
                                         workspace_name=get_system_config()['server_name'],
@@ -176,10 +177,11 @@ class AuthController(BaseController):
             token, is_new_user = self.service.facebook_login(request.access_token)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if not is_new_user:
-                user_id = introspect_token['sub']
-                require_update_client_key_peer, hash_pincode_salt = self.user_service.validate_hash_pass(user_id, request.hash_pincode)
+                need_register_pin = False
+            # return client_key_peer here
             else:
-                require_update_client_key_peer, hash_pincode_salt = True, ""
+                need_register_pin = True
+            # trả về 1 hash_code để verify với pin_code -> cả 2 trường hợp tạo mới và verify pin_code
             if token:
                 # self.user_service.update_last_login(user_id=introspect_token['sub'])
                 auth_response = auth_messages.AuthRes(
@@ -188,9 +190,7 @@ class AuthController(BaseController):
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
                     hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
-                    require_update_client_key_peer=require_update_client_key_peer,
-                    salt=hash_pincode_salt,
-                    client_key_peer = client_key_peer
+                    need_register_pin=need_register_pin
                 )
                 if token['refresh_token']:
                     auth_response.refresh_token = token['refresh_token']

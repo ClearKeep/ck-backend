@@ -239,7 +239,7 @@ class UserService(BaseService):
         # compare current hash_password with stored hash_password in db, return boolean value for describe state of needing to update hash password
         # also return hash_code_salt stored in db
         user_info = self.model.get(user_id)
-        return (hash_pass == user_info.hash_code, user_info.hash_code_salt)
+        return (hash_pass != user_info.hash_code, user_info.hash_code_salt)
 
     def get_profile(self, user_id, hash_key):
         try:

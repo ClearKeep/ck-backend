@@ -23,6 +23,26 @@ message PeerRegisterClientKeyRequest {
     bytes identityKeyEncrypted = 9;
 }
 
+// Response
+message PeerGetClientKeyResponse {
+    string clientId = 1;
+    string workspace_domain = 2;
+    int32 registrationId = 3;
+    int32 deviceId = 4;
+
+    bytes identityKeyPublic = 5;
+
+    int32 preKeyId = 6;
+    bytes preKey = 7;
+
+    int32 signedPreKeyId = 8;
+    bytes signedPreKey = 9;
+
+    bytes signedPreKeySignature = 10;
+
+    bytes identityKeyEncrypted = 11;
+}
+
 //Login message struct
 message AuthReq {
     string workspace_domain = 1;
@@ -53,11 +73,12 @@ message AuthRes {
     string scope = 9;
     string hash_key = 10;
     string sub = 11;
-    string otp_hash = 12;
-    string require_action = 13;
-    bool require_update_client_key_peer = 14;
-    string salt = 15;
-    string error = 16;
+    string pre_access_token = 12;
+    string require_action = 13; # update need register pin code, update identityKeyEncrypted
+    bool require_update_client_key = 14;
+    PeerGetClientKeyResponse client_key_peer = 15;
+    string salt = 16
+    string error = 17;
 }
 
 //Register message struct
@@ -82,21 +103,18 @@ message RegisterRes {
 message GoogleLoginReq {
     string workspace_domain = 1;
     string id_token = 2;
-    string hash_pincode = 3;
 }
 
 //Login Office365 message struct
 message OfficeLoginReq {
     string workspace_domain = 1;
     string access_token = 2;
-    string hash_pincode = 3;
 }
 
 //Login Facebook message struct
 message FacebookLoginReq {
     string workspace_domain = 1;
     string access_token = 2;
-    string hash_pincode = 3;
 }
 
 // Register a Pincode struct
@@ -124,6 +142,8 @@ message MfaResendOtpRes{
     bool success = 2;
     string error = 3;
 }
+
+// update new verify pin_code rpc using hash code
 
 service Auth {
     rpc login(AuthReq) returns (AuthRes) {};

@@ -176,6 +176,7 @@ class AuthService:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(email, office_id, "", display_name)
                 token = self.exchange_token(new_user_id)
+                # check trường hợp create user fail -> xóa account trong keycloak
                 UserService().create_user_social(id=new_user_id, email=office_token_info["mail"],
                                                           display_name=display_name,
                                                           auth_source='office')
