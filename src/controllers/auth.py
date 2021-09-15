@@ -77,8 +77,13 @@ class AuthController(BaseController):
     @request_logged
     async def login_google(self, request, context):
         try:
-            token = self.service.google_login(request.id_token)
+            token, is_new_user = self.service.google_login(request.id_token)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+            if not is_new_user:
+                user_id = introspect_token['sub']
+                require_update_client_key_peer, hash_pincode_salt = self.user_service.validate_hash_pass(user_id, request.hash_pincode)
+            else:
+                require_update_client_key_peer, hash_pincode_salt = True, ""
             if token:
                 #self.user_service.update_last_login(user_id=introspect_token['sub'])
                 auth_response = auth_messages.AuthRes(
@@ -86,7 +91,10 @@ class AuthController(BaseController):
                     workspace_name=get_system_config()['server_name'],
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
-                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
+                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
+                    require_update_client_key_peer=require_update_client_key_peer,
+                    salt=hash_pincode_salt,
+                    client_key_peer = client_key_peer
                 )
                 if token['refresh_token']:
                     auth_response.refresh_token = token['refresh_token']
@@ -117,8 +125,13 @@ class AuthController(BaseController):
     @request_logged
     async def login_office(self, request, context):
         try:
-            token = self.service.office_login(request.access_token)
+            token, is_new_user = self.service.office_login(request.access_token)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+            if not is_new_user:
+                user_id = introspect_token['sub']
+                require_update_client_key_peer, hash_pincode_salt = self.user_service.validate_hash_pass(user_id, request.hash_pincode)
+            else:
+                require_update_client_key_peer, hash_pincode_salt = True, ""
             if token:
                 #self.user_service.update_last_login(user_id=introspect_token['sub'])
                 auth_response = auth_messages.AuthRes(
@@ -126,7 +139,10 @@ class AuthController(BaseController):
                     workspace_name=get_system_config()['server_name'],
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
-                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
+                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
+                    require_update_client_key_peer=require_update_client_key_peer,
+                    salt=hash_pincode_salt,
+                    client_key_peer = client_key_peer
                 )
                 if token['refresh_token']:
                     auth_response.refresh_token = token['refresh_token']
@@ -157,8 +173,13 @@ class AuthController(BaseController):
     @request_logged
     async def login_facebook(self, request, context):
         try:
-            token = self.service.facebook_login(request.access_token)
+            token, is_new_user = self.service.facebook_login(request.access_token)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+            if not is_new_user:
+                user_id = introspect_token['sub']
+                require_update_client_key_peer, hash_pincode_salt = self.user_service.validate_hash_pass(user_id, request.hash_pincode)
+            else:
+                require_update_client_key_peer, hash_pincode_salt = True, ""
             if token:
                 # self.user_service.update_last_login(user_id=introspect_token['sub'])
                 auth_response = auth_messages.AuthRes(
@@ -166,7 +187,10 @@ class AuthController(BaseController):
                     workspace_name=get_system_config()['server_name'],
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
-                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
+                    hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
+                    require_update_client_key_peer=require_update_client_key_peer,
+                    salt=hash_pincode_salt,
+                    client_key_peer = client_key_peer
                 )
                 if token['refresh_token']:
                     auth_response.refresh_token = token['refresh_token']

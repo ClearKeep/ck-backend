@@ -82,10 +82,18 @@ message RegisterRes {
 message GoogleLoginReq {
     string workspace_domain = 1;
     string id_token = 2;
+    string hash_pincode = 3;
 }
 
 //Login Office365 message struct
 message OfficeLoginReq {
+    string workspace_domain = 1;
+    string access_token = 2;
+    string hash_pincode = 3;
+}
+
+//Login Facebook message struct
+message FacebookLoginReq {
     string workspace_domain = 1;
     string access_token = 2;
     string hash_pincode = 3;
@@ -97,12 +105,7 @@ message RegisterPinCodeReq {
     string salt = 2;
     PeerRegisterClientKeyRequest client_key_peer = 3;
 }
-
-//Login Facebook message struct
-message FacebookLoginReq {
-    string workspace_domain = 1;
-    string access_token = 2;
-}
+// return BaseResponse
 
 message MfaValidateOtpRequest {
     string otp_code = 1;

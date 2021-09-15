@@ -130,7 +130,7 @@ class AuthService:
                 if not user_exist["emailVerified"]:
                     KeyCloakUtils.active_user(user_exist["id"])
                 token = self.exchange_token(user_exist["id"])
-                return token
+                return token, False
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(google_email, google_email, "", google_token_info["name"])
@@ -138,7 +138,7 @@ class AuthService:
                 UserService().create_user_social(id=new_user_id, email=google_email,
                                                           display_name=google_token_info["name"],
                                                           auth_source='google')
-                return token
+                return token, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.GOOGLE_AUTH_FAILED)
@@ -163,7 +163,7 @@ class AuthService:
             user = KeyCloakUtils.get_user_by_email(office_id)
             if user:
                 token = self.exchange_token(user["id"])
-                return token
+                return token, False
             else:
                 display_name = office_token_info["displayName"]
                 email = ""
@@ -179,7 +179,7 @@ class AuthService:
                 UserService().create_user_social(id=new_user_id, email=office_token_info["mail"],
                                                           display_name=display_name,
                                                           auth_source='office')
-                return token
+                return token, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.OFFICE_AUTH_FAILED)
@@ -216,7 +216,7 @@ class AuthService:
             user = KeyCloakUtils.get_user_by_email(facebook_id)
             if user:
                 token = self.exchange_token(user["id"])
-                return token
+                return token, False
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(facebook_email, facebook_id, "", facebook_name)
@@ -224,7 +224,7 @@ class AuthService:
                 UserService().create_user_social(id=new_user_id, email=facebook_email,
                                                           display_name=facebook_name,
                                                           auth_source='facebook')
-                return token
+                return token, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.FACEBOOK_AUTH_FAILED)
