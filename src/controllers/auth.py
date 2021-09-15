@@ -50,7 +50,7 @@ class AuthController(BaseController):
                                         client_key_peer = client_key_peer
                                     )
                 else:
-                    otp_hash = self.service.create_otp_service(user_id)
+                    pre_access_token = self.service.create_otp_service(user_id)
                     require_actions += ["mfa_validate_otp"]
                     require_action_mess = ', '.join(require_actions)
                     auth_message = auth_messages.AuthRes(
@@ -60,7 +60,7 @@ class AuthController(BaseController):
                                         workspace_name=get_system_config()['server_name'],
                                         hash_key=hash_key,
                                         sub=user_id,
-                                        otp_hash=otp_hash,
+                                        pre_access_token=pre_access_token,
                                         require_action=require_action_mess
                                     )
                 return auth_message
@@ -86,8 +86,11 @@ class AuthController(BaseController):
             if not is_new_user:
                 user_id = introspect_token['sub']
                 require_update_client_key_peer, hash_pincode_salt = self.user_service.validate_hash_pass(user_id, request.hash_pincode)
+                client_key_peer = SignalService().peer_get_client_key(user_id)
             else:
                 require_update_client_key_peer, hash_pincode_salt = True, ""
+                client_key_peer = None
+            require_action_mess = "register_pincode" if require_update_client_key_peer else ""
             if token:
                 #self.user_service.update_last_login(user_id=introspect_token['sub'])
                 auth_response = auth_messages.AuthRes(
@@ -96,7 +99,7 @@ class AuthController(BaseController):
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
                     hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
-                    require_update_client_key_peer=require_update_client_key_peer,
+                    require_action=require_action_mess,
                     salt=hash_pincode_salt,
                     client_key_peer = client_key_peer
                 )
@@ -134,8 +137,11 @@ class AuthController(BaseController):
             if not is_new_user:
                 user_id = introspect_token['sub']
                 require_update_client_key_peer, hash_pincode_salt = self.user_service.validate_hash_pass(user_id, request.hash_pincode)
+                client_key_peer = SignalService().peer_get_client_key(user_id)
             else:
                 require_update_client_key_peer, hash_pincode_salt = True, ""
+                client_key_peer = None
+            require_action_mess = "register_pincode" if require_update_client_key_peer else ""
             if token:
                 #self.user_service.update_last_login(user_id=introspect_token['sub'])
                 auth_response = auth_messages.AuthRes(
@@ -144,7 +150,7 @@ class AuthController(BaseController):
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
                     hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
-                    require_update_client_key_peer=require_update_client_key_peer,
+                    require_action=require_action_mess,
                     salt=hash_pincode_salt,
                     client_key_peer = client_key_peer
                 )
@@ -179,12 +185,13 @@ class AuthController(BaseController):
         try:
             token, is_new_user = self.service.facebook_login(request.access_token)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            if not is_new_user:
-                need_register_pin = False
-            # return client_key_peer here
-            else:
-                need_register_pin = True
+            require_update_client_key_peer, hash_pincode_salt = self.user_service.validate_hash_pass(user_id, request.hash_pincode)
+            client_key_peer = SignalService().peer_get_client_key(user_id)
+        else:
+            require_update_client_key_peer, hash_pincode_salt = True, ""
+            client_key_peer = None
             # trả về 1 hash_code để verify với pin_code -> cả 2 trường hợp tạo mới và verify pin_code
+            require_action_mess = "register_pincode" if require_update_client_key_peer else ""
             if token:
                 # self.user_service.update_last_login(user_id=introspect_token['sub'])
                 auth_response = auth_messages.AuthRes(
@@ -193,7 +200,9 @@ class AuthController(BaseController):
                     access_token=token['access_token'],
                     expires_in=token['expires_in'],
                     hash_key=EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub']),
-                    need_register_pin=need_register_pin
+                    require_action=require_action_mess,
+                    salt=hash_pincode_salt,
+                    client_key_peer = client_key_peer
                 )
                 if token['refresh_token']:
                     auth_response.refresh_token = token['refresh_token']
@@ -363,6 +372,7 @@ class AuthController(BaseController):
     async def register_pincode(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
+            success_status, token = self.service.verify_otp(request.user_id, request.otp_hash, request.otp_code)
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             user_id = introspect_token['sub']
             # get temp request
