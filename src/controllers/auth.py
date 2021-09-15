@@ -24,6 +24,7 @@ class AuthController(BaseController):
                 introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = introspect_token['sub']
                 require_update_client_key, hash_password_salt = self.user_service.validate_hash_pass(user_id, request.hash_pass)
+                require_actions = ['update_client_key'] if require_update_client_key else []
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
                 hash_key = EncryptUtils.encoded_hash(
                     request.hash_password, user_id
@@ -32,7 +33,7 @@ class AuthController(BaseController):
                     ### check if login require otp check
                     self.user_service.update_last_login(user_id=user_id)
                     client_key_peer = SignalService().peer_get_client_key(user_id)
-                    # update function gán lại vào response object
+                    require_action_mess = ', '.join(require_actions)
                     auth_message = auth_messages.AuthRes(
                                         workspace_domain=get_owner_workspace_domain(),
                                         workspace_name=get_system_config()['server_name'],
@@ -44,12 +45,14 @@ class AuthController(BaseController):
                                         session_state=token['session_state'],
                                         scope=token['scope'],
                                         hash_key=hash_key,
-                                        require_update_client_key=require_update_client_key,
+                                        require_action=require_action_mess,
                                         salt=hash_password_salt,
                                         client_key_peer = client_key_peer
                                     )
                 else:
                     otp_hash = self.service.create_otp_service(user_id)
+                    require_actions += ["mfa_validate_otp"]
+                    require_action_mess = ', '.join(require_actions)
                     auth_message = auth_messages.AuthRes(
                                         require_update_client_key_peer=require_update_client_key,
                                         salt=hash_password_salt,
@@ -58,7 +61,7 @@ class AuthController(BaseController):
                                         hash_key=hash_key,
                                         sub=user_id,
                                         otp_hash=otp_hash,
-                                        require_action="mfa_validate_otp"
+                                        require_action=require_action_mess
                                     )
                 return auth_message
             else:
@@ -366,7 +369,7 @@ class AuthController(BaseController):
             old_client_key_peer = SignalService().peer_get_client_key(user_id)
             SignalService().peer_register_client_key(user_id, request.client_key_peer)
             try:
-                UserService().update_hash_pin(user_id, request.hash_password, request.salt)
+                UserService().update_hash_pin(user_id, request.hash_pincode, request.salt)
             except Exception as e:
                 logger.error(e)
                 SignalService().peer_register_client_key(user_id, old_client_key_peer)

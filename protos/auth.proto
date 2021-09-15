@@ -23,6 +23,7 @@ message PeerRegisterClientKeyRequest {
     bytes identityKeyEncrypted = 9;
 }
 
+
 // Response
 message PeerGetClientKeyResponse {
     string clientId = 1;
@@ -73,12 +74,11 @@ message AuthRes {
     string scope = 9;
     string hash_key = 10;
     string sub = 11;
-    string pre_access_token = 12;
-    string require_action = 13; # update need register pin code, update identityKeyEncrypted
-    bool require_update_client_key = 14;
+    string otp_hash = 12;
+    string require_action = 13;
+    string salt = 14;
     PeerGetClientKeyResponse client_key_peer = 15;
-    string salt = 16
-    string error = 17;
+    string error = 16;
 }
 
 //Register message struct

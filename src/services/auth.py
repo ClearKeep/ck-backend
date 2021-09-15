@@ -135,9 +135,12 @@ class AuthService:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(google_email, google_email, "", google_token_info["name"])
                 token = self.exchange_token(new_user_id)
-                UserService().create_user_social(id=new_user_id, email=google_email,
+                new_user = UserService().create_user_social(id=new_user_id, email=google_email,
                                                           display_name=google_token_info["name"],
                                                           auth_source='google')
+                if new_user is None:
+                    self.delete_user(new_user_id)
+                    raise Exception(Message.REGISTER_USER_FAILED)
                 return token, True
         except Exception as e:
             logger.info(e)
@@ -176,10 +179,12 @@ class AuthService:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(email, office_id, "", display_name)
                 token = self.exchange_token(new_user_id)
-                # check trường hợp create user fail -> xóa account trong keycloak
-                UserService().create_user_social(id=new_user_id, email=office_token_info["mail"],
+                new_user = UserService().create_user_social(id=new_user_id, email=office_token_info["mail"],
                                                           display_name=display_name,
                                                           auth_source='office')
+                if new_user is None:
+                    self.delete_user(new_user_id)
+                    raise Exception(Message.REGISTER_USER_FAILED)
                 return token, True
         except Exception as e:
             logger.info(e)
@@ -222,9 +227,12 @@ class AuthService:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(facebook_email, facebook_id, "", facebook_name)
                 token = self.exchange_token(new_user_id)
-                UserService().create_user_social(id=new_user_id, email=facebook_email,
+                new_user = UserService().create_user_social(id=new_user_id, email=facebook_email,
                                                           display_name=facebook_name,
                                                           auth_source='facebook')
+                if new_user is None:
+                    self.delete_user(new_user_id)
+                    raise Exception(Message.REGISTER_USER_FAILED)
                 return token, True
         except Exception as e:
             logger.info(e)
