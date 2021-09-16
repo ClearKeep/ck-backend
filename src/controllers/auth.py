@@ -32,7 +32,20 @@ class AuthController(BaseController):
                 if not mfa_state:
                     ### check if login require otp check
                     self.user_service.update_last_login(user_id=user_id)
-                    client_key_peer = SignalService().peer_get_client_key(user_id)
+                    client_key_obj = SignalService().peer_get_client_key(user_id)
+                    client_key_peer = auth_messages.PeerGetClientKeyResponse(
+                                            clientId=user_id,
+                                            workspace_domain=get_owner_workspace_domain(),
+                                            registrationId=client_key_obj.registrationId,
+                                            deviceId=client_key_obj.deviceId,
+                                            identityKeyPublic=client_key_obj.identityKeyPublic,
+                                            preKeyId=client_key_obj.preKeyId,
+                                            preKey=client_key_obj.preKey,
+                                            signedPreKeyId=client_key_obj.signedPreKeyId,
+                                            signedPreKey=client_key_obj.signedPreKey,
+                                            signedPreKeySignature=client_key_obj.signedPreKeySignature,
+                                            identityKeyEncrypted=client_key_obj.identityKeyEncrypted
+                                        )
                     require_action_mess = ', '.join(require_actions)
                     auth_message = auth_messages.AuthRes(
                                         workspace_domain=get_owner_workspace_domain(),
@@ -54,7 +67,6 @@ class AuthController(BaseController):
                     require_actions += ["mfa_validate_otp"]
                     require_action_mess = ', '.join(require_actions)
                     auth_message = auth_messages.AuthRes(
-                                        require_update_client_key_peer=require_update_client_key,
                                         salt=hash_password_salt,
                                         workspace_domain=get_owner_workspace_domain(),
                                         workspace_name=get_system_config()['server_name'],
@@ -325,7 +337,20 @@ class AuthController(BaseController):
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             introspect_token = KeyCloakUtils.introspect_token(token["access_token"])
             require_action = ""
-            client_key_peer = SignalService().peer_get_client_key(user_id)
+            client_key_obj = SignalService().peer_get_client_key(user_id)
+            client_key_peer = auth_messages.PeerGetClientKeyResponse(
+                                    clientId=user_id,
+                                    workspace_domain=get_owner_workspace_domain(),
+                                    registrationId=client_key_obj.registrationId,
+                                    deviceId=client_key_obj.deviceId,
+                                    identityKeyPublic=client_key_obj.identityKeyPublic,
+                                    preKeyId=client_key_obj.preKeyId,
+                                    preKey=client_key_obj.preKey,
+                                    signedPreKeyId=client_key_obj.signedPreKeyId,
+                                    signedPreKey=client_key_obj.signedPreKey,
+                                    signedPreKeySignature=client_key_obj.signedPreKeySignature,
+                                    identityKeyEncrypted=client_key_obj.identityKeyEncrypted
+                                )
             return auth_messages.AuthRes(
                 client_key_peer = client_key_peer,
                 workspace_domain=get_owner_workspace_domain(),
