@@ -127,6 +127,12 @@ message RegisterPinCodeReq {
 }
 // return BaseResponse
 
+message RegisterPincodeRes {
+    string user_id = 1;
+    string pre_access_token = 2;
+    string require_action = 3;
+}
+
 // VerifyPinCodeReq
 message VerifyPinCodeReq {
     string pre_access_token = 1;
@@ -165,5 +171,5 @@ service Auth {
     rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
     rpc logout(LogoutReq) returns (BaseResponse) {};
     rpc register_pincode(RegisterPinCodeReq) returns (BaseResponse) {};
-    rpc veriry_pincode(VerifyPinCodeReq) returns (AuthRes) {};
+    rpc verify_pincode(VerifyPinCodeReq) returns (AuthRes) {};
 }

@@ -356,3 +356,16 @@ class AuthService:
         except Exception as e:
             logger.info(e)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
+
+    def hash_pre_access_token(self, client_id, require_action):
+        # lend the hash_uid from utils.otp
+        hash_key = OTPServer.hash_uid(client_id, require_action)
+        return hash_key
+
+    def verify_hash_pre_access_token(self, client_id, hash_key, require_action):
+        success_status = OTPServer.verify_hash_code(client_id, require_action, hash_key)
+        if success_status:
+            token = self.exchange_token(client_id)
+        else:
+            token = None
+        return success_status, token
