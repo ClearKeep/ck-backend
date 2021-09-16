@@ -27,6 +27,14 @@ message ClientInGroupResponse {
   string status = 4;
 }
 
+message GroupClientKeyObject {
+    string  workspace_domain = 1;
+    string clientId = 2;
+    int32 deviceId = 3;
+    bytes clientKeyDistribution = 4;
+    bytes identityKeyEncrypted = 5;
+}
+
 message GroupObjectResponse {
   int64 group_id = 1;
   string group_name = 2;
@@ -41,6 +49,7 @@ message GroupObjectResponse {
   int64 updated_at = 11;
   string group_rtc_token = 12;
   bool has_unread_message = 13;
+  GroupClientKeyObject client_key = 14;
 }
 
 
@@ -84,7 +93,7 @@ message GetGroupRequest {
 
 // Request: get joined groups
 message GetJoinedGroupsRequest {
-  string client_id = 1;
+  //string client_id = 1;
 }
 // Response
 message GetJoinedGroupsResponse {
