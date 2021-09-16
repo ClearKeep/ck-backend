@@ -62,9 +62,10 @@ class UserService(BaseService):
             # if last_name:
             #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
             self.model.add()
+            return self
         except Exception as e:
             logger.info(e)
-            raise Exception(Message.REGISTER_USER_FAILED)
+            return None
 
     def get_google_user(self, email, auth_source):
         user_info = self.model.get_google_user(email, auth_source)
@@ -234,6 +235,12 @@ class UserService(BaseService):
         except Exception as e:
             logger.error(e)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
+
+    def validate_hash_pass(self, user_id, hash_pass):
+        # compare current hash_password with stored hash_password in db, return boolean value for describe state of needing to update hash password
+        # also return hash_code_salt stored in db
+        user_info = self.model.get(user_id)
+        return (hash_pass != user_info.hash_code, user_info.hash_code_salt)
 
     def get_profile(self, user_id, hash_key):
         try:

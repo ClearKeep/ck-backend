@@ -8,6 +8,7 @@ from utils.logger import *
 class AuthenSetting(Database.get().Model):
     __tablename__ = 'authen_setting'
     id = Database.get().Column(Database.get().String(36), primary_key=True)
+    # otp setting
     mfa_enable = Database.get().Column(Database.get().Boolean, unique=False, default=False)
     otp = Database.get().Column(Database.get().String(6), unique=False, nullable=True)
     otp_valid_time = Database.get().Column(Database.get().DateTime, unique=False, nullable=True)
