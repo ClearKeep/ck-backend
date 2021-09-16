@@ -23,7 +23,7 @@ class AuthController(BaseController):
             if token:
                 introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = introspect_token['sub']
-                require_update_client_key, hash_password_salt = self.user_service.validate_hash_pass(user_id, request.hash_pass)
+                require_update_client_key, hash_password_salt = self.user_service.validate_hash_pass(user_id, request.hash_password)
                 require_actions = ['update_client_key'] if require_update_client_key else []
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
                 hash_key = EncryptUtils.encoded_hash(
@@ -36,15 +36,15 @@ class AuthController(BaseController):
                     client_key_peer = auth_messages.PeerGetClientKeyResponse(
                                             clientId=user_id,
                                             workspace_domain=get_owner_workspace_domain(),
-                                            registrationId=client_key_obj.registrationId,
-                                            deviceId=client_key_obj.deviceId,
-                                            identityKeyPublic=client_key_obj.identityKeyPublic,
-                                            preKeyId=client_key_obj.preKeyId,
-                                            preKey=client_key_obj.preKey,
-                                            signedPreKeyId=client_key_obj.signedPreKeyId,
-                                            signedPreKey=client_key_obj.signedPreKey,
-                                            signedPreKeySignature=client_key_obj.signedPreKeySignature,
-                                            identityKeyEncrypted=client_key_obj.identityKeyEncrypted
+                                            registrationId=client_key_obj.registration_id,
+                                            deviceId=client_key_obj.device_id,
+                                            identityKeyPublic=client_key_obj.identity_key_public,
+                                            preKeyId=client_key_obj.prekey_id,
+                                            preKey=client_key_obj.prekey,
+                                            signedPreKeyId=client_key_obj.signed_prekey_id,
+                                            signedPreKey=client_key_obj.signed_prekey,
+                                            signedPreKeySignature=client_key_obj.signed_prekey_signature,
+                                            identityKeyEncrypted=client_key_obj.identity_key_encrypted
                                         )
                     require_action_mess = ', '.join(require_actions)
                     auth_message = auth_messages.AuthRes(
