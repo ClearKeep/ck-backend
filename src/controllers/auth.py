@@ -185,11 +185,12 @@ class AuthController(BaseController):
         try:
             token, is_new_user = self.service.facebook_login(request.access_token)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            require_update_client_key_peer, hash_pincode_salt = self.user_service.validate_hash_pass(user_id, request.hash_pincode)
-            client_key_peer = SignalService().peer_get_client_key(user_id)
-        else:
-            require_update_client_key_peer, hash_pincode_salt = True, ""
-            client_key_peer = None
+            if is_new_user:
+                require_update_client_key_peer, hash_pincode_salt = self.user_service.validate_hash_pass(user_id, request.hash_pincode)
+                client_key_peer = SignalService().peer_get_client_key(user_id)
+            else:
+                require_update_client_key_peer, hash_pincode_salt = True, ""
+                client_key_peer = None
             # trả về 1 hash_code để verify với pin_code -> cả 2 trường hợp tạo mới và verify pin_code
             require_action_mess = "register_pincode" if require_update_client_key_peer else ""
             if token:
