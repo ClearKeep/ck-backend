@@ -32,7 +32,20 @@ class AuthController(BaseController):
                 if not mfa_state:
                     ### check if login require otp check
                     self.user_service.update_last_login(user_id=user_id)
-                    client_key_peer = SignalService().peer_get_client_key(user_id)
+                    client_key_obj = SignalService().peer_get_client_key(user_id)
+                    client_key_peer = auth_messages.PeerGetClientKeyResponse(
+                                            clientId=user_id,
+                                            workspace_domain=get_owner_workspace_domain(),
+                                            registrationId=client_key_obj.registrationId,
+                                            deviceId=client_key_obj.deviceId,
+                                            identityKeyPublic=client_key_obj.identityKeyPublic,
+                                            preKeyId=client_key_obj.preKeyId,
+                                            preKey=client_key_obj.preKey,
+                                            signedPreKeyId=client_key_obj.signedPreKeyId,
+                                            signedPreKey=client_key_obj.signedPreKey,
+                                            signedPreKeySignature=client_key_obj.signedPreKeySignature,
+                                            identityKeyEncrypted=client_key_obj.identityKeyEncrypted
+                                        )
                     require_action_mess = ', '.join(require_actions)
                     auth_message = auth_messages.AuthRes(
                                         workspace_domain=get_owner_workspace_domain(),
@@ -86,7 +99,20 @@ class AuthController(BaseController):
             if not is_new_user:
                 user_id = introspect_token['sub']
                 require_update_client_key_peer, hash_pincode_salt = self.user_service.validate_hash_pass(user_id, request.hash_pincode)
-                client_key_peer = SignalService().peer_get_client_key(user_id)
+                client_key_obj = SignalService().peer_get_client_key(user_id)
+                client_key_peer = auth_messages.PeerGetClientKeyResponse(
+                                        clientId=user_id,
+                                        workspace_domain=get_owner_workspace_domain(),
+                                        registrationId=client_key_obj.registrationId,
+                                        deviceId=client_key_obj.deviceId,
+                                        identityKeyPublic=client_key_obj.identityKeyPublic,
+                                        preKeyId=client_key_obj.preKeyId,
+                                        preKey=client_key_obj.preKey,
+                                        signedPreKeyId=client_key_obj.signedPreKeyId,
+                                        signedPreKey=client_key_obj.signedPreKey,
+                                        signedPreKeySignature=client_key_obj.signedPreKeySignature,
+                                        identityKeyEncrypted=client_key_obj.identityKeyEncrypted
+                                    )
             else:
                 require_update_client_key_peer, hash_pincode_salt = True, ""
                 client_key_peer = None
@@ -137,7 +163,20 @@ class AuthController(BaseController):
             if not is_new_user:
                 user_id = introspect_token['sub']
                 require_update_client_key_peer, hash_pincode_salt = self.user_service.validate_hash_pass(user_id, request.hash_pincode)
-                client_key_peer = SignalService().peer_get_client_key(user_id)
+                client_key_obj = SignalService().peer_get_client_key(user_id)
+                client_key_peer = auth_messages.PeerGetClientKeyResponse(
+                                        clientId=user_id,
+                                        workspace_domain=get_owner_workspace_domain(),
+                                        registrationId=client_key_obj.registrationId,
+                                        deviceId=client_key_obj.deviceId,
+                                        identityKeyPublic=client_key_obj.identityKeyPublic,
+                                        preKeyId=client_key_obj.preKeyId,
+                                        preKey=client_key_obj.preKey,
+                                        signedPreKeyId=client_key_obj.signedPreKeyId,
+                                        signedPreKey=client_key_obj.signedPreKey,
+                                        signedPreKeySignature=client_key_obj.signedPreKeySignature,
+                                        identityKeyEncrypted=client_key_obj.identityKeyEncrypted
+                                    )
             else:
                 require_update_client_key_peer, hash_pincode_salt = True, ""
                 client_key_peer = None
@@ -187,7 +226,20 @@ class AuthController(BaseController):
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if is_new_user:
                 require_update_client_key_peer, hash_pincode_salt = self.user_service.validate_hash_pass(user_id, request.hash_pincode)
-                client_key_peer = SignalService().peer_get_client_key(user_id)
+                client_key_obj = SignalService().peer_get_client_key(user_id)
+                client_key_peer = auth_messages.PeerGetClientKeyResponse(
+                                        clientId=user_id,
+                                        workspace_domain=get_owner_workspace_domain(),
+                                        registrationId=client_key_obj.registrationId,
+                                        deviceId=client_key_obj.deviceId,
+                                        identityKeyPublic=client_key_obj.identityKeyPublic,
+                                        preKeyId=client_key_obj.preKeyId,
+                                        preKey=client_key_obj.preKey,
+                                        signedPreKeyId=client_key_obj.signedPreKeyId,
+                                        signedPreKey=client_key_obj.signedPreKey,
+                                        signedPreKeySignature=client_key_obj.signedPreKeySignature,
+                                        identityKeyEncrypted=client_key_obj.identityKeyEncrypted
+                                    )
             else:
                 require_update_client_key_peer, hash_pincode_salt = True, ""
                 client_key_peer = None
@@ -325,9 +377,22 @@ class AuthController(BaseController):
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             introspect_token = KeyCloakUtils.introspect_token(token["access_token"])
             require_action = ""
-            client_key_peer = SignalService().peer_get_client_key(user_id)
+            client_key_obj = SignalService().peer_get_client_key(user_id)
+            client_key_peer = auth_messages.PeerGetClientKeyResponse(
+                                    clientId=user_id,
+                                    workspace_domain=get_owner_workspace_domain(),
+                                    registrationId=client_key_obj.registrationId,
+                                    deviceId=client_key_obj.deviceId,
+                                    identityKeyPublic=client_key_obj.identityKeyPublic,
+                                    preKeyId=client_key_obj.preKeyId,
+                                    preKey=client_key_obj.preKey,
+                                    signedPreKeyId=client_key_obj.signedPreKeyId,
+                                    signedPreKey=client_key_obj.signedPreKey,
+                                    signedPreKeySignature=client_key_obj.signedPreKeySignature,
+                                    identityKeyEncrypted=client_key_obj.identityKeyEncrypted
+                                )
             return auth_messages.AuthRes(
-                client_key_peer = client_key_peer,
+                client_key_peer=client_key_peer,
                 workspace_domain=get_owner_workspace_domain(),
                 workspace_name=get_system_config()['server_name'],
                 access_token=token["access_token"],
@@ -377,12 +442,59 @@ class AuthController(BaseController):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             user_id = introspect_token['sub']
             # get temp request
-            old_client_key_peer = SignalService().peer_get_client_key(user_id)
+            old_client_key_obj = SignalService().peer_get_client_key(user_id)
             SignalService().peer_register_client_key(user_id, request.client_key_peer)
             try:
                 UserService().update_hash_pin(user_id, request.hash_pincode, request.salt)
             except Exception as e:
                 logger.error(e)
+                old_client_key_peer = auth_messages.PeerRegisterClientKeyRequest(
+                                                registrationId=client_key_obj.registrationId,
+                                                deviceId=client_key_obj.deviceId,
+                                                identityKeyPublic=client_key_obj.identityKeyPublic,
+                                                preKeyId=client_key_obj.preKeyId,
+                                                preKey=client_key_obj.preKey,
+                                                signedPreKeyId=client_key_obj.signedPreKeyId,
+                                                signedPreKey=client_key_obj.signedPreKey,
+                                                signedPreKeySignature=client_key_obj.signedPreKeySignature,
+                                                identityKeyEncrypted=client_key_obj.identityKeyEncrypted
+                                        )
+                SignalService().peer_register_client_key(user_id, old_client_key_peer)
+                raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    async def veriry_pincode(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            success_status, token = self.service.verify_otp(request.user_id, request.otp_hash, request.otp_code)
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            user_id = introspect_token['sub']
+            # get temp request
+            old_client_key_obj = SignalService().peer_get_client_key(user_id)
+            SignalService().peer_register_client_key(user_id, request.client_key_peer)
+            try:
+                UserService().update_hash_pin(user_id, request.hash_pincode, request.salt)
+            except Exception as e:
+                logger.error(e)
+                old_client_key_peer = auth_messages.PeerRegisterClientKeyRequest(
+                                                registrationId=client_key_obj.registrationId,
+                                                deviceId=client_key_obj.deviceId,
+                                                identityKeyPublic=client_key_obj.identityKeyPublic,
+                                                preKeyId=client_key_obj.preKeyId,
+                                                preKey=client_key_obj.preKey,
+                                                signedPreKeyId=client_key_obj.signedPreKeyId,
+                                                signedPreKey=client_key_obj.signedPreKey,
+                                                signedPreKeySignature=client_key_obj.signedPreKeySignature,
+                                                identityKeyEncrypted=client_key_obj.identityKeyEncrypted
+                                        )
                 SignalService().peer_register_client_key(user_id, old_client_key_peer)
                 raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
         except Exception as e:
