@@ -83,3 +83,8 @@ class SignalService(BaseService):
                                 notify_inapp_service.notify_client_update_peer_key(client_peer_id, client_id, group_peer.id)
         except Exception as e:
             logger.error(e)
+
+    def delete_client_peer_key(self, client_id):
+        client_peer_key = self.peer_model.get_by_client_id(client_id)
+        client_peer_key.delete()
+        return True

@@ -125,13 +125,8 @@ message RegisterPinCodeReq {
     string salt = 4;
     PeerRegisterClientKeyRequest client_key_peer = 5;
 }
-// return BaseResponse
+// return AuthRes
 
-message RegisterPincodeRes {
-    string user_id = 1;
-    string pre_access_token = 2;
-    string require_action = 3;
-}
 
 // VerifyPinCodeReq
 message VerifyPinCodeReq {
@@ -139,6 +134,7 @@ message VerifyPinCodeReq {
     string user_id = 2;
     string hash_pincode = 3;
 }
+// return AuthRes
 
 message MfaValidateOtpRequest {
     string otp_code = 1;
@@ -158,8 +154,6 @@ message MfaResendOtpRes{
     string error = 3;
 }
 
-// update new verify pin_code rpc using hash code
-
 service Auth {
     rpc login(AuthReq) returns (AuthRes) {};
     rpc login_google(GoogleLoginReq) returns (AuthRes) {};
@@ -170,6 +164,6 @@ service Auth {
     rpc register(RegisterReq) returns (RegisterRes) {};
     rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
     rpc logout(LogoutReq) returns (BaseResponse) {};
-    rpc register_pincode(RegisterPinCodeReq) returns (RegisterPincodeRes) {};
+    rpc register_pincode(RegisterPinCodeReq) returns (AuthRes) {};
     rpc verify_pincode(VerifyPinCodeReq) returns (AuthRes) {};
 }

@@ -226,13 +226,13 @@ class AuthService:
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(facebook_email, facebook_id, "", facebook_name)
-                token = self.exchange_token(new_user_id)
                 new_user = UserService().create_user_social(id=new_user_id, email=facebook_email,
                                                           display_name=facebook_name,
                                                           auth_source='facebook')
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
+                token = self.exchange_token(new_user_id)
                 return token, True
         except Exception as e:
             logger.info(e)
@@ -362,9 +362,9 @@ class AuthService:
         hash_key = OTPServer.hash_uid(client_id, require_action)
         return hash_key
 
-    def verify_hash_pre_access_token(self, client_id, hash_key, require_action):
+    def verify_hash_pre_access_token(self, client_id, hash_key, require_action, get_token=True):
         success_status = OTPServer.verify_hash_code(client_id, require_action, hash_key)
-        if success_status:
+        if success_status and get_token:
             token = self.exchange_token(client_id)
         else:
             token = None
