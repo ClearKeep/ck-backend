@@ -6,9 +6,7 @@ from protos import auth_pb2 as protos_dot_auth__pb2
 
 
 class AuthStub(object):
-    """update new verify pin_code rpc using hash code
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -64,7 +62,7 @@ class AuthStub(object):
         self.register_pincode = channel.unary_unary(
                 '/auth.Auth/register_pincode',
                 request_serializer=protos_dot_auth__pb2.RegisterPinCodeReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.RegisterPincodeRes.FromString,
+                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
                 )
         self.verify_pincode = channel.unary_unary(
                 '/auth.Auth/verify_pincode',
@@ -74,9 +72,7 @@ class AuthStub(object):
 
 
 class AuthServicer(object):
-    """update new verify pin_code rpc using hash code
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def login(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -195,7 +191,7 @@ def add_AuthServicer_to_server(servicer, server):
             'register_pincode': grpc.unary_unary_rpc_method_handler(
                     servicer.register_pincode,
                     request_deserializer=protos_dot_auth__pb2.RegisterPinCodeReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.RegisterPincodeRes.SerializeToString,
+                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
             ),
             'verify_pincode': grpc.unary_unary_rpc_method_handler(
                     servicer.verify_pincode,
@@ -210,9 +206,7 @@ def add_AuthServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class Auth(object):
-    """update new verify pin_code rpc using hash code
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def login(request,
@@ -380,7 +374,7 @@ class Auth(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/register_pincode',
             protos_dot_auth__pb2.RegisterPinCodeReq.SerializeToString,
-            protos_dot_auth__pb2.RegisterPincodeRes.FromString,
+            protos_dot_auth__pb2.AuthRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
