@@ -170,6 +170,6 @@ service Auth {
     rpc register(RegisterReq) returns (RegisterRes) {};
     rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
     rpc logout(LogoutReq) returns (BaseResponse) {};
-    rpc register_pincode(RegisterPinCodeReq) returns (BaseResponse) {};
+    rpc register_pincode(RegisterPinCodeReq) returns (RegisterPincodeRes) {};
     rpc verify_pincode(VerifyPinCodeReq) returns (AuthRes) {};
 }
