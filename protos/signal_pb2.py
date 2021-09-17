@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x13protos/signal.proto\x12\x06signal\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\xe4\x01\n\x1cPeerRegisterClientKeyRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x16\n\x0eregistrationId\x18\x02 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x03 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x04 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x05 \x01(\x05\x12\x0e\n\x06preKey\x18\x06 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x07 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\x08 \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\t \x01(\x0c\"E\n\x17PeerGetClientKeyRequest\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\"\xfa\x01\n\x18PeerGetClientKeyResponse\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x16\n\x0eregistrationId\x18\x03 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x04 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x05 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x06 \x01(\x05\x12\x0e\n\x06preKey\x18\x07 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x08 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\t \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\n \x01(\x0c\"\x7f\n\x1dGroupRegisterClientKeyRequest\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\x12\x10\n\x08\x64\x65viceId\x18\x02 \x01(\x05\x12\x1d\n\x15\x63lientKeyDistribution\x18\x03 \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\x04 \x01(\x0c\"s\n\x14GroupClientKeyObject\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x10\n\x08\x64\x65viceId\x18\x03 \x01(\x05\x12\x1d\n\x15\x63lientKeyDistribution\x18\x04 \x01(\x0c\"=\n\x18GroupGetClientKeyRequest\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\"]\n\x19GroupGetClientKeyResponse\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\x12/\n\tclientKey\x18\x02 \x01(\x0b\x32\x1c.signal.GroupClientKeyObject\"F\n!WorkspaceGroupGetClientKeyRequest\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\"f\n\"WorkspaceGroupGetClientKeyResponse\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\x12/\n\tclientKey\x18\x02 \x01(\x0b\x32\x1c.signal.GroupClientKeyObject\".\n\x1bGroupGetAllClientKeyRequest\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\"c\n\x1cGroupGetAllClientKeyResponse\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\x12\x32\n\x0clstClientKey\x18\x02 \x03(\x0b\x32\x1c.signal.GroupClientKeyObject2\xcc\x04\n\x15SignalKeyDistribution\x12S\n\x15PeerRegisterClientKey\x12$.signal.PeerRegisterClientKeyRequest\x1a\x14.signal.BaseResponse\x12U\n\x10PeerGetClientKey\x12\x1f.signal.PeerGetClientKeyRequest\x1a .signal.PeerGetClientKeyResponse\x12U\n\x16GroupRegisterClientKey\x12%.signal.GroupRegisterClientKeyRequest\x1a\x14.signal.BaseResponse\x12X\n\x11GroupGetClientKey\x12 .signal.GroupGetClientKeyRequest\x1a!.signal.GroupGetClientKeyResponse\x12\x61\n\x14GroupGetAllClientKey\x12#.signal.GroupGetAllClientKeyRequest\x1a$.signal.GroupGetAllClientKeyResponse\x12s\n\x1aWorkspaceGroupGetClientKey\x12).signal.WorkspaceGroupGetClientKeyRequest\x1a*.signal.WorkspaceGroupGetClientKeyResponseb\x06proto3'
+  serialized_pb=b'\n\x13protos/signal.proto\x12\x06signal\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\xe4\x01\n\x1cPeerRegisterClientKeyRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x16\n\x0eregistrationId\x18\x02 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x03 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x04 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x05 \x01(\x05\x12\x0e\n\x06preKey\x18\x06 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x07 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\x08 \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\t \x01(\x0c\"E\n\x17PeerGetClientKeyRequest\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\"\xfa\x01\n\x18PeerGetClientKeyResponse\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x16\n\x0eregistrationId\x18\x03 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x04 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x05 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x06 \x01(\x05\x12\x0e\n\x06preKey\x18\x07 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x08 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\t \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\n \x01(\x0c\"\x7f\n\x1dGroupRegisterClientKeyRequest\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\x12\x10\n\x08\x64\x65viceId\x18\x02 \x01(\x05\x12\x1d\n\x15\x63lientKeyDistribution\x18\x03 \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\x04 \x01(\x0c\"`\n\x1bGroupUpdateClientKeyRequest\x12\x41\n\x12listGroupClientKey\x18\x01 \x03(\x0b\x32%.signal.GroupRegisterClientKeyRequest\"s\n\x14GroupClientKeyObject\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x10\n\x08\x64\x65viceId\x18\x03 \x01(\x05\x12\x1d\n\x15\x63lientKeyDistribution\x18\x04 \x01(\x0c\"=\n\x18GroupGetClientKeyRequest\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\"]\n\x19GroupGetClientKeyResponse\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\x12/\n\tclientKey\x18\x02 \x01(\x0b\x32\x1c.signal.GroupClientKeyObject\"F\n!WorkspaceGroupGetClientKeyRequest\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\"f\n\"WorkspaceGroupGetClientKeyResponse\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\x12/\n\tclientKey\x18\x02 \x01(\x0b\x32\x1c.signal.GroupClientKeyObject\".\n\x1bGroupGetAllClientKeyRequest\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\"c\n\x1cGroupGetAllClientKeyResponse\x12\x0f\n\x07groupId\x18\x01 \x01(\x03\x12\x32\n\x0clstClientKey\x18\x02 \x03(\x0b\x32\x1c.signal.GroupClientKeyObject2\x9f\x05\n\x15SignalKeyDistribution\x12S\n\x15PeerRegisterClientKey\x12$.signal.PeerRegisterClientKeyRequest\x1a\x14.signal.BaseResponse\x12U\n\x10PeerGetClientKey\x12\x1f.signal.PeerGetClientKeyRequest\x1a .signal.PeerGetClientKeyResponse\x12U\n\x16GroupRegisterClientKey\x12%.signal.GroupRegisterClientKeyRequest\x1a\x14.signal.BaseResponse\x12Q\n\x14GroupUpdateClientKey\x12#.signal.GroupUpdateClientKeyRequest\x1a\x14.signal.BaseResponse\x12X\n\x11GroupGetClientKey\x12 .signal.GroupGetClientKeyRequest\x1a!.signal.GroupGetClientKeyResponse\x12\x61\n\x14GroupGetAllClientKey\x12#.signal.GroupGetAllClientKeyRequest\x1a$.signal.GroupGetAllClientKeyResponse\x12s\n\x1aWorkspaceGroupGetClientKey\x12).signal.WorkspaceGroupGetClientKeyRequest\x1a*.signal.WorkspaceGroupGetClientKeyResponseb\x06proto3'
 )
 
 
@@ -332,6 +332,38 @@ _GROUPREGISTERCLIENTKEYREQUEST = _descriptor.Descriptor(
 )
 
 
+_GROUPUPDATECLIENTKEYREQUEST = _descriptor.Descriptor(
+  name='GroupUpdateClientKeyRequest',
+  full_name='signal.GroupUpdateClientKeyRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='listGroupClientKey', full_name='signal.GroupUpdateClientKeyRequest.listGroupClientKey', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=746,
+  serialized_end=842,
+)
+
+
 _GROUPCLIENTKEYOBJECT = _descriptor.Descriptor(
   name='GroupClientKeyObject',
   full_name='signal.GroupClientKeyObject',
@@ -380,8 +412,8 @@ _GROUPCLIENTKEYOBJECT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=746,
-  serialized_end=861,
+  serialized_start=844,
+  serialized_end=959,
 )
 
 
@@ -419,8 +451,8 @@ _GROUPGETCLIENTKEYREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=863,
-  serialized_end=924,
+  serialized_start=961,
+  serialized_end=1022,
 )
 
 
@@ -458,8 +490,8 @@ _GROUPGETCLIENTKEYRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=926,
-  serialized_end=1019,
+  serialized_start=1024,
+  serialized_end=1117,
 )
 
 
@@ -497,8 +529,8 @@ _WORKSPACEGROUPGETCLIENTKEYREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1021,
-  serialized_end=1091,
+  serialized_start=1119,
+  serialized_end=1189,
 )
 
 
@@ -536,8 +568,8 @@ _WORKSPACEGROUPGETCLIENTKEYRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1093,
-  serialized_end=1195,
+  serialized_start=1191,
+  serialized_end=1293,
 )
 
 
@@ -568,8 +600,8 @@ _GROUPGETALLCLIENTKEYREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1197,
-  serialized_end=1243,
+  serialized_start=1295,
+  serialized_end=1341,
 )
 
 
@@ -607,10 +639,11 @@ _GROUPGETALLCLIENTKEYRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1245,
-  serialized_end=1344,
+  serialized_start=1343,
+  serialized_end=1442,
 )
 
+_GROUPUPDATECLIENTKEYREQUEST.fields_by_name['listGroupClientKey'].message_type = _GROUPREGISTERCLIENTKEYREQUEST
 _GROUPGETCLIENTKEYRESPONSE.fields_by_name['clientKey'].message_type = _GROUPCLIENTKEYOBJECT
 _WORKSPACEGROUPGETCLIENTKEYRESPONSE.fields_by_name['clientKey'].message_type = _GROUPCLIENTKEYOBJECT
 _GROUPGETALLCLIENTKEYRESPONSE.fields_by_name['lstClientKey'].message_type = _GROUPCLIENTKEYOBJECT
@@ -619,6 +652,7 @@ DESCRIPTOR.message_types_by_name['PeerRegisterClientKeyRequest'] = _PEERREGISTER
 DESCRIPTOR.message_types_by_name['PeerGetClientKeyRequest'] = _PEERGETCLIENTKEYREQUEST
 DESCRIPTOR.message_types_by_name['PeerGetClientKeyResponse'] = _PEERGETCLIENTKEYRESPONSE
 DESCRIPTOR.message_types_by_name['GroupRegisterClientKeyRequest'] = _GROUPREGISTERCLIENTKEYREQUEST
+DESCRIPTOR.message_types_by_name['GroupUpdateClientKeyRequest'] = _GROUPUPDATECLIENTKEYREQUEST
 DESCRIPTOR.message_types_by_name['GroupClientKeyObject'] = _GROUPCLIENTKEYOBJECT
 DESCRIPTOR.message_types_by_name['GroupGetClientKeyRequest'] = _GROUPGETCLIENTKEYREQUEST
 DESCRIPTOR.message_types_by_name['GroupGetClientKeyResponse'] = _GROUPGETCLIENTKEYRESPONSE
@@ -662,6 +696,13 @@ GroupRegisterClientKeyRequest = _reflection.GeneratedProtocolMessageType('GroupR
   # @@protoc_insertion_point(class_scope:signal.GroupRegisterClientKeyRequest)
   })
 _sym_db.RegisterMessage(GroupRegisterClientKeyRequest)
+
+GroupUpdateClientKeyRequest = _reflection.GeneratedProtocolMessageType('GroupUpdateClientKeyRequest', (_message.Message,), {
+  'DESCRIPTOR' : _GROUPUPDATECLIENTKEYREQUEST,
+  '__module__' : 'protos.signal_pb2'
+  # @@protoc_insertion_point(class_scope:signal.GroupUpdateClientKeyRequest)
+  })
+_sym_db.RegisterMessage(GroupUpdateClientKeyRequest)
 
 GroupClientKeyObject = _reflection.GeneratedProtocolMessageType('GroupClientKeyObject', (_message.Message,), {
   'DESCRIPTOR' : _GROUPCLIENTKEYOBJECT,
@@ -721,8 +762,8 @@ _SIGNALKEYDISTRIBUTION = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1347,
-  serialized_end=1935,
+  serialized_start=1445,
+  serialized_end=2116,
   methods=[
   _descriptor.MethodDescriptor(
     name='PeerRegisterClientKey',
@@ -755,9 +796,19 @@ _SIGNALKEYDISTRIBUTION = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
+    name='GroupUpdateClientKey',
+    full_name='signal.SignalKeyDistribution.GroupUpdateClientKey',
+    index=3,
+    containing_service=None,
+    input_type=_GROUPUPDATECLIENTKEYREQUEST,
+    output_type=_BASERESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
     name='GroupGetClientKey',
     full_name='signal.SignalKeyDistribution.GroupGetClientKey',
-    index=3,
+    index=4,
     containing_service=None,
     input_type=_GROUPGETCLIENTKEYREQUEST,
     output_type=_GROUPGETCLIENTKEYRESPONSE,
@@ -767,7 +818,7 @@ _SIGNALKEYDISTRIBUTION = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GroupGetAllClientKey',
     full_name='signal.SignalKeyDistribution.GroupGetAllClientKey',
-    index=4,
+    index=5,
     containing_service=None,
     input_type=_GROUPGETALLCLIENTKEYREQUEST,
     output_type=_GROUPGETALLCLIENTKEYRESPONSE,
@@ -777,7 +828,7 @@ _SIGNALKEYDISTRIBUTION = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='WorkspaceGroupGetClientKey',
     full_name='signal.SignalKeyDistribution.WorkspaceGroupGetClientKey',
-    index=5,
+    index=6,
     containing_service=None,
     input_type=_WORKSPACEGROUPGETCLIENTKEYREQUEST,
     output_type=_WORKSPACEGROUPGETCLIENTKEYRESPONSE,

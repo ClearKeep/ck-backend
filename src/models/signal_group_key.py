@@ -86,14 +86,15 @@ class GroupClientKey(Database.get().Model):
     def update_bulk_client_key(self, client_id, list_group_client_key):
         try:
             for group_client_key in list_group_client_key:
-                Database.get_session().execute(
-                    'UPDATE group_client_key SET ' \
+                sql_update = 'UPDATE group_client_key SET ' \
                     'device_id=:device_id, ' \
                     'client_key=:client_key, ' \
                     'identity_key_encrypted=:identity_key_encrypted, ' \
                     'updated_at=:updated_at ' \
                     'WHERE group_id=:group_id ' \
-                    'AND client_id=:client_id',
+                    'AND client_id=:client_id'
+                Database.get_session().execute(
+                    sql_update,
                     {
                         'device_id': group_client_key.deviceId,
                         'client_key': group_client_key.clientKeyDistribution,
