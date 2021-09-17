@@ -23,7 +23,7 @@ class AuthController(BaseController):
             if token:
                 introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = introspect_token['sub']
-                require_update_client_key, hash_password_salt = self.user_service.validate_hash_pass(user_id, request.hash_pass)
+                require_update_client_key, hash_password_salt, IvParameterSpec = self.user_service.validate_hash_pass(user_id, request.hash_pass)
                 require_actions = ['update_client_key'] if require_update_client_key else []
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
                 hash_key = EncryptUtils.encoded_hash(
@@ -60,7 +60,8 @@ class AuthController(BaseController):
                                         hash_key=hash_key,
                                         require_action=require_action_mess,
                                         salt=hash_password_salt,
-                                        client_key_peer = client_key_peer
+                                        client_key_peer = client_key_peer,
+                                        IvParameterSpec=IvParameterSpec
                                     )
                 else:
                     pre_access_token = self.service.create_otp_service(user_id)
@@ -200,7 +201,7 @@ class AuthController(BaseController):
                 raise Exception(Message.REGISTER_USER_FAILED)
 
             # create new user in database
-            new_user = UserService().create_new_user(new_user_id, request.email, request.display_name, request.hash_password, request.salt,  'account')
+            new_user = UserService().create_new_user(new_user_id, request.email, request.display_name, request.hash_password, request.salt, request.IvParameterSpec,  'account')
             if new_user is None:
                 self.service.delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
@@ -342,7 +343,7 @@ class AuthController(BaseController):
             self.service.change_password(request, None, request.hash_pincode, request.user_id)
             SignalService().peer_register_client_key(request.user_id, request.client_key_peer)
             try:
-                UserService().update_hash_pin(request.user_id, request.hash_pincode, request.salt)
+                UserService().update_hash_pin(request.user_id, request.hash_pincode, request.salt, request.IvParameterSpec)
             except Exception as e:
                 logger.error(e)
                 SignalService().delete_client_peer_key(request.user_id)
@@ -373,7 +374,8 @@ class AuthController(BaseController):
                 session_state=token['session_state'],
                 scope=token['scope'],
                 salt=request.salt,
-                client_key_peer = client_key_peer
+                client_key_peer = client_key_peer,
+                IvParameterSpec=request.IvParameterSpec
             )
         except Exception as e:
             logger.error(e)
@@ -390,7 +392,7 @@ class AuthController(BaseController):
             success_status, _ = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "verify_pincode", get_token=False)
             if not success_status:
                 raise Exception(Message.VERIFY_PINCODE_FAILED)
-            success_status, hash_pincode_salt, email = self.user_service.validate_hash_pincode(request.user_id, request.hash_pincode)
+            success_status, hash_pincode_salt, IvParameterSpec, email = self.user_service.validate_hash_pincode(request.user_id, request.hash_pincode)
             token = self.service.token(email, request.hash_pincode)
             if not token:
                 raise Exception(Message.VERIFY_PINCODE_FAILED)
@@ -408,7 +410,8 @@ class AuthController(BaseController):
                                         signedPreKeyId=client_key_obj.signed_prekey_id,
                                         signedPreKey=client_key_obj.signed_prekey,
                                         signedPreKeySignature=client_key_obj.signed_prekey_signature,
-                                        identityKeyEncrypted=client_key_obj.identity_key_encrypted
+                                        identityKeyEncrypted=client_key_obj.identity_key_encrypted,
+                                        IvParameterSpec=IvParameterSpec
                                     )
                 return auth_messages.AuthRes(
                     workspace_domain=get_owner_workspace_domain(),

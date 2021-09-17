@@ -78,7 +78,8 @@ message AuthRes {
     string require_action = 13;
     string salt = 14;
     PeerGetClientKeyResponse client_key_peer = 15;
-    string error = 16;
+    string IvParameterSpec = 16;
+    string error = 17;
 }
 
 //Register message struct
@@ -92,6 +93,7 @@ message RegisterReq {
     string last_name = 7;
     string salt = 8;
     PeerRegisterClientKeyRequest client_key_peer = 9;
+    string IvParameterSpec = 10;
 }
 
 message RegisterRes {
@@ -124,6 +126,7 @@ message RegisterPinCodeReq {
     string hash_pincode = 3;
     string salt = 4;
     PeerRegisterClientKeyRequest client_key_peer = 5;
+    string IvParameterSpec = 6;
 }
 // return AuthRes
 

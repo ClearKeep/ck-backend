@@ -10,6 +10,7 @@ class User(Database.get().Model):
     # for normal user, hash_code is hash_password. for social user, hash_code is hash_pincode
     hash_code = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     hash_code_salt = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
+    iv_parameter_spec = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     email = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     display_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     first_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
