@@ -18,7 +18,8 @@ class GroupClientKey(Database.get().Model):
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_at = Database.get().Column(Database.get().DateTime, default=datetime.now, onupdate=datetime.now)
 
-    def set_key(self, group_id, client_id, client_workspace_domain, client_workspace_group_id, device_id, client_key, identity_key_encrypted):
+    def set_key(self, group_id, client_id, client_workspace_domain, client_workspace_group_id, device_id, client_key,
+                identity_key_encrypted):
         self.group_id = group_id
         self.client_workspace_domain = client_workspace_domain
         self.client_workspace_group_id = client_workspace_group_id
@@ -58,7 +59,7 @@ class GroupClientKey(Database.get().Model):
 
     def get_clients_in_groups(self, group_ids):
         result = Database.get_session().query(GroupClientKey, User) \
-            .join(User, GroupClientKey.client_id == User.id,  isouter=True) \
+            .join(User, GroupClientKey.client_id == User.id, isouter=True) \
             .filter(GroupClientKey.group_id.in_(group_ids)) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
@@ -81,6 +82,34 @@ class GroupClientKey(Database.get().Model):
         except Exception as e:
             Database.get_session().rollback()
             logger.error(e)
+
+    def update_bulk_client_key(self, client_id, list_group_client_key):
+        try:
+            for group_client_key in list_group_client_key:
+                Database.get_session().execute(
+                    'UPDATE group_client_key SET ' \
+                    'device_id=:device_id, ' \
+                    'client_key=:client_key, ' \
+                    'identity_key_encrypted=:identity_key_encrypted, ' \
+                    'updated_at=:updated_at ' \
+                    'WHERE group_id=:group_id ' \
+                    'AND client_id=:client_id',
+                    {
+                        'device_id': group_client_key.deviceId,
+                        'client_key': group_client_key.clientKeyDistribution,
+                        'identity_key_encrypted': group_client_key.identityKeyEncrypted,
+                        'updated_at': datetime.now,
+                        'group_id': group_client_key.groupId,
+                        'client_id': client_id
+                    }
+                )
+            Database.get_session().commit()
+            return True
+        except Exception as e:
+            logger.error(e)
+            Database.get_session().rollback()
+            return False
+
 
     def delete(self):
         try:

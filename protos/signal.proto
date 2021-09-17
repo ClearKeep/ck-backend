@@ -59,6 +59,11 @@ message GroupRegisterClientKeyRequest {
 //response: BaseResponse
 
 
+message GroupUpdateClientKeyRequest {
+    repeated GroupRegisterClientKeyRequest listGroupClientKey = 1;
+}
+//response: BaseResponse
+
 //object
 message GroupClientKeyObject {
     string  workspace_domain = 1;
@@ -107,6 +112,7 @@ service SignalKeyDistribution {
       rpc PeerGetClientKey (PeerGetClientKeyRequest) returns (PeerGetClientKeyResponse);
       //group
       rpc GroupRegisterClientKey (GroupRegisterClientKeyRequest) returns (BaseResponse);
+      rpc GroupUpdateClientKey (GroupUpdateClientKeyRequest) returns (BaseResponse);
       rpc GroupGetClientKey (GroupGetClientKeyRequest) returns (GroupGetClientKeyResponse);
       rpc GroupGetAllClientKey (GroupGetAllClientKeyRequest) returns (GroupGetAllClientKeyResponse);
       //workspace

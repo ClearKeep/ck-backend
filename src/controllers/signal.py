@@ -78,6 +78,24 @@ class SignalController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    async def GroupUpdateClientKey(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            user_id = introspect_token['sub']
+            self.service.group_bulk_update_client_key(user_id, request.listGroupClientKey)
+            return signal_pb2.BaseResponse()
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.REGISTER_CLIENT_GROUP_KEY_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
     async def GroupGetClientKey(self, request, context):
         group_id = request.groupId
         client_id = request.clientId

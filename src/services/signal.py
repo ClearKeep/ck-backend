@@ -36,6 +36,11 @@ class SignalService(BaseService):
         if new_group_key is None:
             raise Exception(Message.REGISTER_CLIENT_GROUP_FAILED_AVAILABLE)
 
+    def group_bulk_update_client_key(self, client_id, list_group_client_key):
+        is_updated = GroupClientKey().update_bulk_client_key(client_id, list_group_client_key)
+        if not is_updated:
+            raise Exception(Message.UPDATE_CLIENT_KEY_GROUPS_FAILED)
+
     def group_get_client_key(self, group_id, client_id):
         client_key = self.group_client_key_model.get(group_id, client_id)
         if client_key:
