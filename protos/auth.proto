@@ -20,7 +20,7 @@ message PeerRegisterClientKeyRequest {
 
     bytes signedPreKeySignature = 8;
 
-    bytes identityKeyEncrypted = 9;
+    string identityKeyEncrypted = 9;
 }
 
 
@@ -41,7 +41,7 @@ message PeerGetClientKeyResponse {
 
     bytes signedPreKeySignature = 10;
 
-    bytes identityKeyEncrypted = 11;
+    string identityKeyEncrypted = 11;
 }
 
 //Login message struct

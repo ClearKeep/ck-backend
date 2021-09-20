@@ -6,9 +6,7 @@ from protos import auth_pb2 as protos_dot_auth__pb2
 
 
 class AuthStub(object):
-    """update new verify pin_code rpc using hash code
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -74,9 +72,7 @@ class AuthStub(object):
 
 
 class AuthServicer(object):
-    """update new verify pin_code rpc using hash code
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def login(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -210,9 +206,7 @@ def add_AuthServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class Auth(object):
-    """update new verify pin_code rpc using hash code
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def login(request,
