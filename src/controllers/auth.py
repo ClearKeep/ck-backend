@@ -23,7 +23,7 @@ class AuthController(BaseController):
             if token:
                 introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = introspect_token['sub']
-                require_update_client_key, hash_password_salt, IvParameterSpec = self.user_service.validate_hash_pass(user_id, request.hash_pass)
+                require_update_client_key, hash_password_salt, IvParameterSpec = self.user_service.validate_hash_pass(user_id, request.hash_password)
                 require_actions = ['update_client_key'] if require_update_client_key else []
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
                 hash_key = EncryptUtils.encoded_hash(
