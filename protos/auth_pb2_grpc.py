@@ -6,9 +6,7 @@ from protos import auth_pb2 as protos_dot_auth__pb2
 
 
 class AuthStub(object):
-    """update new verify pin_code rpc using hash code
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -71,12 +69,15 @@ class AuthStub(object):
                 request_serializer=protos_dot_auth__pb2.VerifyPinCodeReq.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
                 )
+        self.update_pincode = channel.unary_unary(
+                '/auth.Auth/update_pincode',
+                request_serializer=protos_dot_auth__pb2.UpdatePinCodeReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.BaseResponse.FromString,
+                )
 
 
 class AuthServicer(object):
-    """update new verify pin_code rpc using hash code
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def login(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -144,6 +145,12 @@ class AuthServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def update_pincode(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AuthServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -202,6 +209,11 @@ def add_AuthServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_auth__pb2.VerifyPinCodeReq.FromString,
                     response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
             ),
+            'update_pincode': grpc.unary_unary_rpc_method_handler(
+                    servicer.update_pincode,
+                    request_deserializer=protos_dot_auth__pb2.UpdatePinCodeReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.BaseResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
             'auth.Auth', rpc_method_handlers)
@@ -210,9 +222,7 @@ def add_AuthServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class Auth(object):
-    """update new verify pin_code rpc using hash code
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def login(request,
@@ -398,5 +408,22 @@ class Auth(object):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/verify_pincode',
             protos_dot_auth__pb2.VerifyPinCodeReq.SerializeToString,
             protos_dot_auth__pb2.AuthRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def update_pincode(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/update_pincode',
+            protos_dot_auth__pb2.UpdatePinCodeReq.SerializeToString,
+            protos_dot_auth__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

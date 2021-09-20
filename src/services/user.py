@@ -240,8 +240,10 @@ class UserService(BaseService):
     def update_hash_pin(self, user_id, hash_pincode, hash_code_salt, iv_parameter_spec):
         user_info = self.model.get(user_id)
         user_info.hash_code = hash_pincode
-        user_info.hash_code_salt = hash_code_salt
-        user_info.iv_parameter_spec = iv_parameter_spec
+        if hash_code_salt:
+            user_info.hash_code_salt = hash_code_salt
+        if iv_parameter_spec:
+            user_info.iv_parameter_spec = iv_parameter_spec
         user_info.update()
         return True
 
@@ -249,10 +251,18 @@ class UserService(BaseService):
         user_info = self.model.get(user_id)
         return (hash_pass != user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter_spec, user_info.email)
 
+    def get_old_pincode(self, user_id):
+        user_info = self.model.get(user_id)
+        if user_info is None or user_info.auth_source == "account":
+            raise Exception(Message.NOT_SOCIAL_ACCOUNT)
+        return user_info.hash_code
+
     def validate_hash_pass(self, user_id, hash_pass):
         # compare current hash_password with stored hash_password in db, return boolean value for describe state of needing to update hash password
         # also return hash_code_salt stored in db
         user_info = self.model.get(user_id)
+        if user_info is None:
+            return (False, "", "")
         return (hash_pass != user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter_spec)
 
     def get_profile(self, user_id, hash_key):

@@ -340,7 +340,7 @@ class AuthController(BaseController):
         try:
             success_status, token = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "register_pincode")
             # using hash_pincode as password for social user
-            self.service.change_password(request, None, request.hash_pincode, request.user_id)
+            self.user_service.change_password(request, None, request.hash_pincode, request.user_id)
             SignalService().peer_register_client_key(request.user_id, request.client_key_peer)
             try:
                 UserService().update_hash_pin(request.user_id, request.hash_pincode, request.salt, request.IvParameterSpec)
@@ -386,6 +386,32 @@ class AuthController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
+    async def update_pincode(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            user_id = introspect_token['sub']
+            old_pincode = self.user_service.get_old_pincode(user_id)
+            self.user_service.change_password(request, old_pincode, request.hash_pincode, introspect_token['sub'])
+            SignalService().client_update_peer_key(user_id, request.client_key_peer)
+            try:
+                UserService().update_hash_pin(user_id, request.hash_pincode, request.salt, request.IvParameterSpec)
+            except Exception as e:
+                logger.error(e)
+                old_client_key_peer = SignalService().peer_get_client_key(user_id)
+                SignalService().client_update_peer_key(user_id, old_client_key_peer)
+                raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+        except Exception as e:
+            except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+                context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+                context.set_code(grpc.StatusCode.INTERNAL)
 
     async def verify_pincode(self, request, context):
         try:

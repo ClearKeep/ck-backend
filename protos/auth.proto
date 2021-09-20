@@ -131,13 +131,23 @@ message RegisterPinCodeReq {
 // return AuthRes
 
 
-// VerifyPinCodeReq
+// Verify Pincode struct
 message VerifyPinCodeReq {
     string pre_access_token = 1;
     string user_id = 2;
     string hash_pincode = 3;
 }
 // return AuthRes
+
+// Update Pincode, in case forgotten pincode
+// Note that update pincode will also cause old message cannot be read
+// do we need to update string IvParameterSpec = 6; ?
+message UpdatePinCodeReq{
+    string hash_pincode = 1;
+    string salt = 2;
+    string IvParameterSpec = 3;
+    PeerRegisterClientKeyRequest client_key_peer = 4;
+}
 
 message MfaValidateOtpRequest {
     string otp_code = 1;
@@ -169,4 +179,5 @@ service Auth {
     rpc logout(LogoutReq) returns (BaseResponse) {};
     rpc register_pincode(RegisterPinCodeReq) returns (AuthRes) {};
     rpc verify_pincode(VerifyPinCodeReq) returns (AuthRes) {};
+    rpc update_pincode(UpdatePinCodeReq) returns (BaseResponse) {};
 }

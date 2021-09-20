@@ -31,6 +31,7 @@ class Message:
     CLIENT_READ_NOTIFY_FAILED = 1022
     CLIENT_REGISTER_NOTIFY_TOKEN_FAILED = 1023
     VERIFY_PINCODE_FAILED = 1075
+    NOT_SOCIAL_ACCOUNT = 1076
 
     # call
     CLIENT_REQUEST_CALL_FAILED = 1025
@@ -127,6 +128,7 @@ class Message:
         CLIENT_QUEUE_NOT_FOUND: "Client queue not found",
         MESSAGE_READ_FAILED: "Can not read the message",
         VERIFY_PINCODE_FAILED: "Can not verify pincode. Please try again",
+        NOT_SOCIAL_ACCOUNT: "This user do not have pincode",
 
         GET_CLIENT_NOTIFIES_FAILED: "Get client notify failed. Please try again",
         CLIENT_READ_NOTIFY_FAILED: "Client read notify failed. Please try again",
