@@ -69,9 +69,9 @@ class AuthStub(object):
                 request_serializer=protos_dot_auth__pb2.VerifyPinCodeReq.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
                 )
-        self.update_pincode = channel.unary_unary(
-                '/auth.Auth/update_pincode',
-                request_serializer=protos_dot_auth__pb2.UpdatePinCodeReq.SerializeToString,
+        self.reset_pincode = channel.unary_unary(
+                '/auth.Auth/reset_pincode',
+                request_serializer=protos_dot_auth__pb2.ResetPinCodeReq.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.BaseResponse.FromString,
                 )
 
@@ -145,7 +145,7 @@ class AuthServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def update_pincode(self, request, context):
+    def reset_pincode(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -209,9 +209,9 @@ def add_AuthServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_auth__pb2.VerifyPinCodeReq.FromString,
                     response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
             ),
-            'update_pincode': grpc.unary_unary_rpc_method_handler(
-                    servicer.update_pincode,
-                    request_deserializer=protos_dot_auth__pb2.UpdatePinCodeReq.FromString,
+            'reset_pincode': grpc.unary_unary_rpc_method_handler(
+                    servicer.reset_pincode,
+                    request_deserializer=protos_dot_auth__pb2.ResetPinCodeReq.FromString,
                     response_serializer=protos_dot_auth__pb2.BaseResponse.SerializeToString,
             ),
     }
@@ -412,7 +412,7 @@ class Auth(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def update_pincode(request,
+    def reset_pincode(request,
             target,
             options=(),
             channel_credentials=None,
@@ -422,8 +422,8 @@ class Auth(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/auth.Auth/update_pincode',
-            protos_dot_auth__pb2.UpdatePinCodeReq.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/reset_pincode',
+            protos_dot_auth__pb2.ResetPinCodeReq.SerializeToString,
             protos_dot_auth__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

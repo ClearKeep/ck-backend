@@ -23,7 +23,7 @@ class UserService(BaseService):
         self.authen_setting = AuthenSetting()
         # self.workspace_domain = get_system_domain()
 
-    def create_new_user(self, id, email, display_name, hash_password, salt, iv_parameter_spec, auth_source):
+    def create_new_user(self, id, email, display_name, hash_password, salt, iv_parameter, auth_source):
         # password, first_name, last_name,
         try:
             self.model = User(
@@ -32,7 +32,7 @@ class UserService(BaseService):
                 display_name=display_name,
                 hash_code=hash_password,
                 hash_code_salt=salt,
-                iv_parameter_spec=iv_parameter_spec,
+                iv_parameter=iv_parameter,
                 auth_source=auth_source
             )
             # if email:
@@ -237,19 +237,19 @@ class UserService(BaseService):
             logger.error(e)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
-    def update_hash_pin(self, user_id, hash_pincode, hash_code_salt='', iv_parameter_spec=''):
+    def update_hash_pin(self, user_id, hash_pincode, hash_code_salt='', iv_parameter=''):
         user_info = self.model.get(user_id)
         user_info.hash_code = hash_pincode
         if hash_code_salt:
             user_info.hash_code_salt = hash_code_salt
-        if iv_parameter_spec:
-            user_info.iv_parameter_spec = iv_parameter_spec
+        if iv_parameter:
+            user_info.iv_parameter = iv_parameter
         user_info.update()
-        return True
+        return (user_info.hash_pincode, user_info.hash_code_salt, user_info.iv_parameter)
 
     def validate_hash_pincode(self, user_id, hash_pass):
         user_info = self.model.get(user_id)
-        return (hash_pass != user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter_spec, user_info.email)
+        return (hash_pass == user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter, user_info.email)
 
     def get_old_pincode(self, user_id):
         user_info = self.model.get(user_id)
@@ -263,7 +263,7 @@ class UserService(BaseService):
         user_info = self.model.get(user_id)
         if user_info is None:
             return (False, "", "")
-        return (hash_pass != user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter_spec)
+        return (hash_pass != user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter)
 
     def get_profile(self, user_id, hash_key):
         try:

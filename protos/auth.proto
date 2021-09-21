@@ -20,7 +20,7 @@ message PeerRegisterClientKeyRequest {
 
     bytes signedPreKeySignature = 8;
 
-    bytes identityKeyEncrypted = 9;
+    string identityKeyEncrypted = 9;
 }
 
 
@@ -41,7 +41,7 @@ message PeerGetClientKeyResponse {
 
     bytes signedPreKeySignature = 10;
 
-    bytes identityKeyEncrypted = 11;
+    string identityKeyEncrypted = 11;
 }
 
 //Login message struct
@@ -139,14 +139,16 @@ message VerifyPinCodeReq {
 }
 // return AuthRes
 
-// Update Pincode, in case forgotten pincode
-// Note that update pincode will also cause old message cannot be read
-// do we need to update string iv_parameter = 6; ?
-message UpdatePinCodeReq{
-    string hash_pincode = 1;
-    string salt = 2;
-    string iv_parameter = 3;
-    PeerRegisterClientKeyRequest client_key_peer = 4;
+// Reset Pincode, in case forgotten pincode
+// Note that reset pincode will also cause old message cannot be read
+// empty string indicate this field will be unchanging after update
+message ResetPinCodeReq{
+    string pre_access_token = 1;
+    string user_id = 2;
+    string hash_pincode = 3;
+    string salt = 4;
+    string iv_parameter = 5;
+    PeerRegisterClientKeyRequest client_key_peer = 6;
 }
 
 message MfaValidateOtpRequest {
