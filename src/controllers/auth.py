@@ -407,7 +407,6 @@ class AuthController(BaseController):
                 raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             return auth_messages.BaseResponse()
         except Exception as e:
-            except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
