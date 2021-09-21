@@ -390,7 +390,6 @@ class AuthController(BaseController):
 
     async def reset_pincode(self, request, context):
         try:
-            # TODO: logout all other session, return AuthRes, note careful not logout current session
             success_status, _ = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "verify_pincode", get_token=False)
             old_pincode = self.user_service.get_old_pincode(request.user_id)
             self.user_service.change_password(request, old_pincode, request.hash_pincode, introspect_token['sub'])
@@ -416,6 +415,10 @@ class AuthController(BaseController):
                                     signedPreKeySignature=client_key_obj.signedPreKeySignature,
                                     identityKeyEncrypted=client_key_obj.identityKeyEncrypted
                                 )
+            user_sessions = KeyCloakUtils.get_sessions(user_id=request.user_id)
+            # logout all device before get new token for user after updated new key
+            for user_session in user_sessions:
+                KeyCloakUtils.remove_session(session_id=user_session['id'])
             token = self.service.exchange_token(request.user_id)
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
