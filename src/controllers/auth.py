@@ -397,46 +397,34 @@ class AuthController(BaseController):
             if not token:
                 raise Exception(Message.VERIFY_PINCODE_FAILED)
 
-            if success_status:
-                client_key_obj = SignalService().peer_get_client_key(request.user_id)
-                client_key_peer = auth_messages.PeerGetClientKeyResponse(
-                                        clientId=request.user_id,
-                                        workspace_domain=get_owner_workspace_domain(),
-                                        registrationId=client_key_obj.registration_id,
-                                        deviceId=client_key_obj.device_id,
-                                        identityKeyPublic=client_key_obj.identity_key_public,
-                                        preKeyId=client_key_obj.prekey_id,
-                                        preKey=client_key_obj.prekey,
-                                        signedPreKeyId=client_key_obj.signed_prekey_id,
-                                        signedPreKey=client_key_obj.signed_prekey,
-                                        signedPreKeySignature=client_key_obj.signed_prekey_signature,
-                                        identityKeyEncrypted=client_key_obj.identity_key_encrypted,
-                                        IvParameterSpec=IvParameterSpec
-                                    )
-                return auth_messages.AuthRes(
-                    workspace_domain=get_owner_workspace_domain(),
-                    workspace_name=get_system_config()['server_name'],
-                    access_token=token["access_token"],
-                    expires_in=token['expires_in'],
-                    refresh_expires_in=token['refresh_expires_in'],
-                    refresh_token=token['refresh_token'],
-                    token_type=token['token_type'],
-                    session_state=token['session_state'],
-                    scope=token['scope'],
-                    salt=hash_pincode_salt,
-                    client_key_peer = client_key_peer
-                )
-            else:
-                require_action_mess = "update_pincode"
-                pre_access_token = self.service.hash_pre_access_token(user_id, require_action_mess)
-                auth_response = auth_messages.AuthRes(
+            client_key_obj = SignalService().peer_get_client_key(request.user_id)
+            client_key_peer = auth_messages.PeerGetClientKeyResponse(
+                                    clientId=request.user_id,
                                     workspace_domain=get_owner_workspace_domain(),
-                                    workspace_name=get_system_config()['server_name'],
-                                    hash_key=hash_key,
-                                    sub=user_id,
-                                    pre_access_token=pre_access_token,
-                                    require_action=require_action_mess
+                                    registrationId=client_key_obj.registration_id,
+                                    deviceId=client_key_obj.device_id,
+                                    identityKeyPublic=client_key_obj.identity_key_public,
+                                    preKeyId=client_key_obj.prekey_id,
+                                    preKey=client_key_obj.prekey,
+                                    signedPreKeyId=client_key_obj.signed_prekey_id,
+                                    signedPreKey=client_key_obj.signed_prekey,
+                                    signedPreKeySignature=client_key_obj.signed_prekey_signature,
+                                    identityKeyEncrypted=client_key_obj.identity_key_encrypted,
+                                    IvParameterSpec=IvParameterSpec
                                 )
+            return auth_messages.AuthRes(
+                workspace_domain=get_owner_workspace_domain(),
+                workspace_name=get_system_config()['server_name'],
+                access_token=token["access_token"],
+                expires_in=token['expires_in'],
+                refresh_expires_in=token['refresh_expires_in'],
+                refresh_token=token['refresh_token'],
+                token_type=token['token_type'],
+                session_state=token['session_state'],
+                scope=token['scope'],
+                salt=hash_pincode_salt,
+                client_key_peer = client_key_peer
+            )
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:

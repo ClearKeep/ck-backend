@@ -247,7 +247,7 @@ class UserService(BaseService):
 
     def validate_hash_pincode(self, user_id, hash_pass):
         user_info = self.model.get(user_id)
-        return (hash_pass != user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter_spec, user_info.email)
+        return (hash_pass == user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter_spec, user_info.email)
 
     def validate_hash_pass(self, user_id, hash_pass):
         # compare current hash_password with stored hash_password in db, return boolean value for describe state of needing to update hash password
