@@ -78,7 +78,7 @@ message AuthRes {
     string require_action = 13;
     string salt = 14;
     PeerGetClientKeyResponse client_key_peer = 15;
-    string IvParameterSpec = 16;
+    string iv_parameter = 16;
     string error = 17;
 }
 
@@ -93,7 +93,7 @@ message RegisterReq {
     string last_name = 7;
     string salt = 8;
     PeerRegisterClientKeyRequest client_key_peer = 9;
-    string IvParameterSpec = 10;
+    string iv_parameter = 10;
 }
 
 message RegisterRes {
@@ -126,7 +126,7 @@ message RegisterPinCodeReq {
     string hash_pincode = 3;
     string salt = 4;
     PeerRegisterClientKeyRequest client_key_peer = 5;
-    string IvParameterSpec = 6;
+    string iv_parameter = 6;
 }
 // return AuthRes
 
@@ -141,11 +141,11 @@ message VerifyPinCodeReq {
 
 // Update Pincode, in case forgotten pincode
 // Note that update pincode will also cause old message cannot be read
-// do we need to update string IvParameterSpec = 6; ?
+// do we need to update string iv_parameter = 6; ?
 message UpdatePinCodeReq{
     string hash_pincode = 1;
     string salt = 2;
-    string IvParameterSpec = 3;
+    string iv_parameter = 3;
     PeerRegisterClientKeyRequest client_key_peer = 4;
 }
 
@@ -179,5 +179,5 @@ service Auth {
     rpc logout(LogoutReq) returns (BaseResponse) {};
     rpc register_pincode(RegisterPinCodeReq) returns (AuthRes) {};
     rpc verify_pincode(VerifyPinCodeReq) returns (AuthRes) {};
-    rpc update_pincode(UpdatePinCodeReq) returns (BaseResponse) {};
+    rpc reset_pincode(ResetPinCodeReq) returns (BaseResponse) {};
 }

@@ -23,7 +23,7 @@ class AuthController(BaseController):
             if token:
                 introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = introspect_token['sub']
-                require_update_client_key, hash_password_salt, IvParameterSpec = self.user_service.validate_hash_pass(user_id, request.hash_pass)
+                require_update_client_key, hash_password_salt, iv_parameter = self.user_service.validate_hash_pass(user_id, request.hash_pass)
                 require_actions = ['update_client_key'] if require_update_client_key else []
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
                 hash_key = EncryptUtils.encoded_hash(
@@ -165,6 +165,7 @@ class AuthController(BaseController):
             hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
             require_action_mess = "verify_pincode" if not is_new_user else "register_pincode"
             pre_access_token = self.service.hash_pre_access_token(user_id, require_action_mess)
+            # TODO: sub will be user name of keycloak
             auth_response = auth_messages.AuthRes(
                                 workspace_domain=get_owner_workspace_domain(),
                                 workspace_name=get_system_config()['server_name'],
@@ -387,8 +388,10 @@ class AuthController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    async def update_pincode(self, request, context):
+    async def reset_pincode(self, request, context):
         try:
+            # TODO: change to using pre access_token
+            # TODO: logout all other session, return AuthRes, note careful not logout current session
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             user_id = introspect_token['sub']
@@ -402,6 +405,7 @@ class AuthController(BaseController):
                 old_client_key_peer = SignalService().peer_get_client_key(user_id)
                 SignalService().client_update_peer_key(user_id, old_client_key_peer)
                 raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+            return auth_messages.BaseResponse()
         except Exception as e:
             except Exception as e:
             logger.error(e)

@@ -86,7 +86,7 @@ class UserService(BaseService):
             #     last_name = EncryptUtils.decrypt_data(user_info.last_name, old_pass, user_id)
             #     user_info.last_name = EncryptUtils.encrypt_data(last_name, new_pass, user_id)
 
-            return user_info.update()
+            return user_info # user_info.update()
         except Exception as e:
             logger.info(e)
             raise Exception(Message.CHANGE_PASSWORD_FAILED)
@@ -237,7 +237,7 @@ class UserService(BaseService):
             logger.error(e)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
-    def update_hash_pin(self, user_id, hash_pincode, hash_code_salt, iv_parameter_spec):
+    def update_hash_pin(self, user_id, hash_pincode, hash_code_salt='', iv_parameter_spec=''):
         user_info = self.model.get(user_id)
         user_info.hash_code = hash_pincode
         if hash_code_salt:
