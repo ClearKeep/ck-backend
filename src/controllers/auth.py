@@ -393,7 +393,7 @@ class AuthController(BaseController):
             if not success_status:
                 raise Exception(Message.VERIFY_PINCODE_FAILED)
             success_status, hash_pincode_salt, IvParameterSpec, email = self.user_service.validate_hash_pincode(request.user_id, request.hash_pincode)
-            token = self.service.token(email, request.hash_pincode)
+            token = self.service.exchange_token(request.user_id)
             if not token:
                 raise Exception(Message.VERIFY_PINCODE_FAILED)
 
