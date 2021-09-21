@@ -340,7 +340,7 @@ class AuthController(BaseController):
         try:
             success_status, token = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "register_pincode")
             # using hash_pincode as password for social user
-            self.service.change_password(request, None, request.hash_pincode, request.user_id)
+            self.user_service.change_password(request, None, request.hash_pincode, request.user_id)
             SignalService().peer_register_client_key(request.user_id, request.client_key_peer)
             try:
                 UserService().update_hash_pin(request.user_id, request.hash_pincode, request.salt, request.IvParameterSpec)
