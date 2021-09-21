@@ -409,8 +409,7 @@ class AuthController(BaseController):
                                     signedPreKeyId=client_key_obj.signed_prekey_id,
                                     signedPreKey=client_key_obj.signed_prekey,
                                     signedPreKeySignature=client_key_obj.signed_prekey_signature,
-                                    identityKeyEncrypted=client_key_obj.identity_key_encrypted,
-                                    IvParameterSpec=IvParameterSpec
+                                    identityKeyEncrypted=client_key_obj.identity_key_encrypted
                                 )
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
@@ -423,7 +422,8 @@ class AuthController(BaseController):
                 session_state=token['session_state'],
                 scope=token['scope'],
                 salt=hash_pincode_salt,
-                client_key_peer = client_key_peer
+                client_key_peer = client_key_peer,
+                IvParameterSpec=IvParameterSpec
             )
         except Exception as e:
             logger.error(e)
