@@ -3,6 +3,7 @@ import random
 import string
 import time
 import datetime
+import json
 from jose import jws
 from hashlib import md5
 from hmac import compare_digest as compare_hash
@@ -46,7 +47,7 @@ class OTPServer(object):
             "kid": user_id,
             "iss": user_name,
             "aud": require_action,
-            "exp": int(time.time()) + 86400,
+            "exp": int(time.time()) + 86400
         }
         signed_message = jws.sign(message, secret_key, algorithm='HS256')
         return signed_message, message
