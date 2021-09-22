@@ -94,15 +94,15 @@ class AuthController(BaseController):
     @request_logged
     async def login_google(self, request, context):
         try:
-            user_name, is_registered_pincode = self.service.google_login(request.id_token)
+            user_id, user_name, is_registered_pincode = self.service.google_login(request.id_token)
             if not token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
-            pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
+            pre_access_token = self.service.hash_pre_access_token(user_id, user_name, require_action_mess)
             auth_response = auth_messages.AuthRes(
                                 workspace_domain=get_owner_workspace_domain(),
                                 workspace_name=get_system_config()['server_name'],
-                                sub=user_name,
+                                sub=user_id,
                                 pre_access_token=pre_access_token,
                                 require_action=require_action_mess
                             )
@@ -121,15 +121,15 @@ class AuthController(BaseController):
     @request_logged
     async def login_office(self, request, context):
         try:
-            user_name, is_registered_pincode = self.service.office_login(request.access_token)
+            user_id, user_name, is_registered_pincode = self.service.office_login(request.access_token)
             if not token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
-            pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
+            pre_access_token = self.service.hash_pre_access_token(user_id, user_name, require_action_mess)
             auth_response = auth_messages.AuthRes(
                                 workspace_domain=get_owner_workspace_domain(),
                                 workspace_name=get_system_config()['server_name'],
-                                sub=user_name,
+                                sub=user_id,
                                 pre_access_token=pre_access_token,
                                 require_action=require_action_mess
                             )
@@ -148,14 +148,14 @@ class AuthController(BaseController):
     @request_logged
     async def login_facebook(self, request, context):
         try:
-            user_name, is_registered_pincode = self.service.facebook_login(request.access_token)
+            user_id, user_name, is_registered_pincode = self.service.facebook_login(request.access_token)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
-            pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
+            pre_access_token = self.service.hash_pre_access_token(user_id, user_name, require_action_mess)
             # TODO: sub will be user name of keycloak
             auth_response = auth_messages.AuthRes(
                                 workspace_domain=get_owner_workspace_domain(),
                                 workspace_name=get_system_config()['server_name'],
-                                sub=user_name,
+                                sub=user_id,
                                 pre_access_token=pre_access_token,
                                 require_action=require_action_mess
                             )
@@ -324,18 +324,17 @@ class AuthController(BaseController):
 
     async def register_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_name, request.pre_access_token, "register_pincode")
+            success_status, user_name = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "register_pincode")
             if not success_status:
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
-            self.user_service.change_password(request, None, request.hash_pincode, user_id)
-            token = self.service.token(request.user_name, request.hash_pincode)
+            self.user_service.change_password(request, None, request.hash_pincode, request.user_id)
+            token = self.service.token(user_name, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            user_id = introspect_token['sub']
-            hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
+            hash_key = EncryptUtils.encoded_hash(request.user_id, request.user_id)
             # using hash_pincode as password for social user
-            SignalService().peer_register_client_key(user_id, request.client_key_peer)
+            SignalService().peer_register_client_key(request.user_id, request.client_key_peer)
             try:
-                UserService().update_hash_pin(user_id, request.hash_pincode, request.salt, request.iv_parameter)
+                UserService().update_hash_pin(request.user_id, request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:
                 logger.error(e)
                 ## TODO: revert change_password
@@ -344,7 +343,7 @@ class AuthController(BaseController):
             require_action = ""
             client_key_obj = request.client_key_peer
             client_key_peer = auth_messages.PeerGetClientKeyResponse(
-                                    clientId=user_id,
+                                    clientId=request.user_id,
                                     workspace_domain=get_owner_workspace_domain(),
                                     registrationId=client_key_obj.registrationId,
                                     deviceId=client_key_obj.deviceId,
@@ -383,25 +382,29 @@ class AuthController(BaseController):
 
     async def reset_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_name, request.pre_access_token, "verify_pincode")
+            success_status, user_name = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "verify_pincode")
             if not success_status:
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
-            self.user_service.change_password(request, None, request.hash_pincode, user_id)
-            token = self.service.token(request.user_name, request.hash_pincode)
+            self.user_service.change_password(request, None, request.hash_pincode, request.user_id)
+            # logout all device before get new token for user after updated new key
+
+            user_sessions = KeyCloakUtils.get_sessions(user_id=request.user_id)
+            for user_session in user_sessions:
+                KeyCloakUtils.remove_session(session_id=user_session['id'])
+            token = self.service.token(user_name, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            user_id = introspect_token['sub']
             hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
-            SignalService().client_update_peer_key(user_id, request.client_key_peer)
+            SignalService().client_update_peer_key(request.user_id, request.client_key_peer)
             try:
-                _, salt, iv_parameter = UserService().update_hash_pin(user_id, request.hash_pincode, request.salt, request.iv_parameter)
+                _, salt, iv_parameter = UserService().update_hash_pin(request.user_id, request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:
                 logger.error(e)
-                old_client_key_peer = SignalService().peer_get_client_key(user_id)
-                SignalService().client_update_peer_key(user_id, old_client_key_peer)
+                old_client_key_peer = SignalService().peer_get_client_key(request.user_id)
+                SignalService().client_update_peer_key(request.user_id, old_client_key_peer)
                 raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             client_key_obj = request.client_key_peer
             client_key_peer = auth_messages.PeerGetClientKeyResponse(
-                                    clientId=user_id,
+                                    clientId=request.user_id,
                                     workspace_domain=get_owner_workspace_domain(),
                                     registrationId=client_key_obj.registrationId,
                                     deviceId=client_key_obj.deviceId,
@@ -414,14 +417,7 @@ class AuthController(BaseController):
                                     identityKeyEncrypted=client_key_obj.identityKeyEncrypted
                                 )
             user_sessions = KeyCloakUtils.get_sessions(user_id=request.user_id)
-            # logout all device before get new token for user after updated new key
-            for user_session in user_sessions:
-                KeyCloakUtils.remove_session(session_id=user_session['id'])
             # create new session
-            token = self.service.token(request.user_id, request.hash_pincode)
-            introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            user_id = introspect_token['sub']
-            hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
                 workspace_name=get_system_config()['server_name'],
@@ -449,20 +445,17 @@ class AuthController(BaseController):
 
     async def verify_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_name, request.pre_access_token, "verify_pincode")
-            if not success_status:
-                raise Exception(Message.VERIFY_PINCODE_FAILED)
-            token = self.service.token(request.user_name, request.hash_pincode)
+            success_status, user_name = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "verify_pincode")
+            token = self.service.token(user_name, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            user_id = introspect_token['sub']
             hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
-            success_status, hash_pincode_salt, iv_parameter = self.user_service.validate_hash_pincode(user_id, request.hash_pincode)
+            success_status, hash_pincode_salt, iv_parameter = self.user_service.validate_hash_pincode(request.user_id, request.hash_pincode)
             if not token:
                 raise Exception(Message.VERIFY_PINCODE_FAILED)
 
             client_key_obj = SignalService().peer_get_client_key(user_id)
             client_key_peer = auth_messages.PeerGetClientKeyResponse(
-                                    clientId=user_id,
+                                    clientId=request.user_id,
                                     workspace_domain=get_owner_workspace_domain(),
                                     registrationId=client_key_obj.registration_id,
                                     deviceId=client_key_obj.device_id,

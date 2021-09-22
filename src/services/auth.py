@@ -124,13 +124,13 @@ class AuthService:
 
             google_email = google_token_info["email"]
             # check account exits
-            user_exist = self.get_user_by_email(email=google_email) #UserService().get_google_user(google_email, "google")
+            user_id, user_exist = self.get_user_by_email(email=google_email) #UserService().get_google_user(google_email, "google")
             #active_user
             if user_exist:
                 if not user_exist["emailVerified"]:
                     KeyCloakUtils.active_user(user_exist["id"])
                 pincode = UserService().get_pincode(user_id)
-                return google_email, pincode is None or pincode == ""
+                return user_id, google_email, pincode is None or pincode == ""
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(google_email, google_email, "", google_token_info["name"])
@@ -140,7 +140,7 @@ class AuthService:
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return google_email, True
+                return user_id, google_email, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.GOOGLE_AUTH_FAILED)
@@ -162,10 +162,10 @@ class AuthService:
 
             office_id = office_token_info["id"]
             # check account exits
-            user = KeyCloakUtils.get_user_by_email(office_id)
+            user_id, user = KeyCloakUtils.get_user_by_email(office_id)
             if user:
                 pincode = UserService().get_pincode(user_id)
-                return office_id, pincode is None or pincode == ""
+                return user_id, office_id, pincode is None or pincode == ""
             else:
                 display_name = office_token_info["displayName"]
                 email = ""
@@ -183,7 +183,7 @@ class AuthService:
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return office_id, True
+                return user_id, office_id, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.OFFICE_AUTH_FAILED)
@@ -217,7 +217,7 @@ class AuthService:
             facebook_email = facebook_token_info["email"]
             facebook_name = facebook_token_info["name"]
             # check account exits
-            user = KeyCloakUtils.get_user_by_email(facebook_id)
+            user_id, user = KeyCloakUtils.get_user_by_email(facebook_id)
             if user:
                 pincode = UserService().get_pincode(user_id)
                 return facebook_id, pincode is None or pincode == ""
@@ -230,7 +230,7 @@ class AuthService:
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return facebook_id, True
+                return user_id, facebook_id, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.FACEBOOK_AUTH_FAILED)
@@ -354,15 +354,19 @@ class AuthService:
             logger.info(e)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
-    def hash_pre_access_token(self, client_id, require_action):
+    def hash_pre_access_token(self, client_id, user_name, require_action):
         # lend the hash_uid from utils.otp
-        hash_key = OTPServer.hash_uid(client_id, require_action)
+        hash_key = OTPServer.sign_message(client_id, user_name, require_action)
         return hash_key
 
-    def verify_hash_pre_access_token(self, client_id, hash_key, require_action, get_token=True):
-        success_status = OTPServer.verify_hash_code(client_id, require_action, hash_key)
-        if success_status and get_token:
-            token = self.exchange_token(client_id)
-        else:
-            token = None
-        return success_status, token
+    def verify_hash_pre_access_token(self, user_id, signed_message, require_action):
+        try:
+            message = OTPServer.verify_message(signed_message)
+            if message.get("aud", None) != require_action:
+                return False, ""
+            if message.get("kid", "")  != user_id:
+                return False, ""
+            return True, message.get("iss", "")
+        except Exception as e:
+            logger.error(e)
+            return False, ""
