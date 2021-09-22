@@ -95,8 +95,6 @@ class AuthController(BaseController):
     async def login_google(self, request, context):
         try:
             user_id, user_name, is_registered_pincode = self.service.google_login(request.id_token)
-            if not token:
-                raise Exception(Message.AUTH_USER_NOT_FOUND)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
             pre_access_token = self.service.hash_pre_access_token(user_id, user_name, require_action_mess)
             auth_response = auth_messages.AuthRes(
@@ -122,8 +120,6 @@ class AuthController(BaseController):
     async def login_office(self, request, context):
         try:
             user_id, user_name, is_registered_pincode = self.service.office_login(request.access_token)
-            if not token:
-                raise Exception(Message.AUTH_USER_NOT_FOUND)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
             pre_access_token = self.service.hash_pre_access_token(user_id, user_name, require_action_mess)
             auth_response = auth_messages.AuthRes(
