@@ -82,7 +82,7 @@ class SignalController(BaseController):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            user_id = introspect_token['sub']
+            user_id = introspect_token['sub'] #'f4852d0c-7d6c-445b-b867-64d6e2e9967d'
             self.service.group_bulk_update_client_key(user_id, request.listGroupClientKey)
             return signal_pb2.BaseResponse()
         except Exception as e:
