@@ -453,7 +453,7 @@ class AuthController(BaseController):
             if not token:
                 raise Exception(Message.VERIFY_PINCODE_FAILED)
 
-            client_key_obj = SignalService().peer_get_client_key(user_id)
+            client_key_obj = SignalService().peer_get_client_key(request.user_id)
             client_key_peer = auth_messages.PeerGetClientKeyResponse(
                                     clientId=request.user_id,
                                     workspace_domain=get_owner_workspace_domain(),
