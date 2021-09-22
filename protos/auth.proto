@@ -181,5 +181,5 @@ service Auth {
     rpc logout(LogoutReq) returns (BaseResponse) {};
     rpc register_pincode(RegisterPinCodeReq) returns (AuthRes) {};
     rpc verify_pincode(VerifyPinCodeReq) returns (AuthRes) {};
-    rpc reset_pincode(ResetPinCodeReq) returns (BaseResponse) {};
+    rpc reset_pincode(ResetPinCodeReq) returns (AuthRes) {};
 }

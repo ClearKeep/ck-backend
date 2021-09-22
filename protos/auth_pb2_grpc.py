@@ -72,7 +72,7 @@ class AuthStub(object):
         self.reset_pincode = channel.unary_unary(
                 '/auth.Auth/reset_pincode',
                 request_serializer=protos_dot_auth__pb2.ResetPinCodeReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.BaseResponse.FromString,
+                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
                 )
 
 
@@ -212,7 +212,7 @@ def add_AuthServicer_to_server(servicer, server):
             'reset_pincode': grpc.unary_unary_rpc_method_handler(
                     servicer.reset_pincode,
                     request_deserializer=protos_dot_auth__pb2.ResetPinCodeReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.BaseResponse.SerializeToString,
+                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -424,6 +424,6 @@ class Auth(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/reset_pincode',
             protos_dot_auth__pb2.ResetPinCodeReq.SerializeToString,
-            protos_dot_auth__pb2.BaseResponse.FromString,
+            protos_dot_auth__pb2.AuthRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
