@@ -249,11 +249,13 @@ class UserService(BaseService):
 
     def validate_hash_pincode(self, user_id, hash_pass):
         user_info = self.model.get(user_id)
-        return (hash_pass == user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter, user_info.email)
+        return (hash_pass == user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter)
 
-    def get_old_pincode(self, user_id):
+    def get_pincode(self, user_id):
         user_info = self.model.get(user_id)
-        if user_info is None or user_info.auth_source == "account":
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
+        if user_info.auth_source == "account":
             raise Exception(Message.NOT_SOCIAL_ACCOUNT)
         return user_info.hash_code
 

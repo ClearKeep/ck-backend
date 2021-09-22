@@ -129,19 +129,18 @@ class AuthService:
             if user_exist:
                 if not user_exist["emailVerified"]:
                     KeyCloakUtils.active_user(user_exist["id"])
-                token = self.exchange_token(user_exist["id"])
-                return token, False
+                pincode = UserService().get_pincode(user_id)
+                return google_email, pincode is None or pincode == ""
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(google_email, google_email, "", google_token_info["name"])
-                token = self.exchange_token(new_user_id)
                 new_user = UserService().create_user_social(id=new_user_id, email=google_email,
                                                           display_name=google_token_info["name"],
                                                           auth_source='google')
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return token, True
+                return google_email, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.GOOGLE_AUTH_FAILED)
@@ -165,8 +164,8 @@ class AuthService:
             # check account exits
             user = KeyCloakUtils.get_user_by_email(office_id)
             if user:
-                token = self.exchange_token(user["id"])
-                return token, False
+                pincode = UserService().get_pincode(user_id)
+                return office_id, pincode is None or pincode == ""
             else:
                 display_name = office_token_info["displayName"]
                 email = ""
@@ -178,14 +177,13 @@ class AuthService:
                             email = office_token_info["userPrincipalName"]
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(email, office_id, "", display_name)
-                token = self.exchange_token(new_user_id)
                 new_user = UserService().create_user_social(id=new_user_id, email=office_token_info["mail"],
                                                           display_name=display_name,
                                                           auth_source='office')
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return token, True
+                return office_id, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.OFFICE_AUTH_FAILED)
@@ -221,8 +219,8 @@ class AuthService:
             # check account exits
             user = KeyCloakUtils.get_user_by_email(facebook_id)
             if user:
-                token = self.exchange_token(user["id"])
-                return token, False
+                pincode = UserService().get_pincode(user_id)
+                return facebook_id, pincode is None or pincode == ""
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(facebook_email, facebook_id, "", facebook_name)
@@ -232,8 +230,7 @@ class AuthService:
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                token = self.exchange_token(new_user_id)
-                return token, True
+                return facebook_id, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.FACEBOOK_AUTH_FAILED)
