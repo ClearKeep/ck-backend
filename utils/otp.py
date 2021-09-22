@@ -48,7 +48,7 @@ class OTPServer(object):
             "aud": require_action,
             "exp": int(time.time()) + 86400,
         }
-        jws.sign(message, secret_key, algorithm='HS256')
+        signed_message = jws.sign(message, secret_key, algorithm='HS256')
         return signed_message, message
 
     def verify_message(signed_message):

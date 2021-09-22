@@ -118,28 +118,28 @@ class AuthController(BaseController):
 
     @request_logged
     async def login_office(self, request, context):
-        try:
-            user_id, user_name, is_registered_pincode = self.service.office_login(request.access_token)
-            require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
-            pre_access_token = self.service.hash_pre_access_token(user_id, user_name, require_action_mess)
-            auth_response = auth_messages.AuthRes(
-                                workspace_domain=get_owner_workspace_domain(),
-                                workspace_name=get_system_config()['server_name'],
-                                sub=user_id,
-                                pre_access_token=pre_access_token,
-                                require_action=require_action_mess
-                            )
-            return auth_response
-        except Exception as e:
-            logger.error(e)
-            if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
-                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
-            else:
-                errors = [Message.get_error_object(e.args[0])]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
+        # try:
+        user_id, user_name, is_registered_pincode = self.service.office_login(request.access_token)
+        require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
+        pre_access_token = self.service.hash_pre_access_token(user_id, user_name, require_action_mess)
+        auth_response = auth_messages.AuthRes(
+                            workspace_domain=get_owner_workspace_domain(),
+                            workspace_name=get_system_config()['server_name'],
+                            sub=user_id,
+                            pre_access_token=pre_access_token,
+                            require_action=require_action_mess
+                        )
+        return auth_response
+        # except Exception as e:
+        #     logger.error(e)
+        #     if not e.args or e.args[0] not in Message.msg_dict:
+        #         # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+        #         errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+        #     else:
+        #         errors = [Message.get_error_object(e.args[0])]
+        #     context.set_details(json.dumps(
+        #         errors, default=lambda x: x.__dict__))
+        #     context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
     async def login_facebook(self, request, context):

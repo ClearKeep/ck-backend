@@ -356,7 +356,7 @@ class AuthService:
 
     def hash_pre_access_token(self, client_id, user_name, require_action):
         # lend the hash_uid from utils.otp
-        hash_key = OTPServer.sign_message(client_id, user_name, require_action)
+        hash_key, message = OTPServer.sign_message(client_id, user_name, require_action)
         return hash_key
 
     def verify_hash_pre_access_token(self, user_id, signed_message, require_action):
