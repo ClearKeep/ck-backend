@@ -52,7 +52,7 @@ class OTPServer(object):
         return signed_message, message
 
     def verify_message(signed_message):
-        message = jws.verify(signed_message, secret_key, algorithms=['HS256'])
+        message = json.loads(jws.verify(signed_message, secret_key, algorithms=['HS256']).decode('utf-8'))
         return message
 
     @staticmethod
