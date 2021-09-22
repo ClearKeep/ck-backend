@@ -124,7 +124,7 @@ class AuthService:
 
             google_email = google_token_info["email"]
             # check account exits
-            user_id, user_exist = self.get_user_by_email(email=google_email) #UserService().get_google_user(google_email, "google")
+            user_id, user_exist = self.get_user_by_email(email=google_email, get_user_id=True) #UserService().get_google_user(google_email, "google")
             #active_user
             if user_exist:
                 if not user_exist["emailVerified"]:
@@ -162,7 +162,7 @@ class AuthService:
 
             office_id = office_token_info["id"]
             # check account exits
-            user_id, user = KeyCloakUtils.get_user_by_email(office_id)
+            user_id, user = KeyCloakUtils.get_user_by_email(office_id, get_user_id=True)
             if user:
                 pincode = UserService().get_pincode(user_id)
                 return user_id, office_id, pincode is None or pincode == ""
@@ -217,7 +217,7 @@ class AuthService:
             facebook_email = facebook_token_info["email"]
             facebook_name = facebook_token_info["name"]
             # check account exits
-            user_id, user = KeyCloakUtils.get_user_by_email(facebook_id)
+            user_id, user = KeyCloakUtils.get_user_by_email(facebook_id, get_user_id=True)
             if user:
                 pincode = UserService().get_pincode(user_id)
                 return facebook_id, pincode is None or pincode == ""
