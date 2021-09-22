@@ -1,7 +1,9 @@
 import os
 import random
 import string
+import time
 import datetime
+from jose import jws
 from hashlib import md5
 from hmac import compare_digest as compare_hash
 from twilio.rest import Client
@@ -37,6 +39,21 @@ class OTPServer(object):
     @staticmethod
     def get_valid_time():
         return datetime.datetime.now() + life_time
+
+    @staticmethod
+    def sign_message(user_id, user_name, require_action):
+        message = {
+            "kid": user_id,
+            "iss": user_name,
+            "aud": require_action,
+            "exp": int(time.time()) + 86400,
+        }
+        jws.sign(message, secret_key, algorithm='HS256')
+        return signed_message, message
+
+    def verify_message(signed_message):
+        message = jws.verify(signed_message, secret_key, algorithms=['HS256'])
+        return message
 
     @staticmethod
     def hash_uid(user_id, valid_time, hash_valid_time=True):

@@ -23,7 +23,7 @@ class UserService(BaseService):
         self.authen_setting = AuthenSetting()
         # self.workspace_domain = get_system_domain()
 
-    def create_new_user(self, id, email, display_name, hash_password, salt, iv_parameter_spec, auth_source):
+    def create_new_user(self, id, email, display_name, hash_password, salt, iv_parameter, auth_source):
         # password, first_name, last_name,
         try:
             self.model = User(
@@ -32,7 +32,7 @@ class UserService(BaseService):
                 display_name=display_name,
                 hash_code=hash_password,
                 hash_code_salt=salt,
-                iv_parameter_spec=iv_parameter_spec,
+                iv_parameter=iv_parameter,
                 auth_source=auth_source
             )
             # if email:
@@ -86,7 +86,7 @@ class UserService(BaseService):
             #     last_name = EncryptUtils.decrypt_data(user_info.last_name, old_pass, user_id)
             #     user_info.last_name = EncryptUtils.encrypt_data(last_name, new_pass, user_id)
 
-            return user_info.update()
+            return user_info # user_info.update()
         except Exception as e:
             logger.info(e)
             raise Exception(Message.CHANGE_PASSWORD_FAILED)
@@ -237,23 +237,35 @@ class UserService(BaseService):
             logger.error(e)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
-    def update_hash_pin(self, user_id, hash_pincode, hash_code_salt, iv_parameter_spec):
+    def update_hash_pin(self, user_id, hash_pincode, hash_code_salt='', iv_parameter=''):
         user_info = self.model.get(user_id)
         user_info.hash_code = hash_pincode
-        user_info.hash_code_salt = hash_code_salt
-        user_info.iv_parameter_spec = iv_parameter_spec
+        if hash_code_salt:
+            user_info.hash_code_salt = hash_code_salt
+        if iv_parameter:
+            user_info.iv_parameter = iv_parameter
         user_info.update()
-        return True
+        return (user_info.hash_pincode, user_info.hash_code_salt, user_info.iv_parameter)
 
     def validate_hash_pincode(self, user_id, hash_pass):
         user_info = self.model.get(user_id)
-        return (hash_pass == user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter_spec, user_info.email)
+        return (hash_pass == user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter)
+
+    def get_pincode(self, user_id):
+        user_info = self.model.get(user_id)
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
+        if user_info.auth_source == "account":
+            raise Exception(Message.NOT_SOCIAL_ACCOUNT)
+        return user_info.hash_code
 
     def validate_hash_pass(self, user_id, hash_pass):
         # compare current hash_password with stored hash_password in db, return boolean value for describe state of needing to update hash password
         # also return hash_code_salt stored in db
         user_info = self.model.get(user_id)
-        return (hash_pass != user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter_spec)
+        if user_info is None:
+            return (False, "", "")
+        return (hash_pass != user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter)
 
     def get_profile(self, user_id, hash_key):
         try:

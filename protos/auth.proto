@@ -78,7 +78,7 @@ message AuthRes {
     string require_action = 13;
     string salt = 14;
     PeerGetClientKeyResponse client_key_peer = 15;
-    string IvParameterSpec = 16;
+    string iv_parameter = 16;
     string error = 17;
 }
 
@@ -93,7 +93,7 @@ message RegisterReq {
     string last_name = 7;
     string salt = 8;
     PeerRegisterClientKeyRequest client_key_peer = 9;
-    string IvParameterSpec = 10;
+    string iv_parameter = 10;
 }
 
 message RegisterRes {
@@ -126,18 +126,30 @@ message RegisterPinCodeReq {
     string hash_pincode = 3;
     string salt = 4;
     PeerRegisterClientKeyRequest client_key_peer = 5;
-    string IvParameterSpec = 6;
+    string iv_parameter = 6;
 }
 // return AuthRes
 
 
-// VerifyPinCodeReq
+// Verify Pincode struct
 message VerifyPinCodeReq {
     string pre_access_token = 1;
     string user_id = 2;
     string hash_pincode = 3;
 }
 // return AuthRes
+
+// Reset Pincode, in case forgotten pincode
+// Note that reset pincode will also cause old message cannot be read
+// empty string indicate this field will be unchanging after update
+message ResetPinCodeReq{
+    string pre_access_token = 1;
+    string user_id = 2;
+    string hash_pincode = 3;
+    string salt = 4;
+    string iv_parameter = 5;
+    PeerRegisterClientKeyRequest client_key_peer = 6;
+}
 
 message MfaValidateOtpRequest {
     string otp_code = 1;
@@ -169,4 +181,5 @@ service Auth {
     rpc logout(LogoutReq) returns (BaseResponse) {};
     rpc register_pincode(RegisterPinCodeReq) returns (AuthRes) {};
     rpc verify_pincode(VerifyPinCodeReq) returns (AuthRes) {};
+    rpc reset_pincode(ResetPinCodeReq) returns (AuthRes) {};
 }

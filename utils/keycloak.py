@@ -85,9 +85,9 @@ class KeyCloakUtils:
         try:
             user_id = keycloak_admin.get_user_id(email)
             user = keycloak_admin.get_user(user_id)
-            return user
+            return user_id, user
         except Exception as e:
-            return None
+            return None, None
 
     @staticmethod
     def set_user_password(user_id, password):

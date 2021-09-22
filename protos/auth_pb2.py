@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x11protos/auth.proto\x12\x04\x61uth\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\xf0\x01\n\x1cPeerRegisterClientKeyRequest\x12\x16\n\x0eregistrationId\x18\x01 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x02 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x03 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x04 \x01(\x05\x12\x0e\n\x06preKey\x18\x05 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x06 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\x07 \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\x08 \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\t \x01(\t\"\x98\x02\n\x18PeerGetClientKeyResponse\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x16\n\x0eregistrationId\x18\x03 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x04 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x05 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x06 \x01(\x05\x12\x0e\n\x06preKey\x18\x07 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x08 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\t \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\n \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\x0b \x01(\t\"\\\n\x07\x41uthReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x15\n\rhash_password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"5\n\tLogoutReq\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x15\n\rrefresh_token\x18\x02 \x01(\t\"\x1e\n\rFogotPassWord\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"\x92\x03\n\x07\x41uthRes\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x16\n\x0eworkspace_name\x18\x02 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x03 \x01(\t\x12\x12\n\nexpires_in\x18\x04 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x05 \x01(\x03\x12\x15\n\rrefresh_token\x18\x06 \x01(\t\x12\x12\n\ntoken_type\x18\x07 \x01(\t\x12\x15\n\rsession_state\x18\x08 \x01(\t\x12\r\n\x05scope\x18\t \x01(\t\x12\x10\n\x08hash_key\x18\n \x01(\t\x12\x0b\n\x03sub\x18\x0b \x01(\t\x12\x18\n\x10pre_access_token\x18\x0c \x01(\t\x12\x16\n\x0erequire_action\x18\r \x01(\t\x12\x0c\n\x04salt\x18\x0e \x01(\t\x12\x37\n\x0f\x63lient_key_peer\x18\x0f \x01(\x0b\x32\x1e.auth.PeerGetClientKeyResponse\x12\x17\n\x0fIvParameterSpec\x18\x10 \x01(\t\x12\r\n\x05\x65rror\x18\x11 \x01(\t\"\x81\x02\n\x0bRegisterReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x15\n\rhash_password\x18\x04 \x01(\t\x12\x11\n\tauth_type\x18\x05 \x01(\x03\x12\x12\n\nfirst_name\x18\x06 \x01(\t\x12\x11\n\tlast_name\x18\x07 \x01(\t\x12\x0c\n\x04salt\x18\x08 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\t \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x17\n\x0fIvParameterSpec\x18\n \x01(\t\"\x1c\n\x0bRegisterRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"<\n\x0eGoogleLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08id_token\x18\x02 \x01(\t\"@\n\x0eOfficeLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"B\n\x10\x46\x61\x63\x65\x62ookLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"\xb9\x01\n\x12RegisterPinCodeReq\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x14\n\x0chash_pincode\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x05 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x17\n\x0fIvParameterSpec\x18\x06 \x01(\t\"S\n\x10VerifyPinCodeReq\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x14\n\x0chash_pincode\x18\x03 \x01(\t\"L\n\x15MfaValidateOtpRequest\x12\x10\n\x08otp_code\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x10\n\x08otp_hash\x18\x03 \x01(\t\"4\n\x0fMfaResendOtpReq\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x10\n\x08otp_hash\x18\x02 \x01(\t\"C\n\x0fMfaResendOtpRes\x12\x10\n\x08otp_hash\x18\x01 \x01(\t\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\r\n\x05\x65rror\x18\x03 \x01(\t2\xf0\x04\n\x04\x41uth\x12\'\n\x05login\x12\r.auth.AuthReq\x1a\r.auth.AuthRes\"\x00\x12\x35\n\x0clogin_google\x12\x14.auth.GoogleLoginReq\x1a\r.auth.AuthRes\"\x00\x12\x35\n\x0clogin_office\x12\x14.auth.OfficeLoginReq\x1a\r.auth.AuthRes\"\x00\x12\x39\n\x0elogin_facebook\x12\x16.auth.FacebookLoginReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0cvalidate_otp\x12\x1b.auth.MfaValidateOtpRequest\x1a\r.auth.AuthRes\"\x00\x12<\n\nresend_otp\x12\x15.auth.MfaResendOtpReq\x1a\x15.auth.MfaResendOtpRes\"\x00\x12\x32\n\x08register\x12\x11.auth.RegisterReq\x1a\x11.auth.RegisterRes\"\x00\x12;\n\x0e\x66ogot_password\x12\x13.auth.FogotPassWord\x1a\x12.auth.BaseResponse\"\x00\x12/\n\x06logout\x12\x0f.auth.LogoutReq\x1a\x12.auth.BaseResponse\"\x00\x12=\n\x10register_pincode\x12\x18.auth.RegisterPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x39\n\x0everify_pincode\x12\x16.auth.VerifyPinCodeReq\x1a\r.auth.AuthRes\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x11protos/auth.proto\x12\x04\x61uth\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\xf0\x01\n\x1cPeerRegisterClientKeyRequest\x12\x16\n\x0eregistrationId\x18\x01 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x02 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x03 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x04 \x01(\x05\x12\x0e\n\x06preKey\x18\x05 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x06 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\x07 \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\x08 \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\t \x01(\t\"\x98\x02\n\x18PeerGetClientKeyResponse\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x16\n\x0eregistrationId\x18\x03 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x04 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x05 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x06 \x01(\x05\x12\x0e\n\x06preKey\x18\x07 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x08 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\t \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\n \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\x0b \x01(\t\"\\\n\x07\x41uthReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x15\n\rhash_password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"5\n\tLogoutReq\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x15\n\rrefresh_token\x18\x02 \x01(\t\"\x1e\n\rFogotPassWord\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"\x8f\x03\n\x07\x41uthRes\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x16\n\x0eworkspace_name\x18\x02 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x03 \x01(\t\x12\x12\n\nexpires_in\x18\x04 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x05 \x01(\x03\x12\x15\n\rrefresh_token\x18\x06 \x01(\t\x12\x12\n\ntoken_type\x18\x07 \x01(\t\x12\x15\n\rsession_state\x18\x08 \x01(\t\x12\r\n\x05scope\x18\t \x01(\t\x12\x10\n\x08hash_key\x18\n \x01(\t\x12\x0b\n\x03sub\x18\x0b \x01(\t\x12\x18\n\x10pre_access_token\x18\x0c \x01(\t\x12\x16\n\x0erequire_action\x18\r \x01(\t\x12\x0c\n\x04salt\x18\x0e \x01(\t\x12\x37\n\x0f\x63lient_key_peer\x18\x0f \x01(\x0b\x32\x1e.auth.PeerGetClientKeyResponse\x12\x14\n\x0civ_parameter\x18\x10 \x01(\t\x12\r\n\x05\x65rror\x18\x11 \x01(\t\"\xfe\x01\n\x0bRegisterReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x15\n\rhash_password\x18\x04 \x01(\t\x12\x11\n\tauth_type\x18\x05 \x01(\x03\x12\x12\n\nfirst_name\x18\x06 \x01(\t\x12\x11\n\tlast_name\x18\x07 \x01(\t\x12\x0c\n\x04salt\x18\x08 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\t \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\n \x01(\t\"\x1c\n\x0bRegisterRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"<\n\x0eGoogleLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08id_token\x18\x02 \x01(\t\"@\n\x0eOfficeLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"B\n\x10\x46\x61\x63\x65\x62ookLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"\xb6\x01\n\x12RegisterPinCodeReq\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x14\n\x0chash_pincode\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x05 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\x06 \x01(\t\"S\n\x10VerifyPinCodeReq\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x14\n\x0chash_pincode\x18\x03 \x01(\t\"\xb3\x01\n\x0fResetPinCodeReq\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x14\n\x0chash_pincode\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x06 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\"L\n\x15MfaValidateOtpRequest\x12\x10\n\x08otp_code\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x10\n\x08otp_hash\x18\x03 \x01(\t\"4\n\x0fMfaResendOtpReq\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x10\n\x08otp_hash\x18\x02 \x01(\t\"C\n\x0fMfaResendOtpRes\x12\x10\n\x08otp_hash\x18\x01 \x01(\t\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\r\n\x05\x65rror\x18\x03 \x01(\t2\xa9\x05\n\x04\x41uth\x12\'\n\x05login\x12\r.auth.AuthReq\x1a\r.auth.AuthRes\"\x00\x12\x35\n\x0clogin_google\x12\x14.auth.GoogleLoginReq\x1a\r.auth.AuthRes\"\x00\x12\x35\n\x0clogin_office\x12\x14.auth.OfficeLoginReq\x1a\r.auth.AuthRes\"\x00\x12\x39\n\x0elogin_facebook\x12\x16.auth.FacebookLoginReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0cvalidate_otp\x12\x1b.auth.MfaValidateOtpRequest\x1a\r.auth.AuthRes\"\x00\x12<\n\nresend_otp\x12\x15.auth.MfaResendOtpReq\x1a\x15.auth.MfaResendOtpRes\"\x00\x12\x32\n\x08register\x12\x11.auth.RegisterReq\x1a\x11.auth.RegisterRes\"\x00\x12;\n\x0e\x66ogot_password\x12\x13.auth.FogotPassWord\x1a\x12.auth.BaseResponse\"\x00\x12/\n\x06logout\x12\x0f.auth.LogoutReq\x1a\x12.auth.BaseResponse\"\x00\x12=\n\x10register_pincode\x12\x18.auth.RegisterPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x39\n\x0everify_pincode\x12\x16.auth.VerifyPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x37\n\rreset_pincode\x12\x15.auth.ResetPinCodeReq\x1a\r.auth.AuthRes\"\x00\x62\x06proto3'
 )
 
 
@@ -485,7 +485,7 @@ _AUTHRES = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='IvParameterSpec', full_name='auth.AuthRes.IvParameterSpec', index=15,
+      name='iv_parameter', full_name='auth.AuthRes.iv_parameter', index=15,
       number=16, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -511,7 +511,7 @@ _AUTHRES = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=766,
-  serialized_end=1168,
+  serialized_end=1165,
 )
 
 
@@ -587,7 +587,7 @@ _REGISTERREQ = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='IvParameterSpec', full_name='auth.RegisterReq.IvParameterSpec', index=9,
+      name='iv_parameter', full_name='auth.RegisterReq.iv_parameter', index=9,
       number=10, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -605,8 +605,8 @@ _REGISTERREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1171,
-  serialized_end=1428,
+  serialized_start=1168,
+  serialized_end=1422,
 )
 
 
@@ -637,8 +637,8 @@ _REGISTERRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1430,
-  serialized_end=1458,
+  serialized_start=1424,
+  serialized_end=1452,
 )
 
 
@@ -676,8 +676,8 @@ _GOOGLELOGINREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1460,
-  serialized_end=1520,
+  serialized_start=1454,
+  serialized_end=1514,
 )
 
 
@@ -715,8 +715,8 @@ _OFFICELOGINREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1522,
-  serialized_end=1586,
+  serialized_start=1516,
+  serialized_end=1580,
 )
 
 
@@ -754,8 +754,8 @@ _FACEBOOKLOGINREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1588,
-  serialized_end=1654,
+  serialized_start=1582,
+  serialized_end=1648,
 )
 
 
@@ -803,7 +803,7 @@ _REGISTERPINCODEREQ = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='IvParameterSpec', full_name='auth.RegisterPinCodeReq.IvParameterSpec', index=5,
+      name='iv_parameter', full_name='auth.RegisterPinCodeReq.iv_parameter', index=5,
       number=6, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -821,8 +821,8 @@ _REGISTERPINCODEREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1657,
-  serialized_end=1842,
+  serialized_start=1651,
+  serialized_end=1833,
 )
 
 
@@ -867,8 +867,75 @@ _VERIFYPINCODEREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1844,
-  serialized_end=1927,
+  serialized_start=1835,
+  serialized_end=1918,
+)
+
+
+_RESETPINCODEREQ = _descriptor.Descriptor(
+  name='ResetPinCodeReq',
+  full_name='auth.ResetPinCodeReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='pre_access_token', full_name='auth.ResetPinCodeReq.pre_access_token', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='user_id', full_name='auth.ResetPinCodeReq.user_id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='hash_pincode', full_name='auth.ResetPinCodeReq.hash_pincode', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='salt', full_name='auth.ResetPinCodeReq.salt', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='iv_parameter', full_name='auth.ResetPinCodeReq.iv_parameter', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_key_peer', full_name='auth.ResetPinCodeReq.client_key_peer', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1921,
+  serialized_end=2100,
 )
 
 
@@ -913,8 +980,8 @@ _MFAVALIDATEOTPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1929,
-  serialized_end=2005,
+  serialized_start=2102,
+  serialized_end=2178,
 )
 
 
@@ -952,8 +1019,8 @@ _MFARESENDOTPREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2007,
-  serialized_end=2059,
+  serialized_start=2180,
+  serialized_end=2232,
 )
 
 
@@ -998,13 +1065,14 @@ _MFARESENDOTPRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2061,
-  serialized_end=2128,
+  serialized_start=2234,
+  serialized_end=2301,
 )
 
 _AUTHRES.fields_by_name['client_key_peer'].message_type = _PEERGETCLIENTKEYRESPONSE
 _REGISTERREQ.fields_by_name['client_key_peer'].message_type = _PEERREGISTERCLIENTKEYREQUEST
 _REGISTERPINCODEREQ.fields_by_name['client_key_peer'].message_type = _PEERREGISTERCLIENTKEYREQUEST
+_RESETPINCODEREQ.fields_by_name['client_key_peer'].message_type = _PEERREGISTERCLIENTKEYREQUEST
 DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
 DESCRIPTOR.message_types_by_name['PeerRegisterClientKeyRequest'] = _PEERREGISTERCLIENTKEYREQUEST
 DESCRIPTOR.message_types_by_name['PeerGetClientKeyResponse'] = _PEERGETCLIENTKEYRESPONSE
@@ -1019,6 +1087,7 @@ DESCRIPTOR.message_types_by_name['OfficeLoginReq'] = _OFFICELOGINREQ
 DESCRIPTOR.message_types_by_name['FacebookLoginReq'] = _FACEBOOKLOGINREQ
 DESCRIPTOR.message_types_by_name['RegisterPinCodeReq'] = _REGISTERPINCODEREQ
 DESCRIPTOR.message_types_by_name['VerifyPinCodeReq'] = _VERIFYPINCODEREQ
+DESCRIPTOR.message_types_by_name['ResetPinCodeReq'] = _RESETPINCODEREQ
 DESCRIPTOR.message_types_by_name['MfaValidateOtpRequest'] = _MFAVALIDATEOTPREQUEST
 DESCRIPTOR.message_types_by_name['MfaResendOtpReq'] = _MFARESENDOTPREQ
 DESCRIPTOR.message_types_by_name['MfaResendOtpRes'] = _MFARESENDOTPRES
@@ -1122,6 +1191,13 @@ VerifyPinCodeReq = _reflection.GeneratedProtocolMessageType('VerifyPinCodeReq', 
   })
 _sym_db.RegisterMessage(VerifyPinCodeReq)
 
+ResetPinCodeReq = _reflection.GeneratedProtocolMessageType('ResetPinCodeReq', (_message.Message,), {
+  'DESCRIPTOR' : _RESETPINCODEREQ,
+  '__module__' : 'protos.auth_pb2'
+  # @@protoc_insertion_point(class_scope:auth.ResetPinCodeReq)
+  })
+_sym_db.RegisterMessage(ResetPinCodeReq)
+
 MfaValidateOtpRequest = _reflection.GeneratedProtocolMessageType('MfaValidateOtpRequest', (_message.Message,), {
   'DESCRIPTOR' : _MFAVALIDATEOTPREQUEST,
   '__module__' : 'protos.auth_pb2'
@@ -1152,8 +1228,8 @@ _AUTH = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=2131,
-  serialized_end=2755,
+  serialized_start=2304,
+  serialized_end=2985,
   methods=[
   _descriptor.MethodDescriptor(
     name='login',
@@ -1261,6 +1337,16 @@ _AUTH = _descriptor.ServiceDescriptor(
     index=10,
     containing_service=None,
     input_type=_VERIFYPINCODEREQ,
+    output_type=_AUTHRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='reset_pincode',
+    full_name='auth.Auth.reset_pincode',
+    index=11,
+    containing_service=None,
+    input_type=_RESETPINCODEREQ,
     output_type=_AUTHRES,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
