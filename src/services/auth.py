@@ -140,7 +140,7 @@ class AuthService:
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return user_id, google_email, True
+                return new_user_id, google_email, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.GOOGLE_AUTH_FAILED)
@@ -183,7 +183,7 @@ class AuthService:
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return user_id, office_id, True
+                return new_user_id, office_id, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.OFFICE_AUTH_FAILED)
@@ -230,7 +230,7 @@ class AuthService:
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return user_id, facebook_id, True
+                return new_user_id, facebook_id, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.FACEBOOK_AUTH_FAILED)

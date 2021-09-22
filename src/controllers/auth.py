@@ -334,7 +334,7 @@ class AuthController(BaseController):
             except Exception as e:
                 logger.error(e)
                 ## TODO: revert change_password
-                SignalService().delete_client_peer_key(user_id)
+                SignalService().delete_client_peer_key(request.user_id)
                 raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             require_action = ""
             client_key_obj = request.client_key_peer
