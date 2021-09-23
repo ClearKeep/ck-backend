@@ -414,13 +414,18 @@ class GroupService(BaseService):
 
             #client signal key of group
             group_client_key = item.GroupClientKey
-            client_key_res = group_pb2.GroupClientKeyObject(
+            # client_key_res = group_pb2.GroupClientKeyObject(
+            #     clientId=group_client_key.client_id,
+            #     deviceId=group_client_key.device_id,
+            #     clientKeyDistribution=group_client_key.client_key,
+            #     identityKeyEncrypted=group_client_key.identity_key_encrypted
+            # )
+            obj_res.client_key = group_pb2.GroupClientKeyObject(
                 clientId=group_client_key.client_id,
                 deviceId=group_client_key.device_id,
                 clientKeyDistribution=group_client_key.client_key,
                 identityKeyEncrypted=group_client_key.identity_key_encrypted
             )
-            obj_res.client_key = client_key_res
 
             # check if this group has an unread message
             if obj.last_message_id:
