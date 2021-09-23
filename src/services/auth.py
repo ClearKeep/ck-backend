@@ -77,9 +77,9 @@ class AuthService:
             raise Exception(Message.UNAUTHENTICATED)
 
 
-    def get_user_by_email(self, email):
+    def get_user_by_email(self, email, get_user_id=False):
         try:
-            return KeyCloakUtils.get_user_by_email(email)
+            return KeyCloakUtils.get_user_by_email(email, get_user_id=get_user_id)
         except Exception as e:
             logger.info(e)
             raise Exception(Message.USER_NOT_FOUND)
