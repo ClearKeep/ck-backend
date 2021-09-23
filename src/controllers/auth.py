@@ -326,7 +326,7 @@ class AuthController(BaseController):
             self.user_service.change_password(request, None, request.hash_pincode, request.user_id)
             token = self.service.token(user_name, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            hash_key = EncryptUtils.encoded_hash(request.user_id, request.user_id)
+            hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
             # using hash_pincode as password for social user
             SignalService().peer_register_client_key(request.user_id, request.client_key_peer)
             try:
@@ -466,6 +466,7 @@ class AuthController(BaseController):
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
                 workspace_name=get_system_config()['server_name'],
+                hash_key=hash_key,
                 access_token=token["access_token"],
                 expires_in=token['expires_in'],
                 refresh_expires_in=token['refresh_expires_in'],
