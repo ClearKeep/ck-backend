@@ -418,7 +418,7 @@ class GroupService(BaseService):
                 clientId=group_client_key.client_id,
                 deviceId=group_client_key.device_id,
                 clientKeyDistribution=group_client_key.client_key,
-                identityKeyEncrypted=group_client_key.identityKeyEncrypted
+                identityKeyEncrypted=group_client_key.identity_key_encrypted
             )
             obj_res.client_key = client_key_res
 
