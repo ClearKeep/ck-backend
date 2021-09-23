@@ -38,7 +38,7 @@ class SignalService(BaseService):
         if client is None:
             raise Exception(Message.UPDATE_CLIENT_SIGNAL_KEY_FAILED)
 
-        client.set_key(clientId, request.registrationId, request.deviceId,
+        client.set_key(client_id, request.registrationId, request.deviceId,
                           request.identityKeyPublic, request.preKeyId, request.preKey,
                           request.signedPreKeyId, request.signedPreKey,
                           request.signedPreKeySignature, request.identityKeyEncrypted
