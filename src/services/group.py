@@ -414,26 +414,14 @@ class GroupService(BaseService):
 
             #client signal key of group
             group_client_key = item.GroupClientKey
-            # if group_client_key.client_id:
-            #     obj_res.client_key.clientId = group_client_key.client_id
-            # if group_client_key.device_id:
-            #     obj_res.client_key.deviceId = group_client_key.device_id
-            # if group_client_key.client_key:
-            #     obj_res.client_key.clientKeyDistribution = group_client_key.client_key
-            # if group_client_key.identity_key_encrypted:
-            #     obj_res.client_key.identityKeyEncrypted = group_client_key.identity_key_encrypted
-
-            client_key_res = group_pb2.GroupClientKeyObject()
             if group_client_key.client_id:
-                client_key_res.clientId = group_client_key.client_id,
+                obj_res.client_key.clientId = group_client_key.client_id
             if group_client_key.device_id:
-                client_key_res.deviceId = group_client_key.device_id,
+                obj_res.client_key.deviceId = group_client_key.device_id
             if group_client_key.client_key:
-                client_key_res.clientKeyDistribution = group_client_key.client_key
+                obj_res.client_key.clientKeyDistribution = group_client_key.client_key
             if group_client_key.identity_key_encrypted:
-                client_key_res.identityKeyEncrypted = group_client_key.identity_key_encrypted
-
-            obj_res.client_key = client_key_res
+                obj_res.client_key.identityKeyEncrypted = group_client_key.identity_key_encrypted
 
             # check if this group has an unread message
             if obj.last_message_id:
