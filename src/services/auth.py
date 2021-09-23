@@ -1,3 +1,4 @@
+import time
 import datetime
 from hashlib import md5
 from msg.message import Message
@@ -77,9 +78,9 @@ class AuthService:
             raise Exception(Message.UNAUTHENTICATED)
 
 
-    def get_user_by_email(self, email, get_user_id=False):
+    def get_user_by_email(self, email):
         try:
-            return KeyCloakUtils.get_user_by_email(email, get_user_id=get_user_id)
+            return KeyCloakUtils.get_user_by_email(email)
         except Exception as e:
             logger.info(e)
             raise Exception(Message.USER_NOT_FOUND)
@@ -124,13 +125,13 @@ class AuthService:
 
             google_email = google_token_info["email"]
             # check account exits
-            user_id, user_exist = self.get_user_by_email(email=google_email, get_user_id=True) #UserService().get_google_user(google_email, "google")
+            user = self.get_user_by_email(email=google_email) #UserService().get_google_user(google_email, "google")
             #active_user
-            if user_exist:
-                if not user_exist["emailVerified"]:
-                    KeyCloakUtils.active_user(user_exist["id"])
-                pincode = UserService().get_pincode(user_id)
-                return user_id, google_email, pincode is None or pincode == ""
+            if user:
+                if not user["emailVerified"]:
+                    KeyCloakUtils.active_user(user["id"])
+                pincode = UserService().get_pincode(user["id"])
+                return google_email, pincode is None or pincode == ""
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(google_email, google_email, "", google_token_info["name"])
@@ -140,7 +141,7 @@ class AuthService:
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return new_user_id, google_email, True
+                return google_email, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.GOOGLE_AUTH_FAILED)
@@ -162,10 +163,10 @@ class AuthService:
 
             office_id = office_token_info["id"]
             # check account exits
-            user_id, user = KeyCloakUtils.get_user_by_email(office_id, get_user_id=True)
+            user = self.get_user_by_email(office_id)
             if user:
-                pincode = UserService().get_pincode(user_id)
-                return user_id, office_id, pincode is None or pincode == ""
+                pincode = UserService().get_pincode(user["id"])
+                return office_id, pincode is None or pincode == ""
             else:
                 display_name = office_token_info["displayName"]
                 email = ""
@@ -183,7 +184,7 @@ class AuthService:
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return new_user_id, office_id, True
+                return office_id, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.OFFICE_AUTH_FAILED)
@@ -217,9 +218,9 @@ class AuthService:
             facebook_email = facebook_token_info["email"]
             facebook_name = facebook_token_info["name"]
             # check account exits
-            user_id, user = KeyCloakUtils.get_user_by_email(facebook_id, get_user_id=True)
+            user = self.get_user_by_email(facebook_id)
             if user:
-                pincode = UserService().get_pincode(user_id)
+                pincode = UserService().get_pincode(user["id"])
                 return facebook_id, pincode is None or pincode == ""
             else:
                 # create new user
@@ -230,7 +231,7 @@ class AuthService:
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return new_user_id, facebook_id, True
+                return facebook_id, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.FACEBOOK_AUTH_FAILED)
@@ -354,19 +355,21 @@ class AuthService:
             logger.info(e)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
-    def hash_pre_access_token(self, client_id, user_name, require_action):
+    def hash_pre_access_token(self, user_name, require_action):
         # lend the hash_uid from utils.otp
-        hash_key, message = OTPServer.sign_message(client_id, user_name, require_action)
+        hash_key = OTPServer.sign_message(user_name, require_action)
         return hash_key
 
-    def verify_hash_pre_access_token(self, user_id, signed_message, require_action):
+    def verify_hash_pre_access_token(self, user_name, signed_message, require_action):
         try:
             message = OTPServer.verify_message(signed_message)
+            if message.get("iss", None) != user_name:
+                return False
             if message.get("aud", None) != require_action:
-                return False, ""
-            if message.get("kid", "")  != user_id:
-                return False, ""
-            return True, message.get("iss", "")
+                return False
+            if message.get("exp", 0) < int(time.time()):
+                return False
+            return True
         except Exception as e:
             logger.error(e)
-            return False, ""
+            return False

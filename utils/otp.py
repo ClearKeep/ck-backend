@@ -44,13 +44,12 @@ class OTPServer(object):
     @staticmethod
     def sign_message(user_id, user_name, require_action):
         message = {
-            "kid": user_id,
             "iss": user_name,
             "aud": require_action,
             "exp": int(time.time()) + 86400
         }
         signed_message = jws.sign(message, secret_key, algorithm='HS256')
-        return signed_message, message
+        return signed_message
 
     def verify_message(signed_message):
         message = json.loads(jws.verify(signed_message, secret_key, algorithms=['HS256']).decode('utf-8'))
