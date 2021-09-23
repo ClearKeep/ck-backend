@@ -412,8 +412,6 @@ class AuthController(BaseController):
                                     signedPreKeySignature=client_key_obj.signedPreKeySignature,
                                     identityKeyEncrypted=client_key_obj.identityKeyEncrypted
                                 )
-            user_sessions = KeyCloakUtils.get_sessions(user_id=request.user_id)
-            # create new session
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
                 workspace_name=get_system_config()['server_name'],
