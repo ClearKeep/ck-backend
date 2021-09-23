@@ -412,6 +412,16 @@ class GroupService(BaseService):
             if obj.updated_at:
                 obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
 
+            #client signal key of group
+            group_client_key = item.GroupClientKey
+            client_key_res = group_pb2.GroupClientKeyObject(
+                clientId=group_client_key.client_id,
+                deviceId=group_client_key.device_id,
+                clientKeyDistribution=group_client_key.client_key,
+                identityKeyEncrypted=group_client_key.identityKeyEncrypted
+            )
+            obj_res.client_key = client_key_res
+
             # check if this group has an unread message
             if obj.last_message_id:
                 is_read = MessageUserRead().get_by_message_id(obj.last_message_id)

@@ -7,6 +7,7 @@ from src.models.group import GroupChat
 from msg.message import Message
 from utils.logger import *
 import ast
+from msg.message import Message
 
 
 client_queue = {}
@@ -49,10 +50,17 @@ class SignalService(BaseService):
     def peer_get_client_key(self, client_id):
         return self.peer_model.get_by_client_id(client_id)
 
-    def group_register_client_key(self, request):
-        client_group_key = GroupClientKey().set_key(request.groupId, request.clientId, None, None, request.deviceId,
-                                                    request.clientKeyDistribution)
-        client_group_key.add()
+    def group_register_client_key(self, client_id, request):
+        client_group_key = GroupClientKey().set_key(request.groupId, client_id, None, None, request.deviceId,
+                                                    request.clientKeyDistribution, request.identityKeyEncrypted)
+        new_group_key = client_group_key.add()
+        if new_group_key is None:
+            raise Exception(Message.REGISTER_CLIENT_GROUP_FAILED_AVAILABLE)
+
+    def group_bulk_update_client_key(self, client_id, list_group_client_key):
+        is_updated = GroupClientKey().update_bulk_client_key(client_id, list_group_client_key)
+        if not is_updated:
+            raise Exception(Message.UPDATE_CLIENT_KEY_GROUPS_FAILED)
 
     def group_get_client_key(self, group_id, client_id):
         client_key = self.group_client_key_model.get(group_id, client_id)
