@@ -321,7 +321,7 @@ class AuthController(BaseController):
     async def register_pincode(self, request, context):
         try:
             success_status = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "register_pincode")
-            exists_user = self.service.get_user_by_email(request.email)
+            exists_user = self.service.get_user_by_email(request.user_id)
             if not exists_user:
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             if not success_status:
@@ -382,7 +382,7 @@ class AuthController(BaseController):
     async def reset_pincode(self, request, context):
         try:
             success_status = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "verify_pincode")
-            exists_user = self.service.get_user_by_email(request.email)
+            exists_user = self.service.get_user_by_email(request.user_id)
             if not exists_user:
                 raise Exception(Message.USER_NOT_FOUND)
             if not success_status:
@@ -447,15 +447,14 @@ class AuthController(BaseController):
             success_status = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "verify_pincode")
             token = self.service.token(request.user_id, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            user_id = introspect_token['sub']
-            hash_key = EncryptUtils.encoded_hash(user_id, user_id)
-            success_status, hash_pincode_salt, iv_parameter = self.user_service.validate_hash_pincode(user_id, request.hash_pincode)
+            hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
+            success_status, hash_pincode_salt, iv_parameter = self.user_service.validate_hash_pincode(introspect_token['sub'], request.hash_pincode)
             if not token:
                 raise Exception(Message.VERIFY_PINCODE_FAILED)
 
-            client_key_obj = SignalService().peer_get_client_key(user_id)
+            client_key_obj = SignalService().peer_get_client_key(introspect_token['sub'])
             client_key_peer = auth_messages.PeerGetClientKeyResponse(
-                                    clientId=user_id,
+                                    clientId=introspect_token['sub'],
                                     workspace_domain=get_owner_workspace_domain(),
                                     registrationId=client_key_obj.registration_id,
                                     deviceId=client_key_obj.device_id,
