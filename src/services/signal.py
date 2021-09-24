@@ -47,6 +47,17 @@ class SignalService(BaseService):
         # Check chatting available and push notify inapp for refreshing key
         self.client_update_key_notify(client_id)
 
+    def client_update_identity_key(self, client_id, identity_key_encrypted):
+        # return old identity_key_encrypted for get back in case needed
+        client = self.peer_model.get_by_client_id(client_id)
+        if client is None:
+            raise Exception(Message.UPDATE_CLIENT_SIGNAL_KEY_FAILED)
+
+        old_identity_key_encrypted = client.identity_key_encrypted
+        client.identity_key_encrypted = identity_key_encrypted
+        client.update()
+        return old_identity_key_encrypted
+
     def peer_get_client_key(self, client_id):
         return self.peer_model.get_by_client_id(client_id)
 

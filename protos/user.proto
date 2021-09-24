@@ -30,8 +30,9 @@ message UpdateProfileRequest {
 
 // Request: change password
 message ChangePasswordRequest {
-    string old_password = 1;
-    string new_password = 2;
+    string old_hash_password = 1;
+    string new_hash_password = 2;
+    string identity_key_encrypted = 3;
 }
 // Response: BaseResponse
 

@@ -237,6 +237,16 @@ class UserService(BaseService):
             logger.error(e)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
+    def update_hash_pass(self, user_id, hash_password, hash_code_salt='', iv_parameter=''):
+        user_info = self.model.get(user_id)
+        user_info.hash_code = hash_password
+        if hash_code_salt:
+            user_info.hash_code_salt = hash_code_salt
+        if iv_parameter:
+            user_info.iv_parameter = iv_parameter
+        user_info.update()
+        return (user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter)
+
     def update_hash_pin(self, user_id, hash_pincode, hash_code_salt='', iv_parameter=''):
         user_info = self.model.get(user_id)
         user_info.hash_code = hash_pincode
