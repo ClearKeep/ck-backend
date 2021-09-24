@@ -54,7 +54,7 @@ class UserService(BaseService):
                 email=email,
                 display_name=display_name,
                 auth_source=auth_source,
-                last_login_at=datetime.datetime.now()
+                #last_login_at=datetime.datetime.now()
             )
             # if email:
             #     self.model.email = EncryptUtils.encrypt_data(email, password, id)
