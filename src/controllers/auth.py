@@ -274,6 +274,7 @@ class AuthController(BaseController):
                                     signedPreKeySignature=client_key_obj.signed_prekey_signature,
                                     identityKeyEncrypted=client_key_obj.identity_key_encrypted
                                 )
+            self.user_service.update_last_login(user_id=request.user_id)
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
                 workspace_name=get_system_config()['server_name'],
@@ -354,6 +355,7 @@ class AuthController(BaseController):
             token = self.service.token(request.user_id, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
+            self.user_service.update_last_login(user_id=introspect_token['sub'])
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
                 workspace_name=get_system_config()['server_name'],
@@ -466,6 +468,7 @@ class AuthController(BaseController):
                                     signedPreKeySignature=client_key_obj.signed_prekey_signature,
                                     identityKeyEncrypted=client_key_obj.identity_key_encrypted
                                 )
+            self.user_service.update_last_login(user_id=introspect_token['sub'])
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
                 workspace_name=get_system_config()['server_name'],
