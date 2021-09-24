@@ -1,5 +1,6 @@
 import protos.user_pb2 as user_messages
 from src.controllers.base import *
+from src.services.auth import AuthService
 from src.services.user import UserService
 from src.services.signal import SignalService
 from middlewares.permission import *
@@ -18,39 +19,30 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            self.service.change_password(request, request.old_password, request.new_password, introspect_token['sub'])
+            username = introspect_token['preferred_username']
+            # verify request.old_password is current password
+            verify_token = AuthService().token(username, request.old_hash_password)
+            if not verify_token or "access_token" not in verify_token:
+                # should raise wrong password instead
+                raise Exception(Message.CHANGE_PASSWORD_FAILED)
+            self.service.change_password(request, request.old_hash_password, request.new_hash_password, introspect_token['sub'])
             try:
-                SignalService().client_update_peer_key(exists_user["id"], request.client_key_peer)
+                old_identity_key_encrypted = SignalService().client_update_identity_key(introspect_token["sub"], request.identity_key_encrypted)
             except Exception as e:
                 logger.error(e)
-                self.service.change_password(request, request.new_password, request.old_password, introspect_token['sub'])
-                raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+                self.service.change_password(request, request.new_hash_password, request.old_hash_password, introspect_token['sub'])
+                raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             try:
-                _, salt, iv_parameter = self.service.update_hash_pass(exists_user["id"], request.new_password, request.salt, request.iv_parameter)
+                _, salt, iv_parameter = self.service.update_hash_pass(introspect_token["sub"], request.new_hash_password)
             except Exception as e:
                 logger.error(e)
-                self.service.change_password(request, request.new_password, request.old_password, introspect_token['sub'])
-                old_client_key_peer = SignalService().peer_get_client_key(exists_user["id"])
-                SignalService().client_update_peer_key(exists_user["id"], old_client_key_peer)
-                raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
-            # client_key_obj = request.client_key_peer
-            # client_key_peer = user_messages.PeerGetClientKeyResponse(
-            #                         clientId=exists_user["id"],
-            #                         workspace_domain=get_owner_workspace_domain(),
-            #                         registrationId=client_key_obj.registrationId,
-            #                         deviceId=client_key_obj.deviceId,
-            #                         identityKeyPublic=client_key_obj.identityKeyPublic,
-            #                         preKeyId=client_key_obj.preKeyId,
-            #                         preKey=client_key_obj.preKey,
-            #                         signedPreKeyId=client_key_obj.signedPreKeyId,
-            #                         signedPreKey=client_key_obj.signedPreKey,
-            #                         signedPreKeySignature=client_key_obj.signedPreKeySignature,
-            #                         identityKeyEncrypted=client_key_obj.identityKeyEncrypted
-            #                     )
-            # logout all device before get new token for user after updated new key
-            user_sessions = KeyCloakUtils.get_sessions(user_id=exists_user["id"])
+                self.service.change_password(request, request.new_hash_password, request.old_hash_password, introspect_token['sub'])
+                SignalService().client_update_identity_key(introspect_token["sub"], old_identity_key_encrypted)
+                raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+            user_sessions = KeyCloakUtils.get_sessions(user_id=introspect_token["sub"])
             for user_session in user_sessions:
-                KeyCloakUtils.remove_session(session_id=user_session['id'])
+                if user_session['id'] != introspect_token['session_state']:
+                    KeyCloakUtils.remove_session(session_id=user_session['id'])
             return user_messages.BaseResponse()
 
         except Exception as e:
