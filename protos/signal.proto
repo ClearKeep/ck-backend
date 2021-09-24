@@ -55,12 +55,17 @@ message PeerGetClientKeyResponse {
 // Request: register key of client when join to group
 message GroupRegisterClientKeyRequest {
     int64 groupId = 1;
-    string clientId = 2;
-    int32 deviceId = 3;
-    bytes clientKeyDistribution = 4;
+    int32 deviceId = 2;
+    bytes clientKeyDistribution = 3;
+    bytes identityKeyEncrypted = 4;
 }
 //response: BaseResponse
 
+
+message GroupUpdateClientKeyRequest {
+    repeated GroupRegisterClientKeyRequest listGroupClientKey = 1;
+}
+//response: BaseResponse
 
 //object
 message GroupClientKeyObject {
@@ -111,6 +116,7 @@ service SignalKeyDistribution {
       rpc ClientUpdatePeerKey (PeerRegisterClientKeyRequest) returns (BaseResponse);
       //group
       rpc GroupRegisterClientKey (GroupRegisterClientKeyRequest) returns (BaseResponse);
+      rpc GroupUpdateClientKey (GroupUpdateClientKeyRequest) returns (BaseResponse);
       rpc GroupGetClientKey (GroupGetClientKeyRequest) returns (GroupGetClientKeyResponse);
       rpc GroupGetAllClientKey (GroupGetAllClientKeyRequest) returns (GroupGetAllClientKeyResponse);
       //workspace
