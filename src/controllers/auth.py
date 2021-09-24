@@ -351,7 +351,7 @@ class AuthController(BaseController):
                                     signedPreKeySignature=client_key_obj.signedPreKeySignature,
                                     identityKeyEncrypted=client_key_obj.identityKeyEncrypted
                                 )
-            token = self.service.token(user_name, request.hash_pincode)
+            token = self.service.token(request.user_id, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
             return auth_messages.AuthRes(

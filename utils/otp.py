@@ -42,7 +42,7 @@ class OTPServer(object):
         return datetime.datetime.now() + life_time
 
     @staticmethod
-    def sign_message(user_id, user_name, require_action):
+    def sign_message(user_name, require_action):
         message = {
             "iss": user_name,
             "aud": require_action,
