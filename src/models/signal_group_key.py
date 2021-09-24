@@ -32,7 +32,9 @@ class GroupClientKey(Database.get().Model):
     def add(self):
         client = self.get(self.group_id, self.client_id)
         if client is not None:
-            return None
+            self.id = client.id
+            self.update()
+            return self
         else:
             try:
                 Database.get_session().add(self)
