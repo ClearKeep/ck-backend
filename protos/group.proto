@@ -32,7 +32,10 @@ message GroupClientKeyObject {
     string clientId = 2;
     int32 deviceId = 3;
     bytes clientKeyDistribution = 4;
-    bytes identityKeyEncrypted = 5;
+    int64 senderKeyId = 5;
+    bytes senderKey = 6;
+    bytes publicKey = 7;
+    string privateKey = 8;
 }
 
 message GroupObjectResponse {
