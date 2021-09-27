@@ -110,12 +110,13 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def get_joined_groups(self, request, context):
         try:
-            # header_data = dict(context.invocation_metadata())
-            # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            # client_id = introspect_token['sub']
-            client_id = request.client_id
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            #client_id = request.client_id
             obj_res = self.service.get_joined_group(client_id)
             return obj_res
         except Exception as e:

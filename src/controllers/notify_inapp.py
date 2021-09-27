@@ -11,6 +11,7 @@ class NotifyInAppController(BaseController):
         self.service = NotifyInAppService()
 
     @request_logged
+    @auth_required
     async def get_unread_notifies(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
