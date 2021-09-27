@@ -20,6 +20,7 @@ class VideoCallController(BaseController):
         self.service_group = GroupService()
 
     @request_logged
+    @auth_required
     async def video_call(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -271,6 +272,7 @@ class VideoCallController(BaseController):
             raise
 
     @request_logged
+    @auth_required
     async def update_call(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())

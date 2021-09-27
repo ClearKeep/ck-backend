@@ -14,6 +14,7 @@ class SignalController(BaseController):
         self.service = SignalService()
 
     @request_logged
+    @auth_required
     async def PeerRegisterClientKey(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -32,6 +33,7 @@ class SignalController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def ClientUpdatePeerKey(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -51,6 +53,7 @@ class SignalController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def PeerGetClientKey(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -99,6 +102,7 @@ class SignalController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def GroupRegisterClientKey(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -117,6 +121,7 @@ class SignalController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def GroupUpdateClientKey(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())

@@ -110,6 +110,7 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def get_joined_groups(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
