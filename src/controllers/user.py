@@ -14,7 +14,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     def __init__(self, *kwargs):
         self.service = UserService()
 
-    # @auth_required
+    @auth_required
     async def change_password(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -56,6 +56,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @auth_required
     async def get_mfa_state(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -78,7 +79,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    # @auth_required
+    @auth_required
     async def enable_mfa(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -100,7 +101,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-    # @auth_required
+
+    @auth_required
     async def disable_mfa(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -123,7 +125,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-    # @auth_required
+
+    @auth_required
     async def mfa_validate_password(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -146,7 +149,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    # @auth_required
+    @auth_required
     async def mfa_validate_otp(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -169,6 +172,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @auth_required
     async def mfa_resend_otp(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -191,8 +195,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    # @auth_required
     # @request_logged
+    @auth_required
     async def get_profile(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -219,7 +223,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    # @auth_required
+    @auth_required
     async def update_profile(self, request, context):
         logger.info("user update_profile api")
         try:
@@ -279,6 +283,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def search_user(self, request, context):
         logger.info("user search_user api")
         try:
@@ -302,6 +307,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def get_users(self, request, context):
         logger.info("user get_users api")
         try:
@@ -325,6 +331,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def get_user_domain(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -345,6 +352,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
     # update status for user ("Active, Busy, Away, Do not disturb")
     @request_logged
+    @auth_required
     async def update_status(self, request, context):
         logger.info("user update_status api")
         try:
