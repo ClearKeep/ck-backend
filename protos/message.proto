@@ -39,14 +39,16 @@ message GetMessagesInGroupResponse {
 
 // ----- PUBLISH AND SUBCRIBE MESSAGE -----
 // Request: publish a message
+// need to add new message encrypted with own public key so it could be decrypted by own private key
 message PublishRequest {
   string fromClientId = 1;
   string clientId = 2;
   int64 groupId = 3;
   bytes message = 4;
+  bytes sender_stored_message = 5;
 }
 //response: BaseResponse
-
+// need to add new message encrypted with own public key -> could be decrypted by own private key
 message WorkspacePublishRequest {
   string from_client_id = 1;
   string from_client_workspace_domain = 2;
@@ -57,6 +59,7 @@ message WorkspacePublishRequest {
   bytes message = 7;
   int64 created_at = 8;
   int64 updated_at = 9;
+  bytes sender_stored_message = 10;
 }
 
 // Request: subcribe
@@ -101,6 +104,7 @@ service Message {
     rpc Listen (ListenRequest) returns (stream MessageObjectResponse);
     rpc Publish (PublishRequest) returns (MessageObjectResponse);
     rpc read_messages (ReadMessagesRequest) returns (BaseResponse);
+    //
     //
     rpc workspace_publish (WorkspacePublishRequest) returns (MessageObjectResponse);
     //rpc edit_message (EditMessageRequest) returns (MessageObjectResponse);
