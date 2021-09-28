@@ -57,7 +57,7 @@ class SignalController(BaseController):
     async def PeerGetClientKey(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            ạ = KeyCloakUtils.introspect_token(header_data.get('access_token', ''))
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ''))
             user_id = introspect_token.get('sub', None)
 
             client_id = request.clientId
