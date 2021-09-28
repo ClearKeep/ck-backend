@@ -59,6 +59,21 @@ class AuthStub(object):
                 request_serializer=protos_dot_auth__pb2.LogoutReq.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.BaseResponse.FromString,
                 )
+        self.register_pincode = channel.unary_unary(
+                '/auth.Auth/register_pincode',
+                request_serializer=protos_dot_auth__pb2.RegisterPinCodeReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
+                )
+        self.verify_pincode = channel.unary_unary(
+                '/auth.Auth/verify_pincode',
+                request_serializer=protos_dot_auth__pb2.VerifyPinCodeReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
+                )
+        self.reset_pincode = channel.unary_unary(
+                '/auth.Auth/reset_pincode',
+                request_serializer=protos_dot_auth__pb2.ResetPinCodeReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
+                )
 
 
 class AuthServicer(object):
@@ -118,6 +133,24 @@ class AuthServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def register_pincode(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def verify_pincode(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def reset_pincode(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AuthServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -165,6 +198,21 @@ def add_AuthServicer_to_server(servicer, server):
                     servicer.logout,
                     request_deserializer=protos_dot_auth__pb2.LogoutReq.FromString,
                     response_serializer=protos_dot_auth__pb2.BaseResponse.SerializeToString,
+            ),
+            'register_pincode': grpc.unary_unary_rpc_method_handler(
+                    servicer.register_pincode,
+                    request_deserializer=protos_dot_auth__pb2.RegisterPinCodeReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
+            ),
+            'verify_pincode': grpc.unary_unary_rpc_method_handler(
+                    servicer.verify_pincode,
+                    request_deserializer=protos_dot_auth__pb2.VerifyPinCodeReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
+            ),
+            'reset_pincode': grpc.unary_unary_rpc_method_handler(
+                    servicer.reset_pincode,
+                    request_deserializer=protos_dot_auth__pb2.ResetPinCodeReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -326,5 +374,56 @@ class Auth(object):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/logout',
             protos_dot_auth__pb2.LogoutReq.SerializeToString,
             protos_dot_auth__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def register_pincode(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/register_pincode',
+            protos_dot_auth__pb2.RegisterPinCodeReq.SerializeToString,
+            protos_dot_auth__pb2.AuthRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def verify_pincode(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/verify_pincode',
+            protos_dot_auth__pb2.VerifyPinCodeReq.SerializeToString,
+            protos_dot_auth__pb2.AuthRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def reset_pincode(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/reset_pincode',
+            protos_dot_auth__pb2.ResetPinCodeReq.SerializeToString,
+            protos_dot_auth__pb2.AuthRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

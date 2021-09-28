@@ -1,6 +1,8 @@
 import protos.user_pb2 as user_messages
 from src.controllers.base import *
+from src.services.auth import AuthService
 from src.services.user import UserService
+from src.services.signal import SignalService
 from middlewares.permission import *
 from middlewares.request_logged import *
 from utils.logger import *
@@ -12,12 +14,35 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     def __init__(self, *kwargs):
         self.service = UserService()
 
-    # @auth_required
+    @auth_required
     async def change_password(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            self.service.change_password(request, request.old_password, request.new_password, introspect_token['sub'])
+            username = introspect_token['preferred_username']
+            # verify request.old_password is current password
+            verify_token = AuthService().token(username, request.old_hash_password)
+            if not verify_token or "access_token" not in verify_token:
+                # should raise wrong password instead
+                raise Exception(Message.CHANGE_PASSWORD_FAILED)
+            self.service.change_password(request, request.old_hash_password, request.new_hash_password, introspect_token['sub'])
+            try:
+                old_identity_key_encrypted = SignalService().client_update_identity_key(introspect_token["sub"], request.identity_key_encrypted)
+            except Exception as e:
+                logger.error(e)
+                self.service.change_password(request, request.new_hash_password, request.old_hash_password, introspect_token['sub'])
+                raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+            try:
+                _, salt, iv_parameter = self.service.update_hash_pass(introspect_token["sub"], request.new_hash_password)
+            except Exception as e:
+                logger.error(e)
+                self.service.change_password(request, request.new_hash_password, request.old_hash_password, introspect_token['sub'])
+                SignalService().client_update_identity_key(introspect_token["sub"], old_identity_key_encrypted)
+                raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+            user_sessions = KeyCloakUtils.get_sessions(user_id=introspect_token["sub"])
+            for user_session in user_sessions:
+                if user_session['id'] != introspect_token['session_state']:
+                    KeyCloakUtils.remove_session(session_id=user_session['id'])
             return user_messages.BaseResponse()
 
         except Exception as e:
@@ -31,6 +56,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @auth_required
     async def get_mfa_state(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -53,7 +79,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    # @auth_required
+    @auth_required
     async def enable_mfa(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -75,7 +101,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-    # @auth_required
+
+    @auth_required
     async def disable_mfa(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -98,7 +125,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-    # @auth_required
+
+    @auth_required
     async def mfa_validate_password(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -121,7 +149,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    # @auth_required
+    @auth_required
     async def mfa_validate_otp(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -144,6 +172,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @auth_required
     async def mfa_resend_otp(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -166,8 +195,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    # @auth_required
     # @request_logged
+    @auth_required
     async def get_profile(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -194,7 +223,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    # @auth_required
+    @auth_required
     async def update_profile(self, request, context):
         logger.info("user update_profile api")
         try:
@@ -254,6 +283,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def search_user(self, request, context):
         logger.info("user search_user api")
         try:
@@ -277,6 +307,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def get_users(self, request, context):
         logger.info("user get_users api")
         try:
@@ -300,6 +331,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def get_user_domain(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -320,6 +352,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
     # update status for user ("Active, Busy, Away, Do not disturb")
     @request_logged
+    @auth_required
     async def update_status(self, request, context):
         logger.info("user update_status api")
         try:

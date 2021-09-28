@@ -51,6 +51,7 @@ class UploadFileController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+            
     #@request_logged
     async def upload_chunked_file(self, request_iterator, context):
         try:

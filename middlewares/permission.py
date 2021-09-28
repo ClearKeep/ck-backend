@@ -4,6 +4,7 @@ import grpc
 from utils.config import get_system_config
 from msg.message import Message
 import json
+from utils.logger import *
 
 
 def auth_required(f):
@@ -12,8 +13,14 @@ def auth_required(f):
         context = args[2]
         metadata = dict(context.invocation_metadata())
         # client request with access_token
-        if 'access_token' in metadata and _token_check(metadata['access_token']):
-            return await f(*args, **kwargs)
+        if 'access_token' in metadata:
+            if _token_check(metadata['access_token']):
+                return await f(*args, **kwargs)
+            else:
+                errors = [Message.get_error_object(Message.INVALID_ACCESS_TOKEN)]
+                context.set_details(json.dumps(errors, default=lambda x: x.__dict__))
+                context.set_code(grpc.StatusCode.INTERNAL)
+                return
         # server request with domain.
         if 'request_domain' in metadata and _fd_server_check(metadata['request_domain'], context.peer()):
             return await f(*args, **kwargs)
@@ -29,7 +36,7 @@ def auth_required(f):
 def _token_check(access_token):
     try:
         token_info = KeyCloakUtils.introspect_token(access_token)
-        print("permission.py => token info here=", token_info)
+        logger.info({"token info": token_info})
         if token_info['active']:
             return True
         else:

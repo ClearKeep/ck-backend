@@ -10,6 +10,7 @@ class NotifyPushController(BaseController):
         self.service = NotifyPushService()
 
     @request_logged
+    @auth_required
     async def register_token(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())

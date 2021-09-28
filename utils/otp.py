@@ -1,7 +1,10 @@
 import os
 import random
 import string
+import time
 import datetime
+import json
+from jose import jws
 from hashlib import md5
 from hmac import compare_digest as compare_hash
 from twilio.rest import Client
@@ -39,8 +42,25 @@ class OTPServer(object):
         return datetime.datetime.now() + life_time
 
     @staticmethod
-    def hash_uid(user_id, valid_time):
-        secret_string = "{}{}{}".format(user_id, valid_time, secret_key)
+    def sign_message(user_name, require_action):
+        message = {
+            "iss": user_name,
+            "aud": require_action,
+            "exp": int(time.time()) + 86400
+        }
+        signed_message = jws.sign(message, secret_key, algorithm='HS256')
+        return signed_message
+
+    def verify_message(signed_message):
+        message = json.loads(jws.verify(signed_message, secret_key, algorithms=['HS256']).decode('utf-8'))
+        return message
+
+    @staticmethod
+    def hash_uid(user_id, valid_time, hash_valid_time=True):
+        if hash_valid_time:
+            secret_string = "{}{}{}".format(user_id, valid_time, secret_key)
+        else:
+            secret_string = "{}{}{}".format(user_id, secret_key)
         hash_string = md5(secret_string.encode("utf-8")).hexdigest()
         return hash_string
 
@@ -49,8 +69,11 @@ class OTPServer(object):
         return datetime.datetime.now().replace(hour=0, minute=0,second=0, microsecond=0) + datetime.timedelta(days=1)
 
     @staticmethod
-    def verify_hash_code(user_id, valid_time, hash_string):
-        verify_secret_string = "{}{}{}".format(user_id, valid_time, secret_key)
+    def verify_hash_code(user_id, valid_time, hash_string, hash_valid_time=True):
+        if hash_valid_time:
+            verify_secret_string = "{}{}{}".format(user_id, valid_time, secret_key)
+        else:
+            verify_secret_string = "{}{}{}".format(user_id, secret_key)
         verify_hash_string = md5(verify_secret_string.encode("utf-8")).hexdigest()
         return compare_hash(verify_hash_string, hash_string)
 

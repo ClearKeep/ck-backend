@@ -3,6 +3,7 @@ from src.controllers.base import ErrorResponse
 
 class Message:
     UNAUTHENTICATED = 1000
+    INVALID_ACCESS_TOKEN = 1077
     AUTH_USER_NOT_FOUND = 1001
     REGISTER_USER_ALREADY_EXISTS = 1002
     REGISTER_USER_FAILED = 1003
@@ -13,12 +14,15 @@ class Message:
     GET_USER_INFO_FAILED = 1008
     SEARCH_USER_FAILED = 1009
     REGISTER_CLIENT_SIGNAL_KEY_FAILED = 1010
+    UPDATE_CLIENT_SIGNAL_KEY_FAILED = 10101
     MESSAGE_READ_FAILED = 1074
     GET_CLIENT_SIGNAL_KEY_FAILED = 1011
     CLIENT_SIGNAL_KEY_NOT_FOUND = 1012
     CLIENT_PUBLISH_MESSAGE_FAILED = 1013
     CLIENT_SUBCRIBE_FAILED = 1014
     REGISTER_CLIENT_GROUP_KEY_FAILED = 1015
+    REGISTER_CLIENT_GROUP_FAILED_AVAILABLE = 11015
+    UPDATE_CLIENT_KEY_GROUPS_FAILED = 21015
     CREATE_GROUP_CHAT_FAILED = 1016
     GROUP_CHAT_NOT_FOUND = 1017
     GET_GROUP_CHAT_FAILED = 1018
@@ -29,6 +33,8 @@ class Message:
     GET_CLIENT_NOTIFIES_FAILED = 1021
     CLIENT_READ_NOTIFY_FAILED = 1022
     CLIENT_REGISTER_NOTIFY_TOKEN_FAILED = 1023
+    VERIFY_PINCODE_FAILED = 1075
+    NOT_SOCIAL_ACCOUNT = 1076
 
     # call
     CLIENT_REQUEST_CALL_FAILED = 1025
@@ -101,6 +107,7 @@ class Message:
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
+        INVALID_ACCESS_TOKEN: "Invalid access token or token is expired. Please try to login again",
         AUTH_USER_NOT_FOUND: "Login information is not correct. Please try again",
         REGISTER_USER_ALREADY_EXISTS: "This email address is already being used",
         REGISTER_USER_FAILED: "Register account failed. Please try again",
@@ -112,17 +119,22 @@ class Message:
         GET_USER_INFO_FAILED: "Get user information failed. Please try again",
         SEARCH_USER_FAILED: "Search user failed. Please try again",
         REGISTER_CLIENT_SIGNAL_KEY_FAILED: "Register client key failed. Please try again",
+        UPDATE_CLIENT_SIGNAL_KEY_FAILED: "Update client key failed. Please try again",
         GET_CLIENT_SIGNAL_KEY_FAILED: "Get client key failed. Please try again",
         CLIENT_SIGNAL_KEY_NOT_FOUND: "Client key not found.",
         CLIENT_PUBLISH_MESSAGE_FAILED: "Publish message failed. Please try again",
         CLIENT_SUBCRIBE_FAILED: "Subcribe failed. Please try again",
         REGISTER_CLIENT_GROUP_KEY_FAILED: "Register group key failed. Please try again",
+        REGISTER_CLIENT_GROUP_FAILED_AVAILABLE: "Register group key failed. Group key is available",
+        UPDATE_CLIENT_KEY_GROUPS_FAILED:"Update client key for groups failed. Please try again",
         CREATE_GROUP_CHAT_FAILED: "Create new group failed. Please try again",
         GROUP_CHAT_NOT_FOUND: "Group not found.",
         GET_GROUP_CHAT_FAILED: "Get group failed. Please try again",
         SEARCH_GROUP_CHAT_FAILED: "Search group failed. Please try again",
         CLIENT_QUEUE_NOT_FOUND: "Client queue not found",
         MESSAGE_READ_FAILED: "Can not read the message",
+        VERIFY_PINCODE_FAILED: "Can not verify pincode. Please try again",
+        NOT_SOCIAL_ACCOUNT: "This user do not have pincode",
 
         GET_CLIENT_NOTIFIES_FAILED: "Get client notify failed. Please try again",
         CLIENT_READ_NOTIFY_FAILED: "Client read notify failed. Please try again",
