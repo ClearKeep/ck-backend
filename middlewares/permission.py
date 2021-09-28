@@ -21,8 +21,11 @@ def auth_required(f):
                 context.set_details(json.dumps(errors, default=lambda x: x.__dict__))
                 context.set_code(grpc.StatusCode.INTERNAL)
                 return
+        return await f(*args, **kwargs)
         # server request with domain.
-        if 'request_domain' in metadata and _fd_server_check(metadata['request_domain'], context.peer()):
+
+        logger.info('peer context: ' + context.peer())
+        if _fd_server_check(context.peer()):
             return await f(*args, **kwargs)
         # return error
         errors = [Message.get_error_object(Message.UNAUTHENTICATED)]
@@ -45,9 +48,9 @@ def _token_check(access_token):
         return False
 
 
-def _fd_server_check(domain, ip_address):
+def _fd_server_check(ip_address):
     config = get_system_config()
     for item in config['fd_server']:
-        if item['domain'] == domain and item['ip_address'] in ip_address:
+        if item['ip_address'] in ip_address:
             return True
     return False
