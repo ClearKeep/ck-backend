@@ -45,7 +45,7 @@ message PublishRequest {
   string clientId = 2;
   int64 groupId = 3;
   bytes message = 4;
-  bytes sender_stored_message = 5;
+  bytes sender_message = 5;
 }
 //response: BaseResponse
 // need to add new message encrypted with own public key -> could be decrypted by own private key
@@ -59,7 +59,7 @@ message WorkspacePublishRequest {
   bytes message = 7;
   int64 created_at = 8;
   int64 updated_at = 9;
-  bytes sender_stored_message = 10;
+  bytes sender_message = 10;
 }
 
 // Request: subcribe

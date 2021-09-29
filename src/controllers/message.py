@@ -94,6 +94,18 @@ class MessageController(BaseController):
                     message=request.message
                 )
 
+                # duplicate message for owner user
+                MessageService().store_message(
+                    message_id=str(uuid.uuid4()),
+                    created_at=datetime.now(),
+                    group_id=request.group_id,
+                    group_type=request.group_type,
+                    from_client_id=request.from_client_id,
+                    from_client_workspace_domain=request.from_client_workspace_domain,
+                    client_id=request.from_client_id,
+                    message=request.sender_message
+                )
+
             new_message = message_pb2.MessageObjectResponse(
                 id=request.message_id,
                 client_id=request.client_id,
@@ -174,6 +186,18 @@ class MessageController(BaseController):
             client_id=request.clientId,
             message=request.message
         )
+        # duplicate message for owner user
+        duplicate_message_id = str(uuid.uuid4())
+        duplicate_message_res_object = MessageService().store_message(
+            message_id=duplicate_message_id,
+            created_at=created_at,
+            group_id=group.id,
+            group_type=group.group_type,
+            from_client_id=request.fromClientId,
+            from_client_workspace_domain=owner_workspace_domain,
+            client_id=request.fromClientId,
+            message=request.sender_message
+        )
         lst_client = GroupService().get_clients_in_group(group.id)
         push_service = NotifyPushService()
 
@@ -217,6 +241,7 @@ class MessageController(BaseController):
                         message=message_res_object.message,
                         created_at=message_res_object.created_at,
                         updated_at=message_res_object.updated_at,
+                        sender_message=duplicate_message_res_object.message,
                     )
                     message_res_object2 = ClientMessage(
                         client.GroupClientKey.client_workspace_domain).workspace_publish_message(request2)
@@ -284,7 +309,8 @@ class MessageController(BaseController):
             group_type=group.group_type,
             message_id=message_id,
             message=request.message,
-            created_at=int(created_at.timestamp() * 1000)
+            created_at=int(created_at.timestamp() * 1000),
+            sender_message=request.sender_message,
         )
         res_object = ClientMessage(group.owner_workspace_domain).workspace_publish_message(request1)
         if res_object is None:
