@@ -15,6 +15,7 @@ class Message(Database.get().Model):
     client_id = Database.get().Column(Database.get().String(36), nullable=True)
     client_workspace_domain = Database.get().Column(Database.get().String(100), unique=False, nullable=True)
     message = Database.get().Column(Database.get().Binary)
+    sender_message = Database.get().Column(Database.get().Binary)
     message_type = Database.get().Column(
         Database.get().String(128),
         default='text',

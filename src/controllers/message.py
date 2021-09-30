@@ -91,19 +91,8 @@ class MessageController(BaseController):
                     from_client_id=request.from_client_id,
                     from_client_workspace_domain=request.from_client_workspace_domain,
                     client_id=request.client_id,
-                    message=request.message
-                )
-
-                # duplicate message for owner user
-                MessageService().store_message(
-                    message_id=str(uuid.uuid4()),
-                    created_at=datetime.now(),
-                    group_id=request.group_id,
-                    group_type=request.group_type,
-                    from_client_id=request.from_client_id,
-                    from_client_workspace_domain=request.from_client_workspace_domain,
-                    client_id=request.from_client_id,
-                    message=request.sender_message
+                    message=request.message,
+                    sender_message=request.sender_message
                 )
 
             new_message = message_pb2.MessageObjectResponse(
@@ -184,24 +173,14 @@ class MessageController(BaseController):
             from_client_id=request.fromClientId,
             from_client_workspace_domain=owner_workspace_domain,
             client_id=request.clientId,
-            message=request.message
-        )
-        # duplicate message for owner user
-        duplicate_message_id = str(uuid.uuid4())
-        duplicate_message_res_object = MessageService().store_message(
-            message_id=duplicate_message_id,
-            created_at=created_at,
-            group_id=group.id,
-            group_type=group.group_type,
-            from_client_id=request.fromClientId,
-            from_client_workspace_domain=owner_workspace_domain,
-            client_id=request.fromClientId,
-            message=request.sender_message
+            message=request.message,
+            sender_message=request.sender_message
         )
         lst_client = GroupService().get_clients_in_group(group.id)
         push_service = NotifyPushService()
 
         for client in lst_client:
+            # # TODO:  still push to sender if different access_token meaning different deviceId (future feature when handling multi device)
             if client.GroupClientKey.client_id != request.fromClientId:
                 if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
 
@@ -241,12 +220,14 @@ class MessageController(BaseController):
                         message=message_res_object.message,
                         created_at=message_res_object.created_at,
                         updated_at=message_res_object.updated_at,
-                        sender_message=duplicate_message_res_object.message,
+                        sender_message=request.sender_message,
                     )
                     message_res_object2 = ClientMessage(
                         client.GroupClientKey.client_workspace_domain).workspace_publish_message(request2)
                     if message_res_object2 is None:
                         logger.error("send message to client failed")
+            else:
+
         return message_res_object
 
     async def publish_to_group_not_owner(self, request, group):
