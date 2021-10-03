@@ -35,37 +35,40 @@ class NotifyPushService(BaseService):
             logger.info(e)
             raise Exception(Message.UNAUTHENTICATED)
 
-    async def push_text_to_client(self, to_client_id, title, body, from_client_id, notify_type, data, from_client_device):
+    async def push_text_to_client(self, to_client_id, title, body, from_client_id, notify_type, data):
         logger.info('push_text_to_client')
         client_tokens = self.model.get_client(to_client_id)
         if len(client_tokens) == 0:
             return
-        # from_client_devices = self.model.get_client(from_client_id)
-        for client_token in client_device_push_tokens:
-            if len(from_client_devices) > 0 and client_token.device_id == from_client_device:
-                continue
-            else:
-                try:
-                    if client_token.device_type == DeviceType.android:
-                        push_payload = {
-                            'title': title,
-                            'body': body,
-                            'client_id': client_token.client_id,
-                            'client_workspace_domain': get_owner_workspace_domain(),
-                            'notify_type': notify_type,
-                            'data': data
-                        }
-                        android_data_notification(client_token.push_token, push_payload)
-                    elif client_token.device_type == DeviceType.ios:
-                        arr_token = client_token.push_token.split(',')
-                        push_payload = {
-                            'title': title,
-                            'body': body
-                        }
-                        await ios_text_notifications(arr_token[-1], push_payload)
-                except Exception as e:
-                    # client_token.delete()
-                    continue
+        client_token = client_tokens[0]
+        from_client_devices = self.model.get_client(from_client_id)
+        if len(from_client_devices) > 0 and client_token.device_id == from_client_devices[0].device_id:
+            logger.info('wrong')
+            return
+        try:
+            if client_token.device_type == DeviceType.android:
+                push_payload = {
+                    'title': title,
+                    'body': body,
+                    'client_id': client_token.client_id,
+                    'client_workspace_domain': get_owner_workspace_domain(),
+                    'notify_type': notify_type,
+                    'data': data
+                }
+                logger.info(push_payload)
+                logger.info(client_token.push_token)
+                android_data_notification(client_token.push_token, push_payload)
+            elif client_token.device_type == DeviceType.ios:
+                logger.info('wrong 2')
+                arr_token = client_token.push_token.split(',')
+                push_payload = {
+                    'title': title,
+                    'body': body
+                }
+                await ios_text_notifications(arr_token[-1], push_payload)
+        except Exception as e:
+            logger.info('wrong 3')
+            logger.error(e)
 
     async def push_text_to_clients(self, lst_client, title, body, from_client_id, notify_type, data):
         client_device_push_tokens = self.model.get_clients(lst_client)
