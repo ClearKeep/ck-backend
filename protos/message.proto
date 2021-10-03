@@ -44,6 +44,7 @@ message PublishRequest {
   string clientId = 2;
   int64 groupId = 3;
   bytes message = 4;
+  string from_client_device = 5;
 }
 //response: BaseResponse
 
@@ -57,6 +58,7 @@ message WorkspacePublishRequest {
   bytes message = 7;
   int64 created_at = 8;
   int64 updated_at = 9;
+  string from_client_device = 10;
 }
 
 // Request: subcribe
