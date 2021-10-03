@@ -411,7 +411,7 @@ class UserService(BaseService):
         workspace_domains_dictionary = {}
 
         for client in list_clients:
-            if str(client.workspace_domain) in workspace_domains_dictionary:
+            if str(client.workspace_domain) in workspace_domains_dictionary.keys():
                 workspace_domains_dictionary[str(client.workspace_domain)].append(client)
             else:
                 workspace_domains_dictionary.update({

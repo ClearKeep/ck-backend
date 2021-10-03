@@ -91,7 +91,7 @@ class GroupService(BaseService):
 
             # add to signal group key
             if obj.workspace_domain == owner_workspace_domain:
-                client_group_key = GroupClientKey().set_key(new_group.id, obj.id, None, None, None, None, None)
+                client_group_key = GroupClientKey().set_key(new_group.id, obj.id)
                 client_group_key.add()
                 # notify per client
                 if group_type == "peer":
@@ -129,8 +129,7 @@ class GroupService(BaseService):
                 client_group_key = GroupClientKey().set_key(
                     new_group.id, obj.id,
                     group_res_object.client_workspace_domain,
-                    group_res_object.group_id, None, None, None
-                )
+                    group_res_object.group_id)
                 client_group_key.add()
                 # client_in = group_pb2.ClientInGroupResponse(
                 #     id=group_res_object.client_id,
@@ -163,7 +162,7 @@ class GroupService(BaseService):
         )
         new_group = self.model.add()
         # add to signal group key
-        client_group_key = GroupClientKey().set_key(new_group.id, client_id, None, None, None, None, None)
+        client_group_key = GroupClientKey().set_key(new_group.id, client_id)
         client_group_key.add()
 
         client_name = ""
@@ -418,10 +417,17 @@ class GroupService(BaseService):
                 obj_res.client_key.clientId = group_client_key.client_id
             if group_client_key.device_id:
                 obj_res.client_key.deviceId = group_client_key.device_id
+
             if group_client_key.client_key:
                 obj_res.client_key.clientKeyDistribution = group_client_key.client_key
-            if group_client_key.identity_key_encrypted:
-                obj_res.client_key.identityKeyEncrypted = group_client_key.identity_key_encrypted
+            if group_client_key.client_sender_key_id:
+                obj_res.client_key.senderKeyId = group_client_key.client_sender_key_id
+            if group_client_key.client_sender_key:
+                obj_res.client_key.senderKey = group_client_key.client_sender_key
+            if group_client_key.client_public_key:
+                obj_res.client_key.publicKey = group_client_key.client_public_key
+            if group_client_key.client_private_key:
+                obj_res.client_key.privateKey = group_client_key.client_private_key
 
             # check if this group has an unread message
             if obj.last_message_id:
@@ -526,9 +532,7 @@ class GroupService(BaseService):
 
             # add more group client key
             group_client_key = GroupClientKey().set_key(
-                new_group.id, added_member_info.id,
-                None, None, None, None, None
-            )
+                new_group.id, added_member_info.id)
             group_client_key.add()
 
         # update all group with owner group
@@ -587,9 +591,7 @@ class GroupService(BaseService):
             client_workspace_domain = added_member_info.workspace_domain
 
         group_client_key = GroupClientKey().set_key(
-            group.id, added_member_info.id, client_workspace_domain, added_member_info.ref_group_id,
-            None, None, None
-        ).add()
+            group.id, added_member_info.id, client_workspace_domain, added_member_info.ref_group_id).add()
 
         # push notification for other member in server
         lst_client_in_group = self.get_clients_in_group(group.id)
@@ -678,9 +680,7 @@ class GroupService(BaseService):
             ref_group_id = new_group.id
             # add more group client key
             group_client_key = GroupClientKey().set_key(
-                new_group.id, added_member_info.id,
-                None, None, None, None, None
-            )
+                new_group.id, added_member_info.id)
             group_client_key.add()
 
         # update all group with owner group

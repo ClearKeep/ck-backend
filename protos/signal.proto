@@ -57,7 +57,10 @@ message GroupRegisterClientKeyRequest {
     int64 groupId = 1;
     int32 deviceId = 2;
     bytes clientKeyDistribution = 3;
-    bytes identityKeyEncrypted = 4;
+    int64 senderKeyId = 4;
+    bytes senderKey = 5;
+    bytes publicKey = 6;
+    string privateKey = 7;
 }
 //response: BaseResponse
 

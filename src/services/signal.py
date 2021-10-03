@@ -62,8 +62,18 @@ class SignalService(BaseService):
         return self.peer_model.get_by_client_id(client_id)
 
     def group_register_client_key(self, client_id, request):
-        client_group_key = GroupClientKey().set_key(request.groupId, client_id, None, None, request.deviceId,
-                                                    request.clientKeyDistribution, request.identityKeyEncrypted)
+        client_group_key = GroupClientKey().set_key(
+            request.groupId,
+            client_id,
+            None,
+            None,
+            request.deviceId,
+            request.clientKeyDistribution,
+            request.senderKeyId,
+            request.senderKey,
+            request.publicKey,
+            request.privateKey
+        )
         new_group_key = client_group_key.add()
         if new_group_key is None:
             raise Exception(Message.REGISTER_CLIENT_GROUP_FAILED_AVAILABLE)

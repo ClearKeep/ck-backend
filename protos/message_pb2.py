@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x14protos/message.proto\x12\x07message\"\xc0\x02\n\x15MessageObjectResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x12\n\ngroup_type\x18\x03 \x01(\t\x12\x16\n\x0e\x66rom_client_id\x18\x04 \x01(\t\x12$\n\x1c\x66rom_client_workspace_domain\x18\x05 \x01(\t\x12\x11\n\tclient_id\x18\x06 \x01(\t\x12\x1f\n\x17\x63lient_workspace_domain\x18\x07 \x01(\t\x12\x0f\n\x07message\x18\x08 \x01(\x0c\x12\x32\n\x0flst_client_read\x18\t \x03(\x0b\x32\x19.message.ClientReadObject\x12\x12\n\ncreated_at\x18\n \x01(\x03\x12\x12\n\nupdated_at\x18\x0b \x01(\x03\x12\x16\n\x0esender_message\x18\x0c \x01(\x0c\"D\n\x10\x43lientReadObject\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x03 \x01(\t\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"W\n\x19GetMessagesInGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x0f\n\x07off_set\x18\x02 \x01(\x05\x12\x17\n\x0flast_message_at\x18\x03 \x01(\x03\"Q\n\x1aGetMessagesInGroupResponse\x12\x33\n\x0blst_message\x18\x01 \x03(\x0b\x32\x1e.message.MessageObjectResponse\"r\n\x0ePublishRequest\x12\x14\n\x0c\x66romClientId\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x0f\n\x07groupId\x18\x03 \x01(\x03\x12\x0f\n\x07message\x18\x04 \x01(\x0c\x12\x16\n\x0esender_message\x18\x05 \x01(\x0c\"\xf5\x01\n\x17WorkspacePublishRequest\x12\x16\n\x0e\x66rom_client_id\x18\x01 \x01(\t\x12$\n\x1c\x66rom_client_workspace_domain\x18\x02 \x01(\t\x12\x11\n\tclient_id\x18\x03 \x01(\t\x12\x10\n\x08group_id\x18\x04 \x01(\x03\x12\x12\n\ngroup_type\x18\x05 \x01(\t\x12\x12\n\nmessage_id\x18\x06 \x01(\t\x12\x0f\n\x07message\x18\x07 \x01(\x0c\x12\x12\n\ncreated_at\x18\x08 \x01(\x03\x12\x12\n\nupdated_at\x18\t \x01(\x03\x12\x16\n\x0esender_message\x18\n \x01(\x0c\"$\n\x10SubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"&\n\x12UnSubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"!\n\rListenRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"-\n\x13ReadMessagesRequest\x12\x16\n\x0elst_message_id\x18\x04 \x03(\t\"}\n\x12\x45\x64itMessageRequest\x12\x14\n\x0c\x66romClientId\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x0f\n\x07groupId\x18\x03 \x01(\x03\x12\x11\n\tgroupType\x18\x04 \x01(\t\x12\x0f\n\x07message\x18\x05 \x01(\x0c\x12\n\n\x02id\x18\x06 \x01(\t2\x94\x04\n\x07Message\x12\x62\n\x15get_messages_in_group\x12\".message.GetMessagesInGroupRequest\x1a#.message.GetMessagesInGroupResponse\"\x00\x12=\n\tSubscribe\x12\x19.message.SubscribeRequest\x1a\x15.message.BaseResponse\x12\x41\n\x0bUnSubscribe\x12\x1b.message.UnSubscribeRequest\x1a\x15.message.BaseResponse\x12\x42\n\x06Listen\x12\x16.message.ListenRequest\x1a\x1e.message.MessageObjectResponse0\x01\x12\x42\n\x07Publish\x12\x17.message.PublishRequest\x1a\x1e.message.MessageObjectResponse\x12\x44\n\rread_messages\x12\x1c.message.ReadMessagesRequest\x1a\x15.message.BaseResponse\x12U\n\x11workspace_publish\x12 .message.WorkspacePublishRequest\x1a\x1e.message.MessageObjectResponseb\x06proto3'
+  serialized_pb=b'\n\x14protos/message.proto\x12\x07message\"\xc0\x02\n\x15MessageObjectResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x12\n\ngroup_type\x18\x03 \x01(\t\x12\x16\n\x0e\x66rom_client_id\x18\x04 \x01(\t\x12$\n\x1c\x66rom_client_workspace_domain\x18\x05 \x01(\t\x12\x11\n\tclient_id\x18\x06 \x01(\t\x12\x1f\n\x17\x63lient_workspace_domain\x18\x07 \x01(\t\x12\x0f\n\x07message\x18\x08 \x01(\x0c\x12\x32\n\x0flst_client_read\x18\t \x03(\x0b\x32\x19.message.ClientReadObject\x12\x12\n\ncreated_at\x18\n \x01(\x03\x12\x12\n\nupdated_at\x18\x0b \x01(\x03\x12\x16\n\x0esender_message\x18\x0c \x01(\x0c\"D\n\x10\x43lientReadObject\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x03 \x01(\t\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"W\n\x19GetMessagesInGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x0f\n\x07off_set\x18\x02 \x01(\x05\x12\x17\n\x0flast_message_at\x18\x03 \x01(\x03\"Q\n\x1aGetMessagesInGroupResponse\x12\x33\n\x0blst_message\x18\x01 \x03(\x0b\x32\x1e.message.MessageObjectResponse\"\x8e\x01\n\x0ePublishRequest\x12\x14\n\x0c\x66romClientId\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x0f\n\x07groupId\x18\x03 \x01(\x03\x12\x0f\n\x07message\x18\x04 \x01(\x0c\x12\x16\n\x0esender_message\x18\x05 \x01(\x0c\x12\x1a\n\x12\x66rom_client_device\x18\x06 \x01(\t\"\x91\x02\n\x17WorkspacePublishRequest\x12\x16\n\x0e\x66rom_client_id\x18\x01 \x01(\t\x12$\n\x1c\x66rom_client_workspace_domain\x18\x02 \x01(\t\x12\x11\n\tclient_id\x18\x03 \x01(\t\x12\x10\n\x08group_id\x18\x04 \x01(\x03\x12\x12\n\ngroup_type\x18\x05 \x01(\t\x12\x12\n\nmessage_id\x18\x06 \x01(\t\x12\x0f\n\x07message\x18\x07 \x01(\x0c\x12\x12\n\ncreated_at\x18\x08 \x01(\x03\x12\x12\n\nupdated_at\x18\t \x01(\x03\x12\x16\n\x0esender_message\x18\n \x01(\x0c\x12\x1a\n\x12\x66rom_client_device\x18\x0b \x01(\t\"$\n\x10SubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"&\n\x12UnSubscribeRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"!\n\rListenRequest\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\"-\n\x13ReadMessagesRequest\x12\x16\n\x0elst_message_id\x18\x04 \x03(\t\"}\n\x12\x45\x64itMessageRequest\x12\x14\n\x0c\x66romClientId\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x0f\n\x07groupId\x18\x03 \x01(\x03\x12\x11\n\tgroupType\x18\x04 \x01(\t\x12\x0f\n\x07message\x18\x05 \x01(\x0c\x12\n\n\x02id\x18\x06 \x01(\t2\x94\x04\n\x07Message\x12\x62\n\x15get_messages_in_group\x12\".message.GetMessagesInGroupRequest\x1a#.message.GetMessagesInGroupResponse\"\x00\x12=\n\tSubscribe\x12\x19.message.SubscribeRequest\x1a\x15.message.BaseResponse\x12\x41\n\x0bUnSubscribe\x12\x1b.message.UnSubscribeRequest\x1a\x15.message.BaseResponse\x12\x42\n\x06Listen\x12\x16.message.ListenRequest\x1a\x1e.message.MessageObjectResponse0\x01\x12\x42\n\x07Publish\x12\x17.message.PublishRequest\x1a\x1e.message.MessageObjectResponse\x12\x44\n\rread_messages\x12\x1c.message.ReadMessagesRequest\x1a\x15.message.BaseResponse\x12U\n\x11workspace_publish\x12 .message.WorkspacePublishRequest\x1a\x1e.message.MessageObjectResponseb\x06proto3'
 )
 
 
@@ -333,6 +333,13 @@ _PUBLISHREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='from_client_device', full_name='message.PublishRequest.from_client_device', index=5,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -345,8 +352,8 @@ _PUBLISHREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=629,
-  serialized_end=743,
+  serialized_start=630,
+  serialized_end=772,
 )
 
 
@@ -428,6 +435,13 @@ _WORKSPACEPUBLISHREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='from_client_device', full_name='message.WorkspacePublishRequest.from_client_device', index=10,
+      number=11, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -440,8 +454,8 @@ _WORKSPACEPUBLISHREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=746,
-  serialized_end=991,
+  serialized_start=775,
+  serialized_end=1048,
 )
 
 
@@ -472,8 +486,8 @@ _SUBSCRIBEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=993,
-  serialized_end=1029,
+  serialized_start=1050,
+  serialized_end=1086,
 )
 
 
@@ -504,8 +518,8 @@ _UNSUBSCRIBEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1031,
-  serialized_end=1069,
+  serialized_start=1088,
+  serialized_end=1126,
 )
 
 
@@ -536,8 +550,8 @@ _LISTENREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1071,
-  serialized_end=1104,
+  serialized_start=1128,
+  serialized_end=1161,
 )
 
 
@@ -568,8 +582,8 @@ _READMESSAGESREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1106,
-  serialized_end=1151,
+  serialized_start=1163,
+  serialized_end=1208,
 )
 
 
@@ -635,8 +649,8 @@ _EDITMESSAGEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1153,
-  serialized_end=1278,
+  serialized_start=1210,
+  serialized_end=1335,
 )
 
 _MESSAGEOBJECTRESPONSE.fields_by_name['lst_client_read'].message_type = _CLIENTREADOBJECT
@@ -748,8 +762,8 @@ _MESSAGE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1281,
-  serialized_end=1813,
+  serialized_start=1338,
+  serialized_end=1870,
   methods=[
   _descriptor.MethodDescriptor(
     name='get_messages_in_group',
