@@ -42,7 +42,7 @@ class NotifyPushService(BaseService):
             return
         # from_client_devices = self.model.get_client(from_client_id)
         for client_token in client_device_push_tokens:
-            if len(from_client_devices) > 0 and client_token.device_id == from_client_device:
+            if from_client_id == to_client_id and client_token.device_id == from_client_device:
                 continue
             else:
                 try:
