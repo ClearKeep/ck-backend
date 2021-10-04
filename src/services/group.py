@@ -458,10 +458,9 @@ class GroupService(BaseService):
                 obj_res.last_message.group_id = last_message.group_id
                 obj_res.last_message.from_client_id = last_message.from_client_id
                 # TODO: if sender == client -> return sender message instead of message here
+                obj_res.last_message.message = last_message.message
                 if obj_res.last_message.from_client_id == client_id:
-                    obj_res.last_message.message = last_message.sender_message
-                else:
-                    obj_res.last_message.message = last_message.message
+                    obj_res.last_message.sender_message = last_message.sender_message
                 obj_res.last_message.created_at = int(last_message.created_at.timestamp() * 1000)
 
                 if last_message.client_id:

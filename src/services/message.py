@@ -94,7 +94,7 @@ class MessageService(BaseService):
         thread.start()
         # return True
 
-    def get_message_in_group(self, group_id, offset=0, from_time=0):
+    def get_message_in_group(self, client_id, group_id, offset=0, from_time=0):
         lst_message = self.model.get_message_in_group(group_id, offset, from_time)
         group_type = self.service_group.get_group_type(group_id=group_id)
         lst_obj_res = []
@@ -107,8 +107,9 @@ class MessageService(BaseService):
                 from_client_workspace_domain=obj.from_client_workspace_domain,
                 message=obj.message,
                 created_at=int(obj.created_at.timestamp() * 1000),
-                sender_message=obj.sender_message
             )
+            if obj.from_client_id == client_id:
+                obj_res.sender_message = obj.sender_message
             if obj.client_id:
                 obj_res.client_id = obj.client_id
             if obj.updated_at is not None:

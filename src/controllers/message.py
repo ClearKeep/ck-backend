@@ -21,9 +21,15 @@ class MessageController(BaseController):
         self.service = MessageService()
 
     @request_logged
+    @auth_required
     async def get_messages_in_group(self, request, context):
-        # TODO: 
+        # TODO: maybe adding who call this method by adding access_token if not workspace request
         try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
+            if not introspect_token or 'sub' not in introspect_token:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            client_id = introspect_token['sub']
             group_id = request.group_id
             off_set = request.off_set
             last_message_at = request.last_message_at
@@ -33,7 +39,8 @@ class MessageController(BaseController):
 
             if group and group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
                 request.group_id = group.owner_group_id
-                obj_res = ClientMessage(group.owner_workspace_domain).get_messages_in_group(request)
+                request.client_id = client_id
+                obj_res = ClientMessage(group.owner_workspace_domain).workspace_get_messages_in_group(request)
                 if obj_res and obj_res.lst_message:
                     for obj in obj_res.lst_message:
                         obj.group_id = group_id
@@ -42,8 +49,29 @@ class MessageController(BaseController):
                 else:
                     raise
             else:
-                obj_res = self.service.get_message_in_group(group_id, off_set, last_message_at)
+                obj_res = self.service.get_message_in_group(client_id, group_id, off_set, last_message_at)
                 return obj_res
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def workspace_get_messages_in_group(self, request, context):
+        try:
+            logger.info("workspace_get_messages_in_group")
+            owner_workspace_domain = get_owner_workspace_domain()
+            group = GroupService().get_group_info(request.group_id)
+            if group.owner_workspace_domain is None or group.owner_workspace_domain == owner_workspace_domain:
+                obj_res = self.service.get_message_in_group(request.client_id, request.group_id, request.off_set, request.last_message_at)
+            else:
+                raise Exception(Message.CREATE_GROUP_CHAT_FAILED)
+            return obj_res
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
