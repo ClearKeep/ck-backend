@@ -26,10 +26,9 @@ class MessageController(BaseController):
         # TODO: maybe adding who call this method by adding access_token if not workspace request
         try:
             header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
-            if not introspect_token or 'sub' not in introspect_token:
-                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
+
             group_id = request.group_id
             off_set = request.off_set
             last_message_at = request.last_message_at
@@ -54,7 +53,8 @@ class MessageController(BaseController):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+                # TODO: change message when got error
+                errors = [Message.get_error_object(Message.GET_MESSAGE_IN_GROUP_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
@@ -70,12 +70,12 @@ class MessageController(BaseController):
             if group.owner_workspace_domain is None or group.owner_workspace_domain == owner_workspace_domain:
                 obj_res = self.service.get_message_in_group(request.client_id, request.group_id, request.off_set, request.last_message_at)
             else:
-                raise Exception(Message.CREATE_GROUP_CHAT_FAILED)
+                raise Exception(Message.GET_MESSAGE_IN_GROUP_FAILED)
             return obj_res
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
+                errors = [Message.get_error_object(Message.GET_MESSAGE_IN_GROUP_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
