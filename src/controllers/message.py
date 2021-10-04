@@ -22,6 +22,7 @@ class MessageController(BaseController):
 
     @request_logged
     async def get_messages_in_group(self, request, context):
+        # TODO: 
         try:
             group_id = request.group_id
             off_set = request.off_set
@@ -137,7 +138,7 @@ class MessageController(BaseController):
                                                                from_client_id=new_message.from_client_id,
                                                                notify_type="new_message",
                                                                data=json.dumps(message),
-                                                               from_client_device=request.from_client_device)
+                                                               from_client_device_id=request.from_client_device_id)
                         continue
                 else:
                     # call to other server
@@ -204,11 +205,31 @@ class MessageController(BaseController):
                         updated_at=message_res_object.updated_at,
                         sender_message=request.sender_message,
                     )
-                    message_res_object2 = ClientMessage(
-                        client.GroupClientKey.client_workspace_domain).workspace_publish_message(request2)
-                    if message_res_object2 is None:
-                        logger.error("send message to client failed")
+                    await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
+                                                           body="You have a new message",
+                                                           from_client_id=new_message_res_object.from_client_id,
+                                                           notify_type="new_message",
+                                                           data=json.dumps(message),
+                                                           from_client_device_id=request.from_client_device_id)
+                    continue
             else:
+                # call to other server
+                request2 = message_pb2.WorkspacePublishRequest(
+                    from_client_id=message_res_object.from_client_id,
+                    from_client_workspace_domain=owner_workspace_domain,
+                    client_id=message_res_object.client_id,
+                    group_id=client.GroupClientKey.client_workspace_group_id,
+                    group_type=message_res_object.group_type,
+                    message_id=message_res_object.id,
+                    message=message_res_object.message,
+                    created_at=message_res_object.created_at,
+                    updated_at=message_res_object.updated_at,
+                    from_client_device_id=request.from_client_device_id,
+                )
+                message_res_object2 = ClientMessage(
+                    client.GroupClientKey.client_workspace_domain).workspace_publish_message(request2)
+                if message_res_object2 is None:
+                    logger.error("send message to client failed")
 
         return message_res_object
 
@@ -261,7 +282,7 @@ class MessageController(BaseController):
                                                        from_client_id=new_message_res_object.from_client_id,
                                                        notify_type="new_message",
                                                        data=json.dumps(message),
-                                                       from_client_device=request.from_client_device)
+                                                       from_client_device_id=request.from_client_device_id)
                 continue
 
         # pubish message to owner server
@@ -275,7 +296,7 @@ class MessageController(BaseController):
             message=request.message,
             created_at=int(created_at.timestamp() * 1000),
             sender_message=request.sender_message,
-            from_client_device=request.from_client_device,
+            from_client_device_id=request.from_client_device_id,
         )
         res_object = ClientMessage(group.owner_workspace_domain).workspace_publish_message(request1)
         if res_object is None:

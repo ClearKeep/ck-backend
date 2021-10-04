@@ -35,14 +35,16 @@ class NotifyPushService(BaseService):
             logger.info(e)
             raise Exception(Message.UNAUTHENTICATED)
 
-    async def push_text_to_client(self, to_client_id, title, body, from_client_id, notify_type, data, from_client_device):
+    async def push_text_to_client(self, to_client_id, title, body, from_client_id, notify_type, data, from_client_device_id=None):
+        # # TODO:  update from many other called this function
         logger.info('push_text_to_client')
-        client_tokens = self.model.get_client(to_client_id)
+        client_tokens = self.model.get_client_device_ids(to_client_id)
         if len(client_tokens) == 0:
             return
         # from_client_devices = self.model.get_client(from_client_id)
-        for client_token in client_device_push_tokens:
-            if from_client_id == to_client_id and client_token.device_id == from_client_device:
+        for client_token in client_tokens:
+            #if from_client_id == to_client_id and client_token.device_id == from_client_device:
+            if client_token.device_id == from_client_device_id:
                 continue
             else:
                 try:

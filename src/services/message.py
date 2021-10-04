@@ -106,7 +106,8 @@ class MessageService(BaseService):
                 from_client_id=obj.from_client_id,
                 from_client_workspace_domain=obj.from_client_workspace_domain,
                 message=obj.message,
-                created_at=int(obj.created_at.timestamp() * 1000)
+                created_at=int(obj.created_at.timestamp() * 1000),
+                sender_message=obj.sender_message
             )
             if obj.client_id:
                 obj_res.client_id = obj.client_id

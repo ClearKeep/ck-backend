@@ -452,11 +452,16 @@ class GroupService(BaseService):
 
             # get last message
             if item.Message:
+
                 last_message = item.Message
                 obj_res.last_message.id = last_message.id
                 obj_res.last_message.group_id = last_message.group_id
                 obj_res.last_message.from_client_id = last_message.from_client_id
-                obj_res.last_message.message = last_message.message
+                # TODO: if sender == client -> return sender message instead of message here
+                if obj_res.last_message.from_client_id == client_id:
+                    obj_res.last_message.message = last_message.sender_message
+                else:
+                    obj_res.last_message.message = last_message.message
                 obj_res.last_message.created_at = int(last_message.created_at.timestamp() * 1000)
 
                 if last_message.client_id:
@@ -560,6 +565,7 @@ class GroupService(BaseService):
                 'adding_member_workspace_domain': adding_member_info.workspace_domain
             }
             logger.info(data)
+            # TODO: maybe handling push to owwner
             await push_service.push_text_to_client(
                 to_client_id=client.GroupClientKey.client_id,
                 title="Member Add",
@@ -611,6 +617,7 @@ class GroupService(BaseService):
                         'adding_member_workspace_domain': owner_workspace_domain
                     }
                     logger.info(data)
+                    # TODO: maybe handling push to owwner
                     await push_service.push_text_to_client(
                         to_client_id=client.GroupClientKey.client_id,
                         title="Member Add",
@@ -708,6 +715,7 @@ class GroupService(BaseService):
                 'adding_member_workspace_domain': adding_member_info.workspace_domain
             }
             logger.info(data)
+            # TODO: maybe handling push to owwner
             await push_service.push_text_to_client(
                 to_client_id=client.GroupClientKey.client_id,
                 title="Member Add",
@@ -753,6 +761,7 @@ class GroupService(BaseService):
                         'leave_member_by_workspace_domain': leave_member_by.workspace_domain
                     }
                     logger.info(data)
+                    # TODO: maybe handling push to owwner
                     await push_service.push_text_to_client(
                         to_client_id=client.GroupClientKey.client_id,
                         title="Member leave",
@@ -830,6 +839,7 @@ class GroupService(BaseService):
                 'leave_member_by_workspace_domain': leave_member_by.workspace_domain
             }
             logger.info(data)
+            # TODO: maybe handling push to owner
             await push_service.push_text_to_client(
                 to_client_id=client.GroupClientKey.client_id,
                 title="Member leave",
@@ -886,6 +896,7 @@ class GroupService(BaseService):
                     'leave_member_by_workspace_domain': leave_member_by.workspace_domain
                 }
                 logger.info(data)
+                # TODO: maybe handling push to owwner
                 await push_service.push_text_to_client(
                     to_client_id=client.GroupClientKey.client_id,
                     title="Member leave",
