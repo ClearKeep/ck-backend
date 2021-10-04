@@ -56,14 +56,18 @@ class MessageController(BaseController):
     @request_logged
     async def Publish(self, request, context):
         try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            user_id = introspect_token['sub']
+
             owner_workspace_domain = get_owner_workspace_domain()
             group = GroupService().get_group_info(request.groupId)
 
             if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
-                res_obj = await self.publish_to_group_not_owner(request, group)
+                res_obj = await self.publish_to_group_not_owner(request, user_id, group)
                 return res_obj
             else:
-                res_obj = await self.publish_to_group_owner(request, group)
+                res_obj = await self.publish_to_group_owner(request, user_id, group)
                 return res_obj
         except Exception as e:
             logger.error(e)
@@ -111,32 +115,37 @@ class MessageController(BaseController):
             for client in lst_client:
                 if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
-                        message_channel = "{}/message".format(client.GroupClientKey.client_id)
+                        for notify_token in client.NotifyToken:
+                            device_id = notify_token.device_id
+                            # if device_id == request.fromClientDeviceId:
+                            #     continue
+                            message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
+                            #message_channel = "{}/message".format(client.GroupClientKey.client_id)
 
-                        new_message_res_object = deepcopy(new_message)
-                        new_message_res_object.client_id = client.GroupClientKey.client_id
+                            new_message_res_object = deepcopy(new_message)
+                            new_message_res_object.client_id = client.GroupClientKey.client_id
 
-                        if message_channel in client_message_queue:
-                            client_message_queue[message_channel].put(new_message_res_object)
-                        else:
-                            push_service = NotifyPushService()
-                            message = {
-                                'id': new_message_res_object.id,
-                                'client_id': new_message_res_object.client_id,
-                                'client_workspace_domain': get_owner_workspace_domain(),
-                                'created_at': new_message_res_object.created_at,
-                                'from_client_id': new_message_res_object.from_client_id,
-                                'from_client_workspace_domain': new_message_res_object.from_client_workspace_domain,
-                                'group_id': new_message_res_object.group_id,
-                                'group_type': request.group_type,
-                                'message': base64.b64encode(new_message_res_object.message).decode('utf-8')
-                            }
-                            await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
-                                                                   body="You have a new message",
-                                                                   from_client_id=new_message.from_client_id,
-                                                                   notify_type="new_message",
-                                                                   data=json.dumps(message))
-                            continue
+                            if message_channel in client_message_queue:
+                                client_message_queue[message_channel].put(new_message_res_object)
+                            else:
+                                push_service = NotifyPushService()
+                                message = {
+                                    'id': new_message_res_object.id,
+                                    'client_id': new_message_res_object.client_id,
+                                    'client_workspace_domain': get_owner_workspace_domain(),
+                                    'created_at': new_message_res_object.created_at,
+                                    'from_client_id': new_message_res_object.from_client_id,
+                                    'from_client_workspace_domain': new_message_res_object.from_client_workspace_domain,
+                                    'group_id': new_message_res_object.group_id,
+                                    'group_type': request.group_type,
+                                    'message': base64.b64encode(new_message_res_object.message).decode('utf-8')
+                                }
+                                await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
+                                                                       body="You have a new message",
+                                                                       from_client_id=new_message.from_client_id,
+                                                                       notify_type="new_message",
+                                                                       data=json.dumps(message))
+                                continue
                     else:
                         # call to other server
                         request.group_id = client.GroupClientKey.client_workspace_group_id
@@ -156,7 +165,7 @@ class MessageController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    async def publish_to_group_owner(self, request, group):
+    async def publish_to_group_owner(self, request, from_client_id, group):
         logger.info("publish_to_group_owner, group_id={}".format(str(group.id)))
 
         owner_workspace_domain = get_owner_workspace_domain()
@@ -169,7 +178,7 @@ class MessageController(BaseController):
             created_at=created_at,
             group_id=group.id,
             group_type=group.group_type,
-            from_client_id=request.fromClientId,
+            from_client_id=from_client_id,
             from_client_workspace_domain=owner_workspace_domain,
             client_id=request.clientId,
             message=request.message
@@ -178,13 +187,17 @@ class MessageController(BaseController):
         push_service = NotifyPushService()
 
         for client in lst_client:
-            if client.GroupClientKey.client_id != request.fromClientId:
-                if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+            #if client.GroupClientKey.client_id != request.fromClientId:
+            if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
 
-                    new_message_res_object = deepcopy(message_res_object)
-                    new_message_res_object.client_id = client.GroupClientKey.client_id
-                    message_channel = "{}/message".format(client.GroupClientKey.client_id)
+                new_message_res_object = deepcopy(message_res_object)
+                new_message_res_object.client_id = client.GroupClientKey.client_id
 
+                for notify_token in client.NotifyToken:
+                    device_id = notify_token.device_id
+                    if device_id == request.fromClientDeviceId:
+                        continue
+                    message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
                     if message_channel in client_message_queue:
                         client_message_queue[message_channel].put(new_message_res_object)
                     else:
@@ -204,27 +217,27 @@ class MessageController(BaseController):
                                                                from_client_id=new_message_res_object.from_client_id,
                                                                notify_type="new_message",
                                                                data=json.dumps(message))
-                        continue
-                else:
-                    # call to other server
-                    request2 = message_pb2.WorkspacePublishRequest(
-                        from_client_id=message_res_object.from_client_id,
-                        from_client_workspace_domain=owner_workspace_domain,
-                        client_id=message_res_object.client_id,
-                        group_id=client.GroupClientKey.client_workspace_group_id,
-                        group_type=message_res_object.group_type,
-                        message_id=message_res_object.id,
-                        message=message_res_object.message,
-                        created_at=message_res_object.created_at,
-                        updated_at=message_res_object.updated_at,
-                    )
-                    message_res_object2 = ClientMessage(
-                        client.GroupClientKey.client_workspace_domain).workspace_publish_message(request2)
-                    if message_res_object2 is None:
-                        logger.error("send message to client failed")
+                        # continue
+            else:
+                # call to other server
+                request2 = message_pb2.WorkspacePublishRequest(
+                    from_client_id=message_res_object.from_client_id,
+                    from_client_workspace_domain=owner_workspace_domain,
+                    client_id=message_res_object.client_id,
+                    group_id=client.GroupClientKey.client_workspace_group_id,
+                    group_type=message_res_object.group_type,
+                    message_id=message_res_object.id,
+                    message=message_res_object.message,
+                    created_at=message_res_object.created_at,
+                    updated_at=message_res_object.updated_at,
+                )
+                message_res_object2 = ClientMessage(
+                    client.GroupClientKey.client_workspace_domain).workspace_publish_message(request2)
+                if message_res_object2 is None:
+                    logger.error("send message to client failed")
         return message_res_object
 
-    async def publish_to_group_not_owner(self, request, group):
+    async def publish_to_group_not_owner(self, request, from_client_id, group):
         logger.info("publish_to_group_not_owner, group_id={}".format(str(group.id)))
 
         owner_workspace_domain = get_owner_workspace_domain()
@@ -236,7 +249,7 @@ class MessageController(BaseController):
             client_id=request.clientId,
             group_id=group.id,
             group_type=group.group_type,
-            from_client_id=request.fromClientId,
+            from_client_id=from_client_id,
             from_client_workspace_domain=owner_workspace_domain,
             message=request.message,
             created_at=int(created_at.timestamp() * 1000),
@@ -247,8 +260,13 @@ class MessageController(BaseController):
         push_service = NotifyPushService()
 
         for client in lst_client:
-            if client.GroupClientKey.client_id != request.fromClientId:
-                message_channel = "{}/message".format(client.GroupClientKey.client_id)
+            for notify_token in client.NotifyToken:
+                device_id = notify_token.device_id
+                if device_id == request.fromClientDeviceId:
+                    continue
+                message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
+                #if client.GroupClientKey.client_id != request.fromClientId:
+                #message_channel = "{}/message".format(client.GroupClientKey.client_id)
 
                 new_message_res_object = deepcopy(message_res_object)
                 new_message_res_object.group_id = client.GroupClientKey.group_id
@@ -277,7 +295,7 @@ class MessageController(BaseController):
 
         # pubish message to owner server
         request1 = message_pb2.WorkspacePublishRequest(
-            from_client_id=request.fromClientId,
+            from_client_id=from_client_id,
             from_client_workspace_domain=owner_workspace_domain,
             client_id=request.clientId,
             group_id=group.owner_group_id,
@@ -294,9 +312,14 @@ class MessageController(BaseController):
         return message_res_object
 
     # @request_logged
+    @auth_required
     async def Listen(self, request, context: grpc.aio.ServicerContext):
+        header_data = dict(context.invocation_metadata())
+        introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+        user_id = introspect_token['sub']
+
         client_id = request.clientId
-        message_channel = "{}/message".format(client_id)
+        message_channel = "message/{}/{}".format(user_id, request.device_id)
         message_response = None
         while message_channel in client_message_queue:
             try:
@@ -327,9 +350,14 @@ class MessageController(BaseController):
                 #         from_client_id=client_id, notify_type="new_message", data=json.dumps(message))
 
     @request_logged
+    @auth_required
     async def Subscribe(self, request, context):
         try:
-            await self.service.subscribe(request.clientId)
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            user_id = introspect_token['sub']
+
+            await self.service.subscribe(user_id, request.device_id)
             return message_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
@@ -344,7 +372,11 @@ class MessageController(BaseController):
     @request_logged
     async def UnSubscribe(self, request, context):
         try:
-            self.service.un_subscribe(request.clientId)
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            user_id = introspect_token['sub']
+
+            self.service.un_subscribe(user_id, request.device_id)
             return message_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)

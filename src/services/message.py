@@ -127,16 +127,16 @@ class MessageService(BaseService):
         )
         return response
 
-    async def subscribe(self, client_id):
-        message_channel = "{}/message".format(client_id)
+    async def subscribe(self, client_id, device_id):
+        message_channel = "message/{}/{}".format(client_id, device_id)
         if message_channel in client_message_queue:
             client_message_queue[message_channel] = None
             del client_message_queue[message_channel]
             await asyncio.sleep(1)
         client_message_queue[message_channel] = Queue()
 
-    def un_subscribe(self, client_id):
-        message_channel = "{}/message".format(client_id)
+    def un_subscribe(self, client_id, device_id):
+        message_channel = "message/{}/{}".format(client_id, device_id)
         if message_channel in client_message_queue:
             client_message_queue[message_channel] = None
             del client_message_queue[message_channel]

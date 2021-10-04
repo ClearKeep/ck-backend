@@ -40,7 +40,7 @@ message GetMessagesInGroupResponse {
 // ----- PUBLISH AND SUBCRIBE MESSAGE -----
 // Request: publish a message
 message PublishRequest {
-  string fromClientId = 1;
+  string fromClientDeviceId = 1;
   string clientId = 2;
   int64 groupId = 3;
   bytes message = 4;
@@ -61,19 +61,19 @@ message WorkspacePublishRequest {
 
 // Request: subcribe
 message SubscribeRequest {
-  string clientId = 1;
+  string device_id = 1;
 }
 //response: BaseResponse
 
 // Request: un-subcribe
 message UnSubscribeRequest {
-  string clientId = 1;
+  string device_id = 1;
 }
 //response: BaseResponse
 
 // Request: listen
 message ListenRequest {
-  string clientId = 1;
+  string device_id = 1;
 }
 //response: BaseResponse or MessageObjectResponse stream
 
