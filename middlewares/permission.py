@@ -17,6 +17,7 @@ def auth_required(f):
             if _token_check(metadata['access_token']):
                 return await f(*args, **kwargs)
             else:
+                logger.error('Require authen inside metadata for : {}'.format(json.dumps(metadata)))
                 errors = [Message.get_error_object(Message.INVALID_ACCESS_TOKEN)]
                 context.set_details(json.dumps(errors, default=lambda x: x.__dict__))
                 context.set_code(grpc.StatusCode.INTERNAL)
