@@ -194,31 +194,33 @@ class MessageController(BaseController):
 
                 new_message_res_object = deepcopy(message_res_object)
                 new_message_res_object.client_id = client.GroupClientKey.client_id
-
-                for notify_token in client.NotifyToken:
-                    device_id = notify_token.device_id
-                    if device_id == request.fromClientDeviceId:
-                        continue
-                    message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
-                    if message_channel in client_message_queue:
-                        client_message_queue[message_channel].put(new_message_res_object)
-                    else:
-                        message = {
-                            'id': new_message_res_object.id,
-                            'client_id': new_message_res_object.client_id,
-                            'client_workspace_domain': owner_workspace_domain,
-                            'created_at': new_message_res_object.created_at,
-                            'from_client_id': new_message_res_object.from_client_id,
-                            'from_client_workspace_domain': owner_workspace_domain,
-                            'group_id': new_message_res_object.group_id,
-                            'group_type': new_message_res_object.group_type,
-                            'message': base64.b64encode(new_message_res_object.message).decode('utf-8')
-                        }
-                        await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
-                                                               body="You have a new message",
-                                                               from_client_id=new_message_res_object.from_client_id,
-                                                               notify_type="new_message",
-                                                               data=json.dumps(message))
+                # TODO: get all notify_token from NotifyToken
+                # for notify_token in client.NotifyToken:
+                #     device_id = notify_token.device_id
+                notify_token = client.NotifyToken
+                device_id = notify_token.device_id
+                if device_id == request.fromClientDeviceId:
+                    continue
+                message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
+                if message_channel in client_message_queue:
+                    client_message_queue[message_channel].put(new_message_res_object)
+                else:
+                    message = {
+                        'id': new_message_res_object.id,
+                        'client_id': new_message_res_object.client_id,
+                        'client_workspace_domain': owner_workspace_domain,
+                        'created_at': new_message_res_object.created_at,
+                        'from_client_id': new_message_res_object.from_client_id,
+                        'from_client_workspace_domain': owner_workspace_domain,
+                        'group_id': new_message_res_object.group_id,
+                        'group_type': new_message_res_object.group_type,
+                        'message': base64.b64encode(new_message_res_object.message).decode('utf-8')
+                    }
+                    await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
+                                                           body="You have a new message",
+                                                           from_client_id=new_message_res_object.from_client_id,
+                                                           notify_type="new_message",
+                                                           data=json.dumps(message))
                         # continue
             else:
                 # call to other server
@@ -262,38 +264,41 @@ class MessageController(BaseController):
         push_service = NotifyPushService()
 
         for client in lst_client:
-            for notify_token in client.NotifyToken:
-                device_id = notify_token.device_id
-                if device_id == request.fromClientDeviceId:
-                    continue
-                message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
-                #if client.GroupClientKey.client_id != request.fromClientId:
-                #message_channel = "{}/message".format(client.GroupClientKey.client_id)
+            # TODO: get all notify_token from NotifyToken
+            # for notify_token in client.NotifyToken:
+            #     device_id = notify_token.device_id
+            notify_token = client.NotifyToken
+            device_id = notify_token.device_id
+            if device_id == request.fromClientDeviceId:
+                continue
+            message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
+            #if client.GroupClientKey.client_id != request.fromClientId:
+            #message_channel = "{}/message".format(client.GroupClientKey.client_id)
 
-                new_message_res_object = deepcopy(message_res_object)
-                new_message_res_object.group_id = client.GroupClientKey.group_id
-                new_message_res_object.client_id = client.GroupClientKey.client_id
+            new_message_res_object = deepcopy(message_res_object)
+            new_message_res_object.group_id = client.GroupClientKey.group_id
+            new_message_res_object.client_id = client.GroupClientKey.client_id
 
-                if message_channel in client_message_queue:
-                    client_message_queue[message_channel].put(new_message_res_object)
-                else:
-                    message = {
-                        'id': new_message_res_object.id,
-                        'client_id': new_message_res_object.client_id,
-                        'client_workspace_domain': owner_workspace_domain,
-                        'created_at': new_message_res_object.created_at,
-                        'from_client_id': new_message_res_object.from_client_id,
-                        'from_client_workspace_domain': new_message_res_object.from_client_workspace_domain,
-                        'group_id': client.GroupClientKey.group_id,
-                        'group_type': new_message_res_object.group_type,
-                        'message': base64.b64encode(new_message_res_object.message).decode('utf-8')
-                    }
-                    await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
-                                                           body="You have a new message",
-                                                           from_client_id=new_message_res_object.from_client_id,
-                                                           notify_type="new_message",
-                                                           data=json.dumps(message))
-                    continue
+            if message_channel in client_message_queue:
+                client_message_queue[message_channel].put(new_message_res_object)
+            else:
+                message = {
+                    'id': new_message_res_object.id,
+                    'client_id': new_message_res_object.client_id,
+                    'client_workspace_domain': owner_workspace_domain,
+                    'created_at': new_message_res_object.created_at,
+                    'from_client_id': new_message_res_object.from_client_id,
+                    'from_client_workspace_domain': new_message_res_object.from_client_workspace_domain,
+                    'group_id': client.GroupClientKey.group_id,
+                    'group_type': new_message_res_object.group_type,
+                    'message': base64.b64encode(new_message_res_object.message).decode('utf-8')
+                }
+                await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
+                                                       body="You have a new message",
+                                                       from_client_id=new_message_res_object.from_client_id,
+                                                       notify_type="new_message",
+                                                       data=json.dumps(message))
+                continue
 
         # pubish message to owner server
         request1 = message_pb2.WorkspacePublishRequest(
