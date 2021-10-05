@@ -317,8 +317,7 @@ class MessageController(BaseController):
         header_data = dict(context.invocation_metadata())
         introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
         user_id = introspect_token['sub']
-
-        client_id = request.clientId
+        
         message_channel = "message/{}/{}".format(user_id, request.device_id)
         message_response = None
         while message_channel in client_message_queue:
@@ -328,7 +327,7 @@ class MessageController(BaseController):
                     await context.write(message_response)
                 await asyncio.sleep(0.5)
             except:
-                logger.info('Client {} is disconnected'.format(client_id))
+                logger.info('Client {} is disconnected'.format(user_id))
                 client_message_queue[message_channel] = None
                 del client_message_queue[message_channel]
                 # push text notification for client
