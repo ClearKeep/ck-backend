@@ -234,8 +234,8 @@ class AuthController(BaseController):
             device_id = request.device_id
             refresh_token = request.refresh_token
             self.service.remove_token(client_id=user_id, device_id=device_id)
-            MessageService().un_subscribe(user_id)
-            NotifyInAppService().un_subscribe(user_id)
+            MessageService().un_subscribe(user_id, device_id)
+            NotifyInAppService().un_subscribe(user_id, device_id)
             self.service.logout(refresh_token)
             # KeyCloakUtils.remove_session(
             #     session_id=introspect_token['session_state']

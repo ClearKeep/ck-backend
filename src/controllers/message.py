@@ -317,7 +317,7 @@ class MessageController(BaseController):
         header_data = dict(context.invocation_metadata())
         introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
         user_id = introspect_token['sub']
-        
+
         message_channel = "message/{}/{}".format(user_id, request.device_id)
         message_response = None
         while message_channel in client_message_queue:
@@ -369,6 +369,7 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def UnSubscribe(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())

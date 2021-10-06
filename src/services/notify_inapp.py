@@ -57,16 +57,16 @@ class NotifyInAppService(BaseService):
         )
         return response
 
-    async def subscribe(self, client_id):
-        notify_channel = "{}/notify".format(client_id)
+    async def subscribe(self, client_id, device_id):
+        notify_channel = "notify/{}/{}".format(client_id, device_id)
         if notify_channel in client_notify_queue:
             client_notify_queue[notify_channel] = None
             del client_notify_queue[notify_channel]
             await asyncio.sleep(1)
         client_notify_queue[notify_channel] = Queue()
 
-    def un_subscribe(self, client_id):
-        notify_channel = "{}/notify".format(client_id)
+    def un_subscribe(self, client_id, device_id):
+        notify_channel = "notify/{}/{}".format(client_id, device_id)
         if notify_channel in client_notify_queue:
             logger.info('all queues before')
             logger.info(client_notify_queue)

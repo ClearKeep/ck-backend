@@ -33,19 +33,19 @@ message GetNotifiesResponse {
 
 // Request: subcribe
 message SubscribeRequest {
-  string client_id = 1;
+  string device_id = 1;
 }
 //response: BaseResponse
 
 // Request: un-subcribe
 message UnSubscribeRequest {
-  string client_id = 1;
+  string device_id = 1;
 }
 //response: BaseResponse
 
 // Request: listen
 message ListenRequest {
-  string client_id = 1;
+  string device_id = 1;
 }
 //response: NotifyObjectResponse stream
 
