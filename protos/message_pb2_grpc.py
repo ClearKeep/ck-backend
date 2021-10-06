@@ -20,6 +20,11 @@ class MessageStub(object):
                 request_serializer=protos_dot_message__pb2.GetMessagesInGroupRequest.SerializeToString,
                 response_deserializer=protos_dot_message__pb2.GetMessagesInGroupResponse.FromString,
                 )
+        self.workspace_get_messages_in_group = channel.unary_unary(
+                '/message.Message/workspace_get_messages_in_group',
+                request_serializer=protos_dot_message__pb2.WorkspaceGetMessagesInGroupRequest.SerializeToString,
+                response_deserializer=protos_dot_message__pb2.GetMessagesInGroupResponse.FromString,
+                )
         self.Subscribe = channel.unary_unary(
                 '/message.Message/Subscribe',
                 request_serializer=protos_dot_message__pb2.SubscribeRequest.SerializeToString,
@@ -62,6 +67,12 @@ class MessageServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def workspace_get_messages_in_group(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def Subscribe(self, request, context):
         """action
         """
@@ -95,6 +106,7 @@ class MessageServicer(object):
 
     def workspace_publish(self, request, context):
         """
+
         rpc edit_message (EditMessageRequest) returns (MessageObjectResponse);
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -107,6 +119,11 @@ def add_MessageServicer_to_server(servicer, server):
             'get_messages_in_group': grpc.unary_unary_rpc_method_handler(
                     servicer.get_messages_in_group,
                     request_deserializer=protos_dot_message__pb2.GetMessagesInGroupRequest.FromString,
+                    response_serializer=protos_dot_message__pb2.GetMessagesInGroupResponse.SerializeToString,
+            ),
+            'workspace_get_messages_in_group': grpc.unary_unary_rpc_method_handler(
+                    servicer.workspace_get_messages_in_group,
+                    request_deserializer=protos_dot_message__pb2.WorkspaceGetMessagesInGroupRequest.FromString,
                     response_serializer=protos_dot_message__pb2.GetMessagesInGroupResponse.SerializeToString,
             ),
             'Subscribe': grpc.unary_unary_rpc_method_handler(
@@ -163,6 +180,23 @@ class Message(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/message.Message/get_messages_in_group',
             protos_dot_message__pb2.GetMessagesInGroupRequest.SerializeToString,
+            protos_dot_message__pb2.GetMessagesInGroupResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def workspace_get_messages_in_group(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/message.Message/workspace_get_messages_in_group',
+            protos_dot_message__pb2.WorkspaceGetMessagesInGroupRequest.SerializeToString,
             protos_dot_message__pb2.GetMessagesInGroupResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
