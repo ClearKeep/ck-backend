@@ -158,6 +158,10 @@ class MessageController(BaseController):
                             if message_channel in client_message_queue:
                                 client_message_queue[message_channel].put(new_message_res_object)
                             else:
+                                if new_message_res_object.group_type == 'peer' and new_message_res_object.client_id == from_client_id:
+                                    message_content = request.sender_message
+                                else:
+                                    message_content = base64.b64encode(new_message_res_object.message).decode('utf-8')
                                 push_service = NotifyPushService()
                                 message = {
                                     'id': new_message_res_object.id,
@@ -168,7 +172,7 @@ class MessageController(BaseController):
                                     'from_client_workspace_domain': new_message_res_object.from_client_workspace_domain,
                                     'group_id': new_message_res_object.group_id,
                                     'group_type': request.group_type,
-                                    'message': base64.b64encode(new_message_res_object.message).decode('utf-8')
+                                    'message': message_content
                                 }
                                 await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
                                                                        body="You have a new message",
@@ -236,6 +240,10 @@ class MessageController(BaseController):
                         logger.info('message channel in handle {}'.format(message_channel))
                         client_message_queue[message_channel].put(new_message_res_object)
                     else:
+                        if new_message_res_object.group_type == 'peer' and new_message_res_object.client_id == from_client_id:
+                            message_content = request.sender_message
+                        else:
+                            message_content = base64.b64encode(new_message_res_object.message).decode('utf-8')
                         message = {
                             'id': new_message_res_object.id,
                             'client_id': new_message_res_object.client_id,
@@ -245,7 +253,7 @@ class MessageController(BaseController):
                             'from_client_workspace_domain': owner_workspace_domain,
                             'group_id': new_message_res_object.group_id,
                             'group_type': new_message_res_object.group_type,
-                            'message': base64.b64encode(new_message_res_object.message).decode('utf-8')
+                            'message': message_content
                         }
                         await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
                                                                body="You have a new message",
@@ -314,6 +322,10 @@ class MessageController(BaseController):
             if message_channel in client_message_queue:
                 client_message_queue[message_channel].put(new_message_res_object)
             else:
+                if new_message_res_object.group_type == 'peer' and new_message_res_object.client_id == from_client_id:
+                    message_content = request.sender_message
+                else:
+                    message_content = base64.b64encode(new_message_res_object.message).decode('utf-8')
                 message = {
                     'id': new_message_res_object.id,
                     'client_id': new_message_res_object.client_id,
@@ -323,7 +335,7 @@ class MessageController(BaseController):
                     'from_client_workspace_domain': new_message_res_object.from_client_workspace_domain,
                     'group_id': client.GroupClientKey.group_id,
                     'group_type': new_message_res_object.group_type,
-                    'message': base64.b64encode(new_message_res_object.message).decode('utf-8')
+                    'message': message_content
                 }
                 await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
                                                        body="You have a new message",
