@@ -225,7 +225,10 @@ class MessageController(BaseController):
                 new_message_res_object = deepcopy(message_res_object)
                 new_message_res_object.client_id = client.GroupClientKey.client_id
                 for notify_token in client.User.tokens:
+                    logger.info('device_id in handle {}'.format(notify_token.device_id))
+                for notify_token in client.User.tokens:
                     device_id = notify_token.device_id
+                    logger.info('device_id in real loop in handle {}'.format(device_id))
                     if device_id == request.from_client_device_id:
                         continue
                     message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
