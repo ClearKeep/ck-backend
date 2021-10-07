@@ -230,6 +230,7 @@ class MessageController(BaseController):
                         continue
                     message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
                     if message_channel in client_message_queue:
+                        logger.info('message channel in handle {}'.format(message_channel))
                         client_message_queue[message_channel].put(new_message_res_object)
                     else:
                         message = {
