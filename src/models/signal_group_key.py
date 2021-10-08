@@ -1,7 +1,9 @@
 from datetime import datetime
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import joinedload
 from src.models.base import Database
 from src.models.user import User
+from src.models.notify_token import NotifyToken
 from utils.logger import *
 
 
@@ -79,6 +81,7 @@ class GroupClientKey(Database.get().Model):
     def get_clients_in_groups(self, group_ids):
         result = Database.get_session().query(GroupClientKey, User) \
             .join(User, GroupClientKey.client_id == User.id, isouter=True) \
+            .join(NotifyToken, User.id == NotifyToken.client_id) \
             .filter(GroupClientKey.group_id.in_(group_ids)) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
@@ -87,6 +90,7 @@ class GroupClientKey(Database.get().Model):
 
     def get_clients_in_group(self, group_id):
         result = Database.get_session().query(GroupClientKey, User) \
+            .options(joinedload(User.tokens)) \
             .join(User, GroupClientKey.client_id == User.id, isouter=True) \
             .filter(GroupClientKey.group_id == group_id) \
             .order_by(GroupClientKey.client_id.asc()) \
