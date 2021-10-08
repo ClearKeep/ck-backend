@@ -60,7 +60,7 @@ class NotifyInAppController(BaseController):
                     await context.write(notify_stream_response)
                 await asyncio.sleep(0.5)
             except:
-                logger.warning('Client notify {} is disconnected'.format(client_id))
+                logger.warning('Client notify {} is disconnected'.format(user_id))
                 client_notify_queue[notify_channel] = None
                 del client_notify_queue[notify_channel]
 
