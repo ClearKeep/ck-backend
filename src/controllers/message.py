@@ -36,9 +36,13 @@ class MessageController(BaseController):
             group = GroupService().get_group_info(group_id)
 
             if group and group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
-                request.group_id = group.owner_group_id
-                request.client_id = client_id
-                obj_res = ClientMessage(group.owner_workspace_domain).workspace_get_messages_in_group(request)
+                workspace_request = message_pb2.WorkspacePublishRequest(
+                    group_id = group.owner_group_id,
+                    client_id = client_id,
+                    off_set = request.off_set,
+                    last_message_at = request.last_message_at
+                )
+                obj_res = ClientMessage(group.owner_workspace_domain).workspace_get_messages_in_group(workspace_request)
                 if obj_res and obj_res.lst_message:
                     for obj in obj_res.lst_message:
                         obj.group_id = group_id
