@@ -23,7 +23,6 @@ class MessageController(BaseController):
     @request_logged
     @auth_required
     async def get_messages_in_group(self, request, context):
-        # TODO: maybe adding who call this method by adding access_token if not workspace request
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
@@ -181,13 +180,13 @@ class MessageController(BaseController):
                                                                        data=json.dumps(message),
                                                                        from_client_device_id=request.from_client_device_id)
                                 continue
-                        else:
-                            # call to other server
-                            request.group_id = client.GroupClientKey.client_workspace_group_id
-                            res_object = ClientMessage(
-                                client.GroupClientKey.client_workspace_domain).workspace_publish_message(request)
-                            if res_object is None:
-                                logger.error("Workspace Publish Message to client failed")
+                    else:
+                        # call to other server
+                        request.group_id = client.GroupClientKey.client_workspace_group_id
+                        res_object = ClientMessage(
+                            client.GroupClientKey.client_workspace_domain).workspace_publish_message(request)
+                        if res_object is None:
+                            logger.error("Workspace Publish Message to client failed")
             return new_message
 
         except Exception as e:

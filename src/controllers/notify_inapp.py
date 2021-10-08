@@ -40,7 +40,6 @@ class NotifyInAppController(BaseController):
 
         while notify_channel in client_notify_queue:
             try:
-                # # TODO: asking for this need device_id field?
                 if client_notify_queue[notify_channel].qsize() > 0:
                     notify_response = client_notify_queue[notify_channel].get(True)
                     notify_stream_response = notify_pb2.NotifyObjectResponse(
@@ -61,7 +60,7 @@ class NotifyInAppController(BaseController):
                     await context.write(notify_stream_response)
                 await asyncio.sleep(0.5)
             except:
-                logger.error('Client notify {} is disconnected'.format(client_id))
+                logger.warning('Client notify {} is disconnected'.format(client_id))
                 client_notify_queue[notify_channel] = None
                 del client_notify_queue[notify_channel]
 
