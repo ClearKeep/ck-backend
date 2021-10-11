@@ -42,7 +42,7 @@ class MessageController(BaseController):
                     off_set = request.off_set,
                     last_message_at = request.last_message_at
                 )
-                obj_res = ClientMessage(group.owner_workspace_domain).workspace_get_messages_in_group(workspace_request)
+                obj_res = ClientMessage(group.owner_workspace_domain).get_messages_in_group(workspace_request)
                 if obj_res and obj_res.lst_message:
                     for obj in obj_res.lst_message:
                         obj.group_id = group_id
