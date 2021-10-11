@@ -80,6 +80,7 @@ class GroupClientKey(Database.get().Model):
 
     def get_clients_in_groups(self, group_ids):
         result = Database.get_session().query(GroupClientKey, User) \
+            .options(joinedload(User.tokens)) \
             .join(User, GroupClientKey.client_id == User.id, isouter=True) \
             .join(NotifyToken, User.id == NotifyToken.client_id) \
             .filter(GroupClientKey.group_id.in_(group_ids)) \
