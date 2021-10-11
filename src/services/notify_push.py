@@ -56,6 +56,9 @@ class NotifyPushService(BaseService):
                             'notify_type': notify_type,
                             'data': data
                         }
+                        logger.info('IMPORTANT')
+                        logger.info('push text to client {} using device {}'.format(client_token.client_id, client_token.device_id))
+                        logger.info(client_token.push_token)
                         android_data_notification(client_token.push_token, push_payload)
                     elif client_token.device_type == DeviceType.ios:
                         arr_token = client_token.push_token.split(',')
