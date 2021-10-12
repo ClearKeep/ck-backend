@@ -161,7 +161,7 @@ class MessageController(BaseController):
                             if message_channel in client_message_queue:
                                 client_message_queue[message_channel].put(new_message_res_object)
                             else:
-                                if new_message_res_object.group_type == 'peer' and new_message_res_object.client_id == from_client_id:
+                                if new_message_res_object.group_type == 'peer' and new_message_res_object.client_id == request.from_client_id:
                                     message_content = base64.b64encode(request.sender_message).decode('utf-8')
                                 else:
                                     message_content = base64.b64encode(new_message_res_object.message).decode('utf-8')
