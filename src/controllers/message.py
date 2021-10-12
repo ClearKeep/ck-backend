@@ -318,35 +318,35 @@ class MessageController(BaseController):
                 #if client.GroupClientKey.client_id != request.fromClientId:
                 #message_channel = "{}/message".format(client.GroupClientKey.client_id)
 
-            new_message_res_object = deepcopy(message_res_object)
-            new_message_res_object.group_id = client.GroupClientKey.group_id
-            new_message_res_object.client_id = client.GroupClientKey.client_id
+                new_message_res_object = deepcopy(message_res_object)
+                new_message_res_object.group_id = client.GroupClientKey.group_id
+                new_message_res_object.client_id = client.GroupClientKey.client_id
 
-            if message_channel in client_message_queue:
-                client_message_queue[message_channel].put(new_message_res_object)
-            else:
-                if new_message_res_object.group_type == 'peer' and new_message_res_object.client_id == from_client_id:
-                    message_content = base64.b64encode(request.sender_message).decode('utf-8')
+                if message_channel in client_message_queue:
+                    client_message_queue[message_channel].put(new_message_res_object)
                 else:
-                    message_content = base64.b64encode(new_message_res_object.message).decode('utf-8')
-                message = {
-                    'id': new_message_res_object.id,
-                    'client_id': new_message_res_object.client_id,
-                    'client_workspace_domain': owner_workspace_domain,
-                    'created_at': new_message_res_object.created_at,
-                    'from_client_id': new_message_res_object.from_client_id,
-                    'from_client_workspace_domain': new_message_res_object.from_client_workspace_domain,
-                    'group_id': client.GroupClientKey.group_id,
-                    'group_type': new_message_res_object.group_type,
-                    'message': message_content
-                }
-                await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
-                                                       body="You have a new message",
-                                                       from_client_id=new_message_res_object.from_client_id,
-                                                       notify_type="new_message",
-                                                       data=json.dumps(message),
-                                                       from_client_device_id=request.from_client_device_id)
-                continue
+                    if new_message_res_object.group_type == 'peer' and new_message_res_object.client_id == from_client_id:
+                        message_content = base64.b64encode(request.sender_message).decode('utf-8')
+                    else:
+                        message_content = base64.b64encode(new_message_res_object.message).decode('utf-8')
+                    message = {
+                        'id': new_message_res_object.id,
+                        'client_id': new_message_res_object.client_id,
+                        'client_workspace_domain': owner_workspace_domain,
+                        'created_at': new_message_res_object.created_at,
+                        'from_client_id': new_message_res_object.from_client_id,
+                        'from_client_workspace_domain': new_message_res_object.from_client_workspace_domain,
+                        'group_id': client.GroupClientKey.group_id,
+                        'group_type': new_message_res_object.group_type,
+                        'message': message_content
+                    }
+                    await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
+                                                           body="You have a new message",
+                                                           from_client_id=new_message_res_object.from_client_id,
+                                                           notify_type="new_message",
+                                                           data=json.dumps(message),
+                                                           from_client_device_id=request.from_client_device_id)
+                    continue
 
         # pubish message to owner server
         request1 = message_pb2.WorkspacePublishRequest(
