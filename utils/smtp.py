@@ -27,7 +27,7 @@ This is an e-mail message to be sent in HTML format
 
 class MailerServer(object):
     query_string_form = "pre_access_token={}&user_id={}&server_domain={}"
-    app_link = "app_sample"
+    app_link = "clearkeep://resetpassword"
     user_name = "apikey"
     sender = get_system_config()["smtp_server"]['SMTP_SENDER']
     password = get_system_config()["smtp_server"]['SMTP_PASSWORD']
