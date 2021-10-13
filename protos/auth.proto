@@ -169,6 +169,13 @@ message MfaResendOtpRes{
     string error = 3;
 }
 
+message ResetPasswordReq{
+    string pre_access_token = 1;
+    string user_id = 2;
+    string new_hash_password = 3;
+    PeerRegisterClientKeyRequest client_key_peer = 4;
+}
+
 service Auth {
     rpc login(AuthReq) returns (AuthRes) {};
     rpc login_google(GoogleLoginReq) returns (AuthRes) {};
@@ -182,4 +189,5 @@ service Auth {
     rpc register_pincode(RegisterPinCodeReq) returns (AuthRes) {};
     rpc verify_pincode(VerifyPinCodeReq) returns (AuthRes) {};
     rpc reset_pincode(ResetPinCodeReq) returns (AuthRes) {};
+    rpc reset_password(ResetPasswordReq) returns (AuthRes) {};
 }
