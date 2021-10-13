@@ -19,7 +19,7 @@ class MessageService(BaseService):
         self.service_group = GroupChat()
         self.message_read_model = MessageUserRead()
 
-    def store_message(self, message_id, created_at, group_id, group_type, from_client_id, from_client_workspace_domain, client_id, message):
+    def store_message(self, message_id, created_at, group_id, group_type, from_client_id, from_client_workspace_domain, client_id, message, sender_message=b''):
         # init new message
         self.model = Message(
             id=message_id,
@@ -28,7 +28,8 @@ class MessageService(BaseService):
             from_client_workspace_domain=from_client_workspace_domain,
             client_id=client_id,
             message=message,
-            created_at=created_at
+            created_at=created_at,
+            sender_message=sender_message
         )
         self.model.add()
         # update group last message
@@ -93,7 +94,7 @@ class MessageService(BaseService):
         thread.start()
         # return True
 
-    def get_message_in_group(self, group_id, offset=0, from_time=0):
+    def get_message_in_group(self, client_id, group_id, offset=0, from_time=0):
         lst_message = self.model.get_message_in_group(group_id, offset, from_time)
         group_type = self.service_group.get_group_type(group_id=group_id)
         lst_obj_res = []
@@ -105,8 +106,10 @@ class MessageService(BaseService):
                 from_client_id=obj.from_client_id,
                 from_client_workspace_domain=obj.from_client_workspace_domain,
                 message=obj.message,
-                created_at=int(obj.created_at.timestamp() * 1000)
+                created_at=int(obj.created_at.timestamp() * 1000),
             )
+            if obj.from_client_id == client_id:
+                obj_res.sender_message = obj.sender_message
             if obj.client_id:
                 obj_res.client_id = obj.client_id
             if obj.updated_at is not None:
@@ -127,16 +130,16 @@ class MessageService(BaseService):
         )
         return response
 
-    async def subscribe(self, client_id):
-        message_channel = "{}/message".format(client_id)
+    async def subscribe(self, client_id, device_id):
+        message_channel = "message/{}/{}".format(client_id, device_id)
         if message_channel in client_message_queue:
             client_message_queue[message_channel] = None
             del client_message_queue[message_channel]
             await asyncio.sleep(1)
         client_message_queue[message_channel] = Queue()
 
-    def un_subscribe(self, client_id):
-        message_channel = "{}/message".format(client_id)
+    def un_subscribe(self, client_id, device_id):
+        message_channel = "message/{}/{}".format(client_id, device_id)
         if message_channel in client_message_queue:
             client_message_queue[message_channel] = None
             del client_message_queue[message_channel]
@@ -147,4 +150,3 @@ class MessageService(BaseService):
                 message_id=mess_id,
                 client_id=client_id
             ).add()
-

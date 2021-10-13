@@ -44,6 +44,7 @@ class NotifyPushController(BaseController):
             notify_type = request.notify_type
             custom_data = request.custom_data
             to_client_id = request.to_client_id
+            # TODO: not like actually used
             self.service.push_text_to_client(to_client_id=to_client_id, title=title, body=body, notify_type=notify_type, data=custom_data)
             return notify_push_pb2.BaseResponse()
 

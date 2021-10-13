@@ -147,7 +147,6 @@ class AuthController(BaseController):
             user_name, is_registered_pincode = self.service.facebook_login(request.access_token)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
             pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
-            # TODO: sub will be user name of keycloak
             auth_response = auth_messages.AuthRes(
                                 workspace_domain=get_owner_workspace_domain(),
                                 workspace_name=get_system_config()['server_name'],
@@ -234,8 +233,8 @@ class AuthController(BaseController):
             device_id = request.device_id
             refresh_token = request.refresh_token
             self.service.remove_token(client_id=user_id, device_id=device_id)
-            MessageService().un_subscribe(user_id)
-            NotifyInAppService().un_subscribe(user_id)
+            MessageService().un_subscribe(user_id, device_id)
+            NotifyInAppService().un_subscribe(user_id, device_id)
             self.service.logout(refresh_token)
             # KeyCloakUtils.remove_session(
             #     session_id=introspect_token['session_state']

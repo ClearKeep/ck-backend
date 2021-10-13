@@ -29,10 +29,14 @@ class NotifyInAppController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     # @request_logged
+    @auth_required
     async def listen(self, request, context):
-        client_id = request.client_id
-        logger.info('listen  {}'.format(client_id))
-        notify_channel = "{}/notify".format(client_id)
+        header_data = dict(context.invocation_metadata())
+        introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+        user_id = introspect_token['sub']
+
+        logger.info('listen  {}'.format(user_id))
+        notify_channel = "notify/{}/{}".format(user_id, request.device_id)
 
         while notify_channel in client_notify_queue:
             try:
@@ -56,15 +60,19 @@ class NotifyInAppController(BaseController):
                     await context.write(notify_stream_response)
                 await asyncio.sleep(0.5)
             except:
-                logger.error('Client notify {} is disconnected'.format(client_id))
+                logger.warning('Client notify {} is disconnected'.format(user_id))
                 client_notify_queue[notify_channel] = None
                 del client_notify_queue[notify_channel]
 
     @request_logged
+    @auth_required
     async def subscribe(self, request, context):
-        logger.info('subscribe  {}'.format(request.client_id))
+        header_data = dict(context.invocation_metadata())
+        introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+        user_id = introspect_token['sub']
+        logger.info('subscribe user {} with device_id {}'.format(user_id, request.device_id))
         try:
-            await self.service.subscribe(request.client_id)
+            await self.service.subscribe(user_id, request.device_id)
             return notify_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
@@ -75,11 +83,16 @@ class NotifyInAppController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def un_subscribe(self, request, context):
         print("notify_inapp un_subscribe api")
+
+        header_data = dict(context.invocation_metadata())
+        introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+        user_id = introspect_token['sub']
         try:
-            logger.info('un_subscribe user: {}'.format(request.client_id))
-            self.service.un_subscribe(request.client_id)
+            logger.info('un_subscribe user: {} with device_id {}'.format(user_id, request.device_id))
+            self.service.un_subscribe(user_id, request.device_id)
             return notify_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
