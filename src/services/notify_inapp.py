@@ -102,7 +102,7 @@ class NotifyInAppService(BaseService):
             notify_channel = "notify/{}/{}".format(client_id, notify_token.device_id)
             logger.info('notify_invite_peer with notify_channel {}'.format(notify_channel))
             if notify_channel in client_notify_queue:
-                logger.info('notify_invite_peer in channel {} by {}'.format(notify_channel, created_by_user.display_name))
+                logger.info('notify_invite_peer in channel {} by {}'.format(notify_channel, ref_subject_name))
                 try:
                     client_notify_queue[notify_channel].put(new_group)
                 except Exception as e:
@@ -129,7 +129,7 @@ class NotifyInAppService(BaseService):
             notify_channel = "notify/{}/{}".format(client_id, notify_token.device_id)
             logger.info('notify_invite_group with notify_channel {}'.format(notify_channel))
             if notify_channel in client_notify_queue:
-                logger.info('notify_invite_group in channel {} by {}'.format(notify_channel, created_by_user.display_name))
+                logger.info('notify_invite_group in channel {} by {}'.format(notify_channel, ref_subject_name))
                 try:
                     client_notify_queue[notify_channel].put(new_group)
                 except Exception as e:
