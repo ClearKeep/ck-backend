@@ -70,6 +70,23 @@ class AuthService:
             logger.info(e)
             return None
 
+    def register_srp_user(self, email, password_verifier, display_name):
+        try:
+            user_id = KeyCloakUtils.create_user(email, email, password_verifier, "", display_name)
+            if user_id:
+                a = KeyCloakUtils.send_verify_email(user_id)
+                return user_id
+        except Exception as e:
+            logger.info(e)
+            raise Exception(Message.REGISTER_USER_FAILED)
+
+    def delete_user(self, userid):
+        try:
+            KeyCloakUtils.delete_user(user_id=userid)
+        except Exception as e:
+            logger.info(e)
+            raise Exception(Message.UNAUTHENTICATED)
+
     def delete_user(self, userid):
         try:
             KeyCloakUtils.delete_user(user_id=userid)

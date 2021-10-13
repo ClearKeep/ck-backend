@@ -12,6 +12,9 @@ class User(Database.get().Model):
     hash_code_salt = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     iv_parameter = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     email = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
+    password_verifier = Database.get().Column(Database.get().String(2048), unique=False, nullable=True)
+    salt = Database.get().Column(Database.get().String(512), unique=False, nullable=True)
+    srp_server_private = Database.get().Column(Database.get().String(2048), unique=False, nullable=True)
     display_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     first_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     last_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
@@ -46,6 +49,14 @@ class User(Database.get().Model):
     def get(self, client_id):
         user = Database.get_session().query(User) \
             .filter(User.id == client_id) \
+            .one_or_none()
+        Database.get().session.remove()
+        return user
+
+    def get_user_by_auth_source(self, email, auth_source):
+        user = Database.get_session().query(User) \
+            .filter(User.email == email) \
+            .filter(User.auth_source == auth_source) \
             .one_or_none()
         Database.get().session.remove()
         return user
