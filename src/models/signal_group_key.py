@@ -93,7 +93,6 @@ class GroupClientKey(Database.get().Model):
         result = Database.get_session().query(GroupClientKey, User) \
             .options(joinedload(User.tokens)) \
             .join(User, GroupClientKey.client_id == User.id, isouter=True) \
-            .join(NotifyToken, User.id == NotifyToken.client_id) \
             .filter(GroupClientKey.group_id == group_id) \
             .order_by(GroupClientKey.client_id.asc()) \
             .all()
