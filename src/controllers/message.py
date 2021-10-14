@@ -370,7 +370,7 @@ class MessageController(BaseController):
         # message_res_object.group_id = group.id
         return message_res_object
 
-    # @request_logged
+    @request_logged
     @auth_required
     async def Listen(self, request, context: grpc.aio.ServicerContext):
         header_data = dict(context.invocation_metadata())
