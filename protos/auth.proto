@@ -169,6 +169,39 @@ message MfaResendOtpRes{
     string error = 3;
 }
 
+//new flow login with srp
+//Login message struct
+message AuthChallengeReq {
+    string email = 1;
+    string client_public = 2;
+}
+
+message AuthChallengeRes {
+    string salt = 1;
+    string public_challenge_b = 2;
+}
+
+message AuthenticateReq {
+    string email = 1;
+    string client_public = 2;
+    string client_session_key_proof = 3;
+}
+
+message RegisterSRPReq {
+    string workspace_domain = 1;
+    string email = 2;
+    string password_verifier = 3;
+    string salt = 4;
+    string display_name = 5;
+    int64 auth_type = 6;
+    string first_name = 7;
+    string last_name = 8;
+}
+
+message RegisterSRPRes {
+    string error = 1;
+}
+
 service Auth {
     rpc login(AuthReq) returns (AuthRes) {};
     rpc login_google(GoogleLoginReq) returns (AuthRes) {};
@@ -182,4 +215,9 @@ service Auth {
     rpc register_pincode(RegisterPinCodeReq) returns (AuthRes) {};
     rpc verify_pincode(VerifyPinCodeReq) returns (AuthRes) {};
     rpc reset_pincode(ResetPinCodeReq) returns (AuthRes) {};
+    //new flow login with srp
+    rpc login_challenge(AuthChallengeReq) returns (AuthChallengeRes) {};
+    rpc login_authenticate(AuthenticateReq) returns (AuthRes) {};
+    rpc register_srp(RegisterSRPReq) returns (RegisterSRPRes) {};
+    //end new flow login with srp
 }

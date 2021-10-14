@@ -74,6 +74,21 @@ class AuthStub(object):
                 request_serializer=protos_dot_auth__pb2.ResetPinCodeReq.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
                 )
+        self.login_challenge = channel.unary_unary(
+                '/auth.Auth/login_challenge',
+                request_serializer=protos_dot_auth__pb2.AuthChallengeReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.AuthChallengeRes.FromString,
+                )
+        self.login_authenticate = channel.unary_unary(
+                '/auth.Auth/login_authenticate',
+                request_serializer=protos_dot_auth__pb2.AuthenticateReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
+                )
+        self.register_srp = channel.unary_unary(
+                '/auth.Auth/register_srp',
+                request_serializer=protos_dot_auth__pb2.RegisterSRPReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.RegisterSRPRes.FromString,
+                )
 
 
 class AuthServicer(object):
@@ -151,6 +166,25 @@ class AuthServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def login_challenge(self, request, context):
+        """new flow login with srp
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def login_authenticate(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def register_srp(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AuthServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -213,6 +247,21 @@ def add_AuthServicer_to_server(servicer, server):
                     servicer.reset_pincode,
                     request_deserializer=protos_dot_auth__pb2.ResetPinCodeReq.FromString,
                     response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
+            ),
+            'login_challenge': grpc.unary_unary_rpc_method_handler(
+                    servicer.login_challenge,
+                    request_deserializer=protos_dot_auth__pb2.AuthChallengeReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.AuthChallengeRes.SerializeToString,
+            ),
+            'login_authenticate': grpc.unary_unary_rpc_method_handler(
+                    servicer.login_authenticate,
+                    request_deserializer=protos_dot_auth__pb2.AuthenticateReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
+            ),
+            'register_srp': grpc.unary_unary_rpc_method_handler(
+                    servicer.register_srp,
+                    request_deserializer=protos_dot_auth__pb2.RegisterSRPReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.RegisterSRPRes.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -425,5 +474,56 @@ class Auth(object):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/reset_pincode',
             protos_dot_auth__pb2.ResetPinCodeReq.SerializeToString,
             protos_dot_auth__pb2.AuthRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def login_challenge(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_challenge',
+            protos_dot_auth__pb2.AuthChallengeReq.SerializeToString,
+            protos_dot_auth__pb2.AuthChallengeRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def login_authenticate(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_authenticate',
+            protos_dot_auth__pb2.AuthenticateReq.SerializeToString,
+            protos_dot_auth__pb2.AuthRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def register_srp(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/register_srp',
+            protos_dot_auth__pb2.RegisterSRPReq.SerializeToString,
+            protos_dot_auth__pb2.RegisterSRPRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
