@@ -273,7 +273,7 @@ class MessageController(BaseController):
                 request2 = message_pb2.WorkspacePublishRequest(
                     from_client_id=message_res_object.from_client_id,
                     from_client_workspace_domain=owner_workspace_domain,
-                    client_id=new_message_res_object.client_id,
+                    client_id=message_res_object.client_id,
                     group_id=client.GroupClientKey.client_workspace_group_id,
                     group_type=message_res_object.group_type,
                     message_id=message_res_object.id,
