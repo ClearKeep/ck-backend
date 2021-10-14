@@ -149,16 +149,18 @@ class MessageController(BaseController):
                 if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                         for notify_token in client.User.tokens:
+                            logger.info('device_id in handle {}'.format(notify_token.device_id))
+                        for notify_token in client.User.tokens:
                             device_id = notify_token.device_id
-                            # if device_id == request.from_client_device_id:
-                            #     continue
+                            logger.info('device_id in real loop in handle {}'.format(device_id))
+                            if device_id == request.from_client_device_id:
+                                continue
                             message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
-                            #message_channel = "{}/message".format(client.GroupClientKey.client_id)
-
                             new_message_res_object = deepcopy(new_message)
                             new_message_res_object.client_id = client.GroupClientKey.client_id
 
                             if message_channel in client_message_queue:
+                                logger.info('message channel in handle {}'.format(message_channel))
                                 client_message_queue[message_channel].put(new_message_res_object)
                             else:
                                 if new_message_res_object.group_type == 'peer' and new_message_res_object.client_id == request.from_client_id:
@@ -309,14 +311,14 @@ class MessageController(BaseController):
         push_service = NotifyPushService()
 
         for client in lst_client:
-            # TODO: get all notify_token from NotifyToken
+            for notify_token in client.User.tokens:
+                logger.info('device_id in handle {}'.format(notify_token.device_id))
             for notify_token in client.User.tokens:
                 device_id = notify_token.device_id
+                logger.info('device_id in real loop in handle {}'.format(device_id))
                 if device_id == request.from_client_device_id:
                     continue
                 message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
-                #if client.GroupClientKey.client_id != request.fromClientId:
-                #message_channel = "{}/message".format(client.GroupClientKey.client_id)
 
                 new_message_res_object = deepcopy(message_res_object)
                 new_message_res_object.group_id = client.GroupClientKey.group_id
@@ -376,6 +378,7 @@ class MessageController(BaseController):
         user_id = introspect_token['sub']
 
         message_channel = "message/{}/{}".format(user_id, request.device_id)
+        logger.info('user {} in device {} has listened'.format(user_id, request.device_id))
         message_response = None
         while message_channel in client_message_queue:
             try:

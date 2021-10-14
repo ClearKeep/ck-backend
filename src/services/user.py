@@ -47,6 +47,22 @@ class UserService(BaseService):
             logger.error(e)
             return None
 
+    def create_new_user_srp(self, id, email, password_verifier, salt, display_name, auth_source):
+        # password, first_name, last_name,
+        try:
+            self.model = User(
+                id=id,
+                email=email,
+                password_verifier=password_verifier,
+                salt=salt,
+                display_name=display_name,
+                auth_source=auth_source
+            )
+            self.model.add()
+        except Exception as e:
+            logger.error(e)
+            raise Exception(Message.REGISTER_USER_FAILED)
+
     def create_user_social(self, id, email, display_name, auth_source):
         try:
             self.model = User(
@@ -327,6 +343,10 @@ class UserService(BaseService):
         except Exception as e:
             logger.info(e)
             raise Exception(Message.GET_USER_INFO_FAILED)
+
+    def get_user_by_auth_source(self, email, auth_source):
+        user_info = self.model.get_user_by_auth_source(email, auth_source)
+        return user_info
 
     def search_user(self, keyword, client_id):
         try:

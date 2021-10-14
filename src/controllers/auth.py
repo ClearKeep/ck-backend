@@ -9,7 +9,7 @@ from utils.encrypt import EncryptUtils
 from middlewares.permission import *
 from middlewares.request_logged import *
 from utils.config import *
-
+import srp
 
 class AuthController(BaseController):
     def __init__(self, *kwargs):
@@ -84,6 +84,111 @@ class AuthController(BaseController):
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
                 # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def login_challenge(self, request, context):
+        try:
+            email = request.email
+            user_info = self.user_service.get_user_by_auth_source(email, "account")
+            if not user_info:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            password_verifier = bytes.fromhex(user_info.password_verifier)
+            salt = bytes.fromhex(user_info.salt)
+            client_public = bytes.fromhex(request.client_public)
+
+            srv = srp.Verifier(email, salt, password_verifier, client_public)
+            s, B = srv.get_challenge()
+            # need store private b of server
+            logger.info("server_public=")
+            logger.info(s)
+            logger.info("server_private=")
+            logger.info(B)
+
+            server_private = srv.get_ephemeral_secret().hex()
+            logger.info(server_private)
+            user_info.srp_server_private = server_private
+            user_info.update()
+
+            public_challenge_b = B.hex()
+            auth_challenge_res = auth_messages.AuthChallengeRes(
+                salt=user_info.salt,
+                public_challenge_b=public_challenge_b
+            )
+            return auth_challenge_res
+
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.AUTHENTICATION_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def login_authenticate(self, request, context):
+        try:
+            email = request.email
+            client_session_key_proof = request.client_session_key_proof
+            user_info = self.user_service.get_user_by_auth_source(email, "account")
+
+            if not user_info:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            password_verifier = bytes.fromhex(user_info.password_verifier)
+            salt = bytes.fromhex(user_info.salt)
+            client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
+
+            srv = srp.Verifier(username=email, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
+            srv.verify_session(client_session_key_proof_bytes)
+            authenticated = srv.authenticated()
+
+            if not authenticated:
+                raise Exception(Message.AUTHENTICATION_FAILED)
+
+            token = self.service.token(email, user_info.password_verifier)
+            if token:
+                # introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+                user_id = user_info.id
+                mfa_state = self.user_service.get_mfa_state(user_id=user_id)
+                # hash_key = EncryptUtils.encoded_hash(
+                #     request.password, user_id
+                # )
+                if not mfa_state:
+                    ### check if login require otp check
+                    self.user_service.update_last_login(user_id=user_id)
+                    auth_message = auth_messages.AuthRes(
+                        workspace_domain=get_owner_workspace_domain(),
+                        workspace_name=get_system_config()['server_name'],
+                        access_token=token['access_token'],
+                        expires_in=token['expires_in'],
+                        refresh_expires_in=token['refresh_expires_in'],
+                        refresh_token=token['refresh_token'],
+                        token_type=token['token_type'],
+                        session_state=token['session_state'],
+                        scope=token['scope'],
+                        hash_key=""
+                    )
+                else:
+                    otp_hash = self.service.create_otp_service(user_id)
+                    auth_message = auth_messages.AuthRes(
+                        workspace_domain=get_owner_workspace_domain(),
+                        workspace_name=get_system_config()['server_name'],
+                        hash_key="",
+                        sub=user_id,
+                        otp_hash=otp_hash,
+                        require_action="mfa_validate_otp"
+                    )
+                return auth_message
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -205,6 +310,44 @@ class AuthController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def register_srp(self, request, context):
+        # check exist user
+        try:
+            email = request.email
+            display_name = request.display_name
+            password_verifier = request.password_verifier
+            salt = request.salt
+
+            exists_user = self.service.get_user_by_email(email)
+            if exists_user:
+                raise Exception(Message.REGISTER_USER_ALREADY_EXISTS)
+
+            # register new user
+            new_user_id = self.service.register_srp_user(email, password_verifier, display_name)
+
+            if new_user_id:
+                # create new user in database
+                UserService().create_new_user_srp(new_user_id, email, password_verifier, salt, display_name, 'account')
+                return auth_messages.RegisterSRPRes(
+                    error=''
+                )
+            else:
+                self.service.delete_user(new_user_id)
+                raise Exception(Message.REGISTER_USER_FAILED)
+        except Exception as e:
+            logger.error(e)
+            errors = [Message.get_error_object(e.args[0])]
+            return auth_messages.RegisterSRPRes(
+                error=auth_messages.BaseResponse(
+                    success=False,
+                    errors=auth_messages.ErrorRes(
+                        code=errors[0].code,
+                        message=errors[0].message
+                    )
+                )
+            )
 
     @request_logged
     async def fogot_password(self, request, context):
