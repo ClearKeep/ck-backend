@@ -269,6 +269,7 @@ class MessageController(BaseController):
                             # continue
             else:
                 # call to other server
+                logger.info('push to client {} in server {}'.format(message_res_object.client_id, client.GroupClientKey.client_workspace_domain))
                 request2 = message_pb2.WorkspacePublishRequest(
                     from_client_id=message_res_object.from_client_id,
                     from_client_workspace_domain=owner_workspace_domain,
@@ -370,7 +371,7 @@ class MessageController(BaseController):
         # message_res_object.group_id = group.id
         return message_res_object
 
-    # @request_logged
+    @request_logged
     @auth_required
     async def Listen(self, request, context: grpc.aio.ServicerContext):
         header_data = dict(context.invocation_metadata())
