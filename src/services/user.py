@@ -23,15 +23,14 @@ class UserService(BaseService):
         self.authen_setting = AuthenSetting()
         # self.workspace_domain = get_system_domain()
 
-    def create_new_user(self, id, email, display_name, hash_password, salt, iv_parameter, auth_source):
+    def create_new_user(self, id, email, display_name, salt, iv_parameter, auth_source):
         # password, first_name, last_name,
         try:
             self.model = User(
                 id=id,
                 email=email,
                 display_name=display_name,
-                hash_code=hash_password,
-                hash_code_salt=salt,
+                salt=salt,
                 iv_parameter=iv_parameter,
                 auth_source=auth_source
             )
@@ -47,7 +46,7 @@ class UserService(BaseService):
             logger.error(e)
             return None
 
-    def create_new_user_srp(self, id, email, password_verifier, salt, display_name, auth_source):
+    def create_new_user_srp(self, id, email, password_verifier, salt, iv_parameter, display_name, auth_source):
         # password, first_name, last_name,
         try:
             self.model = User(
@@ -55,6 +54,7 @@ class UserService(BaseService):
                 email=email,
                 password_verifier=password_verifier,
                 salt=salt,
+                iv_parameter=iv_parameter,
                 display_name=display_name,
                 auth_source=auth_source
             )
@@ -253,29 +253,29 @@ class UserService(BaseService):
             logger.error(e)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
-    def update_hash_pass(self, user_id, hash_password, hash_code_salt='', iv_parameter=''):
+    def update_hash_pass(self, user_id, hash_password, salt='', iv_parameter=''):
         user_info = self.model.get(user_id)
         user_info.hash_code = hash_password
-        if hash_code_salt:
-            user_info.hash_code_salt = hash_code_salt
+        if salt:
+            user_info.salt = salt
         if iv_parameter:
             user_info.iv_parameter = iv_parameter
         user_info.update()
-        return (user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter)
+        return (user_info.hash_code, user_info.salt, user_info.iv_parameter)
 
-    def update_hash_pin(self, user_id, hash_pincode, hash_code_salt='', iv_parameter=''):
+    def update_hash_pin(self, user_id, hash_pincode, salt='', iv_parameter=''):
         user_info = self.model.get(user_id)
         user_info.hash_code = hash_pincode
-        if hash_code_salt:
-            user_info.hash_code_salt = hash_code_salt
+        if salt:
+            user_info.salt = salt
         if iv_parameter:
             user_info.iv_parameter = iv_parameter
         user_info.update()
-        return (user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter)
+        return (user_info.hash_code, user_info.salt, user_info.iv_parameter)
 
     def validate_hash_pincode(self, user_id, hash_pass):
         user_info = self.model.get(user_id)
-        return (hash_pass == user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter)
+        return (hash_pass == user_info.hash_code, user_info.salt, user_info.iv_parameter)
 
     def get_pincode(self, user_id):
         user_info = self.model.get(user_id)
@@ -287,11 +287,11 @@ class UserService(BaseService):
 
     def validate_hash_pass(self, user_id, hash_pass):
         # compare current hash_password with stored hash_password in db, return boolean value for describe state of needing to update hash password
-        # also return hash_code_salt stored in db
+        # also return salt stored in db
         user_info = self.model.get(user_id)
         if user_info is None:
             return (False, "", "")
-        return (hash_pass != user_info.hash_code, user_info.hash_code_salt, user_info.iv_parameter)
+        return (hash_pass != user_info.hash_code, user_info.salt, user_info.iv_parameter)
 
     def get_profile(self, user_id, hash_key):
         try:
@@ -346,6 +346,11 @@ class UserService(BaseService):
 
     def get_user_by_auth_source(self, email, auth_source):
         user_info = self.model.get_user_by_auth_source(email, auth_source)
+        return user_info
+
+
+    def get_user_by_id(self, client_id):
+        user_info = self.model.get(client_id)
         return user_info
 
     def search_user(self, keyword, client_id):
