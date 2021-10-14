@@ -23,7 +23,8 @@ class AuthController(BaseController):
             if token:
                 introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = introspect_token['sub']
-                require_update_client_key, hash_password_salt, iv_parameter = self.user_service.validate_hash_pass(user_id, request.hash_password)
+                _, hash_password_salt, iv_parameter = self.user_service.validate_hash_pass(user_id, request.hash_password)
+                require_update_client_key = False
                 require_actions = ['update_client_key'] if require_update_client_key else []
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
                 hash_key = EncryptUtils.encoded_hash(
@@ -157,9 +158,20 @@ class AuthController(BaseController):
                 # introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = user_info.id
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
-                # hash_key = EncryptUtils.encoded_hash(
-                #     request.password, user_id
-                # )
+                client_key_obj = SignalService().peer_get_client_key(user_id)
+                client_key_peer = auth_messages.PeerGetClientKeyResponse(
+                                        clientId=user_id,
+                                        workspace_domain=get_owner_workspace_domain(),
+                                        registrationId=client_key_obj.registration_id,
+                                        deviceId=client_key_obj.device_id,
+                                        identityKeyPublic=client_key_obj.identity_key_public,
+                                        preKeyId=client_key_obj.prekey_id,
+                                        preKey=client_key_obj.prekey,
+                                        signedPreKeyId=client_key_obj.signed_prekey_id,
+                                        signedPreKey=client_key_obj.signed_prekey,
+                                        signedPreKeySignature=client_key_obj.signed_prekey_signature,
+                                        identityKeyEncrypted=client_key_obj.identity_key_encrypted
+                                    )
                 if not mfa_state:
                     ### check if login require otp check
                     self.user_service.update_last_login(user_id=user_id)
@@ -173,7 +185,11 @@ class AuthController(BaseController):
                         token_type=token['token_type'],
                         session_state=token['session_state'],
                         scope=token['scope'],
-                        hash_key=""
+                        hash_key="",
+                        require_action="",
+                        salt=user_info.salt,
+                        client_key_peer=client_key_peer,
+                        iv_parameter=user_info.iv_parameter
                     )
                 else:
                     otp_hash = self.service.create_otp_service(user_id)
@@ -319,6 +335,7 @@ class AuthController(BaseController):
             display_name = request.display_name
             password_verifier = request.password_verifier
             salt = request.salt
+            iv_parameter = request.iv_parameter
 
             exists_user = self.service.get_user_by_email(email)
             if exists_user:
@@ -329,13 +346,20 @@ class AuthController(BaseController):
 
             if new_user_id:
                 # create new user in database
-                UserService().create_new_user_srp(new_user_id, email, password_verifier, salt, display_name, 'account')
+                UserService().create_new_user_srp(new_user_id, email, password_verifier, salt, iv_parameter, display_name, 'account')
                 return auth_messages.RegisterSRPRes(
                     error=''
                 )
             else:
                 self.service.delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
+            try:
+                SignalService().peer_register_client_key(new_user_id, request.client_key_peer)
+            except Exception:
+                self.service.delete_user(new_user_id)
+                UserService().delete_user(new_user_id)
+                raise Exception(Message.REGISTER_USER_FAILED)
+                
         except Exception as e:
             logger.error(e)
             errors = [Message.get_error_object(e.args[0])]
@@ -379,10 +403,6 @@ class AuthController(BaseController):
             MessageService().un_subscribe(user_id, device_id)
             NotifyInAppService().un_subscribe(user_id, device_id)
             self.service.logout(refresh_token)
-            # KeyCloakUtils.remove_session(
-            #     session_id=introspect_token['session_state']
-            # )
-
             return auth_messages.BaseResponse()
 
         except Exception as e:
@@ -399,6 +419,7 @@ class AuthController(BaseController):
     async def validate_otp(self, request, context):
         try:
             success_status, token = self.service.verify_otp(request.user_id, request.otp_hash, request.otp_code)
+            user_info = self.user_service.get_user_by_id(request.user_id)
             if not success_status:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             require_action = ""
@@ -428,7 +449,9 @@ class AuthController(BaseController):
                 session_state=token['session_state'],
                 scope=token['scope'],
                 require_action = require_action,
-                client_key_peer=client_key_peer
+                salt=user_info.salt,
+                client_key_peer=client_key_peer,
+                iv_parameter=user_info.iv_parameter
             )
 
         except Exception as e:
