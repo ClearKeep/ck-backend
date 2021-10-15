@@ -347,9 +347,6 @@ class AuthController(BaseController):
             if new_user_id:
                 # create new user in database
                 UserService().create_new_user_srp(new_user_id, email, password_verifier, salt, iv_parameter, display_name, 'account')
-                return auth_messages.RegisterSRPRes(
-                    error=''
-                )
             else:
                 self.service.delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
@@ -359,6 +356,10 @@ class AuthController(BaseController):
                 self.service.delete_user(new_user_id)
                 UserService().delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
+
+            return auth_messages.RegisterSRPRes(
+                error=''
+            )
 
         except Exception as e:
             logger.error(e)
