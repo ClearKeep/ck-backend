@@ -359,19 +359,17 @@ class AuthController(BaseController):
                 self.service.delete_user(new_user_id)
                 UserService().delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
-                
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
-            return auth_messages.RegisterSRPRes(
-                error=auth_messages.BaseResponse(
-                    success=False,
-                    errors=auth_messages.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                )
-            )
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.REGISTER_USER_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
     async def fogot_password(self, request, context):
