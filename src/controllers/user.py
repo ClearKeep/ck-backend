@@ -180,7 +180,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    # @request_logged
+    @request_logged
     @auth_required
     async def get_profile(self, request, context):
         try:
