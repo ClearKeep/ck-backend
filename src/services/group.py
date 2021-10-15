@@ -292,10 +292,10 @@ class GroupService(BaseService):
                         clientId = stored_client_key.client_id,
                         deviceId = stored_client_key.device_id,
                         clientKeyDistribution = stored_client_key.client_key,
-                        int64 senderKeyId = stored_client_key.client_sender_key_id,
-                        bytes senderKey = stored_client_key.client_sender_key,
-                        bytes publicKey = stored_client_key.client_public_key,
-                        string privateKey = stored_client_key.client_private_key,
+                        senderKeyId = stored_client_key.client_sender_key_id,
+                        senderKey = stored_client_key.client_sender_key,
+                        publicKey = stored_client_key.client_public_key,
+                        privateKey = stored_client_key.client_private_key,
                 )
             # lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
             # owner_workspace_domain = get_owner_workspace_domain()
