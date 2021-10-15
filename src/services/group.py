@@ -256,7 +256,8 @@ class GroupService(BaseService):
     def get_group_obj(self, group_id):
         return self.model.get(group_id).GroupChat
 
-    def get_group(self, group_id):
+    def get_group(self, group_id, client_id):
+        stored_client_key = GroupClientKey().get(group_id, client_id)
         group = self.model.get(group_id)
         if group is not None:
             obj = group.GroupChat
@@ -284,6 +285,18 @@ class GroupService(BaseService):
                     status=client['status']
                 )
                 res_obj.lst_client.append(client_in)
+
+            if stored_client_key is not None:
+                res_obj.client_key = group_pb2.GroupClientKeyObject(
+                        workspace_domain = stored_client_key.client_workspace_domain,
+                        clientId = stored_client_key.client_id,
+                        deviceId = stored_client_key.device_id,
+                        clientKeyDistribution = stored_client_key.client_key,
+                        int64 senderKeyId = stored_client_key.client_sender_key_id,
+                        bytes senderKey = stored_client_key.client_sender_key,
+                        bytes publicKey = stored_client_key.client_public_key,
+                        string privateKey = stored_client_key.client_private_key,
+                )
             # lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
             # owner_workspace_domain = get_owner_workspace_domain()
             #
