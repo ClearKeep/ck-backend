@@ -188,7 +188,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
 
-            user_info = self.service.get_profile(client_id, header_data['hash_key'])
+            user_info = self.service.get_profile(client_id)
             if user_info is not None:
                 return user_info
             else:

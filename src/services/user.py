@@ -293,7 +293,7 @@ class UserService(BaseService):
             return (False, "", "")
         return (hash_pass != user_info.hash_code, user_info.salt, user_info.iv_parameter)
 
-    def get_profile(self, user_id, hash_key):
+    def get_profile(self, user_id):
         try:
             user_info = self.model.get(user_id)
             if user_info is not None:
