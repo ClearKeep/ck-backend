@@ -287,16 +287,20 @@ class GroupService(BaseService):
                 res_obj.lst_client.append(client_in)
 
             if stored_client_key is not None:
-                res_obj.client_key = group_pb2.GroupClientKeyObject(
-                        workspace_domain = stored_client_key.client_workspace_domain,
-                        clientId = stored_client_key.client_id,
-                        deviceId = stored_client_key.device_id,
-                        clientKeyDistribution = stored_client_key.client_key,
-                        senderKeyId = stored_client_key.client_sender_key_id,
-                        senderKey = stored_client_key.client_sender_key,
-                        publicKey = stored_client_key.client_public_key,
-                        privateKey = stored_client_key.client_private_key,
-                )
+                res_obj.client_key.workspace_domain = get_owner_workspace_domain()
+                res_obj.client_key.clientId = stored_client_key.client_id
+                if stored_client_key.device_id is not None:
+                    res_obj.client_key.deviceId = stored_client_key.device_id
+                if stored_client_key.client_key is not None:
+                    res_obj.client_key.clientKeyDistribution = stored_client_key.client_key
+                if stored_client_key.client_sender_key_id is not None:
+                    res_obj.client_key.senderKeyId = stored_client_key.client_sender_key_id
+                if stored_client_key.client_sender_key is not None:
+                    res_obj.client_key.senderKey = stored_client_key.client_sender_key
+                if stored_client_key.client_public_key is not None:
+                    res_obj.client_key.publicKey = stored_client_key.client_public_key
+                if stored_client_key.client_private_key is not None:
+                    res_obj.client_key.privateKey = stored_client_key.client_private_key
             # lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
             # owner_workspace_domain = get_owner_workspace_domain()
             #
