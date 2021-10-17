@@ -9,17 +9,12 @@ message BaseResponse {
 message PeerRegisterClientKeyRequest {
     int32 registrationId = 1;
     int32 deviceId = 2;
-
     bytes identityKeyPublic = 3;
-
     int32 preKeyId = 4;
     bytes preKey = 5;
-
     int32 signedPreKeyId = 6;
     bytes signedPreKey = 7;
-
     bytes signedPreKeySignature = 8;
-
     string identityKeyEncrypted = 9;
 }
 
@@ -30,17 +25,12 @@ message PeerGetClientKeyResponse {
     string workspace_domain = 2;
     int32 registrationId = 3;
     int32 deviceId = 4;
-
     bytes identityKeyPublic = 5;
-
     int32 preKeyId = 6;
     bytes preKey = 7;
-
     int32 signedPreKeyId = 8;
     bytes signedPreKey = 9;
-
     bytes signedPreKeySignature = 10;
-
     string identityKeyEncrypted = 11;
 }
 
@@ -135,7 +125,8 @@ message RegisterPinCodeReq {
 message VerifyPinCodeReq {
     string pre_access_token = 1;
     string user_id = 2;
-    string hash_pincode = 3;
+    string client_public = 3;
+    string client_session_key_proof = 4;
 }
 // return AuthRes
 
@@ -144,11 +135,10 @@ message VerifyPinCodeReq {
 // empty string indicate this field will be unchanging after update
 message ResetPinCodeReq{
     string pre_access_token = 1;
-    string user_id = 2;
-    string hash_pincode = 3;
-    string salt = 4;
-    string iv_parameter = 5;
-    PeerRegisterClientKeyRequest client_key_peer = 6;
+    string hash_pincode = 2;
+    string salt = 3;
+    string iv_parameter = 4;
+    PeerRegisterClientKeyRequest client_key_peer = 5;
 }
 
 message MfaValidateOtpRequest {
@@ -179,6 +169,8 @@ message AuthChallengeReq {
 message AuthChallengeRes {
     string salt = 1;
     string public_challenge_b = 2;
+    string require_next_action = 3;
+    string sub = 4;
 }
 
 message AuthenticateReq {
@@ -186,6 +178,7 @@ message AuthenticateReq {
     string client_public = 2;
     string client_session_key_proof = 3;
 }
+
 
 message RegisterSRPReq {
     string workspace_domain = 1;
@@ -205,7 +198,7 @@ message RegisterSRPRes {
 }
 
 service Auth {
-    rpc login(AuthReq) returns (AuthRes) {};
+    // rpc login(AuthReq) returns (AuthRes) {};
     rpc login_google(GoogleLoginReq) returns (AuthRes) {};
     rpc login_office(OfficeLoginReq) returns (AuthRes) {};
     rpc login_facebook(FacebookLoginReq) returns (AuthRes) {};
@@ -214,6 +207,7 @@ service Auth {
     rpc register(RegisterReq) returns (RegisterRes) {};
     rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
     rpc logout(LogoutReq) returns (BaseResponse) {};
+    //pincode flow
     rpc register_pincode(RegisterPinCodeReq) returns (AuthRes) {};
     rpc verify_pincode(VerifyPinCodeReq) returns (AuthRes) {};
     rpc reset_pincode(ResetPinCodeReq) returns (AuthRes) {};

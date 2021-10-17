@@ -7,8 +7,7 @@ from utils.logger import *
 class User(Database.get().Model):
     __tablename__ = 'user'
     id = Database.get().Column(Database.get().String(36), primary_key=True)
-    # for normal user, hash_code is hash_password. for social user, hash_code is hash_pincode
-    hash_code = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
+    user_name = Database.get().Column(Database.get().String(255), unique=True, nullable=True)
     iv_parameter = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     email = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     password_verifier = Database.get().Column(Database.get().String(2048), unique=False, nullable=True)
@@ -56,6 +55,14 @@ class User(Database.get().Model):
         user = Database.get_session().query(User) \
             .filter(User.email == email) \
             .filter(User.auth_source == auth_source) \
+            .one_or_none()
+        Database.get().session.remove()
+        return user
+
+
+    def get_user_by_user_name(self, user_name):
+        user = Database.get_session().query(User) \
+            .filter(User.user_name == user_name) \
             .one_or_none()
         Database.get().session.remove()
         return user

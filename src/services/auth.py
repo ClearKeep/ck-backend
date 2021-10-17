@@ -148,7 +148,7 @@ class AuthService:
                 if not user["emailVerified"]:
                     KeyCloakUtils.active_user(user["id"])
                 pincode = UserService().get_pincode(user["id"])
-                return google_email, pincode is None or pincode == ""
+                return google_email, user["id"], pincode is None or pincode == ""
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(google_email, google_email, "", google_token_info["name"])
@@ -158,7 +158,7 @@ class AuthService:
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return google_email, True
+                return google_email, new_user_id, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.GOOGLE_AUTH_FAILED)
@@ -183,7 +183,7 @@ class AuthService:
             user = self.get_user_by_email(office_id)
             if user:
                 pincode = UserService().get_pincode(user["id"])
-                return office_id, pincode is None or pincode == ""
+                return office_id, user["id"], pincode is None or pincode == ""
             else:
                 display_name = office_token_info["displayName"]
                 email = ""
@@ -201,7 +201,7 @@ class AuthService:
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return office_id, True
+                return office_id, new_user_id, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.OFFICE_AUTH_FAILED)
@@ -238,7 +238,7 @@ class AuthService:
             user = self.get_user_by_email(facebook_id)
             if user:
                 pincode = UserService().get_pincode(user["id"])
-                return facebook_id, pincode is None or pincode == ""
+                return facebook_id, user["id"], pincode is None or pincode == ""
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(facebook_email, facebook_id, "", facebook_name)
@@ -248,7 +248,7 @@ class AuthService:
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
-                return facebook_id, True
+                return facebook_id, new_user_id, True
         except Exception as e:
             logger.info(e)
             raise Exception(Message.FACEBOOK_AUTH_FAILED)
