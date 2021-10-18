@@ -147,8 +147,8 @@ class AuthService:
             if user:
                 if not user["emailVerified"]:
                     KeyCloakUtils.active_user(user["id"])
-                pincode = UserService().get_pincode(user["id"])
-                return google_email, user["id"], pincode is None or pincode == ""
+                user_info = UserService().get_user_by_id(user["id"])
+                return google_email, user["id"], user_info.password_verifier is None or user_info.password_verifier == ""
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(google_email, google_email, "", google_token_info["name"])
@@ -182,8 +182,8 @@ class AuthService:
             # check account exits
             user = self.get_user_by_email(office_id)
             if user:
-                pincode = UserService().get_pincode(user["id"])
-                return office_id, user["id"], pincode is None or pincode == ""
+                user_info = UserService().get_user_by_id(user["id"])
+                return office_id, user["id"], user_info.password_verifier is None or user_info.password_verifier == ""
             else:
                 display_name = office_token_info["displayName"]
                 email = ""
@@ -237,8 +237,8 @@ class AuthService:
             # check account exits
             user = self.get_user_by_email(facebook_id)
             if user:
-                pincode = UserService().get_pincode(user["id"])
-                return facebook_id, user["id"], pincode is None or pincode == ""
+                user_info = UserService().get_user_by_id(user["id"])
+                return facebook_id, user["id"], pincode is None or pincode == "", user_info.password_verifier is None or user_info.password_verifier == ""
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(facebook_email, facebook_id, "", facebook_name)
