@@ -17,17 +17,17 @@ class AuthStub(object):
         self.login_google = channel.unary_unary(
                 '/auth.Auth/login_google',
                 request_serializer=protos_dot_auth__pb2.GoogleLoginReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
+                response_deserializer=protos_dot_auth__pb2.AuthChallengeRes.FromString,
                 )
         self.login_office = channel.unary_unary(
                 '/auth.Auth/login_office',
                 request_serializer=protos_dot_auth__pb2.OfficeLoginReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
+                response_deserializer=protos_dot_auth__pb2.AuthChallengeRes.FromString,
                 )
         self.login_facebook = channel.unary_unary(
                 '/auth.Auth/login_facebook',
                 request_serializer=protos_dot_auth__pb2.FacebookLoginReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
+                response_deserializer=protos_dot_auth__pb2.AuthChallengeRes.FromString,
                 )
         self.validate_otp = channel.unary_unary(
                 '/auth.Auth/validate_otp',
@@ -182,17 +182,17 @@ def add_AuthServicer_to_server(servicer, server):
             'login_google': grpc.unary_unary_rpc_method_handler(
                     servicer.login_google,
                     request_deserializer=protos_dot_auth__pb2.GoogleLoginReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
+                    response_serializer=protos_dot_auth__pb2.AuthChallengeRes.SerializeToString,
             ),
             'login_office': grpc.unary_unary_rpc_method_handler(
                     servicer.login_office,
                     request_deserializer=protos_dot_auth__pb2.OfficeLoginReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
+                    response_serializer=protos_dot_auth__pb2.AuthChallengeRes.SerializeToString,
             ),
             'login_facebook': grpc.unary_unary_rpc_method_handler(
                     servicer.login_facebook,
                     request_deserializer=protos_dot_auth__pb2.FacebookLoginReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
+                    response_serializer=protos_dot_auth__pb2.AuthChallengeRes.SerializeToString,
             ),
             'validate_otp': grpc.unary_unary_rpc_method_handler(
                     servicer.validate_otp,
@@ -272,7 +272,7 @@ class Auth(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_google',
             protos_dot_auth__pb2.GoogleLoginReq.SerializeToString,
-            protos_dot_auth__pb2.AuthRes.FromString,
+            protos_dot_auth__pb2.AuthChallengeRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -289,7 +289,7 @@ class Auth(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_office',
             protos_dot_auth__pb2.OfficeLoginReq.SerializeToString,
-            protos_dot_auth__pb2.AuthRes.FromString,
+            protos_dot_auth__pb2.AuthChallengeRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -306,7 +306,7 @@ class Auth(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_facebook',
             protos_dot_auth__pb2.FacebookLoginReq.SerializeToString,
-            protos_dot_auth__pb2.AuthRes.FromString,
+            protos_dot_auth__pb2.AuthChallengeRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

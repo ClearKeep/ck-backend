@@ -95,38 +95,39 @@ message RegisterRes {
 message GoogleLoginReq {
     string workspace_domain = 1;
     string id_token = 2;
+    string client_public = 3;
 }
 
 //Login Office365 message struct
 message OfficeLoginReq {
     string workspace_domain = 1;
     string access_token = 2;
+    string client_public = 3;
 }
 
 //Login Facebook message struct
 message FacebookLoginReq {
     string workspace_domain = 1;
     string access_token = 2;
+    string client_public = 3;
 }
 
 // Register a Pincode struct
 message RegisterPinCodeReq {
-    string pre_access_token = 1;
-    string user_id = 2;
-    string hash_pincode = 3;
-    string salt = 4;
-    PeerRegisterClientKeyRequest client_key_peer = 5;
-    string iv_parameter = 6;
+    string user_id = 1;
+    string hash_pincode = 2;
+    string salt = 3;
+    PeerRegisterClientKeyRequest client_key_peer = 4;
+    string iv_parameter = 5;
 }
 // return AuthRes
 
 
 // Verify Pincode struct
 message VerifyPinCodeReq {
-    string pre_access_token = 1;
-    string user_id = 2;
-    string client_public = 3;
-    string client_session_key_proof = 4;
+    string user_id = 1;
+    string client_public = 2;
+    string client_session_key_proof = 3;
 }
 // return AuthRes
 
@@ -134,7 +135,7 @@ message VerifyPinCodeReq {
 // Note that reset pincode will also cause old message cannot be read
 // empty string indicate this field will be unchanging after update
 message ResetPinCodeReq{
-    string pre_access_token = 1;
+    string reset_pincode_token = 1;
     string hash_pincode = 2;
     string salt = 3;
     string iv_parameter = 4;
@@ -171,6 +172,7 @@ message AuthChallengeRes {
     string public_challenge_b = 2;
     string require_next_action = 3;
     string sub = 4;
+    string reset_pincode_token = 5;
 }
 
 message AuthenticateReq {

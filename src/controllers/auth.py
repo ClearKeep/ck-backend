@@ -161,11 +161,13 @@ class AuthController(BaseController):
                 user_info.srp_server_private = server_private
                 user_info.update()
 
+                reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
                 auth_challenge_res = auth_messages.AuthChallengeRes(
                                         salt=user_info.salt,
                                         public_challenge_b=public_challenge_b,
                                         sub=user_name,
-                                        require_action=require_action_mess
+                                        require_action=require_action_mess,
+                                        reset_pincode_token=reset_pincode_token
                                     )
             else:
                 auth_challenge_res = auth_messages.AuthChallengeRes(
@@ -209,11 +211,13 @@ class AuthController(BaseController):
                 user_info.srp_server_private = server_private
                 user_info.update()
 
+                reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
                 auth_challenge_res = auth_messages.AuthChallengeRes(
                                         salt=user_info.salt,
                                         public_challenge_b=public_challenge_b,
                                         sub=user_name,
-                                        require_action=require_action_mess
+                                        require_action=require_action_mess,
+                                        reset_pincode_token=reset_pincode_token
                                     )
             else:
                 auth_challenge_res = auth_messages.AuthChallengeRes(
@@ -238,7 +242,6 @@ class AuthController(BaseController):
             user_name, is_registered_pincode = self.service.facebook_login(request.access_token)
             user_info = self.user_service.get_user_by_id(user_id)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
-            pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
             if require_action_mess == "verify_pincode":
                 password_verifier = bytes.fromhex(user_info.password_verifier)
                 salt = bytes.fromhex(user_info.salt)
@@ -257,11 +260,13 @@ class AuthController(BaseController):
                 user_info.srp_server_private = server_private
                 user_info.update()
 
+                reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
                 auth_challenge_res = auth_messages.AuthChallengeRes(
                                         salt=user_info.salt,
                                         public_challenge_b=public_challenge_b,
                                         sub=user_name,
-                                        require_action=require_action_mess
+                                        require_action=require_action_mess,
+                                        reset_pincode_token=reset_pincode_token
                                     )
             else:
                 auth_challenge_res = auth_messages.AuthChallengeRes(
@@ -446,7 +451,6 @@ class AuthController(BaseController):
                 session_state=token['session_state'],
                 scope=token['scope'],
                 require_action = require_action,
-                client_key_peer=client_key_peer,
                 salt=user_info.salt,
                 client_key_peer=client_key_peer,
                 iv_parameter=user_info.iv_parameter
@@ -484,12 +488,12 @@ class AuthController(BaseController):
 
     async def register_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "register_pincode")
             exists_user = self.service.get_user_by_email(request.user_id)
             if not exists_user:
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
-            if not success_status:
-                raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+            user_info = self.user_service.get_user_by_id(exists_user["id"])
+            if user_info.password_verifier is not None:
+                raise Exception(Message.REGISTER_USER_ALREADY_EXISTS)
             salt = request.salt
             self.user_service.change_password(request, None, request.hash_pincode, exists_user['id'])
             # using hash_pincode as password for social user
@@ -547,7 +551,7 @@ class AuthController(BaseController):
 
     async def reset_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "verify_pincode")
+            success_status = self.service.verify_hash_pre_access_token(request.user_id, request.reset_pincode_token, "reset_pincode")
             exists_user = self.service.get_user_by_email(request.user_id)
             if not exists_user:
                 raise Exception(Message.USER_NOT_FOUND)
