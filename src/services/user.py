@@ -270,7 +270,7 @@ class UserService(BaseService):
         if iv_parameter:
             user_info.iv_parameter = iv_parameter
         user_info.update()
-        return True
+        return user_info.salt, user_info.iv_parameter
 
     def get_profile(self, user_id):
         try:

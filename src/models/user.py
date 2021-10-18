@@ -39,6 +39,7 @@ class User(Database.get().Model):
         try:
             Database.get_session().merge(self)
             Database.get_session().commit()
+            return self
         except Exception as e:
             Database.get_session().rollback()
             logger.error(e)

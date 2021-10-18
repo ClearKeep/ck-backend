@@ -497,7 +497,7 @@ class AuthController(BaseController):
             self.user_service.change_password(request, None, request.hash_pincode, exists_user["id"])
             SignalService().client_update_peer_key(exists_user["id"], request.client_key_peer)
             try:
-                self.user_service.update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
+                salt, iv_parameter = self.user_service.update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:
                 logger.error(e)
                 old_client_key_peer = SignalService().peer_get_client_key(exists_user["id"])
@@ -523,6 +523,9 @@ class AuthController(BaseController):
                 KeyCloakUtils.remove_session(session_id=user_session['id'])
             token = self.service.token(request.user_name, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+            logger.info('user_id {} with user_name'.format(exists_user["id"], request.user_name ))
+            logger.info('salt is {}, iv_parameter is {}'.format(request.salt, request.iv_parameter ))
+            logger.info('new salt is {}, iv_parameter is {}'.format(salt, iv_parameter ))
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
                 workspace_name=get_system_config()['server_name'],
@@ -533,9 +536,9 @@ class AuthController(BaseController):
                 token_type=token['token_type'],
                 session_state=token['session_state'],
                 scope=token['scope'],
-                salt=request.salt,
+                salt=salt,
                 client_key_peer=client_key_peer,
-                iv_parameter=request.iv_parameter
+                iv_parameter=iv_parameter
             )
         except Exception as e:
             logger.error(e)
