@@ -170,7 +170,6 @@ class AuthController(BaseController):
             user_name, user_id, is_registered_pincode = self.service.office_login(request.access_token)
             user_info = self.user_service.get_user_by_id(user_id)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
-            pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
             if require_action_mess == "verify_pincode":
                 reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
             else:
@@ -199,7 +198,6 @@ class AuthController(BaseController):
             user_name, user_id, is_registered_pincode = self.service.facebook_login(request.access_token)
             user_info = self.user_service.get_user_by_id(user_id)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
-            pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
             if require_action_mess == "verify_pincode":
                 reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
             else:
@@ -553,7 +551,6 @@ class AuthController(BaseController):
 
     async def verify_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_name, request.pre_access_token, "verify_pincode")
             exists_user = self.service.get_user_by_email(request.user_name)
             user_info = self.user_service.get_user_by_id(exists_user["id"])
             if not user_info:
