@@ -152,7 +152,7 @@ class AuthController(BaseController):
                                     require_action=require_action_mess,
                                     reset_pincode_token=reset_pincode_token
                                 )
-            return auth_response
+            return auth_challenge_res
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -180,7 +180,7 @@ class AuthController(BaseController):
                                     require_action=require_action_mess,
                                     reset_pincode_token=reset_pincode_token
                                 )
-            return auth_response
+            return auth_challenge_res
 
         except Exception as e:
             logger.error(e)
@@ -209,7 +209,7 @@ class AuthController(BaseController):
                                     require_action=require_action_mess,
                                     reset_pincode_token=reset_pincode_token
                                 )
-            return auth_response
+            return auth_challenge_res
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
