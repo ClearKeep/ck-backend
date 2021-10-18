@@ -490,15 +490,15 @@ class AuthController(BaseController):
     async def reset_pincode(self, request, context):
         try:
             success_status = self.service.verify_hash_pre_access_token(request.user_name, request.reset_pincode_token, "reset_pincode")
-            logger.info(request.user_name)
+            # logger.info(request.user_name)
             exists_user = self.service.get_user_by_email(request.user_name)
-            logger.info(exists_user["id"])
+            # logger.info(exists_user["id"])
             if not exists_user:
                 raise Exception(Message.USER_NOT_FOUND)
             if not success_status:
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             self.user_service.change_password(request, None, request.hash_pincode, exists_user["id"])
-            logger.info('change_password to {}'.format(request.hash_pincode))
+            # logger.info('change_password to {}'.format(request.hash_pincode))
             SignalService().client_update_peer_key(exists_user["id"], request.client_key_peer)
             try:
                 salt, iv_parameter = self.user_service.update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
@@ -508,7 +508,7 @@ class AuthController(BaseController):
                 SignalService().client_update_peer_key(exists_user["id"], old_client_key_peer)
                 raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             client_key_obj = request.client_key_peer
-            logger.info("client_key_obj is None: {}".format(client_key_obj is None))
+            # logger.info("client_key_obj is None: {}".format(client_key_obj is None))
             client_key_peer = auth_messages.PeerGetClientKeyResponse(
                                     clientId=exists_user["id"],
                                     workspace_domain=get_owner_workspace_domain(),
@@ -527,9 +527,9 @@ class AuthController(BaseController):
             for user_session in user_sessions:
                 KeyCloakUtils.remove_session(session_id=user_session['id'])
 
-            logger.info("logout")
+            # logger.info("logout")
             token = self.service.token(request.user_name, request.hash_pincode)
-            logger.info(token['access_token'])
+            # logger.info(token['access_token'])
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
