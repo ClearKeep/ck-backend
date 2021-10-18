@@ -143,7 +143,6 @@ class AuthController(BaseController):
             user_name, user_id, is_registered_pincode = self.service.google_login(request.id_token)
             user_info = self.user_service.get_user_by_id(user_id)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
-            pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
             if require_action_mess == "verify_pincode":
                 reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
             else:
