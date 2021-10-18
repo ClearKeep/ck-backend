@@ -494,13 +494,10 @@ class AuthController(BaseController):
                 raise Exception(Message.USER_NOT_FOUND)
             if not success_status:
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
-            logger.info('user_id {} with user_name'.format(exists_user["id"], request.user_name ))
-            logger.info('salt is {}, iv_parameter is {}'.format(request.salt, request.iv_parameter ))
             self.user_service.change_password(request, None, request.hash_pincode, exists_user["id"])
             SignalService().client_update_peer_key(exists_user["id"], request.client_key_peer)
             try:
                 salt, iv_parameter = self.user_service.update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
-                logger.info('new salt is {}, iv_parameter is {}'.format(salt, iv_parameter ))
             except Exception as e:
                 logger.error(e)
                 old_client_key_peer = SignalService().peer_get_client_key(exists_user["id"])
