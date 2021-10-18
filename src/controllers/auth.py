@@ -424,9 +424,10 @@ class AuthController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
     async def register_pincode(self, request, context):
         try:
-            exists_user = self.service.get_user_by_email(request.user_id)
+            exists_user = self.service.get_user_by_email(request.user_name)
             if not exists_user:
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             user_info = self.user_service.get_user_by_id(exists_user["id"])
@@ -489,8 +490,8 @@ class AuthController(BaseController):
 
     async def reset_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_id, request.reset_pincode_token, "reset_pincode")
-            exists_user = self.service.get_user_by_email(request.user_id)
+            success_status = self.service.verify_hash_pre_access_token(request.user_name, request.reset_pincode_token, "reset_pincode")
+            exists_user = self.service.get_user_by_email(request.user_name)
             if not exists_user:
                 raise Exception(Message.USER_NOT_FOUND)
             if not success_status:
@@ -522,7 +523,7 @@ class AuthController(BaseController):
             user_sessions = KeyCloakUtils.get_sessions(user_id=exists_user["id"])
             for user_session in user_sessions:
                 KeyCloakUtils.remove_session(session_id=user_session['id'])
-            token = self.service.token(request.user_id, request.hash_pincode)
+            token = self.service.token(request.user_name, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
             return auth_messages.AuthRes(
@@ -552,8 +553,8 @@ class AuthController(BaseController):
 
     async def verify_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "verify_pincode")
-            exists_user = self.service.get_user_by_email(request.user_id)
+            success_status = self.service.verify_hash_pre_access_token(request.user_name, request.pre_access_token, "verify_pincode")
+            exists_user = self.service.get_user_by_email(request.user_name)
             user_info = self.user_service.get_user_by_id(exists_user["id"])
             if not user_info:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
@@ -561,14 +562,14 @@ class AuthController(BaseController):
             salt = bytes.fromhex(user_info.salt)
             client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
 
-            srv = srp.Verifier(username=request.user_id, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
+            srv = srp.Verifier(username=request.user_name, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
             srv.verify_session(client_session_key_proof_bytes)
             authenticated = srv.authenticated()
 
             if not authenticated:
                 raise Exception(Message.AUTHENTICATION_FAILED)
 
-            token = self.service.token(request.user_id, user_info.password_verifier)
+            token = self.service.token(request.user_name, user_info.password_verifier)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             if not token:
                 raise Exception(Message.VERIFY_PINCODE_FAILED)
