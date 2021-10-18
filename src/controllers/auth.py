@@ -557,6 +557,7 @@ class AuthController(BaseController):
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             password_verifier = bytes.fromhex(user_info.password_verifier)
             salt = bytes.fromhex(user_info.salt)
+            client_session_key_proof = request.client_session_key_proof
             client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
 
             srv = srp.Verifier(username=request.user_name, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
