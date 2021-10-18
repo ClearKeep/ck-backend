@@ -82,11 +82,23 @@ class AuthController(BaseController):
                 # introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = user_info.id
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
-                # hash_key = EncryptUtils.encoded_hash(
-                #     request.password, user_id
-                # )
+
                 if not mfa_state:
                     ### check if login require otp check
+                    client_key_obj = SignalService().peer_get_client_key(user_id)
+                    client_key_peer = auth_messages.PeerGetClientKeyResponse(
+                                            clientId=user_id,
+                                            workspace_domain=get_owner_workspace_domain(),
+                                            registrationId=client_key_obj.registration_id,
+                                            deviceId=client_key_obj.device_id,
+                                            identityKeyPublic=client_key_obj.identity_key_public,
+                                            preKeyId=client_key_obj.prekey_id,
+                                            preKey=client_key_obj.prekey,
+                                            signedPreKeyId=client_key_obj.signed_prekey_id,
+                                            signedPreKey=client_key_obj.signed_prekey,
+                                            signedPreKeySignature=client_key_obj.signed_prekey_signature,
+                                            identityKeyEncrypted=client_key_obj.identity_key_encrypted
+                                        )
                     self.user_service.update_last_login(user_id=user_id)
                     auth_message = auth_messages.AuthRes(
                         workspace_domain=get_owner_workspace_domain(),
@@ -98,7 +110,10 @@ class AuthController(BaseController):
                         token_type=token['token_type'],
                         session_state=token['session_state'],
                         scope=token['scope'],
-                        hash_key=""
+                        hash_key="",
+                        salt=salt,
+                        client_key_peer = client_key_peer,
+                        iv_parameter=user_info.iv_parameter
                     )
                 else:
                     otp_hash = self.service.create_otp_service(user_id)
@@ -313,6 +328,7 @@ class AuthController(BaseController):
             display_name = request.display_name
             password_verifier = request.password_verifier
             salt = request.salt
+            iv_parameter = request.iv_parameter
 
             exists_user = self.service.get_user_by_email(email)
             if exists_user:
@@ -323,7 +339,7 @@ class AuthController(BaseController):
 
             if new_user_id:
                 # create new user in database
-                UserService().create_new_user_srp(new_user_id, email, password_verifier, salt, display_name, 'account')
+                UserService().create_new_user_srp(new_user_id, email, password_verifier, salt, iv_parameter, display_name, 'account')
                 return auth_messages.RegisterSRPRes(
                     error=''
                 )
@@ -395,6 +411,8 @@ class AuthController(BaseController):
             success_status, token = self.service.verify_otp(request.user_id, request.otp_hash, request.otp_code)
             if not success_status:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
+            introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+            user_info = self.user_service.get_user_by_id(introspect_token['sub'])
             require_action = ""
             client_key_obj = SignalService().peer_get_client_key(request.user_id)
             client_key_peer = auth_messages.PeerGetClientKeyResponse(
@@ -422,7 +440,10 @@ class AuthController(BaseController):
                 session_state=token['session_state'],
                 scope=token['scope'],
                 require_action = require_action,
-                client_key_peer=client_key_peer
+                client_key_peer=client_key_peer,
+                salt=user_info.salt,
+                client_key_peer=client_key_peer,
+                iv_parameter=user_info.iv_parameter
             )
 
         except Exception as e:
@@ -529,7 +550,7 @@ class AuthController(BaseController):
             self.user_service.change_password(request, None, request.hash_pincode, exists_user["id"])
             SignalService().client_update_peer_key(exists_user["id"], request.client_key_peer)
             try:
-                _, salt, iv_parameter = UserService().update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
+                _, salt, iv_parameter = self.user_service.update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:
                 logger.error(e)
                 old_client_key_peer = SignalService().peer_get_client_key(exists_user["id"])
@@ -629,9 +650,9 @@ class AuthController(BaseController):
                 token_type=token['token_type'],
                 session_state=token['session_state'],
                 scope=token['scope'],
-                salt=hash_pincode_salt,
+                salt=user_info.salt,
                 client_key_peer = client_key_peer,
-                iv_parameter=iv_parameter
+                iv_parameter=user_info.iv_parameter
             )
         except Exception as e:
             logger.error(e)
