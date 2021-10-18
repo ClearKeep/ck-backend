@@ -60,9 +60,10 @@ class AuthController(BaseController):
     @request_logged
     async def login_authenticate(self, request, context):
         try:
-            email = request.email
+            user_name = request.user_name
+            exists_user = self.service.get_user_by_email(user_name)
             client_session_key_proof = request.client_session_key_proof
-            user_info = self.user_service.get_user_by_auth_source(email, "account")
+            user_info = self.user_service.get_user_by_id(exists_user["id"])
 
             if not user_info:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
@@ -70,14 +71,14 @@ class AuthController(BaseController):
             salt = bytes.fromhex(user_info.salt)
             client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
 
-            srv = srp.Verifier(username=email, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
+            srv = srp.Verifier(username=user_name, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
             srv.verify_session(client_session_key_proof_bytes)
             authenticated = srv.authenticated()
 
             if not authenticated:
                 raise Exception(Message.AUTHENTICATION_FAILED)
 
-            token = self.service.token(email, user_info.password_verifier)
+            token = self.service.token(user_name, user_info.password_verifier)
             if token:
                 # introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = user_info.id
@@ -144,36 +145,14 @@ class AuthController(BaseController):
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
             pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
             if require_action_mess == "verify_pincode":
-                password_verifier = bytes.fromhex(user_info.password_verifier)
-                salt = bytes.fromhex(user_info.salt)
-                client_public = bytes.fromhex(request.client_public)
-
-                srv = srp.Verifier(user_name, salt, password_verifier, client_public)
-                s, B = srv.get_challenge()
-                # need store private b of server
-                logger.info("server_public=")
-                logger.info(s)
-                logger.info("server_private=")
-                logger.info(B)
-
-                server_private = srv.get_ephemeral_secret().hex()
-                logger.info(server_private)
-                user_info.srp_server_private = server_private
-                user_info.update()
-
                 reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
-                auth_challenge_res = auth_messages.AuthChallengeRes(
-                                        salt=user_info.salt,
-                                        public_challenge_b=public_challenge_b,
-                                        sub=user_name,
-                                        require_action=require_action_mess,
-                                        reset_pincode_token=reset_pincode_token
-                                    )
             else:
-                auth_challenge_res = auth_messages.AuthChallengeRes(
-                                        sub=user_name,
-                                        require_action=require_action_mess
-                                    )
+                reset_pincode_token = ""
+            auth_challenge_res = auth_messages.SocialLoginRes(
+                                    user_name=user_name,
+                                    require_action=require_action_mess,
+                                    reset_pincode_token=reset_pincode_token
+                                )
             return auth_response
         except Exception as e:
             logger.error(e)
@@ -194,37 +173,16 @@ class AuthController(BaseController):
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
             pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
             if require_action_mess == "verify_pincode":
-                password_verifier = bytes.fromhex(user_info.password_verifier)
-                salt = bytes.fromhex(user_info.salt)
-                client_public = bytes.fromhex(request.client_public)
-
-                srv = srp.Verifier(user_name, salt, password_verifier, client_public)
-                s, B = srv.get_challenge()
-                # need store private b of server
-                logger.info("server_public=")
-                logger.info(s)
-                logger.info("server_private=")
-                logger.info(B)
-
-                server_private = srv.get_ephemeral_secret().hex()
-                logger.info(server_private)
-                user_info.srp_server_private = server_private
-                user_info.update()
-
                 reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
-                auth_challenge_res = auth_messages.AuthChallengeRes(
-                                        salt=user_info.salt,
-                                        public_challenge_b=public_challenge_b,
-                                        sub=user_name,
-                                        require_action=require_action_mess,
-                                        reset_pincode_token=reset_pincode_token
-                                    )
             else:
-                auth_challenge_res = auth_messages.AuthChallengeRes(
-                                        sub=user_name,
-                                        require_action=require_action_mess
-                                    )
+                reset_pincode_token = ""
+            auth_challenge_res = auth_messages.SocialLoginRes(
+                                    user_name=user_name,
+                                    require_action=require_action_mess,
+                                    reset_pincode_token=reset_pincode_token
+                                )
             return auth_response
+
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -239,40 +197,19 @@ class AuthController(BaseController):
     @request_logged
     async def login_facebook(self, request, context):
         try:
-            user_name, is_registered_pincode = self.service.facebook_login(request.access_token)
+            user_name, user_id, is_registered_pincode = self.service.facebook_login(request.access_token)
             user_info = self.user_service.get_user_by_id(user_id)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
+            pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
             if require_action_mess == "verify_pincode":
-                password_verifier = bytes.fromhex(user_info.password_verifier)
-                salt = bytes.fromhex(user_info.salt)
-                client_public = bytes.fromhex(request.client_public)
-
-                srv = srp.Verifier(user_name, salt, password_verifier, client_public)
-                s, B = srv.get_challenge()
-                # need store private b of server
-                logger.info("server_public=")
-                logger.info(s)
-                logger.info("server_private=")
-                logger.info(B)
-
-                server_private = srv.get_ephemeral_secret().hex()
-                logger.info(server_private)
-                user_info.srp_server_private = server_private
-                user_info.update()
-
                 reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
-                auth_challenge_res = auth_messages.AuthChallengeRes(
-                                        salt=user_info.salt,
-                                        public_challenge_b=public_challenge_b,
-                                        sub=user_name,
-                                        require_action=require_action_mess,
-                                        reset_pincode_token=reset_pincode_token
-                                    )
             else:
-                auth_challenge_res = auth_messages.AuthChallengeRes(
-                                        sub=user_name,
-                                        require_action=require_action_mess
-                                    )
+                reset_pincode_token = ""
+            auth_challenge_res = auth_messages.SocialLoginRes(
+                                    user_name=user_name,
+                                    require_action=require_action_mess,
+                                    reset_pincode_token=reset_pincode_token
+                                )
             return auth_response
         except Exception as e:
             logger.error(e)
@@ -286,39 +223,41 @@ class AuthController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    async def register(self, request, context):
-        # check exist user
+    async def login_social_challange(self, request, context):
         try:
-            exists_user = self.service.get_user_by_email(request.email)
-            if exists_user:
-                raise Exception(Message.REGISTER_USER_ALREADY_EXISTS)
+            user_name = request.user_name
+            exists_user = self.service.get_user_by_email(user_name)
+            user_info = self.user_service.get_user_by_id(exists_user["id"])
+            if not user_info:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            password_verifier = bytes.fromhex(user_info.password_verifier)
+            salt = bytes.fromhex(user_info.salt)
+            client_public = bytes.fromhex(request.client_public)
 
-            # register new user on keycloak
-            new_user_id = self.service.register_user(request.email, request.hash_password, request.display_name)
+            srv = srp.Verifier(user_name, salt, password_verifier, client_public)
+            s, B = srv.get_challenge()
+            # need store private b of server
+            logger.info("server_public=")
+            logger.info(s)
+            logger.info("server_private=")
+            logger.info(B)
 
-            if not new_user_id:
-                # self.service.delete_user(new_user_id)
-                raise Exception(Message.REGISTER_USER_FAILED)
+            server_private = srv.get_ephemeral_secret().hex()
+            logger.info(server_private)
+            user_info.srp_server_private = server_private
+            user_info.update()
 
-            # create new user in database
-            new_user = UserService().create_new_user(new_user_id, request.email, request.display_name, request.hash_password, request.salt, request.iv_parameter,  'account')
-            if new_user is None:
-                self.service.delete_user(new_user_id)
-                raise Exception(Message.REGISTER_USER_FAILED)
-            try:
-                SignalService().peer_register_client_key(new_user_id, request.client_key_peer)
-            except Exception:
-                self.service.delete_user(new_user_id)
-                UserService().delete_user(new_user_id)
-                raise Exception(Message.REGISTER_USER_FAILED)
-
-            return auth_messages.RegisterRes()
+            public_challenge_b = B.hex()
+            auth_challenge_res = auth_messages.AuthChallengeRes(
+                salt=user_info.salt,
+                public_challenge_b=public_challenge_b
+            )
+            return auth_challenge_res
 
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
-                errors = [Message.get_error_object(Message.REGISTER_USER_FAILED)]
+                errors = [Message.get_error_object(Message.AUTHENTICATION_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(

@@ -14,40 +14,45 @@ class AuthStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.login_google = channel.unary_unary(
-                '/auth.Auth/login_google',
-                request_serializer=protos_dot_auth__pb2.GoogleLoginReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.AuthChallengeRes.FromString,
-                )
-        self.login_office = channel.unary_unary(
-                '/auth.Auth/login_office',
-                request_serializer=protos_dot_auth__pb2.OfficeLoginReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.AuthChallengeRes.FromString,
-                )
-        self.login_facebook = channel.unary_unary(
-                '/auth.Auth/login_facebook',
-                request_serializer=protos_dot_auth__pb2.FacebookLoginReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.AuthChallengeRes.FromString,
-                )
-        self.validate_otp = channel.unary_unary(
-                '/auth.Auth/validate_otp',
-                request_serializer=protos_dot_auth__pb2.MfaValidateOtpRequest.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
-                )
-        self.resend_otp = channel.unary_unary(
-                '/auth.Auth/resend_otp',
-                request_serializer=protos_dot_auth__pb2.MfaResendOtpReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.MfaResendOtpRes.FromString,
-                )
-        self.register = channel.unary_unary(
-                '/auth.Auth/register',
-                request_serializer=protos_dot_auth__pb2.RegisterReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.RegisterRes.FromString,
+        self.register_srp = channel.unary_unary(
+                '/auth.Auth/register_srp',
+                request_serializer=protos_dot_auth__pb2.RegisterSRPReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.RegisterSRPRes.FromString,
                 )
         self.fogot_password = channel.unary_unary(
                 '/auth.Auth/fogot_password',
                 request_serializer=protos_dot_auth__pb2.FogotPassWord.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.BaseResponse.FromString,
+                )
+        self.login_challenge = channel.unary_unary(
+                '/auth.Auth/login_challenge',
+                request_serializer=protos_dot_auth__pb2.AuthChallengeReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.AuthChallengeRes.FromString,
+                )
+        self.login_google = channel.unary_unary(
+                '/auth.Auth/login_google',
+                request_serializer=protos_dot_auth__pb2.GoogleLoginReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.SocialLoginRes.FromString,
+                )
+        self.login_office = channel.unary_unary(
+                '/auth.Auth/login_office',
+                request_serializer=protos_dot_auth__pb2.OfficeLoginReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.SocialLoginRes.FromString,
+                )
+        self.login_facebook = channel.unary_unary(
+                '/auth.Auth/login_facebook',
+                request_serializer=protos_dot_auth__pb2.FacebookLoginReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.SocialLoginRes.FromString,
+                )
+        self.login_social_challange = channel.unary_unary(
+                '/auth.Auth/login_social_challange',
+                request_serializer=protos_dot_auth__pb2.AuthSocialChallengeReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.AuthChallengeRes.FromString,
+                )
+        self.login_authenticate = channel.unary_unary(
+                '/auth.Auth/login_authenticate',
+                request_serializer=protos_dot_auth__pb2.AuthenticateReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
                 )
         self.logout = channel.unary_unary(
                 '/auth.Auth/logout',
@@ -69,28 +74,44 @@ class AuthStub(object):
                 request_serializer=protos_dot_auth__pb2.ResetPinCodeReq.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
                 )
-        self.login_challenge = channel.unary_unary(
-                '/auth.Auth/login_challenge',
-                request_serializer=protos_dot_auth__pb2.AuthChallengeReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.AuthChallengeRes.FromString,
-                )
-        self.login_authenticate = channel.unary_unary(
-                '/auth.Auth/login_authenticate',
-                request_serializer=protos_dot_auth__pb2.AuthenticateReq.SerializeToString,
+        self.validate_otp = channel.unary_unary(
+                '/auth.Auth/validate_otp',
+                request_serializer=protos_dot_auth__pb2.MfaValidateOtpRequest.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
                 )
-        self.register_srp = channel.unary_unary(
-                '/auth.Auth/register_srp',
-                request_serializer=protos_dot_auth__pb2.RegisterSRPReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.RegisterSRPRes.FromString,
+        self.resend_otp = channel.unary_unary(
+                '/auth.Auth/resend_otp',
+                request_serializer=protos_dot_auth__pb2.MfaResendOtpReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.MfaResendOtpRes.FromString,
                 )
 
 
 class AuthServicer(object):
     """Missing associated documentation comment in .proto file."""
 
+    def register_srp(self, request, context):
+        """rpc register(RegisterReq) returns (RegisterRes) {};
+        rpc login(AuthReq) returns (AuthRes) {};
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def fogot_password(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def login_challenge(self, request, context):
+        """new flow login with srp
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def login_google(self, request, context):
-        """rpc login(AuthReq) returns (AuthRes) {};
+        """login with social
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -108,32 +129,22 @@ class AuthServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def validate_otp(self, request, context):
+    def login_social_challange(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def resend_otp(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def register(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def fogot_password(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+    def login_authenticate(self, request, context):
+        """authenticated challange
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def logout(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """logout
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -157,20 +168,15 @@ class AuthServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def login_challenge(self, request, context):
-        """new flow login with srp
+    def validate_otp(self, request, context):
+        """end new flow login with srp
+        mfa flow
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def login_authenticate(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def register_srp(self, request, context):
+    def resend_otp(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -179,40 +185,45 @@ class AuthServicer(object):
 
 def add_AuthServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'login_google': grpc.unary_unary_rpc_method_handler(
-                    servicer.login_google,
-                    request_deserializer=protos_dot_auth__pb2.GoogleLoginReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.AuthChallengeRes.SerializeToString,
-            ),
-            'login_office': grpc.unary_unary_rpc_method_handler(
-                    servicer.login_office,
-                    request_deserializer=protos_dot_auth__pb2.OfficeLoginReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.AuthChallengeRes.SerializeToString,
-            ),
-            'login_facebook': grpc.unary_unary_rpc_method_handler(
-                    servicer.login_facebook,
-                    request_deserializer=protos_dot_auth__pb2.FacebookLoginReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.AuthChallengeRes.SerializeToString,
-            ),
-            'validate_otp': grpc.unary_unary_rpc_method_handler(
-                    servicer.validate_otp,
-                    request_deserializer=protos_dot_auth__pb2.MfaValidateOtpRequest.FromString,
-                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
-            ),
-            'resend_otp': grpc.unary_unary_rpc_method_handler(
-                    servicer.resend_otp,
-                    request_deserializer=protos_dot_auth__pb2.MfaResendOtpReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.MfaResendOtpRes.SerializeToString,
-            ),
-            'register': grpc.unary_unary_rpc_method_handler(
-                    servicer.register,
-                    request_deserializer=protos_dot_auth__pb2.RegisterReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.RegisterRes.SerializeToString,
+            'register_srp': grpc.unary_unary_rpc_method_handler(
+                    servicer.register_srp,
+                    request_deserializer=protos_dot_auth__pb2.RegisterSRPReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.RegisterSRPRes.SerializeToString,
             ),
             'fogot_password': grpc.unary_unary_rpc_method_handler(
                     servicer.fogot_password,
                     request_deserializer=protos_dot_auth__pb2.FogotPassWord.FromString,
                     response_serializer=protos_dot_auth__pb2.BaseResponse.SerializeToString,
+            ),
+            'login_challenge': grpc.unary_unary_rpc_method_handler(
+                    servicer.login_challenge,
+                    request_deserializer=protos_dot_auth__pb2.AuthChallengeReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.AuthChallengeRes.SerializeToString,
+            ),
+            'login_google': grpc.unary_unary_rpc_method_handler(
+                    servicer.login_google,
+                    request_deserializer=protos_dot_auth__pb2.GoogleLoginReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.SocialLoginRes.SerializeToString,
+            ),
+            'login_office': grpc.unary_unary_rpc_method_handler(
+                    servicer.login_office,
+                    request_deserializer=protos_dot_auth__pb2.OfficeLoginReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.SocialLoginRes.SerializeToString,
+            ),
+            'login_facebook': grpc.unary_unary_rpc_method_handler(
+                    servicer.login_facebook,
+                    request_deserializer=protos_dot_auth__pb2.FacebookLoginReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.SocialLoginRes.SerializeToString,
+            ),
+            'login_social_challange': grpc.unary_unary_rpc_method_handler(
+                    servicer.login_social_challange,
+                    request_deserializer=protos_dot_auth__pb2.AuthSocialChallengeReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.AuthChallengeRes.SerializeToString,
+            ),
+            'login_authenticate': grpc.unary_unary_rpc_method_handler(
+                    servicer.login_authenticate,
+                    request_deserializer=protos_dot_auth__pb2.AuthenticateReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
             ),
             'logout': grpc.unary_unary_rpc_method_handler(
                     servicer.logout,
@@ -234,20 +245,15 @@ def add_AuthServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_auth__pb2.ResetPinCodeReq.FromString,
                     response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
             ),
-            'login_challenge': grpc.unary_unary_rpc_method_handler(
-                    servicer.login_challenge,
-                    request_deserializer=protos_dot_auth__pb2.AuthChallengeReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.AuthChallengeRes.SerializeToString,
-            ),
-            'login_authenticate': grpc.unary_unary_rpc_method_handler(
-                    servicer.login_authenticate,
-                    request_deserializer=protos_dot_auth__pb2.AuthenticateReq.FromString,
+            'validate_otp': grpc.unary_unary_rpc_method_handler(
+                    servicer.validate_otp,
+                    request_deserializer=protos_dot_auth__pb2.MfaValidateOtpRequest.FromString,
                     response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
             ),
-            'register_srp': grpc.unary_unary_rpc_method_handler(
-                    servicer.register_srp,
-                    request_deserializer=protos_dot_auth__pb2.RegisterSRPReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.RegisterSRPRes.SerializeToString,
+            'resend_otp': grpc.unary_unary_rpc_method_handler(
+                    servicer.resend_otp,
+                    request_deserializer=protos_dot_auth__pb2.MfaResendOtpReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.MfaResendOtpRes.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -260,7 +266,7 @@ class Auth(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def login_google(request,
+    def register_srp(request,
             target,
             options=(),
             channel_credentials=None,
@@ -270,94 +276,9 @@ class Auth(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_google',
-            protos_dot_auth__pb2.GoogleLoginReq.SerializeToString,
-            protos_dot_auth__pb2.AuthChallengeRes.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def login_office(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_office',
-            protos_dot_auth__pb2.OfficeLoginReq.SerializeToString,
-            protos_dot_auth__pb2.AuthChallengeRes.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def login_facebook(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_facebook',
-            protos_dot_auth__pb2.FacebookLoginReq.SerializeToString,
-            protos_dot_auth__pb2.AuthChallengeRes.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def validate_otp(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/auth.Auth/validate_otp',
-            protos_dot_auth__pb2.MfaValidateOtpRequest.SerializeToString,
-            protos_dot_auth__pb2.AuthRes.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def resend_otp(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/auth.Auth/resend_otp',
-            protos_dot_auth__pb2.MfaResendOtpReq.SerializeToString,
-            protos_dot_auth__pb2.MfaResendOtpRes.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def register(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/auth.Auth/register',
-            protos_dot_auth__pb2.RegisterReq.SerializeToString,
-            protos_dot_auth__pb2.RegisterRes.FromString,
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/register_srp',
+            protos_dot_auth__pb2.RegisterSRPReq.SerializeToString,
+            protos_dot_auth__pb2.RegisterSRPRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -375,6 +296,108 @@ class Auth(object):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/fogot_password',
             protos_dot_auth__pb2.FogotPassWord.SerializeToString,
             protos_dot_auth__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def login_challenge(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_challenge',
+            protos_dot_auth__pb2.AuthChallengeReq.SerializeToString,
+            protos_dot_auth__pb2.AuthChallengeRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def login_google(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_google',
+            protos_dot_auth__pb2.GoogleLoginReq.SerializeToString,
+            protos_dot_auth__pb2.SocialLoginRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def login_office(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_office',
+            protos_dot_auth__pb2.OfficeLoginReq.SerializeToString,
+            protos_dot_auth__pb2.SocialLoginRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def login_facebook(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_facebook',
+            protos_dot_auth__pb2.FacebookLoginReq.SerializeToString,
+            protos_dot_auth__pb2.SocialLoginRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def login_social_challange(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_social_challange',
+            protos_dot_auth__pb2.AuthSocialChallengeReq.SerializeToString,
+            protos_dot_auth__pb2.AuthChallengeRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def login_authenticate(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_authenticate',
+            protos_dot_auth__pb2.AuthenticateReq.SerializeToString,
+            protos_dot_auth__pb2.AuthRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -447,7 +470,7 @@ class Auth(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def login_challenge(request,
+    def validate_otp(request,
             target,
             options=(),
             channel_credentials=None,
@@ -457,31 +480,14 @@ class Auth(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_challenge',
-            protos_dot_auth__pb2.AuthChallengeReq.SerializeToString,
-            protos_dot_auth__pb2.AuthChallengeRes.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def login_authenticate(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_authenticate',
-            protos_dot_auth__pb2.AuthenticateReq.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/validate_otp',
+            protos_dot_auth__pb2.MfaValidateOtpRequest.SerializeToString,
             protos_dot_auth__pb2.AuthRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def register_srp(request,
+    def resend_otp(request,
             target,
             options=(),
             channel_credentials=None,
@@ -491,8 +497,8 @@ class Auth(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/auth.Auth/register_srp',
-            protos_dot_auth__pb2.RegisterSRPReq.SerializeToString,
-            protos_dot_auth__pb2.RegisterSRPRes.FromString,
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/resend_otp',
+            protos_dot_auth__pb2.MfaResendOtpReq.SerializeToString,
+            protos_dot_auth__pb2.MfaResendOtpRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -95,26 +95,30 @@ message RegisterRes {
 message GoogleLoginReq {
     string workspace_domain = 1;
     string id_token = 2;
-    string client_public = 3;
 }
+
 
 //Login Office365 message struct
 message OfficeLoginReq {
     string workspace_domain = 1;
     string access_token = 2;
-    string client_public = 3;
 }
 
 //Login Facebook message struct
 message FacebookLoginReq {
     string workspace_domain = 1;
     string access_token = 2;
-    string client_public = 3;
+}
+
+message SocialLoginRes {
+    string user_name = 1;
+    string require_action = 2;
+    string reset_pincode_token = 3;
 }
 
 // Register a Pincode struct
 message RegisterPinCodeReq {
-    string user_id = 1;
+    string user_name = 1;
     string hash_pincode = 2;
     string salt = 3;
     PeerRegisterClientKeyRequest client_key_peer = 4;
@@ -125,7 +129,7 @@ message RegisterPinCodeReq {
 
 // Verify Pincode struct
 message VerifyPinCodeReq {
-    string user_id = 1;
+    string user_name = 1;
     string client_public = 2;
     string client_session_key_proof = 3;
 }
@@ -167,16 +171,18 @@ message AuthChallengeReq {
     string client_public = 2;
 }
 
+message AuthSocialChallengeReq {
+    string user_name = 1;
+    string client_public = 2;
+}
+
 message AuthChallengeRes {
     string salt = 1;
     string public_challenge_b = 2;
-    string require_next_action = 3;
-    string sub = 4;
-    string reset_pincode_token = 5;
 }
 
 message AuthenticateReq {
-    string email = 1;
+    string user_name = 1;
     string client_public = 2;
     string client_session_key_proof = 3;
 }
@@ -200,22 +206,28 @@ message RegisterSRPRes {
 }
 
 service Auth {
+
+    // rpc register(RegisterReq) returns (RegisterRes) {};
     // rpc login(AuthReq) returns (AuthRes) {};
-    rpc login_google(GoogleLoginReq) returns (AuthChallengeRes) {};
-    rpc login_office(OfficeLoginReq) returns (AuthChallengeRes) {};
-    rpc login_facebook(FacebookLoginReq) returns (AuthChallengeRes) {};
-    rpc validate_otp(MfaValidateOtpRequest) returns (AuthRes) {};
-    rpc resend_otp(MfaResendOtpReq) returns (MfaResendOtpRes) {};
-    rpc register(RegisterReq) returns (RegisterRes) {};
+    rpc register_srp(RegisterSRPReq) returns (RegisterSRPRes) {};
     rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
+    //new flow login with srp
+    rpc login_challenge(AuthChallengeReq) returns (AuthChallengeRes) {};
+    //login with social
+    rpc login_google(GoogleLoginReq) returns (SocialLoginRes) {};
+    rpc login_office(OfficeLoginReq) returns (SocialLoginRes) {};
+    rpc login_facebook(FacebookLoginReq) returns (SocialLoginRes) {};
+    rpc login_social_challange(AuthSocialChallengeReq) returns (AuthChallengeRes) {};
+    // authenticated challange
+    rpc login_authenticate(AuthenticateReq) returns (AuthRes) {};
+    //logout
     rpc logout(LogoutReq) returns (BaseResponse) {};
     //pincode flow
     rpc register_pincode(RegisterPinCodeReq) returns (AuthRes) {};
     rpc verify_pincode(VerifyPinCodeReq) returns (AuthRes) {};
     rpc reset_pincode(ResetPinCodeReq) returns (AuthRes) {};
-    //new flow login with srp
-    rpc login_challenge(AuthChallengeReq) returns (AuthChallengeRes) {};
-    rpc login_authenticate(AuthenticateReq) returns (AuthRes) {};
-    rpc register_srp(RegisterSRPReq) returns (RegisterSRPRes) {};
     //end new flow login with srp
+    //mfa flow
+    rpc validate_otp(MfaValidateOtpRequest) returns (AuthRes) {};
+    rpc resend_otp(MfaResendOtpReq) returns (MfaResendOtpRes) {};
 }
