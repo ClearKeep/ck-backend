@@ -179,7 +179,7 @@ class MessageController(BaseController):
                                     'group_type': request.group_type,
                                     'message': message_content
                                 }
-                                await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
+                                await push_service.push_text_to_client_with_device(client.GroupClientKey.client_id, device_id, title="",
                                                                        body="You have a new message",
                                                                        from_client_id=new_message.from_client_id,
                                                                        notify_type="new_message",
@@ -233,8 +233,8 @@ class MessageController(BaseController):
 
                 new_message_res_object = deepcopy(message_res_object)
                 new_message_res_object.client_id = client.GroupClientKey.client_id
-                for notify_token in client.User.tokens:
-                    logger.info('device_id in handle {}'.format(notify_token.device_id))
+                # for notify_token in client.User.tokens:
+                #     logger.info('device_id in handle {}'.format(notify_token.device_id))
                 for notify_token in client.User.tokens:
                     device_id = notify_token.device_id
                     logger.info('device_id in real loop in handle {}'.format(device_id))
@@ -260,7 +260,7 @@ class MessageController(BaseController):
                             'group_type': new_message_res_object.group_type,
                             'message': message_content
                         }
-                        await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
+                        await push_service.push_text_to_client_with_device(client.GroupClientKey.client_id, device_id, title="",
                                                                body="You have a new message",
                                                                from_client_id=new_message_res_object.from_client_id,
                                                                notify_type="new_message",
@@ -343,7 +343,7 @@ class MessageController(BaseController):
                         'group_type': new_message_res_object.group_type,
                         'message': message_content
                     }
-                    await push_service.push_text_to_client(client.GroupClientKey.client_id, title="",
+                    await push_service.push_text_to_client_with_device(client.GroupClientKey.client_id, device_id, title="",
                                                            body="You have a new message",
                                                            from_client_id=new_message_res_object.from_client_id,
                                                            notify_type="new_message",
