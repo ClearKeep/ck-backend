@@ -260,7 +260,7 @@ class UserService(BaseService):
         if iv_parameter:
             user_info.iv_parameter = iv_parameter
         user_info.update()
-        return (user_info.password_verifier, user_info.salt, user_info.iv_parameter)
+        return (user_info.salt, user_info.iv_parameter)
 
     def update_hash_pin(self, user_id, hash_pincode, salt='', iv_parameter=''):
         user_info = self.model.get(user_id)

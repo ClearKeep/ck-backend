@@ -33,7 +33,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 self.service.change_password(request, request.new_hash_password, request.old_hash_password, introspect_token['sub'])
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             try:
-                _, salt, iv_parameter = self.service.update_hash_pass(introspect_token["sub"], request.new_hash_password)
+                salt, iv_parameter = self.service.update_hash_pass(introspect_token["sub"], request.new_hash_password)
             except Exception as e:
                 logger.error(e)
                 self.service.change_password(request, request.new_hash_password, request.old_hash_password, introspect_token['sub'])
