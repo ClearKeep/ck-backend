@@ -14,11 +14,6 @@ class AuthStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.login = channel.unary_unary(
-                '/auth.Auth/login',
-                request_serializer=protos_dot_auth__pb2.AuthReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
-                )
         self.login_google = channel.unary_unary(
                 '/auth.Auth/login_google',
                 request_serializer=protos_dot_auth__pb2.GoogleLoginReq.SerializeToString,
@@ -94,14 +89,9 @@ class AuthStub(object):
 class AuthServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def login(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def login_google(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """rpc login(AuthReq) returns (AuthRes) {};
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -149,7 +139,8 @@ class AuthServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def register_pincode(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """pincode flow
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -188,11 +179,6 @@ class AuthServicer(object):
 
 def add_AuthServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'login': grpc.unary_unary_rpc_method_handler(
-                    servicer.login,
-                    request_deserializer=protos_dot_auth__pb2.AuthReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
-            ),
             'login_google': grpc.unary_unary_rpc_method_handler(
                     servicer.login_google,
                     request_deserializer=protos_dot_auth__pb2.GoogleLoginReq.FromString,
@@ -272,23 +258,6 @@ def add_AuthServicer_to_server(servicer, server):
  # This class is part of an EXPERIMENTAL API.
 class Auth(object):
     """Missing associated documentation comment in .proto file."""
-
-    @staticmethod
-    def login(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login',
-            protos_dot_auth__pb2.AuthReq.SerializeToString,
-            protos_dot_auth__pb2.AuthRes.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def login_google(request,

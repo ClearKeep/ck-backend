@@ -132,24 +132,23 @@ class UserService(BaseService):
             success = False
             next_step = 'mfa_update_phone_number'
         else:
-            user_authen_setting.otp_changing_state = 1
+            next_step = 'mfa_validate_password'
+            user_authen_setting.require_action = next_step
             user_authen_setting.update()
             success = True
-            next_step = 'mfa_validate_password'
         return success, next_step
 
     def init_mfa_state_disabling(self, user_id):
         user_info = self.model.get(user_id)
         if user_info is None:
             raise Exception(Message.AUTH_USER_NOT_FOUND)
-        user_authen_setting = self.authen_setting.get(user_id)
-        if user_authen_setting is None:
-            user_authen_setting = AuthenSetting(id=user_id).add()
-        if user_authen_setting.mfa_enable:
-            user_authen_setting.mfa_enable = False
-            user_authen_setting.otp = None
-            user_authen_setting.otp_valid_time = datetime.datetime.now()
-            user_authen_setting.update()
+        # if user_authen_setting is None:
+        #     user_authen_setting = AuthenSetting(id=user_id).add()
+        if user_info.mfa_enable:
+            user_info.mfa_enable = False
+            # user_authen_setting.otp = None
+            # user_authen_setting.token_valid_time = datetime.datetime.now()
+            # user_authen_setting.update()
         success = True
         next_step = ''
         return success, next_step
@@ -159,7 +158,7 @@ class UserService(BaseService):
         if user_info is None:
             raise Exception(Message.AUTH_USER_NOT_FOUND)
         user_authen_setting = self.authen_setting.get(user_id)
-        if user_authen_setting.otp_changing_state != 1:
+        if user_authen_setting.require_action != 'mfa_validate_password':
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
         try:
             token = KeyCloakUtils.token(user_info.email, password)
@@ -179,10 +178,10 @@ class UserService(BaseService):
         if user_authen_setting.otp_frozen_time > datetime.datetime.now():
             raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
         try:
-            user_authen_setting.otp_changing_state = 2
+            user_authen_setting.require_action = 2
             otp = OTPServer.get_otp(user_info.phone_number)
             user_authen_setting.otp = otp
-            user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
+            user_authen_setting.token_valid_time = OTPServer.get_valid_time()
             user_authen_setting.otp_request_counter = n_times
             user_authen_setting.update()
             success = True
@@ -196,21 +195,21 @@ class UserService(BaseService):
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
             raise Exception(Message.AUTH_USER_NOT_FOUND)
-        if user_authen_setting.otp_changing_state != 2:
+        if user_authen_setting.require_action != 2:
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
         if user_authen_setting.otp_tried_time >= OTPServer.valid_trying_time:
             user_authen_setting.otp = None
             user_authen_setting.update()
             raise Exception(Message.EXCEED_MAXIMUM_TRIED_TIMES_OTP)
-        if datetime.datetime.now() > user_authen_setting.otp_valid_time:
+        if datetime.datetime.now() > user_authen_setting.token_valid_time:
             user_authen_setting.otp = None
             user_authen_setting.update()
             raise Exception(Message.EXPIRED_OTP)
         if otp == user_authen_setting.otp:
             user_authen_setting.mfa_enable = True
             user_authen_setting.otp = None
-            user_authen_setting.otp_changing_state = 0
-            user_authen_setting.otp_valid_time = datetime.datetime.now()
+            user_authen_setting.require_action = 0
+            user_authen_setting.token_valid_time = datetime.datetime.now()
             user_authen_setting.otp_request_counter = 0
             user_authen_setting.otp_tried_time = 0
             user_authen_setting.update()
@@ -227,7 +226,7 @@ class UserService(BaseService):
         if user_info is None:
             raise Exception(Message.AUTH_USER_NOT_FOUND)
         user_authen_setting = self.authen_setting.get(user_id)
-        if user_authen_setting.otp_changing_state != 2:
+        if user_authen_setting.require_action != 2:
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
         n_times = user_authen_setting.otp_request_counter + 1
         if n_times > OTPServer.valid_resend_time:
@@ -243,7 +242,7 @@ class UserService(BaseService):
             otp = OTPServer.get_otp(user_info.phone_number)
             user_authen_setting.otp = otp
             user_authen_setting.otp_tried_time = 0
-            user_authen_setting.otp_valid_time = OTPServer.get_valid_time()
+            user_authen_setting.token_valid_time = OTPServer.get_valid_time()
             user_authen_setting.otp_request_counter = n_times
             user_authen_setting.update()
             success = True
@@ -255,43 +254,23 @@ class UserService(BaseService):
 
     def update_hash_pass(self, user_id, hash_password, salt='', iv_parameter=''):
         user_info = self.model.get(user_id)
-        user_info.hash_code = hash_password
+        user_info.password_verifier = hash_password
         if salt:
             user_info.salt = salt
         if iv_parameter:
             user_info.iv_parameter = iv_parameter
         user_info.update()
-        return (user_info.hash_code, user_info.salt, user_info.iv_parameter)
+        return (user_info.password_verifier, user_info.salt, user_info.iv_parameter)
 
     def update_hash_pin(self, user_id, hash_pincode, salt='', iv_parameter=''):
         user_info = self.model.get(user_id)
-        user_info.hash_code = hash_pincode
+        user_info.password_verifier = hash_pincode
         if salt:
             user_info.salt = salt
         if iv_parameter:
             user_info.iv_parameter = iv_parameter
         user_info.update()
-        return (user_info.hash_code, user_info.salt, user_info.iv_parameter)
-
-    def validate_hash_pincode(self, user_id, hash_pass):
-        user_info = self.model.get(user_id)
-        return (hash_pass == user_info.hash_code, user_info.salt, user_info.iv_parameter)
-
-    def get_pincode(self, user_id):
-        user_info = self.model.get(user_id)
-        if user_info is None:
-            raise Exception(Message.AUTH_USER_NOT_FOUND)
-        if user_info.auth_source == "account":
-            raise Exception(Message.NOT_SOCIAL_ACCOUNT)
-        return user_info.hash_code
-
-    def validate_hash_pass(self, user_id, hash_pass):
-        # compare current hash_password with stored hash_password in db, return boolean value for describe state of needing to update hash password
-        # also return salt stored in db
-        user_info = self.model.get(user_id)
-        if user_info is None:
-            return (False, "", "")
-        return (hash_pass != user_info.hash_code, user_info.salt, user_info.iv_parameter)
+        return (user_info.password_verifier, user_info.salt, user_info.iv_parameter)
 
     def get_profile(self, user_id):
         try:
