@@ -10,7 +10,7 @@ from src.services.user import UserService
 from src.models.base import Database
 from src.models.user import User
 from src.models.authen_setting import AuthenSetting
-from utils.config import get_system_config
+from utils.config import get_system_config, get_owner_workspace_domain
 from utils.otp import OTPServer
 import requests
 
@@ -111,14 +111,11 @@ class AuthService:
             logger.info(e)
             raise Exception(Message.USER_NOT_FOUND)
         else:
-            auth_source = Database.get_session().query(User) \
-                .filter(User.id == user['id']) \
-                .filter(User.last_login_at != None) \
-                .all()[0] \
-                .auth_source
-            Database.get().session.remove()
-            if auth_source == 'account':
-                KeyCloakUtils.send_forgot_password(user_id=user["id"], email=email)
+            pre_access_token = self.hash_pre_access_token(user['id'], "forgot_password")
+            server_domain = get_owner_workspace_domain()
+            user_info = User().get(user['id'])
+            if user_info.auth_source == 'account':
+                MailerServer.send_reset_password_mail(email, email, pre_access_token, server_domain)
                 return user['id']
             else:
                 raise Exception(Message.EMAIL_ALREADY_USED_FOR_SOCIAL_SIGNIN)
@@ -238,7 +235,7 @@ class AuthService:
             user = self.get_user_by_email(facebook_id)
             if user:
                 user_info = UserService().get_user_by_id(user["id"])
-                return facebook_id, user["id"], pincode is None or pincode == "", user_info.password_verifier is None or user_info.password_verifier == ""
+                return facebook_id, user["id"], user_info.password_verifier is None or user_info.password_verifier == ""
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(facebook_email, facebook_id, "", facebook_name)

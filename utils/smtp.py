@@ -2,70 +2,50 @@ import smtplib
 
 from utils.config import get_system_config
 
-from email.message import EmailMessage
-# sender = 'from@fromdomain.com'
-# receivers = ['to@todomain.com']
-#
-message = """From: From Person <from@fromdomain.com>
-To: To Person <to@todomain.com>
-MIME-Version: 1.0
-Content-type: text/html
-Subject: SMTP HTML e-mail test
-
-This is an e-mail message to be sent in HTML format
-
-<b>This is HTML message.</b>
-<h1>This is headline.</h1>
-"""
-
-# try:
-#    smtpObj = smtplib.SMTP('localhost')
-#    smtpObj.sendmail(sender, receivers, message)
-#    print "Successfully sent email"
-# except SMTPException:
-#    print "Error: unable to send email"
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 class MailerServer(object):
-    query_string_form = "pre_access_token={}&user_id={}&server_domain={}"
-    app_link = "clearkeep://resetpassword"
-    user_name = "apikey"
-    sender = get_system_config()["smtp_server"]['SMTP_SENDER']
-    password = get_system_config()["smtp_server"]['SMTP_PASSWORD']
     host = get_system_config()["smtp_server"]['SMTP_HOST']
     port = get_system_config()["smtp_server"]['SMTP_PORT']
-    message_form = """
-    <b>This is HTML message.</b>
-    <h1>This is headline.</h1>
-    <p><a href="{}">deep_link testing</p>
+    sender = get_system_config()["smtp_server"]['SMTP_SENDER']
+    user_name = get_system_config()["smtp_server"]['SMTP_USERNAME']
+    password = get_system_config()["smtp_server"]['SMTP_PASSWORD']
+    query_string_form = "pre_access_token={}&user_name={}&server_domain={}"
+    app_link = "http://www.clearkeep.com/resetpassword"
+    text_form = """Your administrator has just requested that you update your Keycloak account by performing the following action(s): Reset Password. Click on the link below to start this process.\n
+    {}\n
+    This link will expire within 30 days.
+    If you are unaware that your administrator has requested this, just ignore this message and nothing will be changed.
+    """
+    html_form = """
+    <p>Your administrator has just requested that you update your Keycloak account by performing the following action(s): Reset Password. Click on the link below to start this process.\n</p>
+    <p><a href="{}">Link to account update</a></p>
+    <p>This link will expire within 30 days.</p>
+    <p>If you are unaware that your administrator has requested this, just ignore this message and nothing will be changed.</p>
     """
 
     @staticmethod
-    def send_reset_password_mail(receiver_mail, user_id, pre_access_token, server_domain):
+    def send_reset_password_mail(receiver_mail, user_name, pre_access_token, server_domain):
         # Email configuration
-        deep_link = MailerServer.app_link + '?' + MailerServer.query_string_form.format(user_id, pre_access_token, server_domain)
-        message = MailerServer.message_form.format(deep_link)
-        msg = EmailMessage()
-        msg.set_content(message)
+        deep_link = MailerServer.app_link + '?' + MailerServer.query_string_form.format(user_name, pre_access_token, server_domain)
+        msg = MIMEMultipart('alternative')
         msg['Subject'] = 'Reset Password'
         msg['From'] = MailerServer.sender
         msg['To'] = receiver_mail
-
-        print(str(msg))
-        print(MailerServer.host, MailerServer.port)
-        #host = smtp.sendgrid.net
-        #port = 465
-        # Start TLS and send email
+        text = MailerServer.text_form.format(deep_link)
+        html = MailerServer.html_form.format(deep_link)
+        part1 = MIMEText(text, 'plain')
+        part2 = MIMEText(html, 'html')
+        msg.attach(part1)
+        msg.attach(part2)
         server = smtplib.SMTP(MailerServer.host, MailerServer.port)
-        print(1)
         server.ehlo()
-        print(2)
         server.starttls()
-        print(3)
         server.login(MailerServer.user_name, MailerServer.password)
-        print(message)
         server.sendmail(
             MailerServer.sender,
             receiver_mail,
-            str(msg)
+            msg.as_string()
         )
         server.quit()

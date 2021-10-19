@@ -214,6 +214,7 @@ service Auth {
     rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
     //new flow login with srp
     rpc login_challenge(AuthChallengeReq) returns (AuthChallengeRes) {};
+    rpc forgot_password_update(ForgotPasswordUpdateReq) returns (BaseResponse) {};
     //login with social
     rpc login_google(GoogleLoginReq) returns (SocialLoginRes) {};
     rpc login_office(OfficeLoginReq) returns (SocialLoginRes) {};
