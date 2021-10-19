@@ -281,6 +281,7 @@ class MessageController(BaseController):
                     created_at=message_res_object.created_at,
                     updated_at=message_res_object.updated_at,
                     from_client_device_id=request.from_client_device_id,
+                    sender_message=request.sender_message
                 )
                 message_res_object2 = ClientMessage(
                     client.GroupClientKey.client_workspace_domain).workspace_publish_message(request2)
