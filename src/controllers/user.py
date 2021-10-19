@@ -8,6 +8,7 @@ from middlewares.request_logged import *
 from utils.logger import *
 from utils.config import *
 from client.client_user import *
+import srp
 
 
 class UserController(BaseController, user_pb2_grpc.UserServicer):
