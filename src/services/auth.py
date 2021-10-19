@@ -1,5 +1,6 @@
 import time
 import datetime
+import requests
 from hashlib import md5
 from msg.message import Message
 from utils.keycloak import KeyCloakUtils
@@ -10,9 +11,9 @@ from src.services.user import UserService
 from src.models.base import Database
 from src.models.user import User
 from src.models.authen_setting import AuthenSetting
-from utils.config import get_system_config, get_owner_workspace_domain
 from utils.otp import OTPServer
-import requests
+from utils.smtp import MailerServer
+from utils.config import get_system_config, get_owner_workspace_domain
 
 
 class AuthService:
