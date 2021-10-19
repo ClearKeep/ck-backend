@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x11protos/user.proto\x12\x04user\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\xf0\x01\n\x1cPeerRegisterClientKeyRequest\x12\x16\n\x0eregistrationId\x18\x01 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x02 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x03 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x04 \x01(\x05\x12\x0e\n\x06preKey\x18\x05 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x06 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\x07 \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\x08 \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\t \x01(\t\"l\n\x13UserProfileResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x05 \x01(\t\"\x07\n\x05\x45mpty\"R\n\x14UpdateProfileRequest\x12\x14\n\x0c\x64isplay_name\x18\x01 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x02 \x01(\t\x12\x14\n\x0cphone_number\x18\x03 \x01(\t\"\x8a\x01\n\x15\x43hangePasswordRequest\x12\x19\n\x11old_hash_password\x18\x01 \x01(\t\x12\x19\n\x11new_hash_password\x18\x02 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x03 \x01(\x0b\x32\".user.PeerRegisterClientKeyRequest\"N\n\x10UserInfoResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x18\n\x10workspace_domain\x18\x03 \x01(\t\"=\n\x0eGetUserRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"$\n\x11SearchUserRequest\x12\x0f\n\x07keyword\x18\x01 \x01(\t\">\n\x12SearchUserResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"<\n\x10GetUsersResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"&\n\x14SetUserStatusRequest\x12\x0e\n\x06status\x18\x01 \x01(\t\"\r\n\x0bPingRequest\"b\n\x17GetClientsStatusRequest\x12+\n\nlst_client\x18\x01 \x03(\x0b\x32\x17.user.MemberInfoRequest\x12\x1a\n\x12should_get_profile\x18\x02 \x01(\x08\"@\n\x11MemberInfoRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"C\n\x18GetClientsStatusResponse\x12\'\n\nlst_client\x18\x01 \x03(\x0b\x32\x13.user.MemberInfoRes\"\x88\x01\n\rMemberInfoRes\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x04 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x05 \x01(\t\x12\x14\n\x0cphone_number\x18\x06 \x01(\t\"i\n\x13UploadAvatarRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x19\n\x11\x66ile_content_type\x18\x02 \x01(\t\x12\x11\n\tfile_data\x18\x03 \x01(\x0c\x12\x11\n\tfile_hash\x18\x04 \x01(\t\"(\n\x14UploadAvatarResponse\x12\x10\n\x08\x66ile_url\x18\x01 \x01(\t\"D\n\x0fMfaBaseResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x11\n\tnext_step\x18\x02 \x01(\t\x12\r\n\x05\x65rror\x18\x03 \x01(\t\"5\n\x10MfaStateResponse\x12\x12\n\nmfa_enable\x18\x01 \x01(\x08\x12\r\n\x05\x65rror\x18\x02 \x01(\t\"\x14\n\x12MfaGetStateRequest\"\x19\n\x17MfaChangingStateRequest\".\n\x1aMfaValidatePasswordRequest\x12\x10\n\x08password\x18\x01 \x01(\t\"$\n\x15MfaValidateOtpRequest\x12\x0b\n\x03otp\x18\x01 \x01(\t\"\x15\n\x13MfaResendOtpRequest2\xd5\x08\n\x04User\x12\x37\n\x0bget_profile\x12\x0b.user.Empty\x1a\x19.user.UserProfileResponse\"\x00\x12\x42\n\x0eupdate_profile\x12\x1a.user.UpdateProfileRequest\x1a\x12.user.BaseResponse\"\x00\x12H\n\rupload_avatar\x12\x19.user.UploadAvatarRequest\x1a\x1a.user.UploadAvatarResponse\"\x00\x12\x44\n\x0f\x63hange_password\x12\x1b.user.ChangePasswordRequest\x1a\x12.user.BaseResponse\"\x00\x12\x41\n\rupdate_status\x12\x1a.user.SetUserStatusRequest\x1a\x12.user.BaseResponse\"\x00\x12\x37\n\x0cping_request\x12\x11.user.PingRequest\x1a\x12.user.BaseResponse\"\x00\x12U\n\x12get_clients_status\x12\x1d.user.GetClientsStatusRequest\x1a\x1e.user.GetClientsStatusResponse\"\x00\x12?\n\rget_user_info\x12\x14.user.GetUserRequest\x1a\x16.user.UserInfoResponse\"\x00\x12\x42\n\x0bsearch_user\x12\x17.user.SearchUserRequest\x1a\x18.user.SearchUserResponse\"\x00\x12\x32\n\tget_users\x12\x0b.user.Empty\x1a\x16.user.GetUsersResponse\"\x00\x12\x43\n\rget_mfa_state\x12\x18.user.MfaGetStateRequest\x1a\x16.user.MfaStateResponse\"\x00\x12\x44\n\nenable_mfa\x12\x1d.user.MfaChangingStateRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12\x45\n\x0b\x64isable_mfa\x12\x1d.user.MfaChangingStateRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12R\n\x15mfa_validate_password\x12 .user.MfaValidatePasswordRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12H\n\x10mfa_validate_otp\x12\x1b.user.MfaValidateOtpRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12\x44\n\x0emfa_resend_otp\x12\x19.user.MfaResendOtpRequest\x1a\x15.user.MfaBaseResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x11protos/user.proto\x12\x04user\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\xf0\x01\n\x1cPeerRegisterClientKeyRequest\x12\x16\n\x0eregistrationId\x18\x01 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x02 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x03 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x04 \x01(\x05\x12\x0e\n\x06preKey\x18\x05 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x06 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\x07 \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\x08 \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\t \x01(\t\"l\n\x13UserProfileResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x05 \x01(\t\"\x07\n\x05\x45mpty\"R\n\x14UpdateProfileRequest\x12\x14\n\x0c\x64isplay_name\x18\x01 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x02 \x01(\t\x12\x14\n\x0cphone_number\x18\x03 \x01(\t\"1\n\x18RequestChangePasswordReq\x12\x15\n\rclient_public\x18\x01 \x01(\t\"D\n\x18RequestChangePasswordRes\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"\xc8\x01\n\x15\x43hangePasswordRequest\x12\x15\n\rclient_public\x18\x01 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\x12\x15\n\rhash_password\x18\x04 \x01(\t\x12\x0c\n\x04salt\x18\x05 \x01(\t\x12\x14\n\x0civ_parameter\x18\x06 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x07 \x01(\x0b\x32\".user.PeerRegisterClientKeyRequest\"N\n\x10UserInfoResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x18\n\x10workspace_domain\x18\x03 \x01(\t\"=\n\x0eGetUserRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"$\n\x11SearchUserRequest\x12\x0f\n\x07keyword\x18\x01 \x01(\t\">\n\x12SearchUserResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"<\n\x10GetUsersResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"&\n\x14SetUserStatusRequest\x12\x0e\n\x06status\x18\x01 \x01(\t\"\r\n\x0bPingRequest\"b\n\x17GetClientsStatusRequest\x12+\n\nlst_client\x18\x01 \x03(\x0b\x32\x17.user.MemberInfoRequest\x12\x1a\n\x12should_get_profile\x18\x02 \x01(\x08\"@\n\x11MemberInfoRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"C\n\x18GetClientsStatusResponse\x12\'\n\nlst_client\x18\x01 \x03(\x0b\x32\x13.user.MemberInfoRes\"\x88\x01\n\rMemberInfoRes\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x04 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x05 \x01(\t\x12\x14\n\x0cphone_number\x18\x06 \x01(\t\"i\n\x13UploadAvatarRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x19\n\x11\x66ile_content_type\x18\x02 \x01(\t\x12\x11\n\tfile_data\x18\x03 \x01(\x0c\x12\x11\n\tfile_hash\x18\x04 \x01(\t\"(\n\x14UploadAvatarResponse\x12\x10\n\x08\x66ile_url\x18\x01 \x01(\t\"D\n\x0fMfaBaseResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x11\n\tnext_step\x18\x02 \x01(\t\x12\r\n\x05\x65rror\x18\x03 \x01(\t\"5\n\x10MfaStateResponse\x12\x12\n\nmfa_enable\x18\x01 \x01(\x08\x12\r\n\x05\x65rror\x18\x02 \x01(\t\"\x14\n\x12MfaGetStateRequest\"\x19\n\x17MfaChangingStateRequest\".\n\x1aMfaValidatePasswordRequest\x12\x10\n\x08password\x18\x01 \x01(\t\"$\n\x15MfaValidateOtpRequest\x12\x0b\n\x03otp\x18\x01 \x01(\t\"\x15\n\x13MfaResendOtpRequest2\xb2\t\n\x04User\x12\x37\n\x0bget_profile\x12\x0b.user.Empty\x1a\x19.user.UserProfileResponse\"\x00\x12\x42\n\x0eupdate_profile\x12\x1a.user.UpdateProfileRequest\x1a\x12.user.BaseResponse\"\x00\x12H\n\rupload_avatar\x12\x19.user.UploadAvatarRequest\x1a\x1a.user.UploadAvatarResponse\"\x00\x12[\n\x17request_change_password\x12\x1e.user.RequestChangePasswordReq\x1a\x1e.user.RequestChangePasswordRes\"\x00\x12\x44\n\x0f\x63hange_password\x12\x1b.user.ChangePasswordRequest\x1a\x12.user.BaseResponse\"\x00\x12\x41\n\rupdate_status\x12\x1a.user.SetUserStatusRequest\x1a\x12.user.BaseResponse\"\x00\x12\x37\n\x0cping_request\x12\x11.user.PingRequest\x1a\x12.user.BaseResponse\"\x00\x12U\n\x12get_clients_status\x12\x1d.user.GetClientsStatusRequest\x1a\x1e.user.GetClientsStatusResponse\"\x00\x12?\n\rget_user_info\x12\x14.user.GetUserRequest\x1a\x16.user.UserInfoResponse\"\x00\x12\x42\n\x0bsearch_user\x12\x17.user.SearchUserRequest\x1a\x18.user.SearchUserResponse\"\x00\x12\x32\n\tget_users\x12\x0b.user.Empty\x1a\x16.user.GetUsersResponse\"\x00\x12\x43\n\rget_mfa_state\x12\x18.user.MfaGetStateRequest\x1a\x16.user.MfaStateResponse\"\x00\x12\x44\n\nenable_mfa\x12\x1d.user.MfaChangingStateRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12\x45\n\x0b\x64isable_mfa\x12\x1d.user.MfaChangingStateRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12R\n\x15mfa_validate_password\x12 .user.MfaValidatePasswordRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12H\n\x10mfa_validate_otp\x12\x1b.user.MfaValidateOtpRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12\x44\n\x0emfa_resend_otp\x12\x19.user.MfaResendOtpRequest\x1a\x15.user.MfaBaseResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -276,6 +276,77 @@ _UPDATEPROFILEREQUEST = _descriptor.Descriptor(
 )
 
 
+_REQUESTCHANGEPASSWORDREQ = _descriptor.Descriptor(
+  name='RequestChangePasswordReq',
+  full_name='user.RequestChangePasswordReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='client_public', full_name='user.RequestChangePasswordReq.client_public', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=504,
+  serialized_end=553,
+)
+
+
+_REQUESTCHANGEPASSWORDRES = _descriptor.Descriptor(
+  name='RequestChangePasswordRes',
+  full_name='user.RequestChangePasswordRes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='salt', full_name='user.RequestChangePasswordRes.salt', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='public_challenge_b', full_name='user.RequestChangePasswordRes.public_challenge_b', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=555,
+  serialized_end=623,
+)
+
+
 _CHANGEPASSWORDREQUEST = _descriptor.Descriptor(
   name='ChangePasswordRequest',
   full_name='user.ChangePasswordRequest',
@@ -285,22 +356,43 @@ _CHANGEPASSWORDREQUEST = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='old_hash_password', full_name='user.ChangePasswordRequest.old_hash_password', index=0,
+      name='client_public', full_name='user.ChangePasswordRequest.client_public', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='new_hash_password', full_name='user.ChangePasswordRequest.new_hash_password', index=1,
-      number=2, type=9, cpp_type=9, label=1,
+      name='client_session_key_proof', full_name='user.ChangePasswordRequest.client_session_key_proof', index=1,
+      number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='client_key_peer', full_name='user.ChangePasswordRequest.client_key_peer', index=2,
-      number=3, type=11, cpp_type=10, label=1,
+      name='hash_password', full_name='user.ChangePasswordRequest.hash_password', index=2,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='salt', full_name='user.ChangePasswordRequest.salt', index=3,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='iv_parameter', full_name='user.ChangePasswordRequest.iv_parameter', index=4,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_key_peer', full_name='user.ChangePasswordRequest.client_key_peer', index=5,
+      number=7, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -317,8 +409,8 @@ _CHANGEPASSWORDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=505,
-  serialized_end=643,
+  serialized_start=626,
+  serialized_end=826,
 )
 
 
@@ -363,8 +455,8 @@ _USERINFORESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=645,
-  serialized_end=723,
+  serialized_start=828,
+  serialized_end=906,
 )
 
 
@@ -402,8 +494,8 @@ _GETUSERREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=725,
-  serialized_end=786,
+  serialized_start=908,
+  serialized_end=969,
 )
 
 
@@ -434,8 +526,8 @@ _SEARCHUSERREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=788,
-  serialized_end=824,
+  serialized_start=971,
+  serialized_end=1007,
 )
 
 
@@ -466,8 +558,8 @@ _SEARCHUSERRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=826,
-  serialized_end=888,
+  serialized_start=1009,
+  serialized_end=1071,
 )
 
 
@@ -498,8 +590,8 @@ _GETUSERSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=890,
-  serialized_end=950,
+  serialized_start=1073,
+  serialized_end=1133,
 )
 
 
@@ -530,8 +622,8 @@ _SETUSERSTATUSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=952,
-  serialized_end=990,
+  serialized_start=1135,
+  serialized_end=1173,
 )
 
 
@@ -555,8 +647,8 @@ _PINGREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=992,
-  serialized_end=1005,
+  serialized_start=1175,
+  serialized_end=1188,
 )
 
 
@@ -594,8 +686,8 @@ _GETCLIENTSSTATUSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1007,
-  serialized_end=1105,
+  serialized_start=1190,
+  serialized_end=1288,
 )
 
 
@@ -633,8 +725,8 @@ _MEMBERINFOREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1107,
-  serialized_end=1171,
+  serialized_start=1290,
+  serialized_end=1354,
 )
 
 
@@ -665,8 +757,8 @@ _GETCLIENTSSTATUSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1173,
-  serialized_end=1240,
+  serialized_start=1356,
+  serialized_end=1423,
 )
 
 
@@ -732,8 +824,8 @@ _MEMBERINFORES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1243,
-  serialized_end=1379,
+  serialized_start=1426,
+  serialized_end=1562,
 )
 
 
@@ -785,8 +877,8 @@ _UPLOADAVATARREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1381,
-  serialized_end=1486,
+  serialized_start=1564,
+  serialized_end=1669,
 )
 
 
@@ -817,8 +909,8 @@ _UPLOADAVATARRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1488,
-  serialized_end=1528,
+  serialized_start=1671,
+  serialized_end=1711,
 )
 
 
@@ -863,8 +955,8 @@ _MFABASERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1530,
-  serialized_end=1598,
+  serialized_start=1713,
+  serialized_end=1781,
 )
 
 
@@ -902,8 +994,8 @@ _MFASTATERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1600,
-  serialized_end=1653,
+  serialized_start=1783,
+  serialized_end=1836,
 )
 
 
@@ -927,8 +1019,8 @@ _MFAGETSTATEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1655,
-  serialized_end=1675,
+  serialized_start=1838,
+  serialized_end=1858,
 )
 
 
@@ -952,8 +1044,8 @@ _MFACHANGINGSTATEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1677,
-  serialized_end=1702,
+  serialized_start=1860,
+  serialized_end=1885,
 )
 
 
@@ -984,8 +1076,8 @@ _MFAVALIDATEPASSWORDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1704,
-  serialized_end=1750,
+  serialized_start=1887,
+  serialized_end=1933,
 )
 
 
@@ -1016,8 +1108,8 @@ _MFAVALIDATEOTPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1752,
-  serialized_end=1788,
+  serialized_start=1935,
+  serialized_end=1971,
 )
 
 
@@ -1041,8 +1133,8 @@ _MFARESENDOTPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1790,
-  serialized_end=1811,
+  serialized_start=1973,
+  serialized_end=1994,
 )
 
 _CHANGEPASSWORDREQUEST.fields_by_name['client_key_peer'].message_type = _PEERREGISTERCLIENTKEYREQUEST
@@ -1055,6 +1147,8 @@ DESCRIPTOR.message_types_by_name['PeerRegisterClientKeyRequest'] = _PEERREGISTER
 DESCRIPTOR.message_types_by_name['UserProfileResponse'] = _USERPROFILERESPONSE
 DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
 DESCRIPTOR.message_types_by_name['UpdateProfileRequest'] = _UPDATEPROFILEREQUEST
+DESCRIPTOR.message_types_by_name['RequestChangePasswordReq'] = _REQUESTCHANGEPASSWORDREQ
+DESCRIPTOR.message_types_by_name['RequestChangePasswordRes'] = _REQUESTCHANGEPASSWORDRES
 DESCRIPTOR.message_types_by_name['ChangePasswordRequest'] = _CHANGEPASSWORDREQUEST
 DESCRIPTOR.message_types_by_name['UserInfoResponse'] = _USERINFORESPONSE
 DESCRIPTOR.message_types_by_name['GetUserRequest'] = _GETUSERREQUEST
@@ -1112,6 +1206,20 @@ UpdateProfileRequest = _reflection.GeneratedProtocolMessageType('UpdateProfileRe
   # @@protoc_insertion_point(class_scope:user.UpdateProfileRequest)
   })
 _sym_db.RegisterMessage(UpdateProfileRequest)
+
+RequestChangePasswordReq = _reflection.GeneratedProtocolMessageType('RequestChangePasswordReq', (_message.Message,), {
+  'DESCRIPTOR' : _REQUESTCHANGEPASSWORDREQ,
+  '__module__' : 'protos.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.RequestChangePasswordReq)
+  })
+_sym_db.RegisterMessage(RequestChangePasswordReq)
+
+RequestChangePasswordRes = _reflection.GeneratedProtocolMessageType('RequestChangePasswordRes', (_message.Message,), {
+  'DESCRIPTOR' : _REQUESTCHANGEPASSWORDRES,
+  '__module__' : 'protos.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.RequestChangePasswordRes)
+  })
+_sym_db.RegisterMessage(RequestChangePasswordRes)
 
 ChangePasswordRequest = _reflection.GeneratedProtocolMessageType('ChangePasswordRequest', (_message.Message,), {
   'DESCRIPTOR' : _CHANGEPASSWORDREQUEST,
@@ -1269,8 +1377,8 @@ _USER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1814,
-  serialized_end=2923,
+  serialized_start=1997,
+  serialized_end=3199,
   methods=[
   _descriptor.MethodDescriptor(
     name='get_profile',
@@ -1303,9 +1411,19 @@ _USER = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
+    name='request_change_password',
+    full_name='user.User.request_change_password',
+    index=3,
+    containing_service=None,
+    input_type=_REQUESTCHANGEPASSWORDREQ,
+    output_type=_REQUESTCHANGEPASSWORDRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
     name='change_password',
     full_name='user.User.change_password',
-    index=3,
+    index=4,
     containing_service=None,
     input_type=_CHANGEPASSWORDREQUEST,
     output_type=_BASERESPONSE,
@@ -1315,7 +1433,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='update_status',
     full_name='user.User.update_status',
-    index=4,
+    index=5,
     containing_service=None,
     input_type=_SETUSERSTATUSREQUEST,
     output_type=_BASERESPONSE,
@@ -1325,7 +1443,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='ping_request',
     full_name='user.User.ping_request',
-    index=5,
+    index=6,
     containing_service=None,
     input_type=_PINGREQUEST,
     output_type=_BASERESPONSE,
@@ -1335,7 +1453,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='get_clients_status',
     full_name='user.User.get_clients_status',
-    index=6,
+    index=7,
     containing_service=None,
     input_type=_GETCLIENTSSTATUSREQUEST,
     output_type=_GETCLIENTSSTATUSRESPONSE,
@@ -1345,7 +1463,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='get_user_info',
     full_name='user.User.get_user_info',
-    index=7,
+    index=8,
     containing_service=None,
     input_type=_GETUSERREQUEST,
     output_type=_USERINFORESPONSE,
@@ -1355,7 +1473,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='search_user',
     full_name='user.User.search_user',
-    index=8,
+    index=9,
     containing_service=None,
     input_type=_SEARCHUSERREQUEST,
     output_type=_SEARCHUSERRESPONSE,
@@ -1365,7 +1483,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='get_users',
     full_name='user.User.get_users',
-    index=9,
+    index=10,
     containing_service=None,
     input_type=_EMPTY,
     output_type=_GETUSERSRESPONSE,
@@ -1375,7 +1493,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='get_mfa_state',
     full_name='user.User.get_mfa_state',
-    index=10,
+    index=11,
     containing_service=None,
     input_type=_MFAGETSTATEREQUEST,
     output_type=_MFASTATERESPONSE,
@@ -1385,7 +1503,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='enable_mfa',
     full_name='user.User.enable_mfa',
-    index=11,
+    index=12,
     containing_service=None,
     input_type=_MFACHANGINGSTATEREQUEST,
     output_type=_MFABASERESPONSE,
@@ -1395,7 +1513,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='disable_mfa',
     full_name='user.User.disable_mfa',
-    index=12,
+    index=13,
     containing_service=None,
     input_type=_MFACHANGINGSTATEREQUEST,
     output_type=_MFABASERESPONSE,
@@ -1405,7 +1523,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='mfa_validate_password',
     full_name='user.User.mfa_validate_password',
-    index=13,
+    index=14,
     containing_service=None,
     input_type=_MFAVALIDATEPASSWORDREQUEST,
     output_type=_MFABASERESPONSE,
@@ -1415,7 +1533,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='mfa_validate_otp',
     full_name='user.User.mfa_validate_otp',
-    index=14,
+    index=15,
     containing_service=None,
     input_type=_MFAVALIDATEOTPREQUEST,
     output_type=_MFABASERESPONSE,
@@ -1425,7 +1543,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='mfa_resend_otp',
     full_name='user.User.mfa_resend_otp',
-    index=15,
+    index=16,
     containing_service=None,
     input_type=_MFARESENDOTPREQUEST,
     output_type=_MFABASERESPONSE,

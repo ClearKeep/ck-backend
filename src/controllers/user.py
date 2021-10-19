@@ -15,30 +15,85 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         self.service = UserService()
 
     @auth_required
+    async def request_change_password(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            user_name = introspect_token['preferred_username']
+            user_info = self.user_service.get_user_by_auth_source(user_name, "account")
+            if not user_info:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            password_verifier = bytes.fromhex(user_info.password_verifier)
+            salt = bytes.fromhex(user_info.salt)
+            client_public = bytes.fromhex(request.client_public)
+
+            srv = srp.Verifier(email, salt, password_verifier, client_public)
+            s, B = srv.get_challenge()
+            # need store private b of server
+            logger.info("server_public=")
+            logger.info(s)
+            logger.info("server_private=")
+            logger.info(B)
+
+            server_private = srv.get_ephemeral_secret().hex()
+            logger.info(server_private)
+            user_info.srp_server_private = server_private
+            user_info.update()
+
+            public_challenge_b = B.hex()
+            auth_challenge_res = user_messages.RequestChangePasswordRes(
+                salt=user_info.salt,
+                public_challenge_b=public_challenge_b
+            )
+            return auth_challenge_res
+
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.CHANGE_PASSWORD_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @auth_required
     async def change_password(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            username = introspect_token['preferred_username']
-            # verify request.old_password is current password
-            verify_token = AuthService().token(username, request.old_hash_password)
-            if not verify_token or "access_token" not in verify_token:
-                # should raise wrong password instead
-                raise Exception(Message.CHANGE_PASSWORD_FAILED)
-            self.service.change_password(request, request.old_hash_password, request.new_hash_password, introspect_token['sub'])
+            user_name = introspect_token['preferred_username']
+            exists_user = self.service.get_user_by_email(user_name)
+            client_session_key_proof = request.client_session_key_proof
+            user_info = self.user_service.get_user_by_auth_source(user_name, "account")
+
+            if not user_info:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            password_verifier = bytes.fromhex(user_info.password_verifier)
+            salt = bytes.fromhex(user_info.salt)
+            client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
+
+            srv = srp.Verifier(username=user_name, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
+            srv.verify_session(client_session_key_proof_bytes)
+            authenticated = srv.authenticated()
+            if not authenticated:
+                raise Exception(Message.AUTHENTICATION_FAILED)
+
+            self.service.change_password(request, user_info.password_verifier, request.hash_password, introspect_token['sub'])
 
             old_client_key_peer = SignalService().peer_get_client_key(introspect_token["sub"])
             try:
                 SignalService().client_update_peer_key(introspect_token["sub"], request.client_key_peer)
             except Exception as e:
                 logger.error(e)
-                self.service.change_password(request, request.new_hash_password, request.old_hash_password, introspect_token['sub'])
+                self.service.change_password(request, request.hash_password, user_info.password_verifier, introspect_token['sub'])
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             try:
-                salt, iv_parameter = self.service.update_hash_pass(introspect_token["sub"], request.new_hash_password)
+                salt, iv_parameter = self.service.update_hash_pass(introspect_token["sub"], request.hash_password, request.salt, request.iv_parameter)
             except Exception as e:
                 logger.error(e)
-                self.service.change_password(request, request.new_hash_password, request.old_hash_password, introspect_token['sub'])
+                self.service.change_password(request, request.hash_password, request.password_verifier, introspect_token['sub'])
                 SignalService().client_update_peer_key(introspect_token["sub"], old_client_key_peer)
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             user_sessions = KeyCloakUtils.get_sessions(user_id=introspect_token["sub"])

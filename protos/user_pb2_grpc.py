@@ -29,6 +29,11 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.UploadAvatarRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.UploadAvatarResponse.FromString,
                 )
+        self.request_change_password = channel.unary_unary(
+                '/user.User/request_change_password',
+                request_serializer=protos_dot_user__pb2.RequestChangePasswordReq.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.RequestChangePasswordRes.FromString,
+                )
         self.change_password = channel.unary_unary(
                 '/user.User/change_password',
                 request_serializer=protos_dot_user__pb2.ChangePasswordRequest.SerializeToString,
@@ -114,6 +119,12 @@ class UserServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def upload_avatar(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def request_change_password(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -216,6 +227,11 @@ def add_UserServicer_to_server(servicer, server):
                     servicer.upload_avatar,
                     request_deserializer=protos_dot_user__pb2.UploadAvatarRequest.FromString,
                     response_serializer=protos_dot_user__pb2.UploadAvatarResponse.SerializeToString,
+            ),
+            'request_change_password': grpc.unary_unary_rpc_method_handler(
+                    servicer.request_change_password,
+                    request_deserializer=protos_dot_user__pb2.RequestChangePasswordReq.FromString,
+                    response_serializer=protos_dot_user__pb2.RequestChangePasswordRes.SerializeToString,
             ),
             'change_password': grpc.unary_unary_rpc_method_handler(
                     servicer.change_password,
@@ -340,6 +356,23 @@ class User(object):
         return grpc.experimental.unary_unary(request, target, '/user.User/upload_avatar',
             protos_dot_user__pb2.UploadAvatarRequest.SerializeToString,
             protos_dot_user__pb2.UploadAvatarResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def request_change_password(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/request_change_password',
+            protos_dot_user__pb2.RequestChangePasswordReq.SerializeToString,
+            protos_dot_user__pb2.RequestChangePasswordRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
