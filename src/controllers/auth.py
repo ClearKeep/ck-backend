@@ -340,7 +340,7 @@ class AuthController(BaseController):
                 salt, iv_parameter = self.user_service.update_hash_pass(user_info.id, request.hash_password)
             except Exception as e:
                 logger.error(e)
-                self.service.change_password(request, request.hash_password, request.password_verifier, user_info.id)
+                self.service.change_password(request, request.hash_password, user_info.password_verifier, user_info.id)
                 SignalService().client_update_peer_key(user_info.id, old_client_key_peer)
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
 
