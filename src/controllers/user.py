@@ -26,8 +26,10 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 # should raise wrong password instead
                 raise Exception(Message.CHANGE_PASSWORD_FAILED)
             self.service.change_password(request, request.old_hash_password, request.new_hash_password, introspect_token['sub'])
+
+            old_client_key_peer = SignalService().peer_get_client_key(introspect_token["sub"])
             try:
-                old_identity_key_encrypted = SignalService().client_update_identity_key(introspect_token["sub"], request.identity_key_encrypted)
+                SignalService().client_update_peer_key(introspect_token["sub"], request.client_key_peer)
             except Exception as e:
                 logger.error(e)
                 self.service.change_password(request, request.new_hash_password, request.old_hash_password, introspect_token['sub'])
@@ -37,7 +39,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             except Exception as e:
                 logger.error(e)
                 self.service.change_password(request, request.new_hash_password, request.old_hash_password, introspect_token['sub'])
-                SignalService().client_update_identity_key(introspect_token["sub"], old_identity_key_encrypted)
+                    SignalService().client_update_peer_key(introspect_token["sub"], old_client_key_peer)
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             user_sessions = KeyCloakUtils.get_sessions(user_id=introspect_token["sub"])
             for user_session in user_sessions:

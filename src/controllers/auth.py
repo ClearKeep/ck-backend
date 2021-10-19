@@ -111,8 +111,7 @@ class AuthController(BaseController):
                         token_type=token['token_type'],
                         session_state=token['session_state'],
                         scope=token['scope'],
-                        hash_key="",
-                        salt=salt,
+                        salt=user_info.salt,
                         client_key_peer = client_key_peer,
                         iv_parameter=user_info.iv_parameter
                     )
@@ -121,7 +120,6 @@ class AuthController(BaseController):
                     auth_message = auth_messages.AuthRes(
                         workspace_domain=get_owner_workspace_domain(),
                         workspace_name=get_system_config()['server_name'],
-                        hash_key="",
                         sub=user_id,
                         otp_hash=otp_hash,
                         require_action="mfa_validate_otp"
@@ -499,12 +497,12 @@ class AuthController(BaseController):
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             self.user_service.change_password(request, None, request.hash_pincode, exists_user["id"])
             logger.info('change_password to {}'.format(request.hash_pincode))
+            old_client_key_peer = SignalService().peer_get_client_key(exists_user["id"])
             SignalService().client_update_peer_key(exists_user["id"], request.client_key_peer)
             try:
                 salt, iv_parameter = self.user_service.update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:
                 logger.error(e)
-                old_client_key_peer = SignalService().peer_get_client_key(exists_user["id"])
                 SignalService().client_update_peer_key(exists_user["id"], old_client_key_peer)
                 raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             client_key_obj = request.client_key_peer
