@@ -39,7 +39,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             except Exception as e:
                 logger.error(e)
                 self.service.change_password(request, request.new_hash_password, request.old_hash_password, introspect_token['sub'])
-                    SignalService().client_update_peer_key(introspect_token["sub"], old_client_key_peer)
+                SignalService().client_update_peer_key(introspect_token["sub"], old_client_key_peer)
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             user_sessions = KeyCloakUtils.get_sessions(user_id=introspect_token["sub"])
             for user_session in user_sessions:
