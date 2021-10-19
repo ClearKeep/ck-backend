@@ -522,7 +522,7 @@ class AuthController(BaseController):
                                     signedPreKeySignature=client_key_obj.signedPreKeySignature,
                                     identityKeyEncrypted=client_key_obj.identityKeyEncrypted
                                 )
-            logout all device before get new token for user after updated new key
+            #logout all device before get new token for user after updated new key
             user_sessions = KeyCloakUtils.get_sessions(user_id=exists_user["id"])
             for user_session in user_sessions:
                 KeyCloakUtils.remove_session(session_id=user_session['id'])
