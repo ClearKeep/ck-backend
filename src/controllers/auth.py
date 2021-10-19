@@ -328,19 +328,19 @@ class AuthController(BaseController):
         try:
             user_info = self.user_service.get_user_by_auth_source(request.email, "account")
             self.service.verify_hash_pre_access_token(user_info.id, request.pre_access_token, "forgot_password")
-            self.service.change_password(request, user_info.password_verifier, request.hash_password, user_info.id)
+            self.user_service.change_password(request, user_info.password_verifier, request.hash_password, user_info.id)
             old_client_key_peer = SignalService().peer_get_client_key(user_info.id)
             try:
                 SignalService().client_update_peer_key(user_info.id, request.client_key_peer)
             except Exception as e:
                 logger.error(e)
-                self.service.change_password(request, request.hash_password, user_info.password_verifier,  user_info.id)
+                self.user_service.change_password(request, request.hash_password, user_info.password_verifier,  user_info.id)
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             try:
                 salt, iv_parameter = self.user_service.update_hash_pass(user_info.id, request.hash_password)
             except Exception as e:
                 logger.error(e)
-                self.service.change_password(request, request.hash_password, user_info.password_verifier, user_info.id)
+                self.user_service.change_password(request, request.hash_password, user_info.password_verifier, user_info.id)
                 SignalService().client_update_peer_key(user_info.id, old_client_key_peer)
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
 
