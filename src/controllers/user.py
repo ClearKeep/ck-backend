@@ -20,7 +20,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             user_name = introspect_token['preferred_username']
-            user_info = self.user_service.get_user_by_auth_source(user_name, "account")
+            user_info = self.service.get_user_by_auth_source(user_name, "account")
             if not user_info:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             password_verifier = bytes.fromhex(user_info.password_verifier)
@@ -64,9 +64,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             user_name = introspect_token['preferred_username']
-            exists_user = self.service.get_user_by_email(user_name)
             client_session_key_proof = request.client_session_key_proof
-            user_info = self.user_service.get_user_by_auth_source(user_name, "account")
+            user_info = self.service.get_user_by_auth_source(user_name, "account")
 
             if not user_info:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
