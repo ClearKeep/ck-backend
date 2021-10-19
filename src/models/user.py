@@ -7,11 +7,11 @@ from utils.logger import *
 class User(Database.get().Model):
     __tablename__ = 'user'
     id = Database.get().Column(Database.get().String(36), primary_key=True)
-    # for normal user, hash_code is hash_password. for social user, hash_code is hash_pincode
-    hash_code = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
-    hash_code_salt = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     iv_parameter = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     email = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
+    password_verifier = Database.get().Column(Database.get().String(2048), unique=False, nullable=True)
+    salt = Database.get().Column(Database.get().String(512), unique=False, nullable=True)
+    srp_server_private = Database.get().Column(Database.get().String(2048), unique=False, nullable=True)
     display_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     first_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
     last_name = Database.get().Column(Database.get().String(255), unique=False, nullable=True)
@@ -39,6 +39,7 @@ class User(Database.get().Model):
         try:
             Database.get_session().merge(self)
             Database.get_session().commit()
+            return self
         except Exception as e:
             Database.get_session().rollback()
             logger.error(e)
@@ -46,6 +47,14 @@ class User(Database.get().Model):
     def get(self, client_id):
         user = Database.get_session().query(User) \
             .filter(User.id == client_id) \
+            .one_or_none()
+        Database.get().session.remove()
+        return user
+
+    def get_user_by_auth_source(self, email, auth_source):
+        user = Database.get_session().query(User) \
+            .filter(User.email == email) \
+            .filter(User.auth_source == auth_source) \
             .one_or_none()
         Database.get().session.remove()
         return user

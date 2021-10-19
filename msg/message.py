@@ -3,6 +3,7 @@ from src.controllers.base import ErrorResponse
 
 class Message:
     UNAUTHENTICATED = 1000
+    AUTHENTICATION_FAILED = 1079
     INVALID_ACCESS_TOKEN = 1077
     AUTH_USER_NOT_FOUND = 1001
     REGISTER_USER_ALREADY_EXISTS = 1002
@@ -108,6 +109,7 @@ class Message:
 
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
+        AUTHENTICATION_FAILED: "Fail to authenticate",
         INVALID_ACCESS_TOKEN: "Invalid access token or token is expired. Please try to login again",
         AUTH_USER_NOT_FOUND: "Login information is not correct. Please try again",
         REGISTER_USER_ALREADY_EXISTS: "This email address is already being used",

@@ -9,7 +9,7 @@ from utils.encrypt import EncryptUtils
 from middlewares.permission import *
 from middlewares.request_logged import *
 from utils.config import *
-
+import srp
 
 class AuthController(BaseController):
     def __init__(self, *kwargs):
@@ -17,21 +17,75 @@ class AuthController(BaseController):
         self.user_service = UserService()
 
     @request_logged
-    async def login(self, request, context):
+    async def login_challenge(self, request, context):
         try:
-            token = self.service.token(request.email, request.hash_password)
+            email = request.email
+            user_info = self.user_service.get_user_by_auth_source(email, "account")
+            if not user_info:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            password_verifier = bytes.fromhex(user_info.password_verifier)
+            salt = bytes.fromhex(user_info.salt)
+            client_public = bytes.fromhex(request.client_public)
+
+            srv = srp.Verifier(email, salt, password_verifier, client_public)
+            s, B = srv.get_challenge()
+            # need store private b of server
+            logger.info("server_public=")
+            logger.info(s)
+            logger.info("server_private=")
+            logger.info(B)
+
+            server_private = srv.get_ephemeral_secret().hex()
+            logger.info(server_private)
+            user_info.srp_server_private = server_private
+            user_info.update()
+
+            public_challenge_b = B.hex()
+            auth_challenge_res = auth_messages.AuthChallengeRes(
+                salt=user_info.salt,
+                public_challenge_b=public_challenge_b
+            )
+            return auth_challenge_res
+
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.AUTHENTICATION_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def login_authenticate(self, request, context):
+        try:
+            user_name = request.user_name
+            exists_user = self.service.get_user_by_email(user_name)
+            client_session_key_proof = request.client_session_key_proof
+            user_info = self.user_service.get_user_by_id(exists_user["id"])
+
+            if not user_info:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            password_verifier = bytes.fromhex(user_info.password_verifier)
+            salt = bytes.fromhex(user_info.salt)
+            client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
+
+            srv = srp.Verifier(username=user_name, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
+            srv.verify_session(client_session_key_proof_bytes)
+            authenticated = srv.authenticated()
+
+            if not authenticated:
+                raise Exception(Message.AUTHENTICATION_FAILED)
+
+            token = self.service.token(user_name, user_info.password_verifier)
             if token:
-                introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-                user_id = introspect_token['sub']
-                require_update_client_key, hash_password_salt, iv_parameter = self.user_service.validate_hash_pass(user_id, request.hash_password)
-                require_actions = ['update_client_key'] if require_update_client_key else []
+                # introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+                user_id = user_info.id
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
-                hash_key = EncryptUtils.encoded_hash(
-                    request.hash_password, user_id
-                )
+
                 if not mfa_state:
                     ### check if login require otp check
-                    self.user_service.update_last_login(user_id=user_id)
                     client_key_obj = SignalService().peer_get_client_key(user_id)
                     client_key_peer = auth_messages.PeerGetClientKeyResponse(
                                             clientId=user_id,
@@ -46,44 +100,36 @@ class AuthController(BaseController):
                                             signedPreKeySignature=client_key_obj.signed_prekey_signature,
                                             identityKeyEncrypted=client_key_obj.identity_key_encrypted
                                         )
-                    require_action_mess = ', '.join(require_actions)
+                    self.user_service.update_last_login(user_id=user_id)
                     auth_message = auth_messages.AuthRes(
-                                        workspace_domain=get_owner_workspace_domain(),
-                                        workspace_name=get_system_config()['server_name'],
-                                        access_token=token['access_token'],
-                                        expires_in=token['expires_in'],
-                                        refresh_expires_in=token['refresh_expires_in'],
-                                        refresh_token=token['refresh_token'],
-                                        token_type=token['token_type'],
-                                        session_state=token['session_state'],
-                                        scope=token['scope'],
-                                        hash_key=hash_key,
-                                        require_action=require_action_mess,
-                                        salt=hash_password_salt,
-                                        client_key_peer = client_key_peer,
-                                        iv_parameter=iv_parameter
-                                    )
+                        workspace_domain=get_owner_workspace_domain(),
+                        workspace_name=get_system_config()['server_name'],
+                        access_token=token['access_token'],
+                        expires_in=token['expires_in'],
+                        refresh_expires_in=token['refresh_expires_in'],
+                        refresh_token=token['refresh_token'],
+                        token_type=token['token_type'],
+                        session_state=token['session_state'],
+                        scope=token['scope'],
+                        hash_key="",
+                        salt=salt,
+                        client_key_peer = client_key_peer,
+                        iv_parameter=user_info.iv_parameter
+                    )
                 else:
-                    pre_access_token = self.service.create_otp_service(user_id)
-                    require_actions += ["mfa_validate_otp"]
-                    require_action_mess = ', '.join(require_actions)
+                    otp_hash = self.service.create_otp_service(user_id)
                     auth_message = auth_messages.AuthRes(
-                                        salt=hash_password_salt,
-                                        workspace_domain=get_owner_workspace_domain(),
-                                        workspace_name=get_system_config()['server_name'],
-                                        hash_key=hash_key,
-                                        sub=user_id,
-                                        pre_access_token=pre_access_token,
-                                        require_action=require_action_mess
-                                    )
+                        workspace_domain=get_owner_workspace_domain(),
+                        workspace_name=get_system_config()['server_name'],
+                        hash_key="",
+                        sub=user_id,
+                        otp_hash=otp_hash,
+                        require_action="mfa_validate_otp"
+                    )
                 return auth_message
-            else:
-                raise Exception(Message.AUTH_USER_NOT_FOUND)
-
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -94,17 +140,19 @@ class AuthController(BaseController):
     @request_logged
     async def login_google(self, request, context):
         try:
-            user_name, is_registered_pincode = self.service.google_login(request.id_token)
+            user_name, user_id, is_registered_pincode = self.service.google_login(request.id_token)
+            user_info = self.user_service.get_user_by_id(user_id)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
-            pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
-            auth_response = auth_messages.AuthRes(
-                                workspace_domain=get_owner_workspace_domain(),
-                                workspace_name=get_system_config()['server_name'],
-                                sub=user_name,
-                                pre_access_token=pre_access_token,
-                                require_action=require_action_mess
-                            )
-            return auth_response
+            if require_action_mess == "verify_pincode":
+                reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
+            else:
+                reset_pincode_token = ""
+            auth_challenge_res = auth_messages.SocialLoginRes(
+                                    user_name=user_name,
+                                    require_action=require_action_mess,
+                                    reset_pincode_token=reset_pincode_token
+                                )
+            return auth_challenge_res
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -119,17 +167,20 @@ class AuthController(BaseController):
     @request_logged
     async def login_office(self, request, context):
         try:
-            user_name, is_registered_pincode = self.service.office_login(request.access_token)
+            user_name, user_id, is_registered_pincode = self.service.office_login(request.access_token)
+            user_info = self.user_service.get_user_by_id(user_id)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
-            pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
-            auth_response = auth_messages.AuthRes(
-                                workspace_domain=get_owner_workspace_domain(),
-                                workspace_name=get_system_config()['server_name'],
-                                sub=user_name,
-                                pre_access_token=pre_access_token,
-                                require_action=require_action_mess
-                            )
-            return auth_response
+            if require_action_mess == "verify_pincode":
+                reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
+            else:
+                reset_pincode_token = ""
+            auth_challenge_res = auth_messages.SocialLoginRes(
+                                    user_name=user_name,
+                                    require_action=require_action_mess,
+                                    reset_pincode_token=reset_pincode_token
+                                )
+            return auth_challenge_res
+
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -144,17 +195,19 @@ class AuthController(BaseController):
     @request_logged
     async def login_facebook(self, request, context):
         try:
-            user_name, is_registered_pincode = self.service.facebook_login(request.access_token)
+            user_name, user_id, is_registered_pincode = self.service.facebook_login(request.access_token)
+            user_info = self.user_service.get_user_by_id(user_id)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
-            pre_access_token = self.service.hash_pre_access_token(user_name, require_action_mess)
-            auth_response = auth_messages.AuthRes(
-                                workspace_domain=get_owner_workspace_domain(),
-                                workspace_name=get_system_config()['server_name'],
-                                sub=user_name,
-                                pre_access_token=pre_access_token,
-                                require_action=require_action_mess
-                            )
-            return auth_response
+            if require_action_mess == "verify_pincode":
+                reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
+            else:
+                reset_pincode_token = ""
+            auth_challenge_res = auth_messages.SocialLoginRes(
+                                    user_name=user_name,
+                                    require_action=require_action_mess,
+                                    reset_pincode_token=reset_pincode_token
+                                )
+            return auth_challenge_res
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -167,23 +220,68 @@ class AuthController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    async def register(self, request, context):
+    async def login_social_challange(self, request, context):
+        try:
+            user_name = request.user_name
+            exists_user = self.service.get_user_by_email(user_name)
+            user_info = self.user_service.get_user_by_id(exists_user["id"])
+            if not user_info:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            password_verifier = bytes.fromhex(user_info.password_verifier)
+            salt = bytes.fromhex(user_info.salt)
+            client_public = bytes.fromhex(request.client_public)
+
+            srv = srp.Verifier(user_name, salt, password_verifier, client_public)
+            s, B = srv.get_challenge()
+            # need store private b of server
+            logger.info("server_public=")
+            logger.info(s)
+            logger.info("server_private=")
+            logger.info(B)
+
+            server_private = srv.get_ephemeral_secret().hex()
+            logger.info(server_private)
+            user_info.srp_server_private = server_private
+            user_info.update()
+
+            public_challenge_b = B.hex()
+            auth_challenge_res = auth_messages.AuthChallengeRes(
+                salt=user_info.salt,
+                public_challenge_b=public_challenge_b
+            )
+            return auth_challenge_res
+
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.AUTHENTICATION_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def register_srp(self, request, context):
         # check exist user
         try:
-            exists_user = self.service.get_user_by_email(request.email)
+            email = request.email
+            display_name = request.display_name
+            password_verifier = request.password_verifier
+            salt = request.salt
+            iv_parameter = request.iv_parameter
+
+            exists_user = self.service.get_user_by_email(email)
             if exists_user:
                 raise Exception(Message.REGISTER_USER_ALREADY_EXISTS)
 
-            # register new user on keycloak
-            new_user_id = self.service.register_user(request.email, request.hash_password, request.display_name)
+            # register new user
+            new_user_id = self.service.register_srp_user(email, password_verifier, display_name)
 
-            if not new_user_id:
-                # self.service.delete_user(new_user_id)
-                raise Exception(Message.REGISTER_USER_FAILED)
-
-            # create new user in database
-            new_user = UserService().create_new_user(new_user_id, request.email, request.display_name, request.hash_password, request.salt, request.iv_parameter,  'account')
-            if new_user is None:
+            if new_user_id:
+                # create new user in database
+                UserService().create_new_user_srp(new_user_id, email, password_verifier, salt, iv_parameter, display_name, 'account')
+            else:
                 self.service.delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
             try:
@@ -193,7 +291,9 @@ class AuthController(BaseController):
                 UserService().delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
 
-            return auth_messages.RegisterRes()
+            return auth_messages.RegisterSRPRes(
+                error=''
+            )
 
         except Exception as e:
             logger.error(e)
@@ -258,6 +358,8 @@ class AuthController(BaseController):
             success_status, token = self.service.verify_otp(request.user_id, request.otp_hash, request.otp_code)
             if not success_status:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
+            introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+            user_info = self.user_service.get_user_by_id(introspect_token['sub'])
             require_action = ""
             client_key_obj = SignalService().peer_get_client_key(request.user_id)
             client_key_peer = auth_messages.PeerGetClientKeyResponse(
@@ -285,7 +387,9 @@ class AuthController(BaseController):
                 session_state=token['session_state'],
                 scope=token['scope'],
                 require_action = require_action,
-                client_key_peer=client_key_peer
+                salt=user_info.salt,
+                client_key_peer=client_key_peer,
+                iv_parameter=user_info.iv_parameter
             )
 
         except Exception as e:
@@ -318,14 +422,16 @@ class AuthController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
     async def register_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "register_pincode")
-            exists_user = self.service.get_user_by_email(request.user_id)
+            exists_user = self.service.get_user_by_email(request.user_name)
             if not exists_user:
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
-            if not success_status:
-                raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+            user_info = self.user_service.get_user_by_id(exists_user["id"])
+            if user_info.password_verifier is not None:
+                raise Exception(Message.REGISTER_USER_ALREADY_EXISTS)
+            salt = request.salt
             self.user_service.change_password(request, None, request.hash_pincode, exists_user['id'])
             # using hash_pincode as password for social user
             SignalService().peer_register_client_key(exists_user['id'], request.client_key_peer)
@@ -351,7 +457,7 @@ class AuthController(BaseController):
                                     signedPreKeySignature=client_key_obj.signedPreKeySignature,
                                     identityKeyEncrypted=client_key_obj.identityKeyEncrypted
                                 )
-            token = self.service.token(request.user_id, request.hash_pincode)
+            token = self.service.token(request.user_name, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
             self.user_service.update_last_login(user_id=introspect_token['sub'])
@@ -380,24 +486,29 @@ class AuthController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
     async def reset_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "verify_pincode")
-            exists_user = self.service.get_user_by_email(request.user_id)
+            success_status = self.service.verify_hash_pre_access_token(request.user_name, request.reset_pincode_token, "reset_pincode")
+            logger.info(request.user_name)
+            exists_user = self.service.get_user_by_email(request.user_name)
+            logger.info(exists_user["id"])
             if not exists_user:
                 raise Exception(Message.USER_NOT_FOUND)
             if not success_status:
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             self.user_service.change_password(request, None, request.hash_pincode, exists_user["id"])
+            logger.info('change_password to {}'.format(request.hash_pincode))
             SignalService().client_update_peer_key(exists_user["id"], request.client_key_peer)
             try:
-                _, salt, iv_parameter = UserService().update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
+                salt, iv_parameter = self.user_service.update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:
                 logger.error(e)
                 old_client_key_peer = SignalService().peer_get_client_key(exists_user["id"])
                 SignalService().client_update_peer_key(exists_user["id"], old_client_key_peer)
                 raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             client_key_obj = request.client_key_peer
+            logger.info("client_key_obj is None: {}".format(client_key_obj is None))
             client_key_peer = auth_messages.PeerGetClientKeyResponse(
                                     clientId=exists_user["id"],
                                     workspace_domain=get_owner_workspace_domain(),
@@ -411,13 +522,15 @@ class AuthController(BaseController):
                                     signedPreKeySignature=client_key_obj.signedPreKeySignature,
                                     identityKeyEncrypted=client_key_obj.identityKeyEncrypted
                                 )
-            # logout all device before get new token for user after updated new key
+            #logout all device before get new token for user after updated new key
             user_sessions = KeyCloakUtils.get_sessions(user_id=exists_user["id"])
             for user_session in user_sessions:
                 KeyCloakUtils.remove_session(session_id=user_session['id'])
-            token = self.service.token(request.user_id, request.hash_pincode)
+
+            logger.info("logout")
+            token = self.service.token(request.user_name, request.hash_pincode)
+            logger.info(token['access_token'])
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
                 workspace_name=get_system_config()['server_name'],
@@ -428,7 +541,6 @@ class AuthController(BaseController):
                 token_type=token['token_type'],
                 session_state=token['session_state'],
                 scope=token['scope'],
-                hash_key=hash_key,
                 salt=salt,
                 client_key_peer=client_key_peer,
                 iv_parameter=iv_parameter
@@ -445,11 +557,24 @@ class AuthController(BaseController):
 
     async def verify_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "verify_pincode")
-            token = self.service.token(request.user_id, request.hash_pincode)
+            exists_user = self.service.get_user_by_email(request.user_name)
+            user_info = self.user_service.get_user_by_id(exists_user["id"])
+            if not user_info:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            password_verifier = bytes.fromhex(user_info.password_verifier)
+            salt = bytes.fromhex(user_info.salt)
+            client_session_key_proof = request.client_session_key_proof
+            client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
+
+            srv = srp.Verifier(username=request.user_name, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
+            srv.verify_session(client_session_key_proof_bytes)
+            authenticated = srv.authenticated()
+
+            if not authenticated:
+                raise Exception(Message.AUTHENTICATION_FAILED)
+
+            token = self.service.token(request.user_name, user_info.password_verifier)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
-            success_status, hash_pincode_salt, iv_parameter = self.user_service.validate_hash_pincode(introspect_token['sub'], request.hash_pincode)
             if not token:
                 raise Exception(Message.VERIFY_PINCODE_FAILED)
 
@@ -471,7 +596,6 @@ class AuthController(BaseController):
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
                 workspace_name=get_system_config()['server_name'],
-                hash_key=hash_key,
                 access_token=token["access_token"],
                 expires_in=token['expires_in'],
                 refresh_expires_in=token['refresh_expires_in'],
@@ -479,9 +603,9 @@ class AuthController(BaseController):
                 token_type=token['token_type'],
                 session_state=token['session_state'],
                 scope=token['scope'],
-                salt=hash_pincode_salt,
+                salt=user_info.salt,
                 client_key_peer = client_key_peer,
-                iv_parameter=iv_parameter
+                iv_parameter=user_info.iv_parameter
             )
         except Exception as e:
             logger.error(e)

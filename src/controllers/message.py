@@ -36,7 +36,7 @@ class MessageController(BaseController):
             group = GroupService().get_group_info(group_id)
 
             if group and group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
-                workspace_request = message_pb2.WorkspacePublishRequest(
+                workspace_request = message_pb2.WorkspaceGetMessagesInGroupRequest(
                     group_id = group.owner_group_id,
                     client_id = client_id,
                     off_set = request.off_set,
@@ -149,16 +149,18 @@ class MessageController(BaseController):
                 if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                         for notify_token in client.User.tokens:
+                            logger.info('device_id in handle {}'.format(notify_token.device_id))
+                        for notify_token in client.User.tokens:
                             device_id = notify_token.device_id
-                            # if device_id == request.from_client_device_id:
-                            #     continue
+                            logger.info('device_id in real loop in handle {}'.format(device_id))
+                            if device_id == request.from_client_device_id:
+                                continue
                             message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
-                            #message_channel = "{}/message".format(client.GroupClientKey.client_id)
-
                             new_message_res_object = deepcopy(new_message)
                             new_message_res_object.client_id = client.GroupClientKey.client_id
 
                             if message_channel in client_message_queue:
+                                logger.info('message channel in handle {}'.format(message_channel))
                                 client_message_queue[message_channel].put(new_message_res_object)
                             else:
                                 if new_message_res_object.group_type == 'peer' and new_message_res_object.client_id == request.from_client_id:
@@ -267,6 +269,7 @@ class MessageController(BaseController):
                             # continue
             else:
                 # call to other server
+                logger.info('push to client {} in server {}'.format(message_res_object.client_id, client.GroupClientKey.client_workspace_domain))
                 request2 = message_pb2.WorkspacePublishRequest(
                     from_client_id=message_res_object.from_client_id,
                     from_client_workspace_domain=owner_workspace_domain,
@@ -309,14 +312,14 @@ class MessageController(BaseController):
         push_service = NotifyPushService()
 
         for client in lst_client:
-            # TODO: get all notify_token from NotifyToken
+            for notify_token in client.User.tokens:
+                logger.info('device_id in handle {}'.format(notify_token.device_id))
             for notify_token in client.User.tokens:
                 device_id = notify_token.device_id
+                logger.info('device_id in real loop in handle {}'.format(device_id))
                 if device_id == request.from_client_device_id:
                     continue
                 message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
-                #if client.GroupClientKey.client_id != request.fromClientId:
-                #message_channel = "{}/message".format(client.GroupClientKey.client_id)
 
                 new_message_res_object = deepcopy(message_res_object)
                 new_message_res_object.group_id = client.GroupClientKey.group_id
@@ -368,7 +371,7 @@ class MessageController(BaseController):
         # message_res_object.group_id = group.id
         return message_res_object
 
-    # @request_logged
+    @request_logged
     @auth_required
     async def Listen(self, request, context: grpc.aio.ServicerContext):
         header_data = dict(context.invocation_metadata())
@@ -376,6 +379,7 @@ class MessageController(BaseController):
         user_id = introspect_token['sub']
 
         message_channel = "message/{}/{}".format(user_id, request.device_id)
+        logger.info('user {} in device {} has listened'.format(user_id, request.device_id))
         message_response = None
         while message_channel in client_message_queue:
             try:

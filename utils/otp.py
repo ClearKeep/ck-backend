@@ -42,9 +42,9 @@ class OTPServer(object):
         return datetime.datetime.now() + life_time
 
     @staticmethod
-    def sign_message(user_name, require_action):
+    def sign_message(kid, require_action):
         message = {
-            "iss": user_name,
+            "iss": kid,
             "aud": require_action,
             "exp": int(time.time()) + 86400
         }
@@ -56,12 +56,10 @@ class OTPServer(object):
         return message
 
     @staticmethod
-    def hash_uid(user_id, valid_time, hash_valid_time=True):
-        if hash_valid_time:
-            secret_string = "{}{}{}".format(user_id, valid_time, secret_key)
-        else:
-            secret_string = "{}{}{}".format(user_id, secret_key)
+    def hash_uid(kid, valid_time, require_action=''):
+        secret_string = "{}{}{}{}".format(kid, valid_time, secret_key, require_action)
         hash_string = md5(secret_string.encode("utf-8")).hexdigest()
+        pre_access_token = '.'.join([kid, hash_string])
         return hash_string
 
     @staticmethod
@@ -69,11 +67,9 @@ class OTPServer(object):
         return datetime.datetime.now().replace(hour=0, minute=0,second=0, microsecond=0) + datetime.timedelta(days=1)
 
     @staticmethod
-    def verify_hash_code(user_id, valid_time, hash_string, hash_valid_time=True):
-        if hash_valid_time:
-            verify_secret_string = "{}{}{}".format(user_id, valid_time, secret_key)
-        else:
-            verify_secret_string = "{}{}{}".format(user_id, secret_key)
+    def verify_hash_code(kid, valid_time, pre_access_token, require_action=''):
+        kid, hash_string = pre_access_token.split('.', 1)
+        verify_secret_string = "{}{}{}{}".format(kid, valid_time, secret_key, require_action)
         verify_hash_string = md5(verify_secret_string.encode("utf-8")).hexdigest()
         return compare_hash(verify_hash_string, hash_string)
 
