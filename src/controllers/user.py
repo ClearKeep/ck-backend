@@ -28,7 +28,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             salt = bytes.fromhex(user_info.salt)
             client_public = bytes.fromhex(request.client_public)
 
-            srv = srp.Verifier(email, salt, password_verifier, client_public)
+            srv = srp.Verifier(user_name, salt, password_verifier, client_public)
             s, B = srv.get_challenge()
             # need store private b of server
             logger.info("server_public=")
