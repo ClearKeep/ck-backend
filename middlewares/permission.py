@@ -24,8 +24,6 @@ def auth_required(f):
                 return
         # server request with domain.
         logger.info('peer context: ' + json.dumps(context.peer()))
-        request = args[1]
-        logger.info('client_id {}: clientId: {} user_id: {}'.format(getattr(request, 'client_id', '[empty]'), getattr(request, 'clientId', '[empty]'),  getattr(request, 'user_id', '[empty]')) )
         if _fd_server_check(context.peer()):
             return await f(*args, **kwargs)
         # return error

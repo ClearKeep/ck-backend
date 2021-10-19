@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x11protos/auth.proto\x12\x04\x61uth\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\xf0\x01\n\x1cPeerRegisterClientKeyRequest\x12\x16\n\x0eregistrationId\x18\x01 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x02 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x03 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x04 \x01(\x05\x12\x0e\n\x06preKey\x18\x05 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x06 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\x07 \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\x08 \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\t \x01(\t\"\x98\x02\n\x18PeerGetClientKeyResponse\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x16\n\x0eregistrationId\x18\x03 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x04 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x05 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x06 \x01(\x05\x12\x0e\n\x06preKey\x18\x07 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x08 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\t \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\n \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\x0b \x01(\t\"\\\n\x07\x41uthReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x15\n\rhash_password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"5\n\tLogoutReq\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x15\n\rrefresh_token\x18\x02 \x01(\t\"\x1e\n\rFogotPassWord\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"\x8f\x03\n\x07\x41uthRes\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x16\n\x0eworkspace_name\x18\x02 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x03 \x01(\t\x12\x12\n\nexpires_in\x18\x04 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x05 \x01(\x03\x12\x15\n\rrefresh_token\x18\x06 \x01(\t\x12\x12\n\ntoken_type\x18\x07 \x01(\t\x12\x15\n\rsession_state\x18\x08 \x01(\t\x12\r\n\x05scope\x18\t \x01(\t\x12\x10\n\x08hash_key\x18\n \x01(\t\x12\x0b\n\x03sub\x18\x0b \x01(\t\x12\x18\n\x10pre_access_token\x18\x0c \x01(\t\x12\x16\n\x0erequire_action\x18\r \x01(\t\x12\x0c\n\x04salt\x18\x0e \x01(\t\x12\x37\n\x0f\x63lient_key_peer\x18\x0f \x01(\x0b\x32\x1e.auth.PeerGetClientKeyResponse\x12\x14\n\x0civ_parameter\x18\x10 \x01(\t\x12\r\n\x05\x65rror\x18\x11 \x01(\t\"\xfe\x01\n\x0bRegisterReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x15\n\rhash_password\x18\x04 \x01(\t\x12\x11\n\tauth_type\x18\x05 \x01(\x03\x12\x12\n\nfirst_name\x18\x06 \x01(\t\x12\x11\n\tlast_name\x18\x07 \x01(\t\x12\x0c\n\x04salt\x18\x08 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\t \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\n \x01(\t\"\x1c\n\x0bRegisterRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"<\n\x0eGoogleLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08id_token\x18\x02 \x01(\t\"@\n\x0eOfficeLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"B\n\x10\x46\x61\x63\x65\x62ookLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"X\n\x0eSocialLoginRes\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x16\n\x0erequire_action\x18\x02 \x01(\t\x12\x1b\n\x13reset_pincode_token\x18\x03 \x01(\t\"\x9e\x01\n\x12RegisterPinCodeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x14\n\x0chash_pincode\x18\x02 \x01(\t\x12\x0c\n\x04salt\x18\x03 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x04 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\"^\n\x10VerifyPinCodeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\"\xb8\x01\n\x0fResetPinCodeReq\x12\x1b\n\x13reset_pincode_token\x18\x01 \x01(\t\x12\x11\n\tuser_name\x18\x02 \x01(\t\x12\x14\n\x0chash_pincode\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x06 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\"L\n\x15MfaValidateOtpRequest\x12\x10\n\x08otp_code\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x10\n\x08otp_hash\x18\x03 \x01(\t\"4\n\x0fMfaResendOtpReq\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x10\n\x08otp_hash\x18\x02 \x01(\t\"C\n\x0fMfaResendOtpRes\x12\x10\n\x08otp_hash\x18\x01 \x01(\t\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\r\n\x05\x65rror\x18\x03 \x01(\t\"8\n\x10\x41uthChallengeReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\"B\n\x16\x41uthSocialChallengeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\"<\n\x10\x41uthChallengeRes\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"]\n\x0f\x41uthenticateReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\"\x85\x02\n\x0eRegisterSRPReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x19\n\x11password_verifier\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x05 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\x06 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x07 \x01(\t\x12\x11\n\tauth_type\x18\x08 \x01(\x03\x12\x12\n\nfirst_name\x18\t \x01(\t\x12\x11\n\tlast_name\x18\n \x01(\t\"\x1f\n\x0eRegisterSRPRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t2\xf4\x06\n\x04\x41uth\x12<\n\x0cregister_srp\x12\x14.auth.RegisterSRPReq\x1a\x14.auth.RegisterSRPRes\"\x00\x12;\n\x0e\x66ogot_password\x12\x13.auth.FogotPassWord\x1a\x12.auth.BaseResponse\"\x00\x12\x43\n\x0flogin_challenge\x12\x16.auth.AuthChallengeReq\x1a\x16.auth.AuthChallengeRes\"\x00\x12<\n\x0clogin_google\x12\x14.auth.GoogleLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12<\n\x0clogin_office\x12\x14.auth.OfficeLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12@\n\x0elogin_facebook\x12\x16.auth.FacebookLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12P\n\x16login_social_challange\x12\x1c.auth.AuthSocialChallengeReq\x1a\x16.auth.AuthChallengeRes\"\x00\x12<\n\x12login_authenticate\x12\x15.auth.AuthenticateReq\x1a\r.auth.AuthRes\"\x00\x12/\n\x06logout\x12\x0f.auth.LogoutReq\x1a\x12.auth.BaseResponse\"\x00\x12=\n\x10register_pincode\x12\x18.auth.RegisterPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x39\n\x0everify_pincode\x12\x16.auth.VerifyPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x37\n\rreset_pincode\x12\x15.auth.ResetPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0cvalidate_otp\x12\x1b.auth.MfaValidateOtpRequest\x1a\r.auth.AuthRes\"\x00\x12<\n\nresend_otp\x12\x15.auth.MfaResendOtpReq\x1a\x15.auth.MfaResendOtpRes\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x11protos/auth.proto\x12\x04\x61uth\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\xf0\x01\n\x1cPeerRegisterClientKeyRequest\x12\x16\n\x0eregistrationId\x18\x01 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x02 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x03 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x04 \x01(\x05\x12\x0e\n\x06preKey\x18\x05 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x06 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\x07 \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\x08 \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\t \x01(\t\"\x98\x02\n\x18PeerGetClientKeyResponse\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x16\n\x0eregistrationId\x18\x03 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x04 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x05 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x06 \x01(\x05\x12\x0e\n\x06preKey\x18\x07 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x08 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\t \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\n \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\x0b \x01(\t\"\\\n\x07\x41uthReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x15\n\rhash_password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"5\n\tLogoutReq\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x15\n\rrefresh_token\x18\x02 \x01(\t\"\x1e\n\rFogotPassWord\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"\xba\x01\n\x17\x46orgotPasswordUpdateReq\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x15\n\rhash_password\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x06 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\"\x8f\x03\n\x07\x41uthRes\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x16\n\x0eworkspace_name\x18\x02 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x03 \x01(\t\x12\x12\n\nexpires_in\x18\x04 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x05 \x01(\x03\x12\x15\n\rrefresh_token\x18\x06 \x01(\t\x12\x12\n\ntoken_type\x18\x07 \x01(\t\x12\x15\n\rsession_state\x18\x08 \x01(\t\x12\r\n\x05scope\x18\t \x01(\t\x12\x10\n\x08hash_key\x18\n \x01(\t\x12\x0b\n\x03sub\x18\x0b \x01(\t\x12\x18\n\x10pre_access_token\x18\x0c \x01(\t\x12\x16\n\x0erequire_action\x18\r \x01(\t\x12\x0c\n\x04salt\x18\x0e \x01(\t\x12\x37\n\x0f\x63lient_key_peer\x18\x0f \x01(\x0b\x32\x1e.auth.PeerGetClientKeyResponse\x12\x14\n\x0civ_parameter\x18\x10 \x01(\t\x12\r\n\x05\x65rror\x18\x11 \x01(\t\"\xfe\x01\n\x0bRegisterReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x15\n\rhash_password\x18\x04 \x01(\t\x12\x11\n\tauth_type\x18\x05 \x01(\x03\x12\x12\n\nfirst_name\x18\x06 \x01(\t\x12\x11\n\tlast_name\x18\x07 \x01(\t\x12\x0c\n\x04salt\x18\x08 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\t \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\n \x01(\t\"\x1c\n\x0bRegisterRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"<\n\x0eGoogleLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08id_token\x18\x02 \x01(\t\"@\n\x0eOfficeLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"B\n\x10\x46\x61\x63\x65\x62ookLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"X\n\x0eSocialLoginRes\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x16\n\x0erequire_action\x18\x02 \x01(\t\x12\x1b\n\x13reset_pincode_token\x18\x03 \x01(\t\"\x9e\x01\n\x12RegisterPinCodeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x14\n\x0chash_pincode\x18\x02 \x01(\t\x12\x0c\n\x04salt\x18\x03 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x04 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\"^\n\x10VerifyPinCodeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\"\xb8\x01\n\x0fResetPinCodeReq\x12\x1b\n\x13reset_pincode_token\x18\x01 \x01(\t\x12\x11\n\tuser_name\x18\x02 \x01(\t\x12\x14\n\x0chash_pincode\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x06 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\"L\n\x15MfaValidateOtpRequest\x12\x10\n\x08otp_code\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x10\n\x08otp_hash\x18\x03 \x01(\t\"4\n\x0fMfaResendOtpReq\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x10\n\x08otp_hash\x18\x02 \x01(\t\"C\n\x0fMfaResendOtpRes\x12\x10\n\x08otp_hash\x18\x01 \x01(\t\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\r\n\x05\x65rror\x18\x03 \x01(\t\"8\n\x10\x41uthChallengeReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\"B\n\x16\x41uthSocialChallengeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\"<\n\x10\x41uthChallengeRes\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"]\n\x0f\x41uthenticateReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\"\x85\x02\n\x0eRegisterSRPReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x19\n\x11password_verifier\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x05 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\x06 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x07 \x01(\t\x12\x11\n\tauth_type\x18\x08 \x01(\x03\x12\x12\n\nfirst_name\x18\t \x01(\t\x12\x11\n\tlast_name\x18\n \x01(\t\"\x1f\n\x0eRegisterSRPRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t2\xc3\x07\n\x04\x41uth\x12<\n\x0cregister_srp\x12\x14.auth.RegisterSRPReq\x1a\x14.auth.RegisterSRPRes\"\x00\x12;\n\x0e\x66ogot_password\x12\x13.auth.FogotPassWord\x1a\x12.auth.BaseResponse\"\x00\x12\x43\n\x0flogin_challenge\x12\x16.auth.AuthChallengeReq\x1a\x16.auth.AuthChallengeRes\"\x00\x12M\n\x16\x66orgot_password_update\x12\x1d.auth.ForgotPasswordUpdateReq\x1a\x12.auth.BaseResponse\"\x00\x12<\n\x0clogin_google\x12\x14.auth.GoogleLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12<\n\x0clogin_office\x12\x14.auth.OfficeLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12@\n\x0elogin_facebook\x12\x16.auth.FacebookLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12P\n\x16login_social_challange\x12\x1c.auth.AuthSocialChallengeReq\x1a\x16.auth.AuthChallengeRes\"\x00\x12<\n\x12login_authenticate\x12\x15.auth.AuthenticateReq\x1a\r.auth.AuthRes\"\x00\x12/\n\x06logout\x12\x0f.auth.LogoutReq\x1a\x12.auth.BaseResponse\"\x00\x12=\n\x10register_pincode\x12\x18.auth.RegisterPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x39\n\x0everify_pincode\x12\x16.auth.VerifyPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x37\n\rreset_pincode\x12\x15.auth.ResetPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0cvalidate_otp\x12\x1b.auth.MfaValidateOtpRequest\x1a\r.auth.AuthRes\"\x00\x12<\n\nresend_otp\x12\x15.auth.MfaResendOtpReq\x1a\x15.auth.MfaResendOtpRes\"\x00\x62\x06proto3'
 )
 
 
@@ -371,6 +371,73 @@ _FOGOTPASSWORD = _descriptor.Descriptor(
 )
 
 
+_FORGOTPASSWORDUPDATEREQ = _descriptor.Descriptor(
+  name='ForgotPasswordUpdateReq',
+  full_name='auth.ForgotPasswordUpdateReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='pre_access_token', full_name='auth.ForgotPasswordUpdateReq.pre_access_token', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='email', full_name='auth.ForgotPasswordUpdateReq.email', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='hash_password', full_name='auth.ForgotPasswordUpdateReq.hash_password', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='salt', full_name='auth.ForgotPasswordUpdateReq.salt', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='iv_parameter', full_name='auth.ForgotPasswordUpdateReq.iv_parameter', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_key_peer', full_name='auth.ForgotPasswordUpdateReq.client_key_peer', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=766,
+  serialized_end=952,
+)
+
+
 _AUTHRES = _descriptor.Descriptor(
   name='AuthRes',
   full_name='auth.AuthRes',
@@ -510,8 +577,8 @@ _AUTHRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=766,
-  serialized_end=1165,
+  serialized_start=955,
+  serialized_end=1354,
 )
 
 
@@ -605,8 +672,8 @@ _REGISTERREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1168,
-  serialized_end=1422,
+  serialized_start=1357,
+  serialized_end=1611,
 )
 
 
@@ -637,8 +704,8 @@ _REGISTERRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1424,
-  serialized_end=1452,
+  serialized_start=1613,
+  serialized_end=1641,
 )
 
 
@@ -676,8 +743,8 @@ _GOOGLELOGINREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1454,
-  serialized_end=1514,
+  serialized_start=1643,
+  serialized_end=1703,
 )
 
 
@@ -715,8 +782,8 @@ _OFFICELOGINREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1516,
-  serialized_end=1580,
+  serialized_start=1705,
+  serialized_end=1769,
 )
 
 
@@ -754,8 +821,8 @@ _FACEBOOKLOGINREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1582,
-  serialized_end=1648,
+  serialized_start=1771,
+  serialized_end=1837,
 )
 
 
@@ -800,8 +867,8 @@ _SOCIALLOGINRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1650,
-  serialized_end=1738,
+  serialized_start=1839,
+  serialized_end=1927,
 )
 
 
@@ -860,8 +927,8 @@ _REGISTERPINCODEREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1741,
-  serialized_end=1899,
+  serialized_start=1930,
+  serialized_end=2088,
 )
 
 
@@ -906,8 +973,8 @@ _VERIFYPINCODEREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1901,
-  serialized_end=1995,
+  serialized_start=2090,
+  serialized_end=2184,
 )
 
 
@@ -973,8 +1040,8 @@ _RESETPINCODEREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1998,
-  serialized_end=2182,
+  serialized_start=2187,
+  serialized_end=2371,
 )
 
 
@@ -1019,8 +1086,8 @@ _MFAVALIDATEOTPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2184,
-  serialized_end=2260,
+  serialized_start=2373,
+  serialized_end=2449,
 )
 
 
@@ -1058,8 +1125,8 @@ _MFARESENDOTPREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2262,
-  serialized_end=2314,
+  serialized_start=2451,
+  serialized_end=2503,
 )
 
 
@@ -1104,8 +1171,8 @@ _MFARESENDOTPRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2316,
-  serialized_end=2383,
+  serialized_start=2505,
+  serialized_end=2572,
 )
 
 
@@ -1143,8 +1210,8 @@ _AUTHCHALLENGEREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2385,
-  serialized_end=2441,
+  serialized_start=2574,
+  serialized_end=2630,
 )
 
 
@@ -1182,8 +1249,8 @@ _AUTHSOCIALCHALLENGEREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2443,
-  serialized_end=2509,
+  serialized_start=2632,
+  serialized_end=2698,
 )
 
 
@@ -1221,8 +1288,8 @@ _AUTHCHALLENGERES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2511,
-  serialized_end=2571,
+  serialized_start=2700,
+  serialized_end=2760,
 )
 
 
@@ -1267,8 +1334,8 @@ _AUTHENTICATEREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2573,
-  serialized_end=2666,
+  serialized_start=2762,
+  serialized_end=2855,
 )
 
 
@@ -1362,8 +1429,8 @@ _REGISTERSRPREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2669,
-  serialized_end=2930,
+  serialized_start=2858,
+  serialized_end=3119,
 )
 
 
@@ -1394,10 +1461,11 @@ _REGISTERSRPRES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2932,
-  serialized_end=2963,
+  serialized_start=3121,
+  serialized_end=3152,
 )
 
+_FORGOTPASSWORDUPDATEREQ.fields_by_name['client_key_peer'].message_type = _PEERREGISTERCLIENTKEYREQUEST
 _AUTHRES.fields_by_name['client_key_peer'].message_type = _PEERGETCLIENTKEYRESPONSE
 _REGISTERREQ.fields_by_name['client_key_peer'].message_type = _PEERREGISTERCLIENTKEYREQUEST
 _REGISTERPINCODEREQ.fields_by_name['client_key_peer'].message_type = _PEERREGISTERCLIENTKEYREQUEST
@@ -1409,6 +1477,7 @@ DESCRIPTOR.message_types_by_name['PeerGetClientKeyResponse'] = _PEERGETCLIENTKEY
 DESCRIPTOR.message_types_by_name['AuthReq'] = _AUTHREQ
 DESCRIPTOR.message_types_by_name['LogoutReq'] = _LOGOUTREQ
 DESCRIPTOR.message_types_by_name['FogotPassWord'] = _FOGOTPASSWORD
+DESCRIPTOR.message_types_by_name['ForgotPasswordUpdateReq'] = _FORGOTPASSWORDUPDATEREQ
 DESCRIPTOR.message_types_by_name['AuthRes'] = _AUTHRES
 DESCRIPTOR.message_types_by_name['RegisterReq'] = _REGISTERREQ
 DESCRIPTOR.message_types_by_name['RegisterRes'] = _REGISTERRES
@@ -1471,6 +1540,13 @@ FogotPassWord = _reflection.GeneratedProtocolMessageType('FogotPassWord', (_mess
   # @@protoc_insertion_point(class_scope:auth.FogotPassWord)
   })
 _sym_db.RegisterMessage(FogotPassWord)
+
+ForgotPasswordUpdateReq = _reflection.GeneratedProtocolMessageType('ForgotPasswordUpdateReq', (_message.Message,), {
+  'DESCRIPTOR' : _FORGOTPASSWORDUPDATEREQ,
+  '__module__' : 'protos.auth_pb2'
+  # @@protoc_insertion_point(class_scope:auth.ForgotPasswordUpdateReq)
+  })
+_sym_db.RegisterMessage(ForgotPasswordUpdateReq)
 
 AuthRes = _reflection.GeneratedProtocolMessageType('AuthRes', (_message.Message,), {
   'DESCRIPTOR' : _AUTHRES,
@@ -1614,8 +1690,8 @@ _AUTH = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=2966,
-  serialized_end=3850,
+  serialized_start=3155,
+  serialized_end=4118,
   methods=[
   _descriptor.MethodDescriptor(
     name='register_srp',
@@ -1648,9 +1724,19 @@ _AUTH = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
+    name='forgot_password_update',
+    full_name='auth.Auth.forgot_password_update',
+    index=3,
+    containing_service=None,
+    input_type=_FORGOTPASSWORDUPDATEREQ,
+    output_type=_BASERESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
     name='login_google',
     full_name='auth.Auth.login_google',
-    index=3,
+    index=4,
     containing_service=None,
     input_type=_GOOGLELOGINREQ,
     output_type=_SOCIALLOGINRES,
@@ -1660,7 +1746,7 @@ _AUTH = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='login_office',
     full_name='auth.Auth.login_office',
-    index=4,
+    index=5,
     containing_service=None,
     input_type=_OFFICELOGINREQ,
     output_type=_SOCIALLOGINRES,
@@ -1670,7 +1756,7 @@ _AUTH = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='login_facebook',
     full_name='auth.Auth.login_facebook',
-    index=5,
+    index=6,
     containing_service=None,
     input_type=_FACEBOOKLOGINREQ,
     output_type=_SOCIALLOGINRES,
@@ -1680,7 +1766,7 @@ _AUTH = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='login_social_challange',
     full_name='auth.Auth.login_social_challange',
-    index=6,
+    index=7,
     containing_service=None,
     input_type=_AUTHSOCIALCHALLENGEREQ,
     output_type=_AUTHCHALLENGERES,
@@ -1690,7 +1776,7 @@ _AUTH = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='login_authenticate',
     full_name='auth.Auth.login_authenticate',
-    index=7,
+    index=8,
     containing_service=None,
     input_type=_AUTHENTICATEREQ,
     output_type=_AUTHRES,
@@ -1700,7 +1786,7 @@ _AUTH = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='logout',
     full_name='auth.Auth.logout',
-    index=8,
+    index=9,
     containing_service=None,
     input_type=_LOGOUTREQ,
     output_type=_BASERESPONSE,
@@ -1710,7 +1796,7 @@ _AUTH = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='register_pincode',
     full_name='auth.Auth.register_pincode',
-    index=9,
+    index=10,
     containing_service=None,
     input_type=_REGISTERPINCODEREQ,
     output_type=_AUTHRES,
@@ -1720,7 +1806,7 @@ _AUTH = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='verify_pincode',
     full_name='auth.Auth.verify_pincode',
-    index=10,
+    index=11,
     containing_service=None,
     input_type=_VERIFYPINCODEREQ,
     output_type=_AUTHRES,
@@ -1730,7 +1816,7 @@ _AUTH = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='reset_pincode',
     full_name='auth.Auth.reset_pincode',
-    index=11,
+    index=12,
     containing_service=None,
     input_type=_RESETPINCODEREQ,
     output_type=_AUTHRES,
@@ -1740,7 +1826,7 @@ _AUTH = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='validate_otp',
     full_name='auth.Auth.validate_otp',
-    index=12,
+    index=13,
     containing_service=None,
     input_type=_MFAVALIDATEOTPREQUEST,
     output_type=_AUTHRES,
@@ -1750,7 +1836,7 @@ _AUTH = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='resend_otp',
     full_name='auth.Auth.resend_otp',
-    index=13,
+    index=14,
     containing_service=None,
     input_type=_MFARESENDOTPREQ,
     output_type=_MFARESENDOTPRES,

@@ -322,6 +322,43 @@ class AuthController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @auth_required
+    async def forgot_password_update(self, request, context):
+        try:
+            user_info = self.user_service.get_user_by_auth_source(request.email, "account")
+            self.service.verify_hash_pre_access_token(user_info.id, request.pre_access_token, "forgot_password")
+            self.user_service.change_password(request, user_info.password_verifier, request.hash_password, user_info.id)
+            old_client_key_peer = SignalService().peer_get_client_key(user_info.id)
+            try:
+                SignalService().client_update_peer_key(user_info.id, request.client_key_peer)
+            except Exception as e:
+                logger.error(e)
+                self.user_service.change_password(request, request.hash_password, user_info.password_verifier,  user_info.id)
+                raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+            try:
+                salt, iv_parameter = self.user_service.update_hash_pass(user_info.id, request.hash_password)
+            except Exception as e:
+                logger.error(e)
+                self.user_service.change_password(request, request.hash_password, user_info.password_verifier, user_info.id)
+                SignalService().client_update_peer_key(user_info.id, old_client_key_peer)
+                raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+
+            user_sessions = KeyCloakUtils.get_sessions(user_id=user_info.id)
+            for user_session in user_sessions:
+                KeyCloakUtils.remove_session(session_id=user_session['id'])
+            return auth_messages.BaseResponse()
+
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.CHANGE_PASSWORD_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @auth_required
     @request_logged
     async def logout(self, request, context):
         try:
@@ -484,29 +521,24 @@ class AuthController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    @request_logged
     async def reset_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_name, request.reset_pincode_token, "reset_pincode")
-            logger.info(request.user_name)
-            exists_user = self.service.get_user_by_email(request.user_name)
-            logger.info(exists_user["id"])
+            success_status = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "verify_pincode")
+            exists_user = self.service.get_user_by_email(request.user_id)
             if not exists_user:
                 raise Exception(Message.USER_NOT_FOUND)
             if not success_status:
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             self.user_service.change_password(request, None, request.hash_pincode, exists_user["id"])
-            logger.info('change_password to {}'.format(request.hash_pincode))
             old_client_key_peer = SignalService().peer_get_client_key(exists_user["id"])
             SignalService().client_update_peer_key(exists_user["id"], request.client_key_peer)
             try:
-                salt, iv_parameter = self.user_service.update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
+                _, salt, iv_parameter = UserService().update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:
                 logger.error(e)
                 SignalService().client_update_peer_key(exists_user["id"], old_client_key_peer)
                 raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             client_key_obj = request.client_key_peer
-            logger.info("client_key_obj is None: {}".format(client_key_obj is None))
             client_key_peer = auth_messages.PeerGetClientKeyResponse(
                                     clientId=exists_user["id"],
                                     workspace_domain=get_owner_workspace_domain(),
@@ -520,14 +552,11 @@ class AuthController(BaseController):
                                     signedPreKeySignature=client_key_obj.signedPreKeySignature,
                                     identityKeyEncrypted=client_key_obj.identityKeyEncrypted
                                 )
-            #logout all device before get new token for user after updated new key
+            # logout all device before get new token for user after updated new key
             user_sessions = KeyCloakUtils.get_sessions(user_id=exists_user["id"])
             for user_session in user_sessions:
                 KeyCloakUtils.remove_session(session_id=user_session['id'])
-
-            logger.info("logout")
-            token = self.service.token(request.user_name, request.hash_pincode)
-            logger.info(token['access_token'])
+            token = self.service.token(request.user_id, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),

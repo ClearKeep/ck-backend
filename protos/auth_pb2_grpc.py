@@ -29,6 +29,11 @@ class AuthStub(object):
                 request_serializer=protos_dot_auth__pb2.AuthChallengeReq.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.AuthChallengeRes.FromString,
                 )
+        self.forgot_password_update = channel.unary_unary(
+                '/auth.Auth/forgot_password_update',
+                request_serializer=protos_dot_auth__pb2.ForgotPasswordUpdateReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.BaseResponse.FromString,
+                )
         self.login_google = channel.unary_unary(
                 '/auth.Auth/login_google',
                 request_serializer=protos_dot_auth__pb2.GoogleLoginReq.SerializeToString,
@@ -106,6 +111,12 @@ class AuthServicer(object):
     def login_challenge(self, request, context):
         """new flow login with srp
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def forgot_password_update(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -199,6 +210,11 @@ def add_AuthServicer_to_server(servicer, server):
                     servicer.login_challenge,
                     request_deserializer=protos_dot_auth__pb2.AuthChallengeReq.FromString,
                     response_serializer=protos_dot_auth__pb2.AuthChallengeRes.SerializeToString,
+            ),
+            'forgot_password_update': grpc.unary_unary_rpc_method_handler(
+                    servicer.forgot_password_update,
+                    request_deserializer=protos_dot_auth__pb2.ForgotPasswordUpdateReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.BaseResponse.SerializeToString,
             ),
             'login_google': grpc.unary_unary_rpc_method_handler(
                     servicer.login_google,
@@ -313,6 +329,23 @@ class Auth(object):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_challenge',
             protos_dot_auth__pb2.AuthChallengeReq.SerializeToString,
             protos_dot_auth__pb2.AuthChallengeRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def forgot_password_update(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/forgot_password_update',
+            protos_dot_auth__pb2.ForgotPasswordUpdateReq.SerializeToString,
+            protos_dot_auth__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
