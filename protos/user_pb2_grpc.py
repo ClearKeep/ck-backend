@@ -76,12 +76,12 @@ class UserStub(object):
                 )
         self.enable_mfa = channel.unary_unary(
                 '/user.User/enable_mfa',
-                request_serializer=protos_dot_user__pb2.MfaChangingStateRequest.SerializeToString,
-                response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
+                request_serializer=protos_dot_user__pb2.MfaEnableStateRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaEnableStateResponse.FromString,
                 )
         self.disable_mfa = channel.unary_unary(
                 '/user.User/disable_mfa',
-                request_serializer=protos_dot_user__pb2.MfaChangingStateRequest.SerializeToString,
+                request_serializer=protos_dot_user__pb2.MfaDisableStateRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
                 )
         self.mfa_validate_password = channel.unary_unary(
@@ -275,12 +275,12 @@ def add_UserServicer_to_server(servicer, server):
             ),
             'enable_mfa': grpc.unary_unary_rpc_method_handler(
                     servicer.enable_mfa,
-                    request_deserializer=protos_dot_user__pb2.MfaChangingStateRequest.FromString,
-                    response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
+                    request_deserializer=protos_dot_user__pb2.MfaEnableStateRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaEnableStateResponse.SerializeToString,
             ),
             'disable_mfa': grpc.unary_unary_rpc_method_handler(
                     servicer.disable_mfa,
-                    request_deserializer=protos_dot_user__pb2.MfaChangingStateRequest.FromString,
+                    request_deserializer=protos_dot_user__pb2.MfaDisableStateRequest.FromString,
                     response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
             ),
             'mfa_validate_password': grpc.unary_unary_rpc_method_handler(
@@ -524,8 +524,8 @@ class User(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/user.User/enable_mfa',
-            protos_dot_user__pb2.MfaChangingStateRequest.SerializeToString,
-            protos_dot_user__pb2.MfaBaseResponse.FromString,
+            protos_dot_user__pb2.MfaEnableStateRequest.SerializeToString,
+            protos_dot_user__pb2.MfaEnableStateResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -541,7 +541,7 @@ class User(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/user.User/disable_mfa',
-            protos_dot_user__pb2.MfaChangingStateRequest.SerializeToString,
+            protos_dot_user__pb2.MfaDisableStateRequest.SerializeToString,
             protos_dot_user__pb2.MfaBaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

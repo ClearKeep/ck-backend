@@ -138,8 +138,37 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-            success, next_step = self.service.init_mfa_state_enabling(client_id)
-            return user_messages.MfaBaseResponse(success=success, next_step=next_step)
+            user_info = self.user_service.get_user_by_id(client_id)
+
+            if user_info.phone_number is None:
+                success = False
+                next_step = 'mfa_update_phone_number'
+            else:
+                password_verifier = bytes.fromhex(user_info.password_verifier)
+                salt = bytes.fromhex(user_info.salt)
+                client_public = bytes.fromhex(request.client_public)
+
+                srv = srp.Verifier(email, salt, password_verifier, client_public)
+                s, B = srv.get_challenge()
+                # need store private b of server
+                logger.info("server_public=")
+                logger.info(s)
+                logger.info("server_private=")
+                logger.info(B)
+
+                server_private = srv.get_ephemeral_secret().hex()
+                logger.info(server_private)
+                user_info.srp_server_private = server_private
+                user_info.update()
+
+                public_challenge_b = B.hex()
+                success, next_step = self.service.init_mfa_state_enabling(client_id)
+            return user_messages.MfaEnableStateResponse(
+                                                            success=success,
+                                                            salt=user_info.salt,
+                                                            public_challenge_b=public_challenge_b,
+                                                            next_step=next_step
+                                                        )
 
         except Exception as e:
             logger.error(e)
@@ -156,9 +185,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     async def disable_mfa(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
-            # get introspect_token with default empty value if header_data was wrong
-            introspect_token = KeyCloakUtils.introspect_token(header_data.get('access_token', ""))
-            logger.info(introspect_token)
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             if not introspect_token or 'sub' not in introspect_token:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             client_id = introspect_token['sub']
@@ -182,7 +209,24 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-            success, next_step = self.service.validate_password(client_id, request.password)
+
+            client_session_key_proof = request.client_session_key_proof
+            user_info = self.user_service.get_user_by_id(client_id)
+            user_name = introspect_token['preferred_username']
+            phone_number = user_info.phone_number
+            if not user_info:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
+            password_verifier = bytes.fromhex(user_info.password_verifier)
+            salt = bytes.fromhex(user_info.salt)
+            client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
+
+            srv = srp.Verifier(username=user_name, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
+            srv.verify_session(client_session_key_proof_bytes)
+            authenticated = srv.authenticated()
+
+            if not authenticated:
+                raise Exception(Message.AUTHENTICATION_FAILED)
+            success, next_step = self.service.mfa_validate_password_flow(client_id, phone_number)
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
 
         except Exception as e:

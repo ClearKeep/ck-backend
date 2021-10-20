@@ -117,21 +117,16 @@ class UserService(BaseService):
         return user_authen_setting.mfa_enable
 
     def init_mfa_state_enabling(self, user_id):
-        user_info = self.model.get(user_id)
-        if user_info is None:
-            raise Exception(Message.AUTH_USER_NOT_FOUND)
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
             user_authen_setting = AuthenSetting(id=user_id).add()
         if user_authen_setting.mfa_enable:
             success = False
             next_step = ''
-        if user_authen_setting.otp_frozen_time > datetime.datetime.now():
-            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
-        elif user_info.phone_number is None:
-            success = False
-            next_step = 'mfa_update_phone_number'
         else:
+            if user_authen_setting.otp_frozen_time > datetime.datetime.now():
+                raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
+
             next_step = 'mfa_validate_password'
             user_authen_setting.require_action = next_step
             user_authen_setting.update()
@@ -139,34 +134,21 @@ class UserService(BaseService):
         return success, next_step
 
     def init_mfa_state_disabling(self, user_id):
-        user_info = self.model.get(user_id)
-        if user_info is None:
-            raise Exception(Message.AUTH_USER_NOT_FOUND)
-        # if user_authen_setting is None:
-        #     user_authen_setting = AuthenSetting(id=user_id).add()
-        if user_info.mfa_enable:
-            user_info.mfa_enable = False
-            # user_authen_setting.otp = None
-            # user_authen_setting.token_valid_time = datetime.datetime.now()
-            # user_authen_setting.update()
-        success = True
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting is None:
+            user_authen_setting = AuthenSetting(id=user_id).add()
+        if user_authen_setting.mfa_enable:
+            user_authen_setting.mfa_enable = False
+            success = True
+        else:
+            success = False
         next_step = ''
         return success, next_step
 
-    def validate_password(self, user_id, password):
-        user_info = self.model.get(user_id)
-        if user_info is None:
-            raise Exception(Message.AUTH_USER_NOT_FOUND)
+    def mfa_validate_password_flow(self, user_id, phone_number):
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting.require_action != 'mfa_validate_password':
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
-        try:
-            token = KeyCloakUtils.token(user_info.email, password)
-        except Exception as e:
-            logger.error(e)
-            raise Exception(Message.AUTH_USER_NOT_FOUND)
-        if not token:
-            raise Exception(Message.AUTH_USER_NOT_FOUND)
         n_times = user_authen_setting.otp_request_counter + 1
         if n_times > OTPServer.valid_resend_time:
             # reset counter and put otp service into frozen state
@@ -179,7 +161,7 @@ class UserService(BaseService):
             raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
         try:
             user_authen_setting.require_action = 2
-            otp = OTPServer.get_otp(user_info.phone_number)
+            otp = OTPServer.get_otp(phone_number)
             user_authen_setting.otp = otp
             user_authen_setting.token_valid_time = OTPServer.get_valid_time()
             user_authen_setting.otp_request_counter = n_times
