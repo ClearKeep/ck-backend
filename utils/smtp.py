@@ -28,7 +28,7 @@ class MailerServer(object):
     @staticmethod
     def send_reset_password_mail(receiver_mail, user_name, pre_access_token, server_domain):
         # Email configuration
-        deep_link = MailerServer.app_link + '?' + MailerServer.query_string_form.format(user_name, pre_access_token, server_domain)
+        deep_link = MailerServer.app_link + '?' + MailerServer.query_string_form.format(pre_access_token, user_name, server_domain)
         msg = MIMEMultipart('alternative')
         msg['Subject'] = 'Reset Password'
         msg['From'] = MailerServer.sender
