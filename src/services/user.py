@@ -458,9 +458,8 @@ class UserService(BaseService):
                             workspace_domain=workspace_domain,
                             status=user_status,
                         )
-                        if should_get_profile is True:
+                        if should_get_profile:
                             user_info = self.model.get(client.client_id)
-                            print ("user_info",user_info)
                             if user_info is not None:
                                 if user_info.display_name:
                                     tmp_client_response.display_name = user_info.display_name
@@ -468,8 +467,10 @@ class UserService(BaseService):
                                     tmp_client_response.phone_number = user_info.phone_number
                                 if user_info.avatar:
                                     tmp_client_response.avatar = user_info.avatar
+                            logger.info("user info {}: {}".format(client.client_id, user_info))
                         list_clients_status.append(tmp_client_response)
                 else:
+                    logger.info("workspace request other server {}".format(workspace_domain))
                     other_clients_response = self.get_other_workspace_clients_status(workspace_domain, list_client)
                     list_clients_status.extend(other_clients_response)
 
