@@ -190,6 +190,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             client_id = introspect_token['sub']
             email = introspect_token['preferred_username']
             # raise exception if user not in validate_password flow
+
+            logger.info('email {}, client_id {}'.format(email, client_id))
             self.service.mfa_validate_password_flow(client_id)
             user_info = self.service.get_user_by_id(client_id)
             password_verifier = bytes.fromhex(user_info.password_verifier)
@@ -210,6 +212,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             user_info.update()
 
             public_challenge_b = B.hex()
+            logger.info('response salt {}, public_challenge_b {}'.format(user_info.salt, public_challenge_b))
 
             auth_challenge_res = user_messages.MfaAuthChallengeResponse(
                 salt=user_info.salt,
