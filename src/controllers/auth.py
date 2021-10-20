@@ -335,7 +335,7 @@ class AuthController(BaseController):
                 self.user_service.change_password(request, request.hash_password, user_info.password_verifier,  user_info.id)
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             try:
-                salt, iv_parameter = self.user_service.update_hash_pass(user_info.id, request.hash_password)
+                salt, iv_parameter = self.user_service.update_hash_pass(user_info.id, request.hash_password, request.salt, request.iv_parameter)
             except Exception as e:
                 logger.error(e)
                 self.user_service.change_password(request, request.hash_password, user_info.password_verifier, user_info.id)
@@ -568,7 +568,7 @@ class AuthController(BaseController):
             old_client_key_peer = SignalService().peer_get_client_key(exists_user["id"])
             SignalService().client_update_peer_key(exists_user["id"], request.client_key_peer)
             try:
-                _, salt, iv_parameter = UserService().update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
+                salt, iv_parameter = UserService().update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:
                 logger.error(e)
                 SignalService().client_update_peer_key(exists_user["id"], old_client_key_peer)
