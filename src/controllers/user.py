@@ -218,6 +218,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 salt=user_info.salt,
                 public_challenge_b=public_challenge_b
             )
+            return auth_challenge_res
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
