@@ -139,6 +139,7 @@ class UserService(BaseService):
             user_authen_setting = AuthenSetting(id=user_id).add()
         if user_authen_setting.mfa_enable:
             user_authen_setting.mfa_enable = False
+            user_authen_setting.update()
             success = True
         else:
             success = False
@@ -281,6 +282,11 @@ class UserService(BaseService):
             if display_name:
                 profile.display_name = display_name
             if phone_number:
+                user_authen_setting = self.authen_setting.get(user_id)
+                if user_authen_setting is None:
+                    user_authen_setting = AuthenSetting(id=user_id).add()
+                user_authen_setting.enable_mfa = False # change phone_number automatically turn off enable_mfa
+                user_authen_setting.update()
                 profile.phone_number = phone_number
             if avatar:
                 profile.avatar = avatar
