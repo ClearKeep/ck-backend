@@ -348,7 +348,7 @@ class AuthController(BaseController):
             for user_session in user_sessions:
                 KeyCloakUtils.remove_session(session_id=user_session['id'])
 
-            token = self.service.token(request.email, user_info.password_verifier)
+            token = self.service.token(request.email, request.hash_password)
             if token:
                 client_key_obj = SignalService().peer_get_client_key(user_info.id)
                 client_key_peer = auth_messages.PeerGetClientKeyResponse(
