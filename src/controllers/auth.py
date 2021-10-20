@@ -321,9 +321,10 @@ class AuthController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    @auth_required
+    @request_logged
     async def forgot_password_update(self, request, context):
         try:
+            logger.info("from email {}".format(request.email))
             user_info = self.user_service.get_user_by_auth_source(request.email, "account")
             self.service.verify_hash_pre_access_token(user_info.id, request.pre_access_token, "forgot_password")
             self.user_service.change_password(request, user_info.password_verifier, request.hash_password, user_info.id)

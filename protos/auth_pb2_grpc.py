@@ -22,7 +22,7 @@ class AuthStub(object):
         self.forgot_password = channel.unary_unary(
                 '/auth.Auth/forgot_password',
                 request_serializer=protos_dot_auth__pb2.ForgotPasswordReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
+                response_deserializer=protos_dot_auth__pb2.BaseResponse.FromString,
                 )
         self.login_challenge = channel.unary_unary(
                 '/auth.Auth/login_challenge',
@@ -32,7 +32,7 @@ class AuthStub(object):
         self.forgot_password_update = channel.unary_unary(
                 '/auth.Auth/forgot_password_update',
                 request_serializer=protos_dot_auth__pb2.ForgotPasswordUpdateReq.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.BaseResponse.FromString,
+                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
                 )
         self.login_google = channel.unary_unary(
                 '/auth.Auth/login_google',
@@ -204,7 +204,7 @@ def add_AuthServicer_to_server(servicer, server):
             'forgot_password': grpc.unary_unary_rpc_method_handler(
                     servicer.forgot_password,
                     request_deserializer=protos_dot_auth__pb2.ForgotPasswordReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
+                    response_serializer=protos_dot_auth__pb2.BaseResponse.SerializeToString,
             ),
             'login_challenge': grpc.unary_unary_rpc_method_handler(
                     servicer.login_challenge,
@@ -214,7 +214,7 @@ def add_AuthServicer_to_server(servicer, server):
             'forgot_password_update': grpc.unary_unary_rpc_method_handler(
                     servicer.forgot_password_update,
                     request_deserializer=protos_dot_auth__pb2.ForgotPasswordUpdateReq.FromString,
-                    response_serializer=protos_dot_auth__pb2.BaseResponse.SerializeToString,
+                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
             ),
             'login_google': grpc.unary_unary_rpc_method_handler(
                     servicer.login_google,
@@ -311,7 +311,7 @@ class Auth(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/forgot_password',
             protos_dot_auth__pb2.ForgotPasswordReq.SerializeToString,
-            protos_dot_auth__pb2.AuthRes.FromString,
+            protos_dot_auth__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -345,7 +345,7 @@ class Auth(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/forgot_password_update',
             protos_dot_auth__pb2.ForgotPasswordUpdateReq.SerializeToString,
-            protos_dot_auth__pb2.BaseResponse.FromString,
+            protos_dot_auth__pb2.AuthRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
