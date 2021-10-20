@@ -19,10 +19,10 @@ class AuthStub(object):
                 request_serializer=protos_dot_auth__pb2.RegisterSRPReq.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.RegisterSRPRes.FromString,
                 )
-        self.fogot_password = channel.unary_unary(
-                '/auth.Auth/fogot_password',
-                request_serializer=protos_dot_auth__pb2.FogotPassWord.SerializeToString,
-                response_deserializer=protos_dot_auth__pb2.BaseResponse.FromString,
+        self.forgot_password = channel.unary_unary(
+                '/auth.Auth/forgot_password',
+                request_serializer=protos_dot_auth__pb2.ForgotPasswordReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
                 )
         self.login_challenge = channel.unary_unary(
                 '/auth.Auth/login_challenge',
@@ -102,7 +102,7 @@ class AuthServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def fogot_password(self, request, context):
+    def forgot_password(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -201,10 +201,10 @@ def add_AuthServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_auth__pb2.RegisterSRPReq.FromString,
                     response_serializer=protos_dot_auth__pb2.RegisterSRPRes.SerializeToString,
             ),
-            'fogot_password': grpc.unary_unary_rpc_method_handler(
-                    servicer.fogot_password,
-                    request_deserializer=protos_dot_auth__pb2.FogotPassWord.FromString,
-                    response_serializer=protos_dot_auth__pb2.BaseResponse.SerializeToString,
+            'forgot_password': grpc.unary_unary_rpc_method_handler(
+                    servicer.forgot_password,
+                    request_deserializer=protos_dot_auth__pb2.ForgotPasswordReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
             ),
             'login_challenge': grpc.unary_unary_rpc_method_handler(
                     servicer.login_challenge,
@@ -299,7 +299,7 @@ class Auth(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def fogot_password(request,
+    def forgot_password(request,
             target,
             options=(),
             channel_credentials=None,
@@ -309,9 +309,9 @@ class Auth(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/auth.Auth/fogot_password',
-            protos_dot_auth__pb2.FogotPassWord.SerializeToString,
-            protos_dot_auth__pb2.BaseResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/forgot_password',
+            protos_dot_auth__pb2.ForgotPasswordReq.SerializeToString,
+            protos_dot_auth__pb2.AuthRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

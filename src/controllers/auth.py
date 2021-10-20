@@ -305,7 +305,7 @@ class AuthController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    async def fogot_password(self, request, context):
+    async def forgot_password(self, request, context):
         try:
             self.service.send_forgot_password(request.email)
             return auth_messages.BaseResponse()
@@ -342,9 +342,45 @@ class AuthController(BaseController):
                 SignalService().client_update_peer_key(user_info.id, old_client_key_peer)
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
 
+            # create new session
             user_sessions = KeyCloakUtils.get_sessions(user_id=user_info.id)
             for user_session in user_sessions:
                 KeyCloakUtils.remove_session(session_id=user_session['id'])
+
+            token = self.service.token(request.email, user_info.password_verifier)
+            if token:
+                client_key_obj = SignalService().peer_get_client_key(user_info.id)
+                client_key_peer = auth_messages.PeerGetClientKeyResponse(
+                                        clientId=user_info.id,
+                                        workspace_domain=get_owner_workspace_domain(),
+                                        registrationId=client_key_obj.registration_id,
+                                        deviceId=client_key_obj.device_id,
+                                        identityKeyPublic=client_key_obj.identity_key_public,
+                                        preKeyId=client_key_obj.prekey_id,
+                                        preKey=client_key_obj.prekey,
+                                        signedPreKeyId=client_key_obj.signed_prekey_id,
+                                        signedPreKey=client_key_obj.signed_prekey,
+                                        signedPreKeySignature=client_key_obj.signed_prekey_signature,
+                                        identityKeyEncrypted=client_key_obj.identity_key_encrypted
+                                    )
+                self.user_service.update_last_login(user_id=user_info.id)
+                auth_message = auth_messages.AuthRes(
+                    workspace_domain=get_owner_workspace_domain(),
+                    workspace_name=get_system_config()['server_name'],
+                    access_token=token['access_token'],
+                    expires_in=token['expires_in'],
+                    refresh_expires_in=token['refresh_expires_in'],
+                    refresh_token=token['refresh_token'],
+                    token_type=token['token_type'],
+                    session_state=token['session_state'],
+                    scope=token['scope'],
+                    salt=salt,
+                    client_key_peer=client_key_peer,
+                    iv_parameter=iv_parameter
+                )
+                return auth_message
+            else:
+                raise Exception(Message.AUTH_USER_NOT_FOUND)
             return auth_messages.BaseResponse()
 
         except Exception as e:

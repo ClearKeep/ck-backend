@@ -48,7 +48,7 @@ message LogoutReq {
 }
 
 // fogot password
-message FogotPassWord {
+message ForgotPasswordReq {
     string email = 1;
 }
 
@@ -220,7 +220,7 @@ service Auth {
     // rpc register(RegisterReq) returns (RegisterRes) {};
     // rpc login(AuthReq) returns (AuthRes) {};
     rpc register_srp(RegisterSRPReq) returns (RegisterSRPRes) {};
-    rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
+    rpc forgot_password(ForgotPasswordReq) returns (AuthRes) {};
     //new flow login with srp
     rpc login_challenge(AuthChallengeReq) returns (AuthChallengeRes) {};
     rpc forgot_password_update(ForgotPasswordUpdateReq) returns (BaseResponse) {};
