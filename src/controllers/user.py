@@ -80,7 +80,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             if not authenticated:
                 raise Exception(Message.AUTHENTICATION_FAILED)
 
-            self.service.change_password(request, user_info.password_verifier, request.hash_password, introspect_token['sub'])
+            self.service.change_password(request, user_info.password_verifier, request.hash_password, introspect_token['sub']) # update for keycloak
 
             try:
                 old_identity_key_encrypted = SignalService().client_update_identity_key(introspect_token["sub"], request.identity_key_encrypted)
@@ -133,55 +133,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @auth_required
-    async def enable_mfa(self, request, context):
-        try:
-            header_data = dict(context.invocation_metadata())
-            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            client_id = introspect_token['sub']
-            user_info = self.user_service.get_user_by_id(client_id)
-
-            if user_info.phone_number is None:
-                success = False
-                next_step = 'mfa_update_phone_number'
-            else:
-                password_verifier = bytes.fromhex(user_info.password_verifier)
-                salt = bytes.fromhex(user_info.salt)
-                client_public = bytes.fromhex(request.client_public)
-
-                srv = srp.Verifier(email, salt, password_verifier, client_public)
-                s, B = srv.get_challenge()
-                # need store private b of server
-                logger.info("server_public=")
-                logger.info(s)
-                logger.info("server_private=")
-                logger.info(B)
-
-                server_private = srv.get_ephemeral_secret().hex()
-                logger.info(server_private)
-                user_info.srp_server_private = server_private
-                user_info.update()
-
-                public_challenge_b = B.hex()
-                success, next_step = self.service.init_mfa_state_enabling(client_id)
-            return user_messages.MfaEnableStateResponse(
-                                                            success=success,
-                                                            salt=user_info.salt,
-                                                            public_challenge_b=public_challenge_b,
-                                                            next_step=next_step
-                                                        )
-
-        except Exception as e:
-            logger.error(e)
-            if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
-                errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
-            else:
-                errors = [Message.get_error_object(e.args[0])]
-            context.set_details(json.dumps(
-                errors, default=lambda x: x.__dict__))
-            context.set_code(grpc.StatusCode.INTERNAL)
-
-    @auth_required
     async def disable_mfa(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -204,18 +155,92 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @auth_required
+    async def enable_mfa(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            user_info = self.service.get_user_by_id(client_id)
+
+            if user_info.phone_number is None:
+                success = False
+                next_step = 'mfa_update_phone_number'
+            else:
+                success, next_step = self.service.init_mfa_state_enabling(client_id)
+            return user_messages.MfaEnableStateResponse(
+                                                            success=success,
+                                                            salt=user_info.salt,
+                                                            public_challenge_b=public_challenge_b,
+                                                            next_step=next_step
+                                                        )
+
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @auth_required
+    async def mfa_auth_challenge(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            email = introspect_token['preferred_username']
+            # raise exception if user not in validate_password flow
+            self.service.mfa_validate_password_flow(client_id)
+            user_info = self.service.get_user_by_id(client_id)
+            password_verifier = bytes.fromhex(user_info.password_verifier)
+            salt = bytes.fromhex(user_info.salt)
+            client_public = bytes.fromhex(request.client_public)
+
+            srv = srp.Verifier(email, salt, password_verifier, client_public)
+            s, B = srv.get_challenge()
+            # need store private b of server
+            logger.info("server_public=")
+            logger.info(s)
+            logger.info("server_private=")
+            logger.info(B)
+
+            server_private = srv.get_ephemeral_secret().hex()
+            logger.info(server_private)
+            user_info.srp_server_private = server_private
+            user_info.update()
+
+            public_challenge_b = B.hex()
+
+            auth_challenge_res = user_messages.MfaAuthChallengeResponse(
+                salt=user_info.salt,
+                public_challenge_b=public_challenge_b
+            )
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+
+    @auth_required
     async def mfa_validate_password(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
+            user_info = self.service.get_user_by_id(client_id)
 
             client_session_key_proof = request.client_session_key_proof
-            user_info = self.user_service.get_user_by_id(client_id)
             user_name = introspect_token['preferred_username']
             phone_number = user_info.phone_number
-            if not user_info:
-                raise Exception(Message.AUTH_USER_NOT_FOUND)
             password_verifier = bytes.fromhex(user_info.password_verifier)
             salt = bytes.fromhex(user_info.salt)
             client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
@@ -226,7 +251,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
             if not authenticated:
                 raise Exception(Message.AUTHENTICATION_FAILED)
-            success, next_step = self.service.mfa_validate_password_flow(client_id, phone_number)
+            success, next_step = self.service.mfa_request_otp(client_id, phone_number)
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
 
         except Exception as e:

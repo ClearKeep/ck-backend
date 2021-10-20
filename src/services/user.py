@@ -146,10 +146,13 @@ class UserService(BaseService):
         next_step = ''
         return success, next_step
 
-    def mfa_validate_password_flow(self, user_id, phone_number):
+    def mfa_validate_password_flow(self, user_id):
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting.require_action != 'mfa_validate_password':
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
+        return True
+
+    def mfa_request_otp(self, user_id, phone_number):
         n_times = user_authen_setting.otp_request_counter + 1
         if n_times > OTPServer.valid_resend_time:
             # reset counter and put otp service into frozen state
@@ -161,14 +164,14 @@ class UserService(BaseService):
         if user_authen_setting.otp_frozen_time > datetime.datetime.now():
             raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
         try:
-            user_authen_setting.require_action = 2
+            next_step = 'mfa_validate_otp'
+            user_authen_setting.require_action = next_step
             otp = OTPServer.get_otp(phone_number)
             user_authen_setting.otp = otp
             user_authen_setting.token_valid_time = OTPServer.get_valid_time()
             user_authen_setting.otp_request_counter = n_times
             user_authen_setting.update()
             success = True
-            next_step = 'mfa_validate_otp'
             return success, next_step
         except Exception as e:
             logger.error(e)
@@ -178,7 +181,7 @@ class UserService(BaseService):
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
             raise Exception(Message.AUTH_USER_NOT_FOUND)
-        if user_authen_setting.require_action != 2:
+        if user_authen_setting.require_action != 'mfa_validate_otp':
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
         if user_authen_setting.otp_tried_time >= OTPServer.valid_trying_time:
             user_authen_setting.otp = None
@@ -191,7 +194,7 @@ class UserService(BaseService):
         if otp == user_authen_setting.otp:
             user_authen_setting.mfa_enable = True
             user_authen_setting.otp = None
-            user_authen_setting.require_action = 0
+            user_authen_setting.require_action = ""
             user_authen_setting.token_valid_time = datetime.datetime.now()
             user_authen_setting.otp_request_counter = 0
             user_authen_setting.otp_tried_time = 0
@@ -209,7 +212,7 @@ class UserService(BaseService):
         if user_info is None:
             raise Exception(Message.AUTH_USER_NOT_FOUND)
         user_authen_setting = self.authen_setting.get(user_id)
-        if user_authen_setting.require_action != 2:
+        if user_authen_setting.require_action != 'mfa_validate_otp':
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
         n_times = user_authen_setting.otp_request_counter + 1
         if n_times > OTPServer.valid_resend_time:

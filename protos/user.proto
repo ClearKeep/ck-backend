@@ -139,22 +139,21 @@ message MfaStateResponse{
 message MfaGetStateRequest {}
 // Response: MfaStateResponse
 
-message MfaDisableStateRequest {}
+message MfaChangingStateRequest {
+}
 // Response: MfaBaseResponse
 
-message MfaEnableStateRequest {
+
+message MfaAuthChallengeRequest{
     string client_public = 1;
 }
 
-message MfaEnableStateResponse {
-    bool success = 1;
-    string salt = 2;
-    string public_challenge_b = 3;
-    string next_step = 4;
-    string error = 5;
+message MfaAuthChallengeResponse {
+    string salt = 1;
+    string public_challenge_b = 2;
 }
 
-message MfaValidatePasswordRequest {
+message MfaValidatePasswordRequest{
     string client_public = 1;
     string client_session_key_proof = 2;
 }
@@ -189,8 +188,9 @@ service User {
 
     //----- MFA ENABLE FLOW -----
     rpc get_mfa_state(MfaGetStateRequest) returns (MfaStateResponse) {};
-    rpc enable_mfa(MfaEnableStateRequest) returns (MfaEnableStateResponse) {};
-    rpc disable_mfa(MfaDisableStateRequest) returns (MfaBaseResponse) {};
+    rpc enable_mfa(MfaChangingStateRequest) returns (MfaBaseResponse) {};
+    rpc disable_mfa(MfaChangingStateRequest) returns (MfaBaseResponse) {};
+    rpc mfa_auth_challenge(MfaAuthChallengeRequest) returns (MfaAuthChallengeResponse) {};
     rpc mfa_validate_password(MfaValidatePasswordRequest) returns (MfaBaseResponse) {};
     rpc mfa_validate_otp(MfaValidateOtpRequest) returns (MfaBaseResponse) {};
     rpc mfa_resend_otp(MfaResendOtpRequest) returns (MfaBaseResponse) {};
