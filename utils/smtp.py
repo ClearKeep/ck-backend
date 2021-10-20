@@ -20,7 +20,7 @@ class MailerServer(object):
     """
     html_form = """
     <p>Your administrator has just requested that you update your Keycloak account by performing the following action(s): Reset Password. Click on the link below to start this process.\n</p>
-    <p><a href="{}">Link to account update</a></p>
+    <p><a clicktracking=off href="{}">Link to account update</a></p>
     <p>This link will expire within 30 days.</p>
     <p>If you are unaware that your administrator has requested this, just ignore this message and nothing will be changed.</p>
     """
@@ -49,3 +49,6 @@ class MailerServer(object):
             msg.as_string()
         )
         server.quit()
+
+if __name__ == "__main__":
+    MailerServer.send_reset_password_mail("trungdq1@vmodev.com", "trungdq1@vmodev.com", "pre_access_token", "server_domain")

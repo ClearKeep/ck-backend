@@ -6,18 +6,6 @@ message BaseResponse {
     string error = 1;
 }
 
-message PeerRegisterClientKeyRequest {
-    int32 registrationId = 1;
-    int32 deviceId = 2;
-    bytes identityKeyPublic = 3;
-    int32 preKeyId = 4;
-    bytes preKey = 5;
-    int32 signedPreKeyId = 6;
-    bytes signedPreKey = 7;
-    bytes signedPreKeySignature = 8;
-    string identityKeyEncrypted = 9;
-}
-
 //----- FROM MY ACCOUNT -----
 message UserProfileResponse {
     string id = 1;
@@ -55,7 +43,7 @@ message ChangePasswordRequest {
     string hash_password = 4;
     string salt = 5;
     string iv_parameter = 6;
-    PeerRegisterClientKeyRequest client_key_peer = 7;
+    string identity_key_encrypted = 7;
 }
 // Response: BaseResponse
 
