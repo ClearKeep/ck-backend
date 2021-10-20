@@ -378,10 +378,9 @@ class AuthController(BaseController):
                     client_key_peer=client_key_peer,
                     iv_parameter=iv_parameter
                 )
-                return auth_message
             else:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
-            return auth_messages.BaseResponse()
+            return auth_message
 
         except Exception as e:
             logger.error(e)
