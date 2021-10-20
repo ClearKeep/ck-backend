@@ -167,12 +167,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 next_step = 'mfa_update_phone_number'
             else:
                 success, next_step = self.service.init_mfa_state_enabling(client_id)
-            return user_messages.MfaEnableStateResponse(
-                                                            success=success,
-                                                            salt=user_info.salt,
-                                                            public_challenge_b=public_challenge_b,
-                                                            next_step=next_step
-                                                        )
+            return user_messages.MfaBaseResponse(success=success,next_step=next_step)
 
         except Exception as e:
             logger.error(e)
