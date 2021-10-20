@@ -154,6 +154,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
     @auth_required
     async def enable_mfa(self, request, context):
         try:
@@ -180,6 +181,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
     @auth_required
     async def mfa_auth_challenge(self, request, context):
         try:
