@@ -153,6 +153,7 @@ class UserService(BaseService):
         return True
 
     def mfa_request_otp(self, user_id, phone_number):
+        user_authen_setting = self.authen_setting.get(user_id)
         n_times = user_authen_setting.otp_request_counter + 1
         if n_times > OTPServer.valid_resend_time:
             # reset counter and put otp service into frozen state
