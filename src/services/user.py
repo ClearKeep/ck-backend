@@ -467,11 +467,11 @@ class UserService(BaseService):
                                     tmp_client_response.phone_number = user_info.phone_number
                                 if user_info.avatar:
                                     tmp_client_response.avatar = user_info.avatar
-                            logger.info("user info {}: {}".format(client.client_id, user_info))
+                            logger.info("user info {}: {}".format(client.client_id, tmp_client_response))
                         list_clients_status.append(tmp_client_response)
                 else:
                     logger.info("workspace request other server {}".format(workspace_domain))
-                    other_clients_response = self.get_other_workspace_clients_status(workspace_domain, list_client)
+                    other_clients_response = self.get_other_workspace_clients_status(workspace_domain, list_client, should_get_profile)
                     list_clients_status.extend(other_clients_response)
 
             response = user_pb2.GetClientsStatusResponse(
@@ -501,11 +501,11 @@ class UserService(BaseService):
             user_status = "Undefined"
         return user_status
 
-    def get_other_workspace_clients_status(self, workspace_domain, list_client):
+    def get_other_workspace_clients_status(self, workspace_domain, list_client, should_get_profile=False):
         server_error_resp = []
 
         client = ClientUser(workspace_domain)
-        client_resp = client.get_clients_status(list_client)
+        client_resp = client.get_clients_status(list_client, should_get_profile)
 
         if client_resp is None:
             logger.info("CALL WORKSPACE ERROR", workspace_domain)
