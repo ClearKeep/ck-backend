@@ -116,12 +116,12 @@ class AuthController(BaseController):
                         iv_parameter=user_info.iv_parameter
                     )
                 else:
-                    otp_hash = self.service.create_otp_service(user_id)
+                    pre_access_token = self.service.create_otp_service(user_id)
                     auth_message = auth_messages.AuthRes(
                         workspace_domain=get_owner_workspace_domain(),
                         workspace_name=get_system_config()['server_name'],
                         sub=user_id,
-                        otp_hash=otp_hash,
+                        pre_access_token=pre_access_token,
                         require_action="mfa_validate_otp"
                     )
                 return auth_message
@@ -426,11 +426,13 @@ class AuthController(BaseController):
 
     async def validate_otp(self, request, context):
         try:
-            success_status, token = self.service.verify_otp(request.user_id, request.otp_hash, request.otp_code)
+            success_status  = self.service.verify_otp(request.user_id, request.pre_access_token, request.otp_code)
             if not success_status:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
+
+            user_info = self.user_service.get_user_by_id(request.user_id)
+            token = self.service.token(user_info.email, user_info.password_verifier)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            user_info = self.user_service.get_user_by_id(introspect_token['sub'])
             require_action = ""
             client_key_obj = SignalService().peer_get_client_key(request.user_id)
             client_key_peer = auth_messages.PeerGetClientKeyResponse(
@@ -476,10 +478,10 @@ class AuthController(BaseController):
 
     async def resend_otp(self, request, context):
         try:
-            otp_hash = self.service.resend_otp(request.user_id, request.otp_hash)
+            pre_access_token = self.service.resend_otp(request.user_id, request.pre_access_token)
             return auth_messages.MfaResendOtpRes(
                                 success=True,
-                                otp_hash=otp_hash
+                                pre_access_token=pre_access_token
                             )
 
         except Exception as e:

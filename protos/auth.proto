@@ -157,19 +157,19 @@ message ResetPinCodeReq{
 }
 
 message MfaValidateOtpRequest {
-    string otp_code = 1;
-    string user_id = 2;
-    string otp_hash = 3;
+    string pre_access_token = 1;
+    string otp_code = 2;
+    string user_id = 3;
 }
 
-// we still need user_id and otp_hash for author and authen user
+// we still need user_id and pre_access_token for author and authen user
 message MfaResendOtpReq {
     string user_id = 1;
-    string otp_hash = 2;
+    string pre_access_token = 2;
 }
 
 message MfaResendOtpRes{
-    string otp_hash = 1;
+    string pre_access_token = 1;
     bool success = 2;
     string error = 3;
 }
