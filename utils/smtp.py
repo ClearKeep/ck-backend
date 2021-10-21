@@ -2,8 +2,53 @@ import smtplib
 
 from utils.config import get_system_config
 
+import email.header
+import email.utils
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+
+def format_addresses(addresses, header_name=None, charset='iso-8859-1'):
+    """This is an extension of email.utils.formataddr.
+       Function expect a list of addresses [ ('name', 'name@domain'), ...].
+       The len(header_name) is used to limit first line length.
+       The function mix the use Header(), formataddr() and check for 'us-ascii'
+       string to have valid and friendly 'address' header.
+       If one 'name' is not unicode string, then it must encoded using 'charset',
+       Header will use 'charset' to decode it.
+       Unicode string will be encoded following the "Header" rules : (
+       try first using ascii, then 'charset', then 'uft8')
+       'name@address' is supposed to be pure us-ascii, it can be unicode
+       string or not (but cannot contains non us-ascii)
+
+       In short Header() ignore syntax rules about 'address' field,
+       and formataddr() ignore encoding of non us-ascci chars.
+    """
+    header=email.header.Header(charset=charset, header_name=header_name)
+    for i, (name, addr) in enumerate(addresses):
+        if i!=0:
+            # add separator between addresses
+            header.append(',', charset='us-ascii')
+        # check if address name is a unicode or byte string in "pure" us-ascii
+        try:
+            if isinstance(name, str):
+                # convert name in byte string
+                name.encode('us-ascii')
+            else:
+                # check id byte string contains only us-ascii chars
+                name=name.decode('us-ascii')
+        except UnicodeError:
+            # Header will use "RFC2047" to encode the address name
+            # if name is byte string, charset will be used to decode it first
+            header.append(name)
+            # here us-ascii must be used and not default 'charset'
+            header.append('<%s>' % (addr,), charset='us-ascii')
+        else:
+            # name is a us-ascii byte string, i can use formataddr
+            formated_addr=email.utils.formataddr((name, addr))
+            # us-ascii must be used and not default 'charset'
+            header.append(formated_addr, charset='us-ascii')
+
+    return header
 
 class MailerServer(object):
     host = get_system_config()["smtp_server"]['SMTP_HOST']
@@ -32,7 +77,7 @@ class MailerServer(object):
         deep_link = MailerServer.app_link + '?' + MailerServer.query_string_form.format(pre_access_token, user_name, server_domain)
         msg = MIMEMultipart('alternative')
         msg['Subject'] = 'Reset Password'
-        msg['From'] = MailerServer.sender
+        msg['From'] = format_addresses([(MailerServer.sender_display_name, MailerServer.sender)], header_name='from')
         msg['To'] = receiver_mail
         text = MailerServer.text_form.format(deep_link)
         html = MailerServer.html_form.format(deep_link)
@@ -45,11 +90,11 @@ class MailerServer(object):
         server.starttls()
         server.login(MailerServer.user_name, MailerServer.password)
         server.sendmail(
-            MailerServer.sender_display_name,
+            MailerServer.sender,
             receiver_mail,
             msg.as_string()
         )
         server.quit()
 
 if __name__ == "__main__":
-    MailerServer.send_reset_password_mail("trungdq1109@gmail.com", "trungdq1109@vmodev.com", "pre_access_token", "server_domain")
+    MailerServer.send_reset_password_mail("trungdq1@vmodev.com", "trungdq1@vmodev.com", "pre_access_token", "server_domain")
