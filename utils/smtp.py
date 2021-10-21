@@ -8,6 +8,7 @@ from email.mime.text import MIMEText
 class MailerServer(object):
     host = get_system_config()["smtp_server"]['SMTP_HOST']
     port = get_system_config()["smtp_server"]['SMTP_PORT']
+    sender_display_name = "ClearKeep"
     sender = get_system_config()["smtp_server"]['SMTP_SENDER']
     user_name = get_system_config()["smtp_server"]['SMTP_USERNAME']
     password = get_system_config()["smtp_server"]['SMTP_PASSWORD']
@@ -31,7 +32,7 @@ class MailerServer(object):
         deep_link = MailerServer.app_link + '?' + MailerServer.query_string_form.format(pre_access_token, user_name, server_domain)
         msg = MIMEMultipart('alternative')
         msg['Subject'] = 'Reset Password'
-        msg['From'] = MailerServer.sender
+        msg['From'] = MailerServer.sender_display_name
         msg['To'] = receiver_mail
         text = MailerServer.text_form.format(deep_link)
         html = MailerServer.html_form.format(deep_link)
