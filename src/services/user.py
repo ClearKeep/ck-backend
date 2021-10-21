@@ -563,7 +563,7 @@ class UserService(BaseService):
         uploaded_file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)
         return uploaded_file_url
 
-    def delete_user(self, client_id):
+    def delete_user(self, user_id):
         user_info = self.model.get(user_id)
         user_info.delete()
         return True
