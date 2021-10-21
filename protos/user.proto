@@ -24,6 +24,7 @@ message UpdateProfileRequest {
     string display_name = 1;
     string avatar = 2;
     string phone_number = 3;
+    bool clear_phone_number = 4;
 }
 // Response: UserObjectResponse
 

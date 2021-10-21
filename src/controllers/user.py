@@ -341,12 +341,13 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             display_name = request.display_name
             avatar = request.avatar
             phone_number = request.phone_number
+            clear_phone_number = request.clear_phone_number
 
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
 
-            self.service.update_profile(client_id, display_name, phone_number, avatar)
+            self.service.update_profile(client_id, display_name, phone_number, avatar, clear_phone_number)
             return user_messages.BaseResponse()
 
         except Exception as e:

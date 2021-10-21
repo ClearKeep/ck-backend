@@ -280,12 +280,19 @@ class UserService(BaseService):
             logger.info(e)
             raise Exception(Message.GET_PROFILE_FAILED)
 
-    def update_profile(self,  user_id, display_name, phone_number, avatar):
+    def update_profile(self,  user_id, display_name, phone_number, avatar, clear_phone_number):
         try:
             profile = self.model.get(user_id)
             if display_name:
                 profile.display_name = display_name
-            if phone_number:
+            if clear_phone_number:
+                user_authen_setting = self.authen_setting.get(user_id)
+                if user_authen_setting is None:
+                    user_authen_setting = AuthenSetting(id=user_id).add()
+                user_authen_setting.enable_mfa = False # change phone_number automatically turn off enable_mfa
+                user_authen_setting.update()
+                profile.phone_number = ""
+            elif phone_number:
                 user_authen_setting = self.authen_setting.get(user_id)
                 if user_authen_setting is None:
                     user_authen_setting = AuthenSetting(id=user_id).add()
