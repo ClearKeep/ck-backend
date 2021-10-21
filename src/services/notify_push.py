@@ -131,7 +131,7 @@ class NotifyPushService(BaseService):
                 continue
 
     async def push_voip_client(self, to_client_id, payload):
-        client_tokens = self.model.get_client(to_client_id)
+        client_tokens = self.model.get_client_device_ids(to_client_id)
         # if len(client_tokens) > 0:
         #     client_token = client_tokens[0]
         #     try:
