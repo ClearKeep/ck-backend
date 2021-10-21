@@ -307,7 +307,7 @@ class MessageController(BaseController):
             from_client_id=from_client_id,
             from_client_workspace_domain=owner_workspace_domain,
             message=request.message,
-            created_at=int(created_at.timestamp() * 1000),,
+            created_at=int(created_at.timestamp() * 1000),
             sender_message=request.sender_message
         )
 
