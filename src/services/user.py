@@ -84,6 +84,31 @@ class UserService(BaseService):
             logger.info(e)
             return None
 
+    def forgot_user(self, user_info, new_user_id, password_verifier, salt, iv_parameter):
+        try:
+            self.model = User(
+                id=new_user_id,
+                email=user_info.email,
+                display_name=user_info.display_name,
+                auth_source=user_info.auth_source,
+                password_verifier=password_verifier,
+                salt=salt,
+                iv_parameter=iv_parameter,
+                first_name=user_info.first_name,
+                last_name=user_info.last_name,
+                status=user_info.status,
+                avatar=user_info.avatar,
+                phone_number=user_info.phone_number,
+                created_at=user_info.created_at,
+
+                #last_login_at=datetime.datetime.now()
+            )
+            self.model.add()
+            self.delete_user(user_info.id)
+        except Exception as e:
+            logger.error(e)
+            raise Exception(Message.REGISTER_USER_FAILED)
+
     def get_google_user(self, email, auth_source):
         user_info = self.model.get_google_user(email, auth_source)
         return user_info

@@ -61,15 +61,18 @@ class AuthService:
             logger.info(e)
             raise Exception(Message.UNAUTHENTICATED)
 
-    def register_user(self, email, password, display_name):
+    def forgot_user(self, email, password_verifier, display_name):
         try:
-            user_id = KeyCloakUtils.create_user(email, email, password, "", display_name)
-            a = KeyCloakUtils.send_verify_email(user_id)
-            if user_id:
-                return user_id
+            # delete user, then re create new user with activate status is True
+            old_user_id = self.get_user_by_email(email)
+            self.delete_user(old_user_id)
+            new_user_id = KeyCloakUtils.create_user(email, email, password_verifier, "", display_name)
+            KeyCloakUtils.active_user(new_user_id)
+            if new_user_id:
+                return new_user_id
         except Exception as e:
             logger.info(e)
-            return None
+            raise Exception(Message.REGISTER_USER_FAILED)
 
     def register_srp_user(self, email, password_verifier, display_name):
         try:

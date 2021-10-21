@@ -55,7 +55,7 @@ message ForgotPasswordReq {
 message ForgotPasswordUpdateReq{
     string pre_access_token = 1;
     string email = 2;
-    string hash_password = 3;
+    string password_verifier = 3;
     string salt = 4;
     string iv_parameter = 5;
     PeerRegisterClientKeyRequest client_key_peer = 6;

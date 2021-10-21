@@ -326,29 +326,24 @@ class AuthController(BaseController):
         try:
             logger.info("from email {}".format(request.email))
             user_info = self.user_service.get_user_by_auth_source(request.email, "account")
-            self.service.verify_hash_pre_access_token(user_info.id, request.pre_access_token, "forgot_password")
-            self.user_service.change_password(request, user_info.password_verifier, request.hash_password, user_info.id)
-            old_client_key_peer = SignalService().peer_get_client_key(user_info.id)
+            old_user_id = user_info.id
+            self.service.verify_hash_pre_access_token(old_user_id, request.pre_access_token, "forgot_password")
+            new_user_id = self.service.forgot_user(request.email, request.password_verifier, user_info.display_name)
+            SignalService().delete_client_peer_key(old_user_id)
+            if new_user_id:
+                # create new user in database
+                UserService().forgot_user(user_info, new_user_id, request.password_verifier, request.salt, request.iv_parameter)
+            else:
+                self.service.delete_user(new_user_id)
+                raise Exception(Message.REGISTER_USER_FAILED)
             try:
-                SignalService().client_update_peer_key(user_info.id, request.client_key_peer)
-            except Exception as e:
-                logger.error(e)
-                self.user_service.change_password(request, request.hash_password, user_info.password_verifier,  user_info.id)
-                raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
-            try:
-                salt, iv_parameter = self.user_service.update_hash_pass(user_info.id, request.hash_password, request.salt, request.iv_parameter)
-            except Exception as e:
-                logger.error(e)
-                self.user_service.change_password(request, request.hash_password, user_info.password_verifier, user_info.id)
-                SignalService().client_update_peer_key(user_info.id, old_client_key_peer)
-                raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
+                SignalService().peer_register_client_key(new_user_id, request.client_key_peer)
+            except Exception:
+                self.service.delete_user(new_user_id)
+                UserService().delete_user(new_user_id)
+                raise Exception(Message.REGISTER_USER_FAILED)
 
-            # create new session
-            user_sessions = KeyCloakUtils.get_sessions(user_id=user_info.id)
-            for user_session in user_sessions:
-                KeyCloakUtils.remove_session(session_id=user_session['id'])
-
-            token = self.service.token(request.email, request.hash_password)
+            token = self.service.token(request.email, request.password_verifier)
             if token:
                 client_key_obj = SignalService().peer_get_client_key(user_info.id)
                 client_key_peer = auth_messages.PeerGetClientKeyResponse(
