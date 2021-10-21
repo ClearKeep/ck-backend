@@ -370,9 +370,9 @@ class AuthController(BaseController):
                     token_type=token['token_type'],
                     session_state=token['session_state'],
                     scope=token['scope'],
-                    salt=salt,
+                    salt=request.salt,
                     client_key_peer=client_key_peer,
-                    iv_parameter=iv_parameter
+                    iv_parameter=request.iv_parameter
                 )
             else:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
