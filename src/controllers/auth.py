@@ -345,21 +345,21 @@ class AuthController(BaseController):
 
             token = self.service.token(request.email, request.password_verifier)
             if token:
-                client_key_obj = SignalService().peer_get_client_key(user_info.id)
+                client_key_obj = request.client_key_peer
                 client_key_peer = auth_messages.PeerGetClientKeyResponse(
-                                        clientId=user_info.id,
+                                        clientId=new_user_id,
                                         workspace_domain=get_owner_workspace_domain(),
-                                        registrationId=client_key_obj.registration_id,
-                                        deviceId=client_key_obj.device_id,
-                                        identityKeyPublic=client_key_obj.identity_key_public,
-                                        preKeyId=client_key_obj.prekey_id,
-                                        preKey=client_key_obj.prekey,
-                                        signedPreKeyId=client_key_obj.signed_prekey_id,
-                                        signedPreKey=client_key_obj.signed_prekey,
-                                        signedPreKeySignature=client_key_obj.signed_prekey_signature,
-                                        identityKeyEncrypted=client_key_obj.identity_key_encrypted
+                                        registrationId=client_key_obj.registrationId,
+                                        deviceId=client_key_obj.deviceId,
+                                        identityKeyPublic=client_key_obj.identityKeyPublic,
+                                        preKeyId=client_key_obj.preKeyId,
+                                        preKey=client_key_obj.preKey,
+                                        signedPreKeyId=client_key_obj.signedPreKeyId,
+                                        signedPreKey=client_key_obj.signedPreKey,
+                                        signedPreKeySignature=client_key_obj.signedPreKeySignature,
+                                        identityKeyEncrypted=client_key_obj.identityKeyEncrypted
                                     )
-                self.user_service.update_last_login(user_id=user_info.id)
+                self.user_service.update_last_login(user_id=new_user_id)
                 auth_message = auth_messages.AuthRes(
                     workspace_domain=get_owner_workspace_domain(),
                     workspace_name=get_system_config()['server_name'],
