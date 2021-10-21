@@ -64,11 +64,11 @@ class AuthService:
     def forgot_user(self, email, password_verifier, display_name):
         try:
             # delete user, then re create new user with activate status is True
-            old_user_id = self.get_user_by_email(email)
+            old_user_id = self.get_user_by_email(email)["id"]
             self.delete_user(old_user_id)
             new_user_id = KeyCloakUtils.create_user(email, email, password_verifier, "", display_name)
-            KeyCloakUtils.active_user(new_user_id)
             if new_user_id:
+                KeyCloakUtils.active_user(new_user_id)
                 return new_user_id
         except Exception as e:
             logger.info(e)
@@ -83,13 +83,6 @@ class AuthService:
         except Exception as e:
             logger.info(e)
             raise Exception(Message.REGISTER_USER_FAILED)
-
-    def delete_user(self, userid):
-        try:
-            KeyCloakUtils.delete_user(user_id=userid)
-        except Exception as e:
-            logger.info(e)
-            raise Exception(Message.UNAUTHENTICATED)
 
     def delete_user(self, userid):
         try:
