@@ -114,7 +114,7 @@ class MessageController(BaseController):
     @request_logged
     async def workspace_publish(self, request, context):
         try:
-            logger.info("workspace_publish")
+            logger.info("workspace_publish from client_id {}".format(request.from_client_id))
             owner_workspace_domain = get_owner_workspace_domain()
             group = GroupService().get_group_info(request.group_id)
             if group.owner_workspace_domain is None or group.owner_workspace_domain == owner_workspace_domain:
@@ -140,20 +140,18 @@ class MessageController(BaseController):
                 from_client_workspace_domain=request.from_client_workspace_domain,
                 message=request.message,
                 created_at=request.created_at,
-                updated_at=request.updated_at
+                updated_at=request.updated_at,
+                sender_message=request.sender_message
             )
             # push notification for other client
             lst_client = GroupService().get_clients_in_group(request.group_id)
-
             for client in lst_client:
                 if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                         for notify_token in client.User.tokens:
-                            logger.info('device_id in handle {}'.format(notify_token.device_id))
-                        for notify_token in client.User.tokens:
                             device_id = notify_token.device_id
                             logger.info('device_id in real loop in handle {}'.format(device_id))
-                            if device_id == request.from_client_device_id:
+                            if client.GroupClientKey.client_id == request.from_client_id and device_id == request.from_client_device_id:
                                 continue
                             message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
                             new_message_res_object = deepcopy(new_message)
@@ -164,8 +162,10 @@ class MessageController(BaseController):
                                 client_message_queue[message_channel].put(new_message_res_object)
                             else:
                                 if new_message_res_object.group_type == 'peer' and new_message_res_object.client_id == request.from_client_id:
+                                    logger.info('using sender_message')
                                     message_content = base64.b64encode(request.sender_message).decode('utf-8')
                                 else:
+                                    logger.info('using message')
                                     message_content = base64.b64encode(new_message_res_object.message).decode('utf-8')
                                 push_service = NotifyPushService()
                                 message = {
@@ -206,7 +206,7 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     async def publish_to_group_owner(self, request, from_client_id, group):
-        logger.info("publish_to_group_owner, group_id={}".format(str(group.id)))
+        logger.info("publish_to_group_owner from client_id {}, group_id={}".format(from_client_id, str(group.id)))
 
         owner_workspace_domain = get_owner_workspace_domain()
         # store message here
@@ -238,7 +238,7 @@ class MessageController(BaseController):
                 for notify_token in client.User.tokens:
                     device_id = notify_token.device_id
                     logger.info('device_id in real loop in handle {}'.format(device_id))
-                    if device_id == request.from_client_device_id:
+                    if client.GroupClientKey.client_id == request.from_client_id and device_id == request.from_client_device_id:
                         continue
                     message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
                     if message_channel in client_message_queue:
@@ -246,8 +246,10 @@ class MessageController(BaseController):
                         client_message_queue[message_channel].put(new_message_res_object)
                     else:
                         if new_message_res_object.group_type == 'peer' and new_message_res_object.client_id == from_client_id:
+                            logger.info('using sender_message')
                             message_content = base64.b64encode(request.sender_message).decode('utf-8')
                         else:
+                            logger.info('using message')
                             message_content = base64.b64encode(new_message_res_object.message).decode('utf-8')
                         message = {
                             'id': new_message_res_object.id,
@@ -291,7 +293,7 @@ class MessageController(BaseController):
         return message_res_object
 
     async def publish_to_group_not_owner(self, request, from_client_id, group):
-        logger.info("publish_to_group_not_owner, group_id={}".format(str(group.id)))
+        logger.info("publish_to_group_not_owner from client_id {}, group_id={}".format(from_client_id, str(group.id)))
 
         owner_workspace_domain = get_owner_workspace_domain()
         message_id = str(uuid.uuid4())
@@ -305,7 +307,8 @@ class MessageController(BaseController):
             from_client_id=from_client_id,
             from_client_workspace_domain=owner_workspace_domain,
             message=request.message,
-            created_at=int(created_at.timestamp() * 1000),
+            created_at=int(created_at.timestamp() * 1000),,
+            sender_message=request.sender_message
         )
 
         # publish message to user in this server first
@@ -314,11 +317,9 @@ class MessageController(BaseController):
 
         for client in lst_client:
             for notify_token in client.User.tokens:
-                logger.info('device_id in handle {}'.format(notify_token.device_id))
-            for notify_token in client.User.tokens:
                 device_id = notify_token.device_id
                 logger.info('device_id in real loop in handle {}'.format(device_id))
-                if device_id == request.from_client_device_id:
+                if client.GroupClientKey.client_id == request.from_client_id and device_id == request.from_client_device_id:
                     continue
                 message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
 
@@ -330,8 +331,10 @@ class MessageController(BaseController):
                     client_message_queue[message_channel].put(new_message_res_object)
                 else:
                     if new_message_res_object.group_type == 'peer' and new_message_res_object.client_id == from_client_id:
+                        logger.info('using sender_message')
                         message_content = base64.b64encode(request.sender_message).decode('utf-8')
                     else:
+                        logger.info('using message')
                         message_content = base64.b64encode(new_message_res_object.message).decode('utf-8')
                     message = {
                         'id': new_message_res_object.id,
