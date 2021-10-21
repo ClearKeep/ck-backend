@@ -47,7 +47,8 @@ class MessageService(BaseService):
             from_client_id=new_message.from_client_id,
             from_client_workspace_domain=new_message.from_client_workspace_domain,
             message=message,
-            created_at=int(new_message.created_at.timestamp() * 1000)
+            created_at=int(new_message.created_at.timestamp() * 1000),
+            sender_message=sender_message
         )
         if new_message.client_id:
             res_obj.client_id = new_message.client_id

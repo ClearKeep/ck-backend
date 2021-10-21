@@ -2,6 +2,7 @@ from src.controllers.base import *
 from middlewares.permission import *
 from middlewares.request_logged import *
 from src.services.group import GroupService
+from src.services.signal import SignalService
 from utils.config import get_owner_workspace_domain
 import protos.group_pb2 as group_messages
 from src.models.group import GroupChat
@@ -64,10 +65,13 @@ class GroupController(BaseController):
     @request_logged
     async def get_group(self, request, context):
         try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
             group_id = request.group_id
             # group = GroupChat().get_group(group_id)
             # if not group.owner_workspace_domain:
-            obj_res = self.service.get_group(group_id)
+            obj_res = self.service.get_group(group_id, client_id)
             # else:
             #     get_group_request = group_messages.GetGroupRequest(
             #         group_id=group.owner_group_id
@@ -76,6 +80,8 @@ class GroupController(BaseController):
             #         group.owner_workspace_domain
             #     ).get_group(get_group_request)
             #     obj_res.group_id = group_id
+
+            # TODO: return client_key object here
             if obj_res is not None:
                 return obj_res
             else:
