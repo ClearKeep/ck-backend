@@ -32,7 +32,7 @@ class MailerServer(object):
         deep_link = MailerServer.app_link + '?' + MailerServer.query_string_form.format(pre_access_token, user_name, server_domain)
         msg = MIMEMultipart('alternative')
         msg['Subject'] = 'Reset Password'
-        msg['From'] = MailerServer.sender_display_name
+        msg['From'] = MailerServer.sender
         msg['To'] = receiver_mail
         text = MailerServer.text_form.format(deep_link)
         html = MailerServer.html_form.format(deep_link)
@@ -45,11 +45,11 @@ class MailerServer(object):
         server.starttls()
         server.login(MailerServer.user_name, MailerServer.password)
         server.sendmail(
-            MailerServer.sender,
+            MailerServer.sender_display_name,
             receiver_mail,
             msg.as_string()
         )
         server.quit()
 
 if __name__ == "__main__":
-    MailerServer.send_reset_password_mail("trungdq1@vmodev.com", "trungdq1@vmodev.com", "pre_access_token", "server_domain")
+    MailerServer.send_reset_password_mail("trungdq1109@gmail.com", "trungdq1109@vmodev.com", "pre_access_token", "server_domain")
