@@ -508,6 +508,7 @@ class GroupService(BaseService):
         lst_group = self.model.get_joined(client_id)
         owner_workspace_domain = get_owner_workspace_domain()
         informed_workspace_domain = {}
+        push_service = NotifyPushService()
         for group in lst_group:
             if group.GroupChat.group_type != "peer":
                 continue
