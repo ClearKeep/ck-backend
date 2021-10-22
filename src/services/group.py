@@ -545,7 +545,7 @@ class GroupService(BaseService):
 
                         if client["workspace_domain"] not in informed_workspace_domain:
                             informed_workspace_domain[client["workspace_domain"]] = group_pb2.WorkspaceNotifyDeactiveMember(
-                                                                                                          deactive_account=old_member_info
+                                                                                                          deactive_account_id=old_member_info
                                                                                                             )
                         group_info = group_pb2.GroupInfo(
                                 group_id=group.GroupChat.id if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_group_id,
