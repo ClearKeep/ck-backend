@@ -538,7 +538,6 @@ class GroupService(BaseService):
                         except:
                             logger.error("Cannot notify to client {}".format(client["id"]))
                     else:
-
                         if client["workspace_domain"] not in informed_workspace_domain:
                             informed_workspace_domain[client["workspace_domain"]] = group_pb2.WorkspaceNotifyDeactiveMember(
                                                                                                           deactive_account_id=client_id
@@ -550,7 +549,7 @@ class GroupService(BaseService):
         pass
 
     async def workspace_notify_deactive_member(self, deactive_account_id, client_ids):
-
+        push_service = NotifyPushService()
         for client_id in client_ids:
             data = {
                     'client_id': client_id,
