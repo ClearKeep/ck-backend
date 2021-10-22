@@ -174,7 +174,7 @@ class GroupService(BaseService):
             group_clients=lst_client,
             owner_group_id=owner_group_id,
             owner_workspace_domain=owner_workspace_domain,
-            created_by=created_by,
+            #created_by=created_by,
             updated_at=datetime.datetime.now()
         )
         # notify to client
