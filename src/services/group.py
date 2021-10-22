@@ -547,11 +547,7 @@ class GroupService(BaseService):
                             informed_workspace_domain[client["workspace_domain"]] = group_pb2.WorkspaceNotifyDeactiveMember(
                                                                                                           deactive_account_id=old_member_info
                                                                                                             )
-                        group_info = group_pb2.GroupInfo(
-                                group_id=group.GroupChat.id if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_group_id,
-                                group_workspace_domain=owner_workspace_domain if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_workspace_domain
-                        )
-                        informed_workspace_domain[client["workspace_domain"]].groups.append(group_info)
+                        informed_workspace_domain[client["workspace_domain"]].client_ids.append(client["id"])
         for workspace_domain in informed_workspace_domain:
             await ClientGroup(workspace_domain).workspace_notify_deactive_member(informed_workspace_domain[workspace_domain])
 
