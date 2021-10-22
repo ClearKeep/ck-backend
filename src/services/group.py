@@ -509,11 +509,14 @@ class GroupService(BaseService):
         owner_workspace_domain = get_owner_workspace_domain()
         informed_workspace_domain = {}
         push_service = NotifyPushService()
+        logger.info(lst_group)
         for group in lst_group:
             if group.GroupChat.group_type != "peer":
                 continue
+            logger.info("from group {}".format(group.GroupChat.id))
             lst_client = json.loads(group.GroupChat.group_clients)
             for client in lst_client:
+                logger.info("notify to client {}".format(client["id"]))
                 if client["id"] != client_id:
                     if client["workspace_domain"] == owner_workspace_domain:
                         try:
