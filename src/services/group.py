@@ -504,7 +504,8 @@ class GroupService(BaseService):
         )
         return response
 
-    async def forgot_peer_groups_for_client(self, client_id):
+    async def forgot_peer_groups_for_client(self, user_info):
+        client_id = user_info.id
         lst_group = self.model.get_joined(client_id)
         owner_workspace_domain = get_owner_workspace_domain()
         informed_workspace_domain = {}
@@ -540,7 +541,7 @@ class GroupService(BaseService):
                     else:
                         # if client["workspace_domain"] not in owner_workspace_domain:
                         #     owner_workspace_domain = group_pb2.WorkspaceNotifyDeactiveMember(
-                        #                                           id = 
+                        #                                           id =
                         # )
                         # group_info = group_pb2.GroupInfo(
                         #         group_id=group.GroupChat.id if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_group_id,
