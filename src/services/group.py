@@ -511,10 +511,6 @@ class GroupService(BaseService):
         logger.info("start forgot peer group for client {}".format(client_id))
         push_service = NotifyPushService()
         logger.info(lst_group)
-        old_member_info = group_pb2.MemberInfo(
-            id = client_id,
-            workspace_domain = owner_workspace_domain
-        )
         for group in lst_group:
             if group.GroupChat.group_type != "peer":
                 continue
@@ -545,7 +541,7 @@ class GroupService(BaseService):
 
                         if client["workspace_domain"] not in informed_workspace_domain:
                             informed_workspace_domain[client["workspace_domain"]] = group_pb2.WorkspaceNotifyDeactiveMember(
-                                                                                                          deactive_account_id=old_member_info
+                                                                                                          deactive_account_id=client_id
                                                                                                             )
                         informed_workspace_domain[client["workspace_domain"]].client_ids.append(client["id"])
         for workspace_domain in informed_workspace_domain:
