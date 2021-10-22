@@ -330,7 +330,11 @@ class AuthController(BaseController):
             old_user_id = user_info.id
             self.service.verify_hash_pre_access_token(old_user_id, request.pre_access_token, "forgot_password")
             new_user_id = self.service.forgot_user(request.email, request.password_verifier, user_info.display_name)
-            await GroupService().forgot_peer_groups_for_client(user_info)
+            try:
+                await GroupService().forgot_peer_groups_for_client(user_info)
+            except Exception as e:
+                logger.error("cannot send notify to other group")
+                logger.error(e)
             SignalService().delete_client_peer_key(old_user_id)
             if new_user_id:
                 # create new user in database

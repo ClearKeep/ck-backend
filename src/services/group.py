@@ -535,8 +535,9 @@ class GroupService(BaseService):
                                 notify_type="deactive_account",
                                 data=json.dumps(data)
                             )
-                        except:
+                        except Exception as e:
                             logger.error("Cannot notify to client {}".format(client["id"]))
+                            logger.error(e)
                     else:
                         if client["workspace_domain"] not in informed_workspace_domain:
                             informed_workspace_domain[client["workspace_domain"]] = group_pb2.WorkspaceNotifyDeactiveMember(
@@ -544,26 +545,31 @@ class GroupService(BaseService):
                                                                                                             )
                         informed_workspace_domain[client["workspace_domain"]].client_ids.append(client["id"])
         for workspace_domain in informed_workspace_domain:
-            await ClientGroup(workspace_domain).workspace_notify_deactive_member(informed_workspace_domain[workspace_domain])
-
-        pass
+            try:
+                await ClientGroup(workspace_domain).workspace_notify_deactive_member(informed_workspace_domain[workspace_domain])
+            except Exception as e:
+                logger.error(e)
 
     async def workspace_notify_deactive_member(self, deactive_account_id, client_ids):
         push_service = NotifyPushService()
         for client_id in client_ids:
-            data = {
-                    'client_id': client_id,
-                    'deactive_account_id': deactive_account_id
-                }
-            await push_service.push_text_to_client(
-                to_client_id=client_id,
-                title="Deactivate Member",
-                body="A user has been deactived",
-                from_client_id=deactive_account_id,
-                notify_type="deactive_account",
-                data=json.dumps(data)
-            )
-        pass
+            try:
+                user_info = User().get(client_id)
+                if user_info is not None:
+                    data = {
+                            'client_id': client_id,
+                            'deactive_account_id': deactive_account_id
+                        }
+                    await push_service.push_text_to_client(
+                        to_client_id=client_id,
+                        title="Deactivate Member",
+                        body="A user has been deactived",
+                        from_client_id=deactive_account_id,
+                        notify_type="deactive_account",
+                        data=json.dumps(data)
+                    )
+            except Exception as e:
+                logger.error(e)
 
     def check_joined(self, create_by, list_client):
         lst_group_peer = self.model.get_joined_group_type(client_id=create_by, group_type="peer")
