@@ -508,6 +508,7 @@ class GroupService(BaseService):
         lst_group = self.model.get_joined(client_id)
         owner_workspace_domain = get_owner_workspace_domain()
         informed_workspace_domain = {}
+        logger.info("start forgot peer group for client {}".format(client_id))
         push_service = NotifyPushService()
         logger.info(lst_group)
         for group in lst_group:
@@ -538,21 +539,22 @@ class GroupService(BaseService):
                             logger.error("Cannot notify to client {}".format(client["id"]))
                     else:
                         if client["workspace_domain"] not in owner_workspace_domain:
-                            owner_workspace_domain[client["workspace_domain"]] = []
-                        # group_info = group_pb2.GroupInfo(
-                        #
-                        #         group_id=group.id,
-                        #         group_name=group.group_name,
-                        #         group_type=group.group_type,
-                        #         group_clients=group.group_clients,
-                        #         group_workspace_domain=owner_workspace_domain,
-                        #         created_by=group.created_by,
-                        # )
+                            owner_workspace_domain = group_pb2.[client["workspace_domain"]] = []
+                        group_info = group_pb2.GroupInfo(
+                                group_id=group.GroupChat.id if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_group_id,
+                                group_type=group.GroupChat.group_type,
+                                group_clients=group.GroupChat.group_clients,
+                                group_workspace_domain=owner_workspace_domain if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_workspace_domain,
+                                created_by=group.GroupChat.created_by
+                        )
                         # group_res_object = \
                         #     ClientGroup(obj.workspace_domain).create_group_workspace(
                         #         request
                         #     )
 
+        pass
+
+    async def workspace_notify_deactive_member(self, group_info, deactive_account):
         pass
 
     def check_joined(self, create_by, list_client):

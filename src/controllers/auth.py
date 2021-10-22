@@ -330,8 +330,8 @@ class AuthController(BaseController):
             old_user_id = user_info.id
             self.service.verify_hash_pre_access_token(old_user_id, request.pre_access_token, "forgot_password")
             new_user_id = self.service.forgot_user(request.email, request.password_verifier, user_info.display_name)
-            SignalService().delete_client_peer_key(old_user_id)
             GroupService().forgot_peer_groups_for_client(old_user_id)
+            SignalService().delete_client_peer_key(old_user_id)
             if new_user_id:
                 # create new user in database
                 UserService().forgot_user(user_info, new_user_id, request.password_verifier, request.salt, request.iv_parameter)
