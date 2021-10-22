@@ -5,6 +5,7 @@ from src.services.user import UserService
 from src.services.message import MessageService
 from src.services.signal import SignalService
 from src.services.notify_inapp import NotifyInAppService
+from src.services.group import GroupService
 from utils.encrypt import EncryptUtils
 from middlewares.permission import *
 from middlewares.request_logged import *
@@ -336,6 +337,7 @@ class AuthController(BaseController):
             else:
                 self.service.delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
+            GroupService().forgot_peer_groups_for_client(old_user_id)
             try:
                 SignalService().peer_register_client_key(new_user_id, request.client_key_peer)
             except Exception:

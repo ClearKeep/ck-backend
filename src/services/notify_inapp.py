@@ -19,6 +19,7 @@ UPDATE_CALL = "update-call"
 MEMBER_REMOVAL = 'member-removal'
 MEMBER_LEAVE = 'member-leave'
 MEMBER_ADD = 'member-add'
+DEACTIVE_MEMBER = "deactive-account"
 
 client_notify_queue = {}
 
@@ -273,3 +274,29 @@ class NotifyInAppService(BaseService):
                 except Exception as e:
                     logger.error(e)
                     return False
+
+    def notify_deactive_member(self, client_id, ref_client_id, ref_group_id):
+        notify = Notify(
+                id=0,
+                client_id=client_id,
+                client_workspace_domain=get_owner_workspace_domain(),
+                ref_client_id=ref_client_id,
+                ref_group_id=ref_group_id,
+                ref_subject_name="",
+                ref_workspace_domain="",
+                notify_type=DEACTIVE_MEMBER,
+                notify_image=None,
+                notify_title="",
+                notify_content="",
+                read_flg=False,
+                created_at=datetime.now()
+            )
+        notify_tokens = NotifyToken().get_client_device_ids(client_id)
+        for notify_token in notify_tokens:
+            notify_channel = "notify/{}/{}".format(client_id, notify_token.device_id)
+            logger.info(notify_channel)
+            if notify_channel in client_notify_queue:
+                try:
+                    client_notify_queue[notify_channel].put(notify)
+                except Exception as e:
+                    logger.error(e)

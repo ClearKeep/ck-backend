@@ -205,6 +205,10 @@ message WorkspaceLeaveGroupRequest {
   GroupInfo owner_group = 3;
 }
 
+message WorkspaceNotifyDeactiveMember {
+  MemberInfo deactive_account = 1;
+  int64 group_id = 2;
+}
 
 // Method
 service Group {
@@ -221,4 +225,5 @@ service Group {
     //workspace call
     rpc workspace_add_member(AddMemberWorkspaceRequest) returns (AddMemberWorkspaceResponse) {};
     rpc workspace_leave_group(WorkspaceLeaveGroupRequest) returns (BaseResponse) {};
+    rpc workspace_notify_deactive_member(WorkspaceNotifyDeactiveMember) returns (BaseResponse) {};
 }

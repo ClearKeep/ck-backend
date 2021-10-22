@@ -152,14 +152,6 @@ class GroupService(BaseService):
 
     def add_group_workspace(self, group_name, group_type, from_client_id, client_id, lst_client, owner_group_id,
                             owner_workspace_domain):
-        self.model = GroupChat(
-            group_name=group_name,
-            group_type=group_type,
-            group_clients=lst_client,
-            owner_group_id=owner_group_id,
-            owner_workspace_domain=owner_workspace_domain,
-            updated_at=datetime.datetime.now()
-        )
         new_group = self.model.add()
         # add to signal group key
         client_group_key = GroupClientKey().set_key(new_group.id, client_id)
@@ -176,6 +168,15 @@ class GroupService(BaseService):
             if obj['id'] == from_client_id:
                 created_by_user = obj
 
+        self.model = GroupChat(
+            group_name=group_name,
+            group_type=group_type,
+            group_clients=lst_client,
+            owner_group_id=owner_group_id,
+            owner_workspace_domain=owner_workspace_domain,
+            created_by=created_by,
+            updated_at=datetime.datetime.now()
+        )
         # notify to client
         if group_type == "peer":
             self.notify_service.notify_invite_peer(client_id, from_client_id, new_group.id, owner_workspace_domain,
@@ -351,7 +352,7 @@ class GroupService(BaseService):
         lst_group = self.model.search(keyword)
         lst_obj_res = []
         group_ids = (group.GroupChat.id for group in lst_group)
-        lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
+        # lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
 
         for item in lst_group:
             obj = item.GroupChat
@@ -408,7 +409,7 @@ class GroupService(BaseService):
         lst_group = self.model.get_joined(client_id)
         lst_obj_res = []
         group_ids = (group.GroupChat.id for group in lst_group)
-        lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
+        # lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
         for item in lst_group:
             obj = item.GroupChat
             obj_res = group_pb2.GroupObjectResponse(
@@ -502,6 +503,24 @@ class GroupService(BaseService):
             lst_group=lst_obj_res
         )
         return response
+
+    def forgot_peer_groups_for_client(self, client_id):
+        lst_group = self.model.get_joined(client_id)
+        owner_workspace_domain = get_owner_workspace_domain()
+        for group in lst_group:
+            if group.group_type != "peer":
+                continue
+            lst_client = json.loads(group.group_clients)
+            for client in lst_client:
+                if client["id"] != client_id:
+                    if client["workspace_domain"] == owner_workspace_domain:
+                        try:
+                            notify_inapp.NotifyInAppService().notify_deactive_member(client["id"], client_id, group.id)
+                        except:
+                            logger.error("Cannot notify to client {}".format(client["id"]))
+                    else:
+                        pass
+        pass
 
     def check_joined(self, create_by, list_client):
         lst_group_peer = self.model.get_joined_group_type(client_id=create_by, group_type="peer")
