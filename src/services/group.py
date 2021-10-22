@@ -539,7 +539,9 @@ class GroupService(BaseService):
                             logger.error("Cannot notify to client {}".format(client["id"]))
                     else:
                         # if client["workspace_domain"] not in owner_workspace_domain:
-                        #     owner_workspace_domain = group_pb2[client["workspace_domain"]] = []
+                        #     owner_workspace_domain = group_pb2.WorkspaceNotifyDeactiveMember(
+                        #                                           id = 
+                        # )
                         # group_info = group_pb2.GroupInfo(
                         #         group_id=group.GroupChat.id if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_group_id,
                         #         group_workspace_domain=owner_workspace_domain if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_workspace_domain
