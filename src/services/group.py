@@ -555,7 +555,7 @@ class GroupService(BaseService):
     async def workspace_notify_deactive_member(self, group_infos, deactive_account):
         # for group_info in group_infos:
         #     if
-        # pass
+        pass
 
     def check_joined(self, create_by, list_client):
         lst_group_peer = self.model.get_joined_group_type(client_id=create_by, group_type="peer")
