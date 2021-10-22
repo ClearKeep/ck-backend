@@ -512,6 +512,10 @@ class GroupService(BaseService):
         logger.info("start forgot peer group for client {}".format(client_id))
         push_service = NotifyPushService()
         logger.info(lst_group)
+        old_member_info = group_pb2.MemberInfo(
+            id = client_id,
+            workspace_domain = owner_workspace_domain
+        )
         for group in lst_group:
             if group.GroupChat.group_type != "peer":
                 continue
@@ -539,25 +543,36 @@ class GroupService(BaseService):
                         except:
                             logger.error("Cannot notify to client {}".format(client["id"]))
                     else:
-                        # if client["workspace_domain"] not in owner_workspace_domain:
-                        #     owner_workspace_domain = group_pb2.WorkspaceNotifyDeactiveMember(
-                        #                                           id =
-                        # )
-                        # group_info = group_pb2.GroupInfo(
-                        #         group_id=group.GroupChat.id if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_group_id,
-                        #         group_workspace_domain=owner_workspace_domain if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_workspace_domain
-                        # )
-                        # group_res_object = \
-                        #     ClientGroup(obj.workspace_domain).create_group_workspace(
-                        #         request
-                        #     )
-                        pass
+
+                        if client["workspace_domain"] not in informed_workspace_domain:
+                            informed_workspace_domain[client["workspace_domain"]] = group_pb2.WorkspaceNotifyDeactiveMember(
+                                                                                                          deactive_account=old_member_info
+                                                                                                            )
+                        group_info = group_pb2.GroupInfo(
+                                group_id=group.GroupChat.id if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_group_id,
+                                group_workspace_domain=owner_workspace_domain if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_workspace_domain
+                        )
+                        informed_workspace_domain[client["workspace_domain"]].groups.append(group_info)
+        for workspace_domain in informed_workspace_domain:
+            await ClientGroup(workspace_domain).workspace_notify_deactive_member(informed_workspace_domain[workspace_domain])
 
         pass
 
-    async def workspace_notify_deactive_member(self, group_infos, deactive_account):
-        # for group_info in group_infos:
-        #     if
+    async def workspace_notify_deactive_member(self, deactive_account_id, client_ids):
+
+        for client_id in client_ids:
+            data = {
+                    'client_id': client_id,
+                    'deactive_account_id': deactive_account_id
+                }
+            await push_service.push_text_to_client(
+                to_client_id=client_id,
+                title="Deactivate Member",
+                body="A user has been deactived",
+                from_client_id=deactive_account_id,
+                notify_type="deactive_account",
+                data=json.dumps(data)
+            )
         pass
 
     def check_joined(self, create_by, list_client):

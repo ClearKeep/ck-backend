@@ -338,8 +338,8 @@ class GroupController(BaseController):
     async def workspace_notify_deactive_member(self, request, context):
         try:
             await self.service.workspace_notify_deactive_member(
-                request.groups,
-                request.deactive_account
+                request.deactive_account_id,
+                request.client_ids
             )
             return group_messages.BaseResponse()
         except Exception as e:
