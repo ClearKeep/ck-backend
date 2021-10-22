@@ -508,14 +508,14 @@ class GroupService(BaseService):
         lst_group = self.model.get_joined(client_id)
         owner_workspace_domain = get_owner_workspace_domain()
         for group in lst_group:
-            if group.group_type != "peer":
+            if group.GroupChat.group_type != "peer":
                 continue
-            lst_client = json.loads(group.group_clients)
+            lst_client = json.loads(group.GroupChat.group_clients)
             for client in lst_client:
                 if client["id"] != client_id:
                     if client["workspace_domain"] == owner_workspace_domain:
                         try:
-                            notify_inapp.NotifyInAppService().notify_deactive_member(client["id"], client_id, group.id)
+                            notify_service.notify_deactive_member(client["id"], client_id, group.GroupChat.id)
                         except:
                             logger.error("Cannot notify to client {}".format(client["id"]))
                     else:
