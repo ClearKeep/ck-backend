@@ -504,7 +504,7 @@ class GroupService(BaseService):
         )
         return response
 
-    def forgot_peer_groups_for_client(self, client_id):
+    async def forgot_peer_groups_for_client(self, client_id):
         lst_group = self.model.get_joined(client_id)
         owner_workspace_domain = get_owner_workspace_domain()
         informed_workspace_domain = {}
@@ -516,7 +516,20 @@ class GroupService(BaseService):
                 if client["id"] != client_id:
                     if client["workspace_domain"] == owner_workspace_domain:
                         try:
-                            self.notify_service.notify_deactive_member(client["id"], client_id, group.GroupChat.id)
+                            data = {
+                                'client_id': client["id"],
+                                'client_workspace_domain': owner_workspace_domain,
+                                'group_id': str(group.GroupChat.id),
+                                'deactive_account_id': client_id
+                            }
+                            await push_service.push_text_to_client(
+                                to_client_id=client["id"],
+                                title="Deactivate Member",
+                                body="A user has been deactived",
+                                from_client_id=client_id,
+                                notify_type="deactive_account",
+                                data=json.dumps(data)
+                            )
                         except:
                             logger.error("Cannot notify to client {}".format(client["id"]))
                     else:
@@ -524,6 +537,10 @@ class GroupService(BaseService):
                             owner_workspace_domain[client["workspace_domain"]] = [client["id"]]
                         else:
                             owner_workspace_domain[client["workspace_domain"]].append(client["id"])
+                        # group_res_object = \
+                        #     ClientGroup(obj.workspace_domain).create_group_workspace(
+                        #         request
+                        #     )
 
         pass
 
