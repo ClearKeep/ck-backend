@@ -507,6 +507,7 @@ class GroupService(BaseService):
     def forgot_peer_groups_for_client(self, client_id):
         lst_group = self.model.get_joined(client_id)
         owner_workspace_domain = get_owner_workspace_domain()
+        informed_workspace_domain = {}
         for group in lst_group:
             if group.GroupChat.group_type != "peer":
                 continue
@@ -519,7 +520,11 @@ class GroupService(BaseService):
                         except:
                             logger.error("Cannot notify to client {}".format(client["id"]))
                     else:
-                        pass
+                        if client["workspace_domain"] not in owner_workspace_domain:
+                            owner_workspace_domain[client["workspace_domain"]] = [client["id"]]
+                        else:
+                            owner_workspace_domain[client["workspace_domain"]].append(client["id"])
+
         pass
 
     def check_joined(self, create_by, list_client):

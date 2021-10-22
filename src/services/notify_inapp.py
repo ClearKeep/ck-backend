@@ -294,9 +294,17 @@ class NotifyInAppService(BaseService):
         notify_tokens = NotifyToken().get_client_device_ids(client_id)
         for notify_token in notify_tokens:
             notify_channel = "notify/{}/{}".format(client_id, notify_token.device_id)
-            logger.info(notify_channel)
+
             if notify_channel in client_notify_queue:
+                logger.info("notify deactive_account for {} about {}".format(notify_channel, client_id))
                 try:
+                    client_notify_queue[notify_channel].put(notify)
+                except Exception as e:
+                    logger.error(e)
+            else:
+                logger.info("depressed notify deactive_account for {} about {}".format(notify_channel, client_id))
+                try:
+                    client_notify_queue[notify_channel] = None
                     client_notify_queue[notify_channel].put(notify)
                 except Exception as e:
                     logger.error(e)
