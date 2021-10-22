@@ -515,7 +515,7 @@ class GroupService(BaseService):
                 if client["id"] != client_id:
                     if client["workspace_domain"] == owner_workspace_domain:
                         try:
-                            notify_service.notify_deactive_member(client["id"], client_id, group.GroupChat.id)
+                            self.notify_service.notify_deactive_member(client["id"], client_id, group.GroupChat.id)
                         except:
                             logger.error("Cannot notify to client {}".format(client["id"]))
                     else:
