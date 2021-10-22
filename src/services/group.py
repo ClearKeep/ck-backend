@@ -538,24 +538,24 @@ class GroupService(BaseService):
                         except:
                             logger.error("Cannot notify to client {}".format(client["id"]))
                     else:
-                        if client["workspace_domain"] not in owner_workspace_domain:
-                            owner_workspace_domain = group_pb2.[client["workspace_domain"]] = []
-                        group_info = group_pb2.GroupInfo(
-                                group_id=group.GroupChat.id if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_group_id,
-                                group_type=group.GroupChat.group_type,
-                                group_clients=group.GroupChat.group_clients,
-                                group_workspace_domain=owner_workspace_domain if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_workspace_domain,
-                                created_by=group.GroupChat.created_by
-                        )
+                        # if client["workspace_domain"] not in owner_workspace_domain:
+                        #     owner_workspace_domain = group_pb2[client["workspace_domain"]] = []
+                        # group_info = group_pb2.GroupInfo(
+                        #         group_id=group.GroupChat.id if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_group_id,
+                        #         group_workspace_domain=owner_workspace_domain if group.GroupChat.owner_workspace_domain is None else group.GroupChat.owner_workspace_domain
+                        # )
                         # group_res_object = \
                         #     ClientGroup(obj.workspace_domain).create_group_workspace(
                         #         request
                         #     )
+                        pass
 
         pass
 
-    async def workspace_notify_deactive_member(self, group_info, deactive_account):
-        pass
+    async def workspace_notify_deactive_member(self, group_infos, deactive_account):
+        # for group_info in group_infos:
+        #     if
+        # pass
 
     def check_joined(self, create_by, list_client):
         lst_group_peer = self.model.get_joined_group_type(client_id=create_by, group_type="peer")
