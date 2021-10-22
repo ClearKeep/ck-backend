@@ -337,7 +337,11 @@ class GroupController(BaseController):
     @request_logged
     async def workspace_notify_deactive_member(self, request, context):
         try:
-            pass
+            await self.service.workspace_notify_deactive_member(
+                request.groups,
+                request.deactive_account
+            )
+            return group_messages.BaseResponse()
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:

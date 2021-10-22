@@ -538,9 +538,16 @@ class GroupService(BaseService):
                             logger.error("Cannot notify to client {}".format(client["id"]))
                     else:
                         if client["workspace_domain"] not in owner_workspace_domain:
-                            owner_workspace_domain[client["workspace_domain"]] = [client["id"]]
-                        else:
-                            owner_workspace_domain[client["workspace_domain"]].append(client["id"])
+                            owner_workspace_domain[client["workspace_domain"]] = []
+                        # group_info = group_pb2.GroupInfo(
+                        #
+                        #         group_id=group.id,
+                        #         group_name=group.group_name,
+                        #         group_type=group.group_type,
+                        #         group_clients=group.group_clients,
+                        #         group_workspace_domain=owner_workspace_domain,
+                        #         created_by=group.created_by,
+                        # )
                         # group_res_object = \
                         #     ClientGroup(obj.workspace_domain).create_group_workspace(
                         #         request

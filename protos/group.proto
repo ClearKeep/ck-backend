@@ -207,7 +207,7 @@ message WorkspaceLeaveGroupRequest {
 
 message WorkspaceNotifyDeactiveMember {
   MemberInfo deactive_account = 1;
-  repeated string client_id = 2 [packed = true];
+  repeated GroupInfo groups = 2;
 }
 
 // Method

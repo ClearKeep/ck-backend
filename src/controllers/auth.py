@@ -331,13 +331,13 @@ class AuthController(BaseController):
             self.service.verify_hash_pre_access_token(old_user_id, request.pre_access_token, "forgot_password")
             new_user_id = self.service.forgot_user(request.email, request.password_verifier, user_info.display_name)
             SignalService().delete_client_peer_key(old_user_id)
+            GroupService().forgot_peer_groups_for_client(old_user_id)
             if new_user_id:
                 # create new user in database
                 UserService().forgot_user(user_info, new_user_id, request.password_verifier, request.salt, request.iv_parameter)
             else:
                 self.service.delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
-            GroupService().forgot_peer_groups_for_client(old_user_id)
             try:
                 SignalService().peer_register_client_key(new_user_id, request.client_key_peer)
             except Exception:
