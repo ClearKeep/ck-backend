@@ -148,6 +148,8 @@ class MessageController(BaseController):
             for client in lst_client:
                 if client.GroupClientKey.client_workspace_domain != request.from_client_workspace_domain:
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+                        if client.User is None:
+                            continue
                         for notify_token in client.User.tokens:
                             device_id = notify_token.device_id
                             logger.info('device_id in real loop in handle {}'.format(device_id))
@@ -230,6 +232,8 @@ class MessageController(BaseController):
         for client in lst_client:
             #if client.GroupClientKey.client_id != request.fromClientId:
             if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
+                if client.User is None:
+                    continue
 
                 new_message_res_object = deepcopy(message_res_object)
                 new_message_res_object.client_id = client.GroupClientKey.client_id
@@ -317,6 +321,8 @@ class MessageController(BaseController):
 
         for client in lst_client:
             for notify_token in client.User.tokens:
+                if client.User is None:
+                    continue
                 device_id = notify_token.device_id
                 logger.info('device_id in real loop in handle {}'.format(device_id))
                 if client.GroupClientKey.client_id == from_client_id and device_id == request.from_client_device_id:
