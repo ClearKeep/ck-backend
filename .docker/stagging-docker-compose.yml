@@ -8,7 +8,7 @@ services:
       restart: always
       environment:
         DB_VENDOR: POSTGRES
-        DB_ADDR: postgres
+        DB_ADDR: 54.235.68.160:5432
         DB_DATABASE: stagging-authen
         DB_USER: admin
         DB_PASSWORD: clk328@2021

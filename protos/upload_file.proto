@@ -1,16 +1,9 @@
 syntax = "proto3";
-
 package upload_file;
 
-//errors response
-message ErrorRes {
-    int64 code = 1;
-    string message = 2;
-}
 
 message BaseResponse {
-    bool success = 1;
-    ErrorRes errors = 2;
+    string error = 1;
 }
 
 message FileUploadRequest {

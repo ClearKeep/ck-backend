@@ -6,24 +6,7 @@ from protos import workspace_pb2 as protos_dot_workspace__pb2
 
 
 class WorkspaceStub(object):
-    """
-    // Request: join group
-    message JoinWorkspaceRequest {
-    string client_id = 1;
-    string workspace_domain = 2;
-    }
-    // Response: BaseResponse
-
-    // Request: get joined groups
-    message GetJoinedWorkspacesRequest {
-    string client_id = 1;
-    }
-    // Response
-    message GetJoinedWorkspacesResponse {
-    repeated WorkspaceObjectResponse lst_workspace = 1;
-    }
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -34,7 +17,7 @@ class WorkspaceStub(object):
         self.workspace_info = channel.unary_unary(
                 '/workspace.Workspace/workspace_info',
                 request_serializer=protos_dot_workspace__pb2.WorkspaceInfoRequest.SerializeToString,
-                response_deserializer=protos_dot_workspace__pb2.WorkspaceObjectResponse.FromString,
+                response_deserializer=protos_dot_workspace__pb2.WorkspaceInfoResponse.FromString,
                 )
         self.leave_workspace = channel.unary_unary(
                 '/workspace.Workspace/leave_workspace',
@@ -44,29 +27,10 @@ class WorkspaceStub(object):
 
 
 class WorkspaceServicer(object):
-    """
-    // Request: join group
-    message JoinWorkspaceRequest {
-    string client_id = 1;
-    string workspace_domain = 2;
-    }
-    // Response: BaseResponse
-
-    // Request: get joined groups
-    message GetJoinedWorkspacesRequest {
-    string client_id = 1;
-    }
-    // Response
-    message GetJoinedWorkspacesResponse {
-    repeated WorkspaceObjectResponse lst_workspace = 1;
-    }
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def workspace_info(self, request, context):
-        """rpc join_workspace(JoinWorkspaceRequest) returns (BaseResponse) {};
-        rpc get_joined_workspaces(GetJoinedWorkspacesRequest) returns (GetJoinedWorkspacesResponse) {};
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -83,7 +47,7 @@ def add_WorkspaceServicer_to_server(servicer, server):
             'workspace_info': grpc.unary_unary_rpc_method_handler(
                     servicer.workspace_info,
                     request_deserializer=protos_dot_workspace__pb2.WorkspaceInfoRequest.FromString,
-                    response_serializer=protos_dot_workspace__pb2.WorkspaceObjectResponse.SerializeToString,
+                    response_serializer=protos_dot_workspace__pb2.WorkspaceInfoResponse.SerializeToString,
             ),
             'leave_workspace': grpc.unary_unary_rpc_method_handler(
                     servicer.leave_workspace,
@@ -98,24 +62,7 @@ def add_WorkspaceServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class Workspace(object):
-    """
-    // Request: join group
-    message JoinWorkspaceRequest {
-    string client_id = 1;
-    string workspace_domain = 2;
-    }
-    // Response: BaseResponse
-
-    // Request: get joined groups
-    message GetJoinedWorkspacesRequest {
-    string client_id = 1;
-    }
-    // Response
-    message GetJoinedWorkspacesResponse {
-    repeated WorkspaceObjectResponse lst_workspace = 1;
-    }
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def workspace_info(request,
@@ -130,7 +77,7 @@ class Workspace(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/workspace.Workspace/workspace_info',
             protos_dot_workspace__pb2.WorkspaceInfoRequest.SerializeToString,
-            protos_dot_workspace__pb2.WorkspaceObjectResponse.FromString,
+            protos_dot_workspace__pb2.WorkspaceInfoResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

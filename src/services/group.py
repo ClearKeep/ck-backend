@@ -1,6 +1,7 @@
 from src.services.base import BaseService
 from src.models.group import GroupChat
 from src.models.user import User
+from src.models.message_user_read import MessageUserRead
 from src.models.signal_group_key import GroupClientKey
 from src.models.signal_peer_key import PeerClientKey
 from src.models.message import Message as MessageClass
@@ -90,7 +91,7 @@ class GroupService(BaseService):
 
             # add to signal group key
             if obj.workspace_domain == owner_workspace_domain:
-                client_group_key = GroupClientKey().set_key(new_group.id, obj.id, None, None, None, None)
+                client_group_key = GroupClientKey().set_key(new_group.id, obj.id)
                 client_group_key.add()
                 # notify per client
                 if group_type == "peer":
@@ -128,8 +129,7 @@ class GroupService(BaseService):
                 client_group_key = GroupClientKey().set_key(
                     new_group.id, obj.id,
                     group_res_object.client_workspace_domain,
-                    group_res_object.group_id, None, None
-                )
+                    group_res_object.group_id)
                 client_group_key.add()
                 # client_in = group_pb2.ClientInGroupResponse(
                 #     id=group_res_object.client_id,
@@ -158,11 +158,12 @@ class GroupService(BaseService):
             group_clients=lst_client,
             owner_group_id=owner_group_id,
             owner_workspace_domain=owner_workspace_domain,
+            #created_by=created_by,
             updated_at=datetime.datetime.now()
         )
         new_group = self.model.add()
         # add to signal group key
-        client_group_key = GroupClientKey().set_key(new_group.id, client_id, None, None, None, None)
+        client_group_key = GroupClientKey().set_key(new_group.id, client_id)
         client_group_key.add()
 
         client_name = ""
@@ -175,7 +176,6 @@ class GroupService(BaseService):
         for obj in list_client_in_group:
             if obj['id'] == from_client_id:
                 created_by_user = obj
-
         # notify to client
         if group_type == "peer":
             self.notify_service.notify_invite_peer(client_id, from_client_id, new_group.id, owner_workspace_domain,
@@ -256,7 +256,8 @@ class GroupService(BaseService):
     def get_group_obj(self, group_id):
         return self.model.get(group_id).GroupChat
 
-    def get_group(self, group_id):
+    def get_group(self, group_id, client_id):
+        stored_client_key = GroupClientKey().get(group_id, client_id)
         group = self.model.get(group_id)
         if group is not None:
             obj = group.GroupChat
@@ -275,6 +276,7 @@ class GroupService(BaseService):
 
             # list client in group
             group_clients = json.loads(obj.group_clients)
+
             for client in group_clients:
                 client_in = group_pb2.ClientInGroupResponse(
                     id=client['id'],
@@ -283,6 +285,22 @@ class GroupService(BaseService):
                     status=client['status']
                 )
                 res_obj.lst_client.append(client_in)
+
+            if stored_client_key is not None:
+                res_obj.client_key.workspace_domain = get_owner_workspace_domain()
+                res_obj.client_key.clientId = stored_client_key.client_id
+                if stored_client_key.device_id is not None:
+                    res_obj.client_key.deviceId = stored_client_key.device_id
+                if stored_client_key.client_key is not None:
+                    res_obj.client_key.clientKeyDistribution = stored_client_key.client_key
+                if stored_client_key.client_sender_key_id is not None:
+                    res_obj.client_key.senderKeyId = stored_client_key.client_sender_key_id
+                if stored_client_key.client_sender_key is not None:
+                    res_obj.client_key.senderKey = stored_client_key.client_sender_key
+                if stored_client_key.client_public_key is not None:
+                    res_obj.client_key.publicKey = stored_client_key.client_public_key
+                if stored_client_key.client_private_key is not None:
+                    res_obj.client_key.privateKey = stored_client_key.client_private_key
             # lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
             # owner_workspace_domain = get_owner_workspace_domain()
             #
@@ -333,7 +351,7 @@ class GroupService(BaseService):
         lst_group = self.model.search(keyword)
         lst_obj_res = []
         group_ids = (group.GroupChat.id for group in lst_group)
-        lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
+        # lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
 
         for item in lst_group:
             obj = item.GroupChat
@@ -390,8 +408,7 @@ class GroupService(BaseService):
         lst_group = self.model.get_joined(client_id)
         lst_obj_res = []
         group_ids = (group.GroupChat.id for group in lst_group)
-        lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
-
+        # lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
         for item in lst_group:
             obj = item.GroupChat
             obj_res = group_pb2.GroupObjectResponse(
@@ -411,6 +428,32 @@ class GroupService(BaseService):
             if obj.updated_at:
                 obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
 
+            #client signal key of group
+            group_client_key = item.GroupClientKey
+            if group_client_key.client_id:
+                obj_res.client_key.clientId = group_client_key.client_id
+            if group_client_key.device_id:
+                obj_res.client_key.deviceId = group_client_key.device_id
+
+            if group_client_key.client_key:
+                obj_res.client_key.clientKeyDistribution = group_client_key.client_key
+            if group_client_key.client_sender_key_id:
+                obj_res.client_key.senderKeyId = group_client_key.client_sender_key_id
+            if group_client_key.client_sender_key:
+                obj_res.client_key.senderKey = group_client_key.client_sender_key
+            if group_client_key.client_public_key:
+                obj_res.client_key.publicKey = group_client_key.client_public_key
+            if group_client_key.client_private_key:
+                obj_res.client_key.privateKey = group_client_key.client_private_key
+
+            # check if this group has an unread message
+            if obj.last_message_id:
+                is_read = MessageUserRead().get_by_message_id(obj.last_message_id)
+                if is_read:
+                    obj_res.has_unread_message = False
+                else:
+                    obj_res.has_unread_message = True
+
             group_clients = json.loads(obj.group_clients)
             for client in group_clients:
                 client_in = group_pb2.ClientInGroupResponse(
@@ -426,11 +469,14 @@ class GroupService(BaseService):
 
             # get last message
             if item.Message:
+
                 last_message = item.Message
                 obj_res.last_message.id = last_message.id
                 obj_res.last_message.group_id = last_message.group_id
                 obj_res.last_message.from_client_id = last_message.from_client_id
                 obj_res.last_message.message = last_message.message
+                if obj_res.last_message.from_client_id == client_id:
+                    obj_res.last_message.sender_message = last_message.sender_message
                 obj_res.last_message.created_at = int(last_message.created_at.timestamp() * 1000)
 
                 if last_message.client_id:
@@ -456,6 +502,74 @@ class GroupService(BaseService):
             lst_group=lst_obj_res
         )
         return response
+
+    async def forgot_peer_groups_for_client(self, user_info):
+        client_id = user_info.id
+        lst_group = self.model.get_joined(client_id)
+        owner_workspace_domain = get_owner_workspace_domain()
+        informed_workspace_domain = {}
+        logger.info("start forgot peer group for client {}".format(client_id))
+        push_service = NotifyPushService()
+        logger.info(lst_group)
+        for group in lst_group:
+            if group.GroupChat.group_type != "peer":
+                continue
+            logger.info("from group {}".format(group.GroupChat.id))
+            lst_client = json.loads(group.GroupChat.group_clients)
+            for client in lst_client:
+                logger.info("notify to client {}".format(client["id"]))
+                if client["id"] != client_id:
+                    if client["workspace_domain"] == owner_workspace_domain:
+                        try:
+                            data = {
+                                'client_id': client["id"],
+                                'client_workspace_domain': owner_workspace_domain,
+                                'group_id': str(group.GroupChat.id),
+                                'deactive_account_id': client_id
+                            }
+                            await push_service.push_text_to_client(
+                                to_client_id=client["id"],
+                                title="Deactivate Member",
+                                body="A user has been deactived",
+                                from_client_id=client_id,
+                                notify_type="deactive_account",
+                                data=json.dumps(data)
+                            )
+                        except Exception as e:
+                            logger.error("Cannot notify to client {}".format(client["id"]))
+                            logger.error(e)
+                    else:
+                        if client["workspace_domain"] not in informed_workspace_domain:
+                            informed_workspace_domain[client["workspace_domain"]] = group_pb2.WorkspaceNotifyDeactiveMember(
+                                                                                                          deactive_account_id=client_id
+                                                                                                            )
+                        informed_workspace_domain[client["workspace_domain"]].client_ids.append(client["id"])
+        for workspace_domain in informed_workspace_domain:
+            try:
+                await ClientGroup(workspace_domain).workspace_notify_deactive_member(informed_workspace_domain[workspace_domain])
+            except Exception as e:
+                logger.error(e)
+
+    async def workspace_notify_deactive_member(self, deactive_account_id, client_ids):
+        push_service = NotifyPushService()
+        for client_id in client_ids:
+            try:
+                user_info = User().get(client_id)
+                if user_info is not None:
+                    data = {
+                            'client_id': client_id,
+                            'deactive_account_id': deactive_account_id
+                        }
+                    await push_service.push_text_to_client(
+                        to_client_id=client_id,
+                        title="Deactivate Member",
+                        body="A user has been deactived",
+                        from_client_id=deactive_account_id,
+                        notify_type="deactive_account",
+                        data=json.dumps(data)
+                    )
+            except Exception as e:
+                logger.error(e)
 
     def check_joined(self, create_by, list_client):
         lst_group_peer = self.model.get_joined_group_type(client_id=create_by, group_type="peer")
@@ -506,9 +620,7 @@ class GroupService(BaseService):
 
             # add more group client key
             group_client_key = GroupClientKey().set_key(
-                new_group.id, added_member_info.id,
-                None, None, None, None
-            )
+                new_group.id, added_member_info.id)
             group_client_key.add()
 
         # update all group with owner group
@@ -536,6 +648,7 @@ class GroupService(BaseService):
                 'adding_member_workspace_domain': adding_member_info.workspace_domain
             }
             logger.info(data)
+            # TODO: maybe handling push to owwner
             await push_service.push_text_to_client(
                 to_client_id=client.GroupClientKey.client_id,
                 title="Member Add",
@@ -553,9 +666,8 @@ class GroupService(BaseService):
         )
         ClientGroup(group.owner_workspace_domain).add_member(add_member_request)
 
-        return group_pb2.BaseResponse(
-            success=True
-        )
+        # for compatible with old code, should be remove in future?
+        return group_pb2.BaseResponse()
 
     async def add_member_to_group_owner(self, added_member_info, adding_member_info, group):
 
@@ -568,9 +680,7 @@ class GroupService(BaseService):
             client_workspace_domain = added_member_info.workspace_domain
 
         group_client_key = GroupClientKey().set_key(
-            group.id, added_member_info.id, client_workspace_domain, added_member_info.ref_group_id,
-            None, None
-        ).add()
+            group.id, added_member_info.id, client_workspace_domain, added_member_info.ref_group_id).add()
 
         # push notification for other member in server
         lst_client_in_group = self.get_clients_in_group(group.id)
@@ -590,6 +700,7 @@ class GroupService(BaseService):
                         'adding_member_workspace_domain': owner_workspace_domain
                     }
                     logger.info(data)
+                    # TODO: maybe handling push to owwner
                     await push_service.push_text_to_client(
                         to_client_id=client.GroupClientKey.client_id,
                         title="Member Add",
@@ -630,9 +741,8 @@ class GroupService(BaseService):
                     group_client_key.client_workspace_group_id = response.ref_group_id
                     group_client_key.update()
 
-        return group_pb2.BaseResponse(
-            success=True
-        )
+        # for compatible with old code, should be remove in future?
+        return group_pb2.BaseResponse()
 
     async def workspace_add_member(self, added_member_info, adding_member_info, owner_group_info):
         logger.info('workspace_add_member')
@@ -660,9 +770,7 @@ class GroupService(BaseService):
             ref_group_id = new_group.id
             # add more group client key
             group_client_key = GroupClientKey().set_key(
-                new_group.id, added_member_info.id,
-                None, None, None, None
-            )
+                new_group.id, added_member_info.id)
             group_client_key.add()
 
         # update all group with owner group
@@ -690,6 +798,7 @@ class GroupService(BaseService):
                 'adding_member_workspace_domain': adding_member_info.workspace_domain
             }
             logger.info(data)
+            # TODO: maybe handling push to owwner
             await push_service.push_text_to_client(
                 to_client_id=client.GroupClientKey.client_id,
                 title="Member Add",
@@ -716,9 +825,7 @@ class GroupService(BaseService):
         if len(lst_client_in_group) == 1 and lst_client_in_group[0].GroupClientKey.client_id == leave_member.id:
             lst_client_in_group[0].GroupClientKey.delete()
             group.delete()
-            return group_pb2.BaseResponse(
-                success=True
-            )
+            return group_pb2.BaseResponse()
 
         for client in lst_client_in_group:
             if client.GroupClientKey.client_id == leave_member.id:
@@ -737,6 +844,7 @@ class GroupService(BaseService):
                         'leave_member_by_workspace_domain': leave_member_by.workspace_domain
                     }
                     logger.info(data)
+                    # TODO: maybe handling push to owwner
                     await push_service.push_text_to_client(
                         to_client_id=client.GroupClientKey.client_id,
                         title="Member leave",
@@ -772,9 +880,8 @@ class GroupService(BaseService):
                     "call leave member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
                 ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_leave_group(request)
 
-        return group_pb2.BaseResponse(
-            success=True
-        )
+        # for compatible with old code, should be remove in future?
+        return group_pb2.BaseResponse()
 
     async def leave_group_not_owner(self, leave_member, leave_member_by, group):
         logger.info('leave_group_not_owner')
@@ -815,6 +922,7 @@ class GroupService(BaseService):
                 'leave_member_by_workspace_domain': leave_member_by.workspace_domain
             }
             logger.info(data)
+            # TODO: maybe handling push to owner
             await push_service.push_text_to_client(
                 to_client_id=client.GroupClientKey.client_id,
                 title="Member leave",
@@ -831,9 +939,8 @@ class GroupService(BaseService):
             group_id=group.owner_group_id,
         )
         ClientGroup(group.owner_workspace_domain).leave_group(leave_group_request)
-        return group_pb2.BaseResponse(
-            success=True
-        )
+        # for compatible with old code, should be remove in future?
+        return group_pb2.BaseResponse()
 
     async def workspace_leave_group(self, leave_member, leave_member_by, group):
         logger.info('workspace_leave_group')
@@ -872,6 +979,7 @@ class GroupService(BaseService):
                     'leave_member_by_workspace_domain': leave_member_by.workspace_domain
                 }
                 logger.info(data)
+                # TODO: maybe handling push to owwner
                 await push_service.push_text_to_client(
                     to_client_id=client.GroupClientKey.client_id,
                     title="Member leave",
@@ -887,4 +995,5 @@ class GroupService(BaseService):
                     if leave_member_group:
                         leave_member_group.delete()
 
-        return group_pb2.BaseResponse(success=True)
+        # for compatible with old code, should be remove in future?
+        return group_pb2.BaseResponse()

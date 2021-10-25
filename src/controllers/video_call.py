@@ -20,6 +20,7 @@ class VideoCallController(BaseController):
         self.service_group = GroupService()
 
     @request_logged
+    @auth_required
     async def video_call(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -36,7 +37,10 @@ class VideoCallController(BaseController):
                 return await self.call_to_group_owner(request, group, from_client_id)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_REQUEST_CALL_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_REQUEST_CALL_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -120,10 +124,14 @@ class VideoCallController(BaseController):
             )
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_REQUEST_CALL_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_REQUEST_CALL_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
 
     async def call_to_group_owner(self, request, group_obj, from_client_id):
         from_client_name = ""
@@ -264,6 +272,7 @@ class VideoCallController(BaseController):
             raise
 
     @request_logged
+    @auth_required
     async def update_call(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -280,7 +289,10 @@ class VideoCallController(BaseController):
                 return await self.update_call_to_group_owner(request, from_client_id)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_UPDATE_CALL_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_UPDATE_CALL_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -325,12 +337,13 @@ class VideoCallController(BaseController):
                         ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                             json.dumps(new_push_payload))
                         #continue
-            return video_call_pb2.BaseResponse(
-                success=True
-            )
+            return video_call_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.CLIENT_UPDATE_CALL_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_UPDATE_CALL_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
@@ -381,9 +394,7 @@ class VideoCallController(BaseController):
                                                                                         json.dumps(new_push_payload))
                     #continue
 
-        return video_call_pb2.BaseResponse(
-            success=True
-        )
+        return video_call_pb2.BaseResponse()
 
     async def update_call_to_group_not_owner(self, request, group, from_client_id):
         logger.info("update_call_to_group_not_owner")
@@ -421,7 +432,4 @@ class VideoCallController(BaseController):
             update_type=update_type
         )
         obj_res = ClientVideoCall(group.owner_workspace_domain).workspace_update_call(request)
-        return video_call_pb2.BaseResponse(
-            success=True
-        )
-
+        return video_call_pb2.BaseResponse()

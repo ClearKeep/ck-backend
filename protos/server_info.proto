@@ -8,7 +8,7 @@ message UpdateNTSReq {
 }
 
 message BaseResponse {
-    bool success = 1;
+    string error = 1;
 }
 
 

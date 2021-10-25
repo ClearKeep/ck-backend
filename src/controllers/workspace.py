@@ -8,6 +8,7 @@ from src.controllers.group import GroupController
 from src.models.group import GroupChat
 from src.models.user import User
 import json
+from client.client_workspace import ClientWorkspace
 
 
 class WorkspaceController(BaseController):
@@ -17,14 +18,25 @@ class WorkspaceController(BaseController):
     @request_logged
     async def workspace_info(self, request, context):
         try:
-            obj_res = self.service.get_joined_workspaces(request.client_id)
-            return obj_res
+            owner_workspace_domain = get_owner_workspace_domain()
+            if request.workspace_domain == owner_workspace_domain:
+                return workspace_pb2.WorkspaceInfoResponse()
+            else:
+                response = ClientWorkspace(request.workspace_domain).get_workspace_info(request.workspace_domain)
+                if response:
+                    return response
+                else:
+                    raise Exception(Message.GET_WORKSPACE_INFO_FAILED)
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.GET_WORKSPACE_INFO_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
 
     @request_logged
     async def leave_workspace(self, request, context):
@@ -56,42 +68,15 @@ class WorkspaceController(BaseController):
             user_info.delete()
             KeyCloakUtils.delete_user(client_id)
 
-            return workspace_pb2.BaseResponse(success=True)
+            return workspace_pb2.BaseResponse()
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(Message.LEAVE_WORKSPACE_FAILED)]
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.LEAVE_WORKSPACE_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
-
-    # @request_logged
-    # async def join_workspace(self, request, context):
-    #     try:
-    #         # header_data = dict(context.invocation_metadata())
-    #         # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-    #         # client_id = introspect_token['sub']
-    #         workspace_domain = request.workspace_domain
-    #         client_id = request.client_id
-    #         obj_res = self.service.join_workspace(client_id, workspace_domain)
-    #         return obj_res
-    #     except Exception as e:
-    #         logger.error(e)
-    #         errors = [Message.get_error_object(Message.JOIN_WORKSPACE_FAILED)]
-    #         context.set_details(json.dumps(
-    #             errors, default=lambda x: x.__dict__))
-    #         context.set_code(grpc.StatusCode.INTERNAL)
-    #
-    # @request_logged
-    # async def get_joined_workspaces(self, request, context):
-    #     try:
-    #         # header_data = dict(context.invocation_metadata())
-    #         # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-    #         # client_id = introspect_token['sub']
-    #         obj_res = self.service.get_joined_workspaces(request.client_id)
-    #         return obj_res
-    #     except Exception as e:
-    #         logger.error(e)
-    #         errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
-    #         context.set_details(json.dumps(
-    #             errors, default=lambda x: x.__dict__))
-    #         context.set_code(grpc.StatusCode.INTERNAL)

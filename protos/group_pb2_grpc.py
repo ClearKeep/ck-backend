@@ -65,6 +65,11 @@ class GroupStub(object):
                 request_serializer=protos_dot_group__pb2.WorkspaceLeaveGroupRequest.SerializeToString,
                 response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
                 )
+        self.workspace_notify_deactive_member = channel.unary_unary(
+                '/group.Group/workspace_notify_deactive_member',
+                request_serializer=protos_dot_group__pb2.WorkspaceNotifyDeactiveMember.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
+                )
 
 
 class GroupServicer(object):
@@ -132,6 +137,12 @@ class GroupServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def workspace_notify_deactive_member(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_GroupServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -183,6 +194,11 @@ def add_GroupServicer_to_server(servicer, server):
             'workspace_leave_group': grpc.unary_unary_rpc_method_handler(
                     servicer.workspace_leave_group,
                     request_deserializer=protos_dot_group__pb2.WorkspaceLeaveGroupRequest.FromString,
+                    response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
+            ),
+            'workspace_notify_deactive_member': grpc.unary_unary_rpc_method_handler(
+                    servicer.workspace_notify_deactive_member,
+                    request_deserializer=protos_dot_group__pb2.WorkspaceNotifyDeactiveMember.FromString,
                     response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
             ),
     }
@@ -362,6 +378,23 @@ class Group(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/group.Group/workspace_leave_group',
             protos_dot_group__pb2.WorkspaceLeaveGroupRequest.SerializeToString,
+            protos_dot_group__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def workspace_notify_deactive_member(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/group.Group/workspace_notify_deactive_member',
+            protos_dot_group__pb2.WorkspaceNotifyDeactiveMember.SerializeToString,
             protos_dot_group__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

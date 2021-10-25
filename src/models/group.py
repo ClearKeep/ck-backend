@@ -70,7 +70,7 @@ class GroupChat(Database.get().Model):
         return group
 
     def get_joined(self, client_id):
-        result = Database.get_session().query(GroupChat, Message) \
+        result = Database.get_session().query(GroupChat, Message, GroupClientKey) \
             .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \
             .join(Message, GroupChat.last_message_id == Message.id, isouter=True) \
             .options(joinedload(Message.users_read).joinedload(MessageUserRead.user)) \
@@ -129,4 +129,4 @@ class GroupChat(Database.get().Model):
         return result
 
     def __repr__(self):
-        return '<Item(id=%s, username=%s, email=%s)>' % (self.id, self.username, self.email)
+        return '<Item(id=%s, group_name=%s, owner_group_id=%s)>' % (self.id, self.group_name, self.owner_group_id)

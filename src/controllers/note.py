@@ -40,16 +40,17 @@ class NoteController(BaseController):
                 note_type=note.note_type,
                 created_at=int(note.created_at.timestamp() * 1000)
             )
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
-            return note_pb2.BaseResponse(
-                    success=False,
-                    errors=note_pb2.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                )
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     async def edit_note(self, request, context):
         """docstring for create_note"""
@@ -67,17 +68,18 @@ class NoteController(BaseController):
                 request.note_type,
                 user_id
             )
-            return note_pb2.BaseResponse(success=True)
+            return note_pb2.BaseResponse()
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
-            return note_pb2.BaseResponse(
-                    success=False,
-                    errors=note_pb2.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                )
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     async def delete_note(self, request, context):
         """docstring for create_note"""
@@ -85,17 +87,18 @@ class NoteController(BaseController):
             self.service.delete_note(
                 request.note_id
             )
-            return note_pb2.BaseResponse(success=True)
+            return note_pb2.BaseResponse()
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
-            return note_pb2.BaseResponse(
-                    success=False,
-                    errors=note_pb2.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                )
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     async def get_user_notes(self, request, context):
         """docstring for create_note"""
@@ -117,18 +120,16 @@ class NoteController(BaseController):
                     note_type=note.note_type,
                     created_at=int(note.created_at.timestamp() * 1000)
                 ) for note in user_notes],
-                base_response=note_pb2.BaseResponse(success=True)
+                base_response=note_pb2.BaseResponse()
             )
+
         except Exception as e:
             logger.error(e)
-            errors = [Message.get_error_object(e.args[0])]
-            return note_pb2.GetUserNotesResponse(
-                user_notes=[],
-                base_response=note_pb2.BaseResponse(
-                    success=False,
-                    errors=note_pb2.ErrorRes(
-                        code=errors[0].code,
-                        message=errors[0].message
-                    )
-                )
-            )
+            if not e.args or e.args[0] not in Message.msg_dict:
+                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)

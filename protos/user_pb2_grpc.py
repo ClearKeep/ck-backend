@@ -24,6 +24,16 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.UpdateProfileRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
                 )
+        self.upload_avatar = channel.unary_unary(
+                '/user.User/upload_avatar',
+                request_serializer=protos_dot_user__pb2.UploadAvatarRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.UploadAvatarResponse.FromString,
+                )
+        self.request_change_password = channel.unary_unary(
+                '/user.User/request_change_password',
+                request_serializer=protos_dot_user__pb2.RequestChangePasswordReq.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.RequestChangePasswordRes.FromString,
+                )
         self.change_password = channel.unary_unary(
                 '/user.User/change_password',
                 request_serializer=protos_dot_user__pb2.ChangePasswordRequest.SerializeToString,
@@ -59,6 +69,41 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.Empty.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.GetUsersResponse.FromString,
                 )
+        self.get_mfa_state = channel.unary_unary(
+                '/user.User/get_mfa_state',
+                request_serializer=protos_dot_user__pb2.MfaGetStateRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaStateResponse.FromString,
+                )
+        self.enable_mfa = channel.unary_unary(
+                '/user.User/enable_mfa',
+                request_serializer=protos_dot_user__pb2.MfaChangingStateRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
+                )
+        self.disable_mfa = channel.unary_unary(
+                '/user.User/disable_mfa',
+                request_serializer=protos_dot_user__pb2.MfaChangingStateRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
+                )
+        self.mfa_auth_challenge = channel.unary_unary(
+                '/user.User/mfa_auth_challenge',
+                request_serializer=protos_dot_user__pb2.MfaAuthChallengeRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaAuthChallengeResponse.FromString,
+                )
+        self.mfa_validate_password = channel.unary_unary(
+                '/user.User/mfa_validate_password',
+                request_serializer=protos_dot_user__pb2.MfaValidatePasswordRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
+                )
+        self.mfa_validate_otp = channel.unary_unary(
+                '/user.User/mfa_validate_otp',
+                request_serializer=protos_dot_user__pb2.MfaValidateOtpRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
+                )
+        self.mfa_resend_otp = channel.unary_unary(
+                '/user.User/mfa_resend_otp',
+                request_serializer=protos_dot_user__pb2.MfaResendOtpRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
+                )
 
 
 class UserServicer(object):
@@ -66,12 +111,25 @@ class UserServicer(object):
 
     def get_profile(self, request, context):
         """----- FROM MY ACCOUNT -----
+        => profile api
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def update_profile(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def upload_avatar(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def request_change_password(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -96,8 +154,7 @@ class UserServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def get_clients_status(self, request, context):
-        """----- FROM BOTH -----
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -121,6 +178,49 @@ class UserServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def get_mfa_state(self, request, context):
+        """----- MFA ENABLE FLOW -----
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def enable_mfa(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def disable_mfa(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def mfa_auth_challenge(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def mfa_validate_password(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def mfa_validate_otp(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def mfa_resend_otp(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_UserServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -133,6 +233,16 @@ def add_UserServicer_to_server(servicer, server):
                     servicer.update_profile,
                     request_deserializer=protos_dot_user__pb2.UpdateProfileRequest.FromString,
                     response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
+            ),
+            'upload_avatar': grpc.unary_unary_rpc_method_handler(
+                    servicer.upload_avatar,
+                    request_deserializer=protos_dot_user__pb2.UploadAvatarRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.UploadAvatarResponse.SerializeToString,
+            ),
+            'request_change_password': grpc.unary_unary_rpc_method_handler(
+                    servicer.request_change_password,
+                    request_deserializer=protos_dot_user__pb2.RequestChangePasswordReq.FromString,
+                    response_serializer=protos_dot_user__pb2.RequestChangePasswordRes.SerializeToString,
             ),
             'change_password': grpc.unary_unary_rpc_method_handler(
                     servicer.change_password,
@@ -168,6 +278,41 @@ def add_UserServicer_to_server(servicer, server):
                     servicer.get_users,
                     request_deserializer=protos_dot_user__pb2.Empty.FromString,
                     response_serializer=protos_dot_user__pb2.GetUsersResponse.SerializeToString,
+            ),
+            'get_mfa_state': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_mfa_state,
+                    request_deserializer=protos_dot_user__pb2.MfaGetStateRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaStateResponse.SerializeToString,
+            ),
+            'enable_mfa': grpc.unary_unary_rpc_method_handler(
+                    servicer.enable_mfa,
+                    request_deserializer=protos_dot_user__pb2.MfaChangingStateRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
+            ),
+            'disable_mfa': grpc.unary_unary_rpc_method_handler(
+                    servicer.disable_mfa,
+                    request_deserializer=protos_dot_user__pb2.MfaChangingStateRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
+            ),
+            'mfa_auth_challenge': grpc.unary_unary_rpc_method_handler(
+                    servicer.mfa_auth_challenge,
+                    request_deserializer=protos_dot_user__pb2.MfaAuthChallengeRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaAuthChallengeResponse.SerializeToString,
+            ),
+            'mfa_validate_password': grpc.unary_unary_rpc_method_handler(
+                    servicer.mfa_validate_password,
+                    request_deserializer=protos_dot_user__pb2.MfaValidatePasswordRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
+            ),
+            'mfa_validate_otp': grpc.unary_unary_rpc_method_handler(
+                    servicer.mfa_validate_otp,
+                    request_deserializer=protos_dot_user__pb2.MfaValidateOtpRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
+            ),
+            'mfa_resend_otp': grpc.unary_unary_rpc_method_handler(
+                    servicer.mfa_resend_otp,
+                    request_deserializer=protos_dot_user__pb2.MfaResendOtpRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -210,6 +355,40 @@ class User(object):
         return grpc.experimental.unary_unary(request, target, '/user.User/update_profile',
             protos_dot_user__pb2.UpdateProfileRequest.SerializeToString,
             protos_dot_user__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def upload_avatar(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/upload_avatar',
+            protos_dot_user__pb2.UploadAvatarRequest.SerializeToString,
+            protos_dot_user__pb2.UploadAvatarResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def request_change_password(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/request_change_password',
+            protos_dot_user__pb2.RequestChangePasswordReq.SerializeToString,
+            protos_dot_user__pb2.RequestChangePasswordRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -329,5 +508,124 @@ class User(object):
         return grpc.experimental.unary_unary(request, target, '/user.User/get_users',
             protos_dot_user__pb2.Empty.SerializeToString,
             protos_dot_user__pb2.GetUsersResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def get_mfa_state(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/get_mfa_state',
+            protos_dot_user__pb2.MfaGetStateRequest.SerializeToString,
+            protos_dot_user__pb2.MfaStateResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def enable_mfa(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/enable_mfa',
+            protos_dot_user__pb2.MfaChangingStateRequest.SerializeToString,
+            protos_dot_user__pb2.MfaBaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def disable_mfa(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/disable_mfa',
+            protos_dot_user__pb2.MfaChangingStateRequest.SerializeToString,
+            protos_dot_user__pb2.MfaBaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def mfa_auth_challenge(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/mfa_auth_challenge',
+            protos_dot_user__pb2.MfaAuthChallengeRequest.SerializeToString,
+            protos_dot_user__pb2.MfaAuthChallengeResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def mfa_validate_password(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/mfa_validate_password',
+            protos_dot_user__pb2.MfaValidatePasswordRequest.SerializeToString,
+            protos_dot_user__pb2.MfaBaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def mfa_validate_otp(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/mfa_validate_otp',
+            protos_dot_user__pb2.MfaValidateOtpRequest.SerializeToString,
+            protos_dot_user__pb2.MfaBaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def mfa_resend_otp(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/mfa_resend_otp',
+            protos_dot_user__pb2.MfaResendOtpRequest.SerializeToString,
+            protos_dot_user__pb2.MfaBaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

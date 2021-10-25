@@ -2,7 +2,7 @@ import os
 import json
 
 env = os.getenv("ENV")
-env_name = env if env else 'development'
+env_name = env if env else 'local'
 with open(f'./configs/{env_name}.json') as json_data_file:
     data = json.load(json_data_file)
 print("Load config env=", env_name)
@@ -30,3 +30,7 @@ def get_owner_workspace_domain():
     owner_workspace_domain = "{}:{}".format(get_system_config()['server_domain'],
                                             get_system_config()['grpc_port'])
     return owner_workspace_domain
+
+def get_otp_server():
+    otp_setting_server = data.get("otp_server")
+    return otp_setting_server

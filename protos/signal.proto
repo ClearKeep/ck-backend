@@ -1,33 +1,27 @@
 syntax = "proto3";
-
 package signal;
 
-//errors response
-message ErrorRes {
-    int64 code = 1;
-    string message = 2;
-}
 
 message BaseResponse {
-    bool success = 1;
-    ErrorRes errors = 2;
+    string error = 1;
 }
 // ----- SIGNAL PEER TO PEER KEY -----
 // Request: register client key
 message PeerRegisterClientKeyRequest {
-    string clientId = 1;
-    int32 registrationId = 2;
-    int32 deviceId = 3;
+    int32 registrationId = 1;
+    int32 deviceId = 2;
 
-    bytes identityKeyPublic = 4;
+    bytes identityKeyPublic = 3;
 
-    int32 preKeyId = 5;
-    bytes preKey = 6;
+    int32 preKeyId = 4;
+    bytes preKey = 5;
 
-    int32 signedPreKeyId = 7;
-    bytes signedPreKey = 8;
+    int32 signedPreKeyId = 6;
+    bytes signedPreKey = 7;
 
-    bytes signedPreKeySignature = 9;
+    bytes signedPreKeySignature = 8;
+
+    string identityKeyEncrypted = 9;
 }
 // Response: BaseResponse
 
@@ -53,18 +47,28 @@ message PeerGetClientKeyResponse {
     bytes signedPreKey = 9;
 
     bytes signedPreKeySignature = 10;
+
+    string identityKeyEncrypted = 11;
 }
 
 // ----- SIGNAL GROUP KEY -----
 // Request: register key of client when join to group
 message GroupRegisterClientKeyRequest {
     int64 groupId = 1;
-    string clientId = 2;
-    int32 deviceId = 3;
-    bytes clientKeyDistribution = 4;
+    int32 deviceId = 2;
+    bytes clientKeyDistribution = 3;
+    int64 senderKeyId = 4;
+    bytes senderKey = 5;
+    bytes publicKey = 6;
+    string privateKey = 7;
 }
 //response: BaseResponse
 
+
+message GroupUpdateClientKeyRequest {
+    repeated GroupRegisterClientKeyRequest listGroupClientKey = 1;
+}
+//response: BaseResponse
 
 //object
 message GroupClientKeyObject {
@@ -112,8 +116,10 @@ service SignalKeyDistribution {
       //peer
       rpc PeerRegisterClientKey (PeerRegisterClientKeyRequest) returns (BaseResponse);
       rpc PeerGetClientKey (PeerGetClientKeyRequest) returns (PeerGetClientKeyResponse);
+      rpc ClientUpdatePeerKey (PeerRegisterClientKeyRequest) returns (BaseResponse);
       //group
       rpc GroupRegisterClientKey (GroupRegisterClientKeyRequest) returns (BaseResponse);
+      rpc GroupUpdateClientKey (GroupUpdateClientKeyRequest) returns (BaseResponse);
       rpc GroupGetClientKey (GroupGetClientKeyRequest) returns (GroupGetClientKeyResponse);
       rpc GroupGetAllClientKey (GroupGetAllClientKeyRequest) returns (GroupGetAllClientKeyResponse);
       //workspace

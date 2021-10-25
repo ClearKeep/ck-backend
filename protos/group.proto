@@ -12,6 +12,7 @@ message MessageObjectResponse {
   repeated ClientReadObject lst_client_read = 7;
   int64 created_at = 8;
   int64 updated_at = 9;
+  bytes sender_message = 10;
 }
 
 message ClientReadObject {
@@ -27,6 +28,17 @@ message ClientInGroupResponse {
   string status = 4;
 }
 
+message GroupClientKeyObject {
+    string  workspace_domain = 1;
+    string clientId = 2;
+    int32 deviceId = 3;
+    bytes clientKeyDistribution = 4;
+    int64 senderKeyId = 5;
+    bytes senderKey = 6;
+    bytes publicKey = 7;
+    string privateKey = 8;
+}
+
 message GroupObjectResponse {
   int64 group_id = 1;
   string group_name = 2;
@@ -40,17 +52,13 @@ message GroupObjectResponse {
   string updated_by_client_id = 10;
   int64 updated_at = 11;
   string group_rtc_token = 12;
+  bool has_unread_message = 13;
+  GroupClientKeyObject client_key = 14;
 }
 
-//errors response
-message ErrorRes {
-    int64 code = 1;
-    string message = 2;
-}
 
 message BaseResponse {
-    bool success = 1;
-    ErrorRes errors = 2;
+    string error = 1;
 }
 
 // Request: create group
@@ -89,7 +97,7 @@ message GetGroupRequest {
 
 // Request: get joined groups
 message GetJoinedGroupsRequest {
-  string client_id = 1;
+  //string client_id = 1;
 }
 // Response
 message GetJoinedGroupsResponse {
@@ -197,6 +205,11 @@ message WorkspaceLeaveGroupRequest {
   GroupInfo owner_group = 3;
 }
 
+message WorkspaceNotifyDeactiveMember {
+  string deactive_account_id = 1;
+  repeated string client_ids = 2;
+}
+
 // Method
 service Group {
     rpc create_group(CreateGroupRequest) returns (GroupObjectResponse) {};
@@ -212,4 +225,5 @@ service Group {
     //workspace call
     rpc workspace_add_member(AddMemberWorkspaceRequest) returns (AddMemberWorkspaceResponse) {};
     rpc workspace_leave_group(WorkspaceLeaveGroupRequest) returns (BaseResponse) {};
+    rpc workspace_notify_deactive_member(WorkspaceNotifyDeactiveMember) returns (BaseResponse) {};
 }

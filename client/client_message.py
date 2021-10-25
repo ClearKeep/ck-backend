@@ -15,7 +15,7 @@ class ClientMessage:
 
     def get_messages_in_group(self, request):
         try:
-            response = self.stub.get_messages_in_group(request)
+            response = self.stub.workspace_get_messages_in_group(request)
             return response
         except Exception as e:
             logger.error(e)

@@ -1,5 +1,6 @@
 from src.services.base import BaseService
 from src.models.user import User
+from src.models.authen_setting import AuthenSetting
 from utils.encrypt import EncryptUtils
 from utils.keycloak import KeyCloakUtils
 from protos import user_pb2
@@ -7,23 +8,30 @@ from utils.logger import *
 from msg.message import Message
 import datetime
 from utils.config import get_system_config, get_owner_workspace_domain
+from utils.otp import OTPServer
 from client.client_user import ClientUser
-
+import base64
+import boto3
+import os
+import hashlib
 client_records_list_in_memory = {}
 
 
 class UserService(BaseService):
     def __init__(self):
         super().__init__(User())
+        self.authen_setting = AuthenSetting()
         # self.workspace_domain = get_system_domain()
 
-    def create_new_user(self, id, email, display_name, auth_source):
+    def create_new_user(self, id, email, display_name, salt, iv_parameter, auth_source):
         # password, first_name, last_name,
         try:
             self.model = User(
                 id=id,
                 email=email,
                 display_name=display_name,
+                salt=salt,
+                iv_parameter=iv_parameter,
                 auth_source=auth_source
             )
             # if email:
@@ -32,6 +40,24 @@ class UserService(BaseService):
             #     self.model.first_name = EncryptUtils.encrypt_data(first_name, password, id)
             # if last_name:
             #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
+            self.model.add()
+            return self
+        except Exception as e:
+            logger.error(e)
+            return None
+
+    def create_new_user_srp(self, id, email, password_verifier, salt, iv_parameter, display_name, auth_source):
+        # password, first_name, last_name,
+        try:
+            self.model = User(
+                id=id,
+                email=email,
+                password_verifier=password_verifier,
+                salt=salt,
+                iv_parameter=iv_parameter,
+                display_name=display_name,
+                auth_source=auth_source
+            )
             self.model.add()
         except Exception as e:
             logger.error(e)
@@ -44,7 +70,7 @@ class UserService(BaseService):
                 email=email,
                 display_name=display_name,
                 auth_source=auth_source,
-                last_login_at=datetime.datetime.now()
+                #last_login_at=datetime.datetime.now()
             )
             # if email:
             #     self.model.email = EncryptUtils.encrypt_data(email, password, id)
@@ -53,8 +79,34 @@ class UserService(BaseService):
             # if last_name:
             #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
             self.model.add()
+            return self
         except Exception as e:
             logger.info(e)
+            return None
+
+    def forgot_user(self, user_info, new_user_id, password_verifier, salt, iv_parameter):
+        try:
+            self.model = User(
+                id=new_user_id,
+                email=user_info.email,
+                display_name=user_info.display_name,
+                auth_source=user_info.auth_source,
+                password_verifier=password_verifier,
+                salt=salt,
+                iv_parameter=iv_parameter,
+                first_name=user_info.first_name,
+                last_name=user_info.last_name,
+                status=user_info.status,
+                avatar=user_info.avatar,
+                phone_number=user_info.phone_number,
+                created_at=user_info.created_at,
+
+                #last_login_at=datetime.datetime.now()
+            )
+            self.model.add()
+            self.delete_user(user_info.id)
+        except Exception as e:
+            logger.error(e)
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def get_google_user(self, email, auth_source):
@@ -75,12 +127,164 @@ class UserService(BaseService):
             #     last_name = EncryptUtils.decrypt_data(user_info.last_name, old_pass, user_id)
             #     user_info.last_name = EncryptUtils.encrypt_data(last_name, new_pass, user_id)
 
-            return user_info.update()
+            return user_info # user_info.update()
         except Exception as e:
             logger.info(e)
             raise Exception(Message.CHANGE_PASSWORD_FAILED)
 
-    def get_profile(self, user_id, hash_key):
+    def get_mfa_state(self, user_id):
+        user_info = self.model.get(user_id)
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting is None:
+            user_authen_setting = AuthenSetting(id=user_id).add()
+        return user_authen_setting.mfa_enable
+
+    def init_mfa_state_enabling(self, user_id):
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting is None:
+            user_authen_setting = AuthenSetting(id=user_id).add()
+        if user_authen_setting.mfa_enable:
+            success = False
+            next_step = ''
+        else:
+            if user_authen_setting.otp_frozen_time > datetime.datetime.now():
+                raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
+
+            next_step = 'mfa_validate_password'
+            user_authen_setting.require_action = next_step
+            user_authen_setting.update()
+            success = True
+        return success, next_step
+
+    def init_mfa_state_disabling(self, user_id):
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting is None:
+            user_authen_setting = AuthenSetting(id=user_id).add()
+        if user_authen_setting.mfa_enable:
+            user_authen_setting.mfa_enable = False
+            user_authen_setting.update()
+            success = True
+        else:
+            success = False
+        next_step = ''
+        return success, next_step
+
+    def mfa_validate_password_flow(self, user_id):
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting.require_action != 'mfa_validate_password':
+            raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
+        return True
+
+    def mfa_request_otp(self, user_id, phone_number):
+        user_authen_setting = self.authen_setting.get(user_id)
+        n_times = user_authen_setting.otp_request_counter + 1
+        if n_times > OTPServer.valid_resend_time:
+            # reset counter and put otp service into frozen state
+            user_authen_setting.otp_tried_time = 0
+            user_authen_setting.otp_request_counter = 0
+            user_authen_setting.otp_frozen_time = OTPServer.cal_frozen_time()
+            user_authen_setting.update()
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
+        if user_authen_setting.otp_frozen_time > datetime.datetime.now():
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
+        try:
+            next_step = 'mfa_validate_otp'
+            user_authen_setting.require_action = next_step
+            otp = OTPServer.get_otp(phone_number)
+            user_authen_setting.otp = otp
+            user_authen_setting.token_valid_time = OTPServer.get_valid_time()
+            user_authen_setting.otp_request_counter = n_times
+            user_authen_setting.update()
+            success = True
+            return success, next_step
+        except Exception as e:
+            logger.error(e)
+            raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
+
+    def validate_otp(self, user_id, otp):
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
+        if user_authen_setting.require_action != 'mfa_validate_otp':
+            raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
+        if user_authen_setting.otp_tried_time >= OTPServer.valid_trying_time:
+            user_authen_setting.otp = None
+            user_authen_setting.update()
+            raise Exception(Message.EXCEED_MAXIMUM_TRIED_TIMES_OTP)
+        if datetime.datetime.now() > user_authen_setting.token_valid_time:
+            user_authen_setting.otp = None
+            user_authen_setting.update()
+            raise Exception(Message.EXPIRED_OTP)
+        if otp == user_authen_setting.otp:
+            user_authen_setting.mfa_enable = True
+            user_authen_setting.otp = None
+            user_authen_setting.require_action = ""
+            user_authen_setting.token_valid_time = datetime.datetime.now()
+            user_authen_setting.otp_request_counter = 0
+            user_authen_setting.otp_tried_time = 0
+            user_authen_setting.update()
+            success = True
+            next_step = ''
+        else:
+            user_authen_setting.otp_tried_time += 1
+            user_authen_setting.update()
+            raise Exception(Message.WRONG_OTP)
+        return success, next_step
+
+    def re_init_otp(self, user_id):
+        user_info = self.model.get(user_id)
+        if user_info is None:
+            raise Exception(Message.AUTH_USER_NOT_FOUND)
+        user_authen_setting = self.authen_setting.get(user_id)
+        if user_authen_setting.require_action != 'mfa_validate_otp':
+            raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
+        n_times = user_authen_setting.otp_request_counter + 1
+        if n_times > OTPServer.valid_resend_time:
+            # reset counter and put otp service into frozen state
+            user_authen_setting.otp_tried_time = 0
+            user_authen_setting.otp_request_counter = 0
+            user_authen_setting.otp_frozen_time = OTPServer.cal_frozen_time()
+            user_authen_setting.update()
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
+        if user_authen_setting.otp_frozen_time > datetime.datetime.now():
+            raise Exception(Message.FROZEN_STATE_OTP_SERVICE)
+        try:
+            otp = OTPServer.get_otp(user_info.phone_number)
+            user_authen_setting.otp = otp
+            user_authen_setting.otp_tried_time = 0
+            user_authen_setting.token_valid_time = OTPServer.get_valid_time()
+            user_authen_setting.otp_request_counter = n_times
+            user_authen_setting.update()
+            success = True
+            next_step = 'mfa_validate_otp'
+            return success, next_step
+        except Exception as e:
+            logger.error(e)
+            raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
+
+    def update_hash_pass(self, user_id, hash_password, salt='', iv_parameter=''):
+        user_info = self.model.get(user_id)
+        user_info.password_verifier = hash_password
+        if salt:
+            user_info.salt = salt
+        if iv_parameter:
+            user_info.iv_parameter = iv_parameter
+        user_info.update()
+        return (user_info.salt, user_info.iv_parameter)
+
+    def update_hash_pin(self, user_id, hash_pincode, salt='', iv_parameter=''):
+        user_info = self.model.get(user_id)
+        user_info.password_verifier = hash_pincode
+        if salt:
+            user_info.salt = salt
+        if iv_parameter:
+            user_info.iv_parameter = iv_parameter
+        user_info.update()
+        return user_info.salt, user_info.iv_parameter
+
+    def get_profile(self, user_id):
         try:
             user_info = self.model.get(user_id)
             if user_info is not None:
@@ -90,11 +294,10 @@ class UserService(BaseService):
                 )
                 if user_info.email:
                     obj_res.email = user_info.email
-                # if user_info.first_name:
-                #     obj_res.first_name = EncryptUtils.decrypt_with_hash(user_info.first_name, hash_key),
-                # if user_info.last_name:
-                #     obj_res.last_name = EncryptUtils.decrypt_with_hash(user_info.last_name, hash_key),
-
+                if user_info.phone_number:
+                    obj_res.phone_number = user_info.phone_number
+                if user_info.avatar:
+                    obj_res.avatar = user_info.avatar
                 return obj_res
             else:
                 return None
@@ -102,21 +305,29 @@ class UserService(BaseService):
             logger.info(e)
             raise Exception(Message.GET_PROFILE_FAILED)
 
-    def update_profile(self, request, user_id, hash_key):
+    def update_profile(self,  user_id, display_name, phone_number, avatar, clear_phone_number):
         try:
-            user_info = self.model.get(user_id)
-            if request.display_name:
-                user_info.display_name = request.display_name
+            profile = self.model.get(user_id)
+            if display_name:
+                profile.display_name = display_name
+            if clear_phone_number:
+                user_authen_setting = self.authen_setting.get(user_id)
+                if user_authen_setting is None:
+                    user_authen_setting = AuthenSetting(id=user_id).add()
+                user_authen_setting.enable_mfa = False # change phone_number automatically turn off enable_mfa
+                user_authen_setting.update()
+                profile.phone_number = ""
+            elif phone_number:
+                user_authen_setting = self.authen_setting.get(user_id)
+                if user_authen_setting is None:
+                    user_authen_setting = AuthenSetting(id=user_id).add()
+                user_authen_setting.enable_mfa = False # change phone_number automatically turn off enable_mfa
+                user_authen_setting.update()
+                profile.phone_number = phone_number
+            if avatar:
+                profile.avatar = avatar
+            return profile.update()
 
-            # if request.email:
-            #     user_info.email = EncryptUtils.encrypt_with_hash(request.email, hash_key)
-            # if request.first_name:
-            #     user_info.first_name = EncryptUtils.encrypt_with_hash(request.first_name, hash_key)
-            #
-            # if request.last_name:
-            #     user_info.last_name = EncryptUtils.encrypt_with_hash(request.last_name, hash_key)
-
-            return user_info.update()
         except Exception as e:
             logger.info(e)
             raise Exception(Message.UPDATE_PROFILE_FAILED)
@@ -135,6 +346,15 @@ class UserService(BaseService):
         except Exception as e:
             logger.info(e)
             raise Exception(Message.GET_USER_INFO_FAILED)
+
+    def get_user_by_auth_source(self, email, auth_source):
+        user_info = self.model.get_user_by_auth_source(email, auth_source)
+        return user_info
+
+
+    def get_user_by_id(self, client_id):
+        user_info = self.model.get(client_id)
+        return user_info
 
     def search_user(self, keyword, client_id):
         try:
@@ -216,11 +436,10 @@ class UserService(BaseService):
             raise Exception(Message.PING_PONG_SERVER_FAILED)
 
     def categorize_workspace_domains(self, list_clients):
-        domain_local = get_owner_workspace_domain()
         workspace_domains_dictionary = {}
 
         for client in list_clients:
-            if str(client.workspace_domain) in workspace_domains_dictionary:
+            if str(client.workspace_domain) in workspace_domains_dictionary.keys():
                 workspace_domains_dictionary[str(client.workspace_domain)].append(client)
             else:
                 workspace_domains_dictionary.update({
@@ -228,7 +447,7 @@ class UserService(BaseService):
                 })
         return workspace_domains_dictionary
 
-    def get_list_clients_status(self, list_clients):
+    def get_list_clients_status(self, list_clients, should_get_profile):
         logger.info("get_list_clients_status")
         try:
             owner_workspace_domain = get_owner_workspace_domain()
@@ -247,9 +466,20 @@ class UserService(BaseService):
                             workspace_domain=workspace_domain,
                             status=user_status,
                         )
+                        if should_get_profile:
+                            user_info = self.model.get(client.client_id)
+                            if user_info is not None:
+                                if user_info.display_name:
+                                    tmp_client_response.display_name = user_info.display_name
+                                if user_info.phone_number:
+                                    tmp_client_response.phone_number = user_info.phone_number
+                                if user_info.avatar:
+                                    tmp_client_response.avatar = user_info.avatar
+                            logger.info("user info {}: {}".format(client.client_id, tmp_client_response))
                         list_clients_status.append(tmp_client_response)
                 else:
-                    other_clients_response = self.get_other_workspace_clients_status(workspace_domain, list_client)
+                    logger.info("workspace request other server {}".format(workspace_domain))
+                    other_clients_response = self.get_other_workspace_clients_status(workspace_domain, list_client, should_get_profile)
                     list_clients_status.extend(other_clients_response)
 
             response = user_pb2.GetClientsStatusResponse(
@@ -260,8 +490,9 @@ class UserService(BaseService):
             logger.error(e)
             raise Exception(Message.GET_USER_STATUS_FAILED)
 
+
+
     def get_owner_workspace_client_status(self, client_id):
-        logger.info("get_client_status")
         client_record = client_records_list_in_memory.get(str(client_id), None)
 
         if client_record is not None:
@@ -273,16 +504,16 @@ class UserService(BaseService):
                 if client_record["user_status"] is not None:
                     user_status = client_record["user_status"]
                 else:
-                    user_status = "Active"
+                    user_status = "Online"
         else:
             user_status = "Undefined"
         return user_status
 
-    def get_other_workspace_clients_status(self, workspace_domain, list_client):
+    def get_other_workspace_clients_status(self, workspace_domain, list_client, should_get_profile=False):
         server_error_resp = []
 
         client = ClientUser(workspace_domain)
-        client_resp = client.get_clients_status(list_client)
+        client_resp = client.get_clients_status(list_client, should_get_profile)
 
         if client_resp is None:
             logger.info("CALL WORKSPACE ERROR", workspace_domain)
@@ -295,3 +526,44 @@ class UserService(BaseService):
                 server_error_resp.append(tmp_client_response)
             return server_error_resp
         return client_resp.lst_client
+
+
+    # profile api
+
+
+    # profile api
+
+    def base64_enconding_text_to_string(self, text):
+        text_bytes = text.encode("ascii")
+        encoded_text_bytes = base64.b64encode(text_bytes)
+        return encoded_text_bytes.decode('ascii')
+
+    def upload_avatar(self, client_id, file_name, file_content, file_type, file_hash):
+        m = hashlib.new('md5', file_content).hexdigest()
+        if m != file_hash:
+            raise Exception(Message.UPLOAD_FILE_DATA_LOSS)
+        # start upload to s3 and resize if needed
+        tmp_file_name, file_ext = os.path.splitext(file_name)
+        avatar_file_name = self.base64_enconding_text_to_string(client_id) + file_ext
+
+        avatar_url = self.upload_to_s3(avatar_file_name, file_content, file_type)
+        obj_res = user_pb2.UploadAvatarResponse(
+            file_url=avatar_url
+        )
+        return obj_res
+
+    def upload_to_s3(self, file_name, file_data, content_type):
+        s3_config = get_system_config()['storage_s3']
+        file_path = os.path.join(s3_config.get('avatar_folder'), file_name)
+        s3_client = boto3.client('s3', aws_access_key_id=s3_config.get('access_key_id'),
+                                 aws_secret_access_key=s3_config.get('access_key_secret'))
+
+        s3_client.put_object(Body=file_data, Bucket=s3_config.get('bucket'), Key=file_path, ContentType=content_type,
+                             ACL='public-read')
+        uploaded_file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)
+        return uploaded_file_url
+
+    def delete_user(self, user_id):
+        user_info = self.model.get(user_id)
+        user_info.delete()
+        return True

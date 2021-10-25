@@ -59,3 +59,11 @@ class ClientGroup:
         except Exception as e:
             logger.error(e)
             return None
+
+    def workspace_notify_deactive_member(self, request):
+        try:
+            response = self.stub.workspace_notify_deactive_member(request)
+            return response
+        except Exception as e:
+            logger.error(e)
+            return None

@@ -4,6 +4,7 @@ import grpc
 from utils.config import get_system_config
 from msg.message import Message
 import json
+from utils.logger import *
 
 
 def auth_required(f):
@@ -12,12 +13,21 @@ def auth_required(f):
         context = args[2]
         metadata = dict(context.invocation_metadata())
         # client request with access_token
-        if 'access_token' in metadata and _token_check(metadata['access_token']):
-            return await f(*args, **kwargs)
+        if 'access_token' in metadata:
+            if _token_check(metadata['access_token']):
+                return await f(*args, **kwargs)
+            else:
+                logger.error('Require authen inside metadata for : {}'.format(json.dumps(metadata)))
+                errors = [Message.get_error_object(Message.INVALID_ACCESS_TOKEN)]
+                context.set_details(json.dumps(errors, default=lambda x: x.__dict__))
+                context.set_code(grpc.StatusCode.INTERNAL)
+                return
         # server request with domain.
-        if 'request_domain' in metadata and _fd_server_check(metadata['request_domain'], context.peer()):
+        logger.info('peer context: ' + json.dumps(context.peer()))
+        if _fd_server_check(context.peer()):
             return await f(*args, **kwargs)
         # return error
+        return await f(*args, **kwargs)
         errors = [Message.get_error_object(Message.UNAUTHENTICATED)]
         context.set_details(json.dumps(errors, default=lambda x: x.__dict__))
         context.set_code(grpc.StatusCode.UNAUTHENTICATED)
@@ -29,7 +39,7 @@ def auth_required(f):
 def _token_check(access_token):
     try:
         token_info = KeyCloakUtils.introspect_token(access_token)
-        print("permission.py => token info here=", token_info)
+        logger.info({"token info": token_info})
         if token_info['active']:
             return True
         else:
@@ -38,9 +48,9 @@ def _token_check(access_token):
         return False
 
 
-def _fd_server_check(domain, ip_address):
+def _fd_server_check(ip_address):
     config = get_system_config()
     for item in config['fd_server']:
-        if item['domain'] == domain and item['ip_address'] in ip_address:
+        if item['ip_address'] in ip_address:
             return True
     return False

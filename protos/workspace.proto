@@ -1,28 +1,19 @@
+
 syntax = "proto3";
 
 package workspace;
 
-//errors response
-message ErrorRes {
-    int64 code = 1;
-    string message = 2;
-}
-
 message BaseResponse {
-    bool success = 1;
-    ErrorRes errors = 2;
+    string error = 2;
 }
 
 // Request: get workspace info
 message WorkspaceInfoRequest {
   string workspace_domain = 1;
-  BaseResponse base_response = 2;
 }
 
-// Response: workspace info response
-message WorkspaceObjectResponse {
-  string workspace_domain = 1;
-  bool is_default_workspace = 2;
+message WorkspaceInfoResponse {
+    string error = 1;
 }
 
 // Request: leave workspace
@@ -30,28 +21,7 @@ message LeaveWorkspaceRequest {
 }
 
 
-//
-//// Request: join group
-//message JoinWorkspaceRequest {
-//  string client_id = 1;
-//  string workspace_domain = 2;
-//}
-//// Response: BaseResponse
-//
-//// Request: get joined groups
-//message GetJoinedWorkspacesRequest {
-//  string client_id = 1;
-//}
-//// Response
-//message GetJoinedWorkspacesResponse {
-//  repeated WorkspaceObjectResponse lst_workspace = 1;
-//}
-
-
-
 service Workspace {
-//    rpc join_workspace(JoinWorkspaceRequest) returns (BaseResponse) {};
-//    rpc get_joined_workspaces(GetJoinedWorkspacesRequest) returns (GetJoinedWorkspacesResponse) {};
-    rpc workspace_info(WorkspaceInfoRequest) returns (WorkspaceObjectResponse) {};
+    rpc workspace_info(WorkspaceInfoRequest) returns (WorkspaceInfoResponse) {};
     rpc leave_workspace(LeaveWorkspaceRequest) returns (BaseResponse) {};
 }

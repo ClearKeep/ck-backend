@@ -1,23 +1,44 @@
 syntax = "proto3";
 package auth;
 
-//errors response
-message ErrorRes {
-    int64 code = 1;
-    string message = 2;
-}
 
 message BaseResponse {
-    bool success = 1;
-    ErrorRes errors = 2;
+    string error = 1;
 }
 
+message PeerRegisterClientKeyRequest {
+    int32 registrationId = 1;
+    int32 deviceId = 2;
+    bytes identityKeyPublic = 3;
+    int32 preKeyId = 4;
+    bytes preKey = 5;
+    int32 signedPreKeyId = 6;
+    bytes signedPreKey = 7;
+    bytes signedPreKeySignature = 8;
+    string identityKeyEncrypted = 9;
+}
+
+
+// Response
+message PeerGetClientKeyResponse {
+    string clientId = 1;
+    string workspace_domain = 2;
+    int32 registrationId = 3;
+    int32 deviceId = 4;
+    bytes identityKeyPublic = 5;
+    int32 preKeyId = 6;
+    bytes preKey = 7;
+    int32 signedPreKeyId = 8;
+    bytes signedPreKey = 9;
+    bytes signedPreKeySignature = 10;
+    string identityKeyEncrypted = 11;
+}
 
 //Login message struct
 message AuthReq {
     string workspace_domain = 1;
     string email = 2;
-    string password = 3;
+    string hash_password = 3;
     int64 auth_type = 4;
 }
 
@@ -27,8 +48,17 @@ message LogoutReq {
 }
 
 // fogot password
-message FogotPassWord {
+message ForgotPasswordReq {
     string email = 1;
+}
+
+message ForgotPasswordUpdateReq{
+    string pre_access_token = 1;
+    string email = 2;
+    string password_verifier = 3;
+    string salt = 4;
+    string iv_parameter = 5;
+    PeerRegisterClientKeyRequest client_key_peer = 6;
 }
 
 message AuthRes {
@@ -42,8 +72,13 @@ message AuthRes {
     string session_state = 8;
     string scope = 9;
     string hash_key = 10;
-
-    BaseResponse base_response = 11;
+    string sub = 11;
+    string pre_access_token = 12;
+    string require_action = 13;
+    string salt = 14;
+    PeerGetClientKeyResponse client_key_peer = 15;
+    string iv_parameter = 16;
+    string error = 17;
 }
 
 //Register message struct
@@ -51,14 +86,17 @@ message RegisterReq {
     string workspace_domain = 1;
     string email = 2;
     string display_name = 3;
-    string password = 4;
+    string hash_password = 4;
     int64 auth_type = 5;
     string first_name = 6;
     string last_name = 7;
+    string salt = 8;
+    PeerRegisterClientKeyRequest client_key_peer = 9;
+    string iv_parameter = 10;
 }
 
 message RegisterRes {
-    BaseResponse base_response = 1;
+    string error = 1;
 }
 
 
@@ -67,6 +105,7 @@ message GoogleLoginReq {
     string workspace_domain = 1;
     string id_token = 2;
 }
+
 
 //Login Office365 message struct
 message OfficeLoginReq {
@@ -80,13 +119,126 @@ message FacebookLoginReq {
     string access_token = 2;
 }
 
+message SocialLoginRes {
+    string user_name = 1;
+    string require_action = 2;
+    string reset_pincode_token = 3;
+}
+
+// Register a Pincode struct
+message RegisterPinCodeReq {
+    string user_name = 1;
+    string hash_pincode = 2;
+    string salt = 3;
+    PeerRegisterClientKeyRequest client_key_peer = 4;
+    string iv_parameter = 5;
+}
+// return AuthRes
+
+
+// Verify Pincode struct
+message VerifyPinCodeReq {
+    string user_name = 1;
+    string client_public = 2;
+    string client_session_key_proof = 3;
+}
+// return AuthRes
+
+// Reset Pincode, in case forgotten pincode
+// Note that reset pincode will also cause old message cannot be read
+// empty string indicate this field will be unchanging after update
+message ResetPinCodeReq{
+    string reset_pincode_token = 1;
+    string user_name = 2;
+    string hash_pincode = 3;
+    string salt = 4;
+    string iv_parameter = 5;
+    PeerRegisterClientKeyRequest client_key_peer = 6;
+}
+
+message MfaValidateOtpRequest {
+    string pre_access_token = 1;
+    string otp_code = 2;
+    string user_id = 3;
+}
+
+// we still need user_id and pre_access_token for author and authen user
+message MfaResendOtpReq {
+    string user_id = 1;
+    string pre_access_token = 2;
+}
+
+message MfaResendOtpRes{
+    string pre_access_token = 1;
+    bool success = 2;
+    string error = 3;
+}
+
+//new flow login with srp
+//Login message struct
+message AuthChallengeReq {
+    string email = 1;
+    string client_public = 2;
+}
+
+message AuthSocialChallengeReq {
+    string user_name = 1;
+    string client_public = 2;
+}
+
+message AuthChallengeRes {
+    string salt = 1;
+    string public_challenge_b = 2;
+}
+
+message AuthenticateReq {
+    string user_name = 1;
+    string client_public = 2;
+    string client_session_key_proof = 3;
+}
+
+
+message RegisterSRPReq {
+    string workspace_domain = 1;
+    string email = 2;
+    string password_verifier = 3;
+    string salt = 4;
+    PeerRegisterClientKeyRequest client_key_peer = 5;
+    string iv_parameter = 6;
+    string display_name = 7;
+    int64 auth_type = 8;
+    string first_name = 9;
+    string last_name = 10;
+}
+
+message RegisterSRPRes {
+    string error = 1;
+}
 
 service Auth {
-    rpc login(AuthReq) returns (AuthRes) {};
-    rpc login_google(GoogleLoginReq) returns (AuthRes) {};
-    rpc login_office(OfficeLoginReq) returns (AuthRes) {};
-    rpc login_facebook(FacebookLoginReq) returns (AuthRes) {};
-    rpc register(RegisterReq) returns (RegisterRes) {};
-    rpc fogot_password(FogotPassWord) returns (BaseResponse) {};
+
+    // rpc register(RegisterReq) returns (RegisterRes) {};
+    // rpc login(AuthReq) returns (AuthRes) {};
+    rpc register_srp(RegisterSRPReq) returns (RegisterSRPRes) {};
+    rpc forgot_password(ForgotPasswordReq) returns (BaseResponse) {};
+    //new flow login with srp
+    rpc login_challenge(AuthChallengeReq) returns (AuthChallengeRes) {};
+    rpc forgot_password_update(ForgotPasswordUpdateReq) returns (AuthRes) {};
+    //login with social
+    rpc login_google(GoogleLoginReq) returns (SocialLoginRes) {};
+    rpc login_office(OfficeLoginReq) returns (SocialLoginRes) {};
+    rpc login_facebook(FacebookLoginReq) returns (SocialLoginRes) {};
+    rpc login_social_challange(AuthSocialChallengeReq) returns (AuthChallengeRes) {};
+    // authenticated challange
+    rpc login_authenticate(AuthenticateReq) returns (AuthRes) {};
+    //logout
     rpc logout(LogoutReq) returns (BaseResponse) {};
+    //pincode flow
+    rpc register_pincode(RegisterPinCodeReq) returns (AuthRes) {};
+    rpc verify_pincode(VerifyPinCodeReq) returns (AuthRes) {};
+    rpc reset_pincode(ResetPinCodeReq) returns (AuthRes) {};
+    //end new flow login with srp
+    //mfa flow
+    rpc validate_otp(MfaValidateOtpRequest) returns (AuthRes) {};
+    rpc resend_otp(MfaResendOtpReq) returns (MfaResendOtpRes) {};
 }

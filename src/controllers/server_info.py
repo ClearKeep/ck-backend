@@ -15,14 +15,16 @@ class ServerInfoController(BaseController):
             stun = request.stun
             turn = request.turn
             self.service.update_server_info(stun, turn)
-            return server_info_pb2.BaseResponse(
-                success=True
-            )
+            return server_info_pb2.BaseResponse()
         except Exception as e:
             logger.error(e)
-            return server_info_pb2.BaseResponse(
-                success=False
-            )
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.GET_SERVER_INFO_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     async def total_thread(self, request, context):
         try:

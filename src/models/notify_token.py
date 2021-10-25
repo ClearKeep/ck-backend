@@ -50,6 +50,14 @@ class NotifyToken(Database.get().Model):
         Database.get().session.remove()
         return client_tokens
 
+    def get_client_device_ids(self, client_id):
+        client_tokens = Database.get_session().query(NotifyToken) \
+            .filter(NotifyToken.client_id == client_id) \
+            .order_by(desc(NotifyToken.created_at)) \
+            .all()
+        Database.get().session.remove()
+        return client_tokens
+
     def get_clients(self, client_ids):
         client_tokens = Database.get_session().query(NotifyToken) \
             .filter(NotifyToken.client_id.in_(client_ids)) \
