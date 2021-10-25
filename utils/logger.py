@@ -13,10 +13,3 @@ def create_timed_rotating_log(path):
     formatter = logging.Formatter(u'%(asctime)s\t%(levelname)s\t%(pathname)s:%(lineno)d\t%(message)s')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
-
-# how to use
-# logger.debug('debug message')
-# logger.info('informational message')
-# logger.warning('warning')
-# logger.error('error message')
-# logger.critical('critical failure')

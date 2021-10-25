@@ -1,4 +1,7 @@
 class JanusService(object):
+    """
+    Janus web rtc Service
+    """
     def __init__(self, janus_url, token, stransaction):
         self.token = token
         self.transaction = stransaction

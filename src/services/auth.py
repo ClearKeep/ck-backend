@@ -17,14 +17,19 @@ from utils.config import get_system_config, get_owner_workspace_domain
 
 
 class AuthService:
+    """
+    Authen Service for authenticate action. This service involved in any granted authentication, include register new user,
+    login, logout, forgot password, generate pre_access_token or start mfa service.
+    """
     def __init__(self):
         super().__init__()
         self.user_db = User()
         self.authen_setting = AuthenSetting()
 
-    def token(self, email, password):
+    def token(self, user_name, password):
+        # basic authen service for login with user_name and password
         try:
-            token = KeyCloakUtils.token(email, password)
+            token = KeyCloakUtils.token(user_name, password)
             if token:
                 return token
         except Exception as e:
@@ -35,19 +40,8 @@ class AuthService:
                 raise Exception(Message.USER_NOT_VERIFY_EMAIL)
             raise Exception(Message.AUTH_USER_NOT_FOUND)
 
-    def refresh_token(self, email, password):
-        try:
-            token = self.token(email, password)
-            refresh_token = KeyCloakUtils.refresh_token(token['refresh_token'])
-            if refresh_token:
-                return refresh_token
-            else:
-                return token
-        except Exception as e:
-            logger.info(e)
-            raise Exception(Message.AUTH_USER_NOT_FOUND)
-
     def logout(self, refresh_token):
+        # basic authen service for logout using refresh_token
         try:
             KeyCloakUtils.logout(refresh_token)
         except Exception as e:
@@ -55,6 +49,7 @@ class AuthService:
             # raise Exception(Message.UNAUTHENTICATED)
 
     def remove_token(self, client_id, device_id):
+
         try:
             NotifyPushService().delete_token(client_id=client_id, device_id=device_id)
         except Exception as e:
@@ -75,6 +70,7 @@ class AuthService:
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def register_srp_user(self, email, password_verifier, display_name):
+        # register new user with using email as user name
         try:
             user_id = KeyCloakUtils.create_user(email, email, password_verifier, "", display_name)
             if user_id:
@@ -85,6 +81,7 @@ class AuthService:
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def delete_user(self, userid):
+        # delete user in keycloak server by its userid
         try:
             KeyCloakUtils.delete_user(user_id=userid)
         except Exception as e:
@@ -93,6 +90,7 @@ class AuthService:
 
 
     def get_user_by_email(self, email):
+        # get user in keycloak server by its email
         try:
             return KeyCloakUtils.get_user_by_email(email)
         except Exception as e:
@@ -100,6 +98,7 @@ class AuthService:
             raise Exception(Message.USER_NOT_FOUND)
 
     def send_forgot_password(self, email):
+        # send an email to user with app link for reset password
         try:
             user = self.get_user_by_email(email=email)
             if not user:
@@ -119,6 +118,7 @@ class AuthService:
 
     # login google
     def google_login(self, google_id_token):
+        # google login by using google id token, return user_name, user_id and boolean variable indicate if this user is new user
         try:
             verify_id_token_url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + google_id_token
             req = requests.get(url=verify_id_token_url)
@@ -136,7 +136,7 @@ class AuthService:
 
             google_email = google_token_info["email"]
             # check account exits
-            user = self.get_user_by_email(email=google_email) #UserService().get_google_user(google_email, "google")
+            user = self.get_user_by_email(email=google_email)
             #active_user
             if user:
                 if not user["emailVerified"]:
@@ -159,6 +159,7 @@ class AuthService:
 
     # login office
     def office_login(self, office_access_token):
+        # office login by using office access token, return user_name, user_id and boolean variable indicate if this user is new user
         try:
             verify_token_url = "https://graph.microsoft.com/v1.0/me"
             bearer = 'Bearer ' + office_access_token
@@ -202,6 +203,7 @@ class AuthService:
 
     # login facebook
     def facebook_login(self, facebook_access_token):
+        # facebook login by using facebook access token, return user_name, user_id and boolean variable indicate if this user is new user
         try:
             # validate access_token
             facebook_app_id = get_system_config()["facebook_app"]
@@ -247,36 +249,8 @@ class AuthService:
             logger.info(e)
             raise Exception(Message.FACEBOOK_AUTH_FAILED)
 
-    def exchange_token(self, user_id):
-        config_keycloak_admin = get_system_config()['keycloak_admin']
-        exchange_token_url = "{auth_server_url}realms/{realm_name}/protocol/openid-connect/token".format(
-            auth_server_url=config_keycloak_admin['server_url'], realm_name=config_keycloak_admin['realm_name'])
-
-        # generate token for impersonator
-        impersonator_token_data = {'grant_type': 'password',
-                                   'client_id': config_keycloak_admin['client_id'],
-                                   'username': config_keycloak_admin['username'],
-                                   'password': config_keycloak_admin['password'],
-                                   'client_secret': config_keycloak_admin['client_secret_key']}
-        req = requests.post(url=exchange_token_url, data=impersonator_token_data)
-        if req.status_code != 200:
-            return None
-        impersonator_token = req.json()
-
-        # exchange token for specific user
-        target_user_token_data = {'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
-                                  'client_id': "admin-cli",
-                                  'requested_subject': user_id,
-                                  'subject_token': impersonator_token["access_token"],
-                                  'client_secret': config_keycloak_admin['client_secret_key']}
-        req = requests.post(url=exchange_token_url, data=target_user_token_data)
-        if req.status_code == 200:
-            user_token_info = req.json()
-            return user_token_info
-        else:
-            return None
-
     def create_otp_service(self, client_id):
+        # start opt service for client if mfa is enabled, raising FROZEN_STATE_OTP_SERVICE if mfa is enabled and in frozen state (request resend otp too many times)
         user_info = self.user_db.get(client_id)
         user_authen_setting = self.authen_setting.get(client_id)
         n_times = user_authen_setting.otp_request_counter + 1
@@ -304,6 +278,8 @@ class AuthService:
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def verify_otp(self, client_id, hash_key, otp):
+        # verify opt for client if mfa is enabled, raising FROZEN_STATE_OTP_SERVICE if mfa is enabled and in frozen state (request resend otp too many times)
+        # if client try to verify an otp too many times, this otp will become invalid
         user_authen_setting = self.authen_setting.get(client_id)
         if user_authen_setting is None:
             raise Exception(Message.GET_MFA_STATE_FALED)
@@ -331,6 +307,7 @@ class AuthService:
         return success
 
     def resend_otp(self, client_id, hash_key):
+        # resend opt for client if mfa is enabled, raising FROZEN_STATE_OTP_SERVICE if mfa is enabled and in frozen state (request resend otp too many times)
         user_authen_setting = self.authen_setting.get(client_id)
         if user_authen_setting is None:
             logger.info(Message.GET_MFA_STATE_FALED)
@@ -366,11 +343,12 @@ class AuthService:
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def hash_pre_access_token(self, user_name, require_action):
-        # lend the hash_uid from utils.otp
+        # create a pre access_token by signing a jws with user_name as iss, require_action as aud
         hash_key = OTPServer.sign_message(user_name, require_action)
         return hash_key
 
     def verify_hash_pre_access_token(self, user_name, signed_message, require_action):
+        # verify a pre access_token signed by jws with user_name as iss, require_action as aud
         try:
             message = OTPServer.verify_message(signed_message)
             if message.get("iss", None) != user_name:

@@ -379,23 +379,33 @@ class MessageController(BaseController):
     @request_logged
     @auth_required
     async def Listen(self, request, context: grpc.aio.ServicerContext):
-        header_data = dict(context.invocation_metadata())
-        introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-        user_id = introspect_token['sub']
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            user_id = introspect_token['sub']
 
-        message_channel = "message/{}/{}".format(user_id, request.device_id)
-        logger.info('user {} in device {} has listened'.format(user_id, request.device_id))
-        message_response = None
-        while message_channel in client_message_queue:
-            try:
-                if client_message_queue[message_channel].qsize() > 0:
-                    message_response = client_message_queue[message_channel].get(True)
-                    await context.write(message_response)
-                await asyncio.sleep(0.5)
-            except:
-                logger.info('Client {} is disconnected'.format(user_id))
-                client_message_queue[message_channel] = None
-                del client_message_queue[message_channel]
+            message_channel = "message/{}/{}".format(user_id, request.device_id)
+            logger.info('user {} in device {} has listened'.format(user_id, request.device_id))
+            message_response = None
+            while message_channel in client_message_queue:
+                try:
+                    if client_message_queue[message_channel].qsize() > 0:
+                        message_response = client_message_queue[message_channel].get(True)
+                        await context.write(message_response)
+                    await asyncio.sleep(0.5)
+                except:
+                    logger.info('Client {} is disconnected'.format(user_id))
+                    client_message_queue[message_channel] = None
+                    del client_message_queue[message_channel]
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
     @auth_required

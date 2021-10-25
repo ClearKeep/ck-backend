@@ -42,11 +42,11 @@ class OTPServer(object):
         return datetime.datetime.now() + life_time
 
     @staticmethod
-    def sign_message(user_name, require_action):
+    def sign_message(user_name, require_action, valid_time=86400):
         message = {
             "iss": user_name,
             "aud": require_action,
-            "exp": int(time.time()) + 86400
+            "exp": int(time.time()) + valid_time
         }
         signed_message = jws.sign(message, secret_key, algorithm='HS256')
         return signed_message

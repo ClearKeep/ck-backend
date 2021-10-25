@@ -14,6 +14,9 @@ client_message_queue = {}
 
 
 class MessageService(BaseService):
+    """
+    MessageService, involved in storing new message, updating message, loading message history, subscribe/unsubcribe message channel for user
+    """
     def __init__(self):
         super().__init__(Message())
         self.service_group = GroupChat()
@@ -89,11 +92,6 @@ class MessageService(BaseService):
             res_obj.group_type = "group"
 
         return res_obj
-
-    def add_message(self, group_id, from_client_id, client_id, message):
-        thread = Thread(target=self.store_message, args=(group_id, from_client_id, client_id, message))
-        thread.start()
-        # return True
 
     def get_message_in_group(self, client_id, group_id, offset=0, from_time=0):
         lst_message = self.model.get_message_in_group(group_id, offset, from_time)

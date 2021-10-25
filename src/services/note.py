@@ -6,13 +6,13 @@ from datetime import datetime
 
 class NoteService:
 
-    """Docstring for NoteService. """
+    """NoteService for creating/editing/getting/deleting note. """
 
     def __init__(self):
-        """TODO: to be defined. """
         super().__init__()
 
     def create_note(self, user_id, title, content, note_type):
+        # creating note for user_id, with informations: title, content and note_type
         try:
             self.note = Note(
                 id=str(uuid.uuid4()),
@@ -28,14 +28,7 @@ class NoteService:
             raise Exception(Message.CREATE_NOTE_FAILED)
 
     def edit_note(self, note_id, title, content, note_type, user_id):
-        """TODO: Docstring for edit_note.
-
-        :note_id: TODO
-        :title: TODO
-        :content: TODO
-        :returns: TODO
-
-        """
+        # editing note with changing informations: title, content, note_type, user_id
         try:
             self.note = Note().get(note_id)
             self.note.title = title
@@ -49,12 +42,7 @@ class NoteService:
             raise Exception(Message.EDIT_NOTE_FAILED)
 
     def delete_note(self, note_id):
-        """TODO: Docstring for delete_note.
-
-        :note_id: TODO
-        :returns: TODO
-
-        """
+        # delete note
         try:
             self.note = Note().get(note_id)
             self.note.delete()
@@ -63,12 +51,7 @@ class NoteService:
             raise Exception(Message.DELETE_NOTE_FAILED)
 
     def get_user_notes(self, user_id):
-        """TODO: Docstring for get_user_notes.
-
-        :user_id: TODO
-        :returns: TODO
-
-        """
+        # get all note of user
         try:
             user_notes = Note().get_user_notes(user_id)
             return user_notes

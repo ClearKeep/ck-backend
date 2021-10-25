@@ -22,13 +22,20 @@ from src.services.notify_push import NotifyPushService
 
 
 class GroupService(BaseService):
+    """
+    GroupService, involved in requests about creating new group, getting group information, or adding user to group/removing user from group
+    """
     def __init__(self):
         super().__init__(GroupChat())
         self.notify_service = NotifyInAppService()
         self.transaction = 'ckbackendtransaction'
 
     def add_group(self, group_name, group_type, lst_client, created_by):
-
+        # service for create new group with following info:
+        # group_name: name of group in request, using for searching group
+        # group_type: type of group in request, must be one of this values: [peer/group]
+        # lst_client: list of client in this group
+        # create_by: user_id of creator
         tmp_list_client = []
         created_by_user = None
         for obj in lst_client:
@@ -120,6 +127,7 @@ class GroupService(BaseService):
 
     def add_group_workspace(self, group_name, group_type, from_client_id, client_id, lst_client, owner_group_id,
                             owner_workspace_domain):
+        # workspace call for create a mapping group with reference info (owner_group_id, owner_workspace_domain) to origin group
         self.model = GroupChat(
             group_name=group_name,
             group_type=group_type,
@@ -161,6 +169,7 @@ class GroupService(BaseService):
         )
 
     def register_webrtc_token(self, token):
+        # register a webrtc_token
         self.token = token
         payload = {
             "janus": 'add_token',
@@ -222,9 +231,15 @@ class GroupService(BaseService):
         return janus.janus_room
 
     def get_group_obj(self, group_id):
+        # get basic group info stored in database by its group_id
         return self.model.get(group_id).GroupChat
 
+    def get_group_info(self, group_id):
+        # get group info for group id
+        return self.model.get_group(group_id)
+
     def get_group(self, group_id, client_id):
+        # get infor of client related to group stored in database by its group_id and client_id
         stored_client_key = GroupClientKey().get(group_id, client_id)
         group = self.model.get(group_id)
         if group is not None:
@@ -296,6 +311,7 @@ class GroupService(BaseService):
             return None
 
     def search_group(self, keyword):
+        # searching groups with keyword return for related group_name, return satifying groups
         lst_group = self.model.search(keyword)
         lst_obj_res = []
         group_ids = (group.GroupChat.id for group in lst_group)
@@ -343,10 +359,10 @@ class GroupService(BaseService):
         return response
 
     def get_joined_group(self, client_id):
+        # get all groups that this client has joined
         lst_group = self.model.get_joined(client_id)
         lst_obj_res = []
         group_ids = (group.GroupChat.id for group in lst_group)
-        # lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
         for item in lst_group:
             obj = item.GroupChat
             obj_res = group_pb2.GroupObjectResponse(
@@ -440,6 +456,7 @@ class GroupService(BaseService):
         return response
 
     async def forgot_peer_groups_for_client(self, user_info):
+        # notify all other users involved in peer chat with that this user updated public key
         client_id = user_info.id
         lst_group = self.model.get_joined(client_id)
         owner_workspace_domain = get_owner_workspace_domain()
@@ -487,6 +504,7 @@ class GroupService(BaseService):
                 logger.error(e)
 
     async def workspace_notify_deactive_member(self, deactive_account_id, client_ids):
+        # workspace call for notify all other users in different server involved in peer chat with that this user updated public key
         push_service = NotifyPushService()
         for client_id in client_ids:
             try:
@@ -507,31 +525,18 @@ class GroupService(BaseService):
             except Exception as e:
                 logger.error(e)
 
-    def check_joined(self, create_by, list_client):
-        lst_group_peer = self.model.get_joined_group_type(client_id=create_by, group_type="peer")
-        for member in list_client:
-            member_id = member.id
-            if member_id != create_by:
-                for group_joined in lst_group_peer:
-                    if group_joined.group_clients:
-                        lst_group_client = json.loads(group_joined.group_clients)
-                        lst_group_client_id = [item["id"] for item in lst_group_client]
-                        if member_id in lst_group_client_id:
-                            return group_joined.GroupChat
-        return None
-
-    def get_group_info(self, group_id):
-        return self.model.get_group(group_id)
-
     def get_clients_in_group(self, group_id):
+        # get all client in group
         return GroupClientKey().get_clients_in_group(group_id)
 
     def get_clients_in_group_owner(self, group_owner_id):
+        # get all client in groups
         lst_group = self.model.get_by_group_owner(group_owner_id)
         group_ids = (group.id for group in lst_group)
         return GroupClientKey().get_clients_in_groups(group_ids)
 
     async def add_member_to_group_not_owner(self, added_member_info, adding_member_info, group):
+        # adding member to group not created in this server, with additional info about adding member and added member
         logger.info('add_member_to_group_not_owner')
 
         owner_workspace_domain = get_owner_workspace_domain()
@@ -606,7 +611,7 @@ class GroupService(BaseService):
         return group_pb2.BaseResponse()
 
     async def add_member_to_group_owner(self, added_member_info, adding_member_info, group):
-
+        # adding member to group created in this server, with additional info about adding member and added member
         logger.info('add_member_to_group_owner')
         owner_workspace_domain = get_owner_workspace_domain()
 
@@ -681,6 +686,7 @@ class GroupService(BaseService):
         return group_pb2.BaseResponse()
 
     async def workspace_add_member(self, added_member_info, adding_member_info, owner_group_info):
+        # workspace adding member to group, with additional info about adding member, added member and original group
         logger.info('workspace_add_member')
 
         owner_workspace_domain = get_owner_workspace_domain()
@@ -750,6 +756,7 @@ class GroupService(BaseService):
         )
 
     async def leave_group_owner(self, leave_member, leave_member_by, group):
+        # leave group service for group created in this server for user leave_member, called by leave_member_by
         logger.info('leave_group_owner')
         owner_workspace_domain = get_owner_workspace_domain()
 
@@ -820,6 +827,7 @@ class GroupService(BaseService):
         return group_pb2.BaseResponse()
 
     async def leave_group_not_owner(self, leave_member, leave_member_by, group):
+        # leave group service for group not created in this server for user leave_member, called by leave_member_by
         logger.info('leave_group_not_owner')
         owner_workspace_domain = get_owner_workspace_domain()
         tmp_list_client = json.loads(group.group_clients)
@@ -879,6 +887,7 @@ class GroupService(BaseService):
         return group_pb2.BaseResponse()
 
     async def workspace_leave_group(self, leave_member, leave_member_by, group):
+        # workspace called leave group, with additional info about leave_member, leave_member_by, group info
         logger.info('workspace_leave_group')
 
         owner_workspace_domain = get_owner_workspace_domain()
