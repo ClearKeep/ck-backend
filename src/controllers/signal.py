@@ -53,6 +53,41 @@ class SignalController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    async def WorkspacePeerGetClientKey(self, request, context):
+        try:
+            client_id = request.clientId
+            client_workspace_domain = request.workspace_domain
+            owner_workspace_domain = get_owner_workspace_domain()
+            if client_workspace_domain and client_workspace_domain == owner_workspace_domain:
+                obj_resp = self.service.peer_get_client_key(client_id)
+                if obj_resp is not None:
+                    response = signal_pb2.PeerGetClientKeyResponse(
+                        clientId=client_id,
+                        registrationId=obj_resp.registration_id,
+                        deviceId=obj_resp.device_id,
+                        identityKeyPublic=obj_resp.identity_key_public,
+                        preKeyId=obj_resp.prekey_id,
+                        preKey=obj_resp.prekey,
+                        signedPreKeyId=obj_resp.signed_prekey_id,
+                        signedPreKey=obj_resp.signed_prekey,
+                        signedPreKeySignature=obj_resp.signed_prekey_signature
+                    )
+                    if user_id == client_id:
+                        response.identityKeyEncrypted = obj_resp.identity_key_encrypted
+                    return response
+
+            raise Exception(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)
+        except Exception as e:
+            logger.error(e)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
     @auth_required
     async def PeerGetClientKey(self, request, context):
         try:
@@ -65,7 +100,7 @@ class SignalController(BaseController):
             owner_workspace_domain = get_owner_workspace_domain()
             if client_workspace_domain and client_workspace_domain != owner_workspace_domain:
                 # get key from other server
-                obj_resp = ClientSignal(client_workspace_domain).get_user_signal_key(client_id, client_workspace_domain)
+                obj_resp = ClientSignal(client_workspace_domain).workspace_get_user_signal_key(client_id, client_workspace_domain)
                 return obj_resp
             else:
                 obj_resp = self.service.peer_get_client_key(client_id)
@@ -86,13 +121,8 @@ class SignalController(BaseController):
                     return response
 
                 raise Exception(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)
-                # errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
-                # context.set_details(json.dumps(
-                #     errors, default=lambda x: x.__dict__))
-                # context.set_code(grpc.StatusCode.NOT_FOUND)
         except Exception as e:
             logger.error(e)
-            logger.error(context.invocation_metadata())
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
             else:
@@ -126,7 +156,7 @@ class SignalController(BaseController):
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            user_id = introspect_token['sub'] #'f4852d0c-7d6c-445b-b867-64d6e2e9967d'
+            user_id = introspect_token['sub']
             self.service.group_bulk_update_client_key(user_id, request.listGroupClientKey)
             return signal_pb2.BaseResponse()
         except Exception as e:
@@ -141,14 +171,58 @@ class SignalController(BaseController):
 
     @request_logged
     async def GroupGetClientKey(self, request, context):
-        group_id = request.groupId
-        client_id = request.clientId
-        # get group first
-        group = GroupService().get_group_obj(group_id)
-        owner_workspace_domain = get_owner_workspace_domain()
-        if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
-            owner_workspace_group_id = group.owner_group_id
-            obj_resp = self.service.group_by_owner_get_client_key(owner_workspace_group_id, client_id)
+        try:
+            group_id = request.groupId
+            client_id = request.clientId
+            # get group first
+            group = GroupService().get_group_obj(group_id)
+            owner_workspace_domain = get_owner_workspace_domain()
+            if group.owner_workspace_domain and group.owner_workspace_domain != owner_workspace_domain:
+                owner_workspace_group_id = group.owner_group_id
+                obj_resp = self.service.group_by_owner_get_client_key(owner_workspace_group_id, client_id)
+                if obj_resp is not None:
+                    response = signal_pb2.GroupGetClientKeyResponse(
+                        groupId=obj_resp.group_id,
+                        clientKey=signal_pb2.GroupClientKeyObject(
+                            clientId=obj_resp.client_id,
+                            deviceId=obj_resp.device_id,
+                            clientKeyDistribution=obj_resp.client_key
+                        )
+                    )
+                    return response
+                else:
+                    obj_resp = ClientSignal(group.owner_workspace_domain).group_get_client_key(group.owner_group_id, client_id)
+                    return obj_resp
+            else:
+                obj_resp = self.service.group_get_client_key(group_id, client_id)
+                if obj_resp is not None:
+                    if obj_resp.client_workspace_domain and obj_resp.client_workspace_domain != owner_workspace_domain:
+                        obj_resp = ClientSignal(obj_resp.client_workspace_domain).workspace_group_get_client_key(obj_resp.client_workspace_group_id, obj_resp.client_id)
+                        return obj_resp
+                    else:
+                        response = signal_pb2.GroupGetClientKeyResponse(
+                            groupId=obj_resp.group_id,
+                            clientKey=signal_pb2.GroupClientKeyObject(
+                                clientId=obj_resp.client_id,
+                                deviceId=obj_resp.device_id,
+                                clientKeyDistribution=obj_resp.client_key
+                            )
+                        )
+                        return response
+            raise Exception(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)
+        except Exception as e:
+            errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+
+    @request_logged
+    async def WorkspaceGroupGetClientKey(self, request, context):
+        try:
+            group_id = request.groupId
+            client_id = request.clientId
+
+            obj_resp = self.service.group_get_client_key(group_id, client_id)
             if obj_resp is not None:
                 response = signal_pb2.GroupGetClientKeyResponse(
                     groupId=obj_resp.group_id,
@@ -159,53 +233,12 @@ class SignalController(BaseController):
                     )
                 )
                 return response
-            else:
-                obj_resp = ClientSignal(group.owner_workspace_domain).group_get_client_key(group.owner_group_id, client_id)
-                return obj_resp
-        else:
-            obj_resp = self.service.group_get_client_key(group_id, client_id)
-            if obj_resp is not None:
-                if obj_resp.client_workspace_domain and obj_resp.client_workspace_domain != owner_workspace_domain:
-                    obj_resp = ClientSignal(obj_resp.client_workspace_domain).workspace_group_get_client_key(obj_resp.client_workspace_group_id, obj_resp.client_id)
-                    return obj_resp
-                else:
-                    response = signal_pb2.GroupGetClientKeyResponse(
-                        groupId=obj_resp.group_id,
-                        clientKey=signal_pb2.GroupClientKeyObject(
-                            clientId=obj_resp.client_id,
-                            deviceId=obj_resp.device_id,
-                            clientKeyDistribution=obj_resp.client_key
-                        )
-                    )
-                    return response
-
-        errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
-        context.set_details(json.dumps(
-            errors, default=lambda x: x.__dict__))
-        context.set_code(grpc.StatusCode.NOT_FOUND)
-
-    @request_logged
-    async def WorkspaceGroupGetClientKey(self, request, context):
-        print("WorkspaceGroupGetClientKey")
-        group_id = request.groupId
-        client_id = request.clientId
-
-        obj_resp = self.service.group_get_client_key(group_id, client_id)
-        if obj_resp is not None:
-            response = signal_pb2.GroupGetClientKeyResponse(
-                groupId=obj_resp.group_id,
-                clientKey=signal_pb2.GroupClientKeyObject(
-                    clientId=obj_resp.client_id,
-                    deviceId=obj_resp.device_id,
-                    clientKeyDistribution=obj_resp.client_key
-                )
-            )
-            return response
-
-        errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
-        context.set_details(json.dumps(
-            errors, default=lambda x: x.__dict__))
-        context.set_code(grpc.StatusCode.NOT_FOUND)
+            raise Exception(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)
+        except Exception as e:
+            errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.NOT_FOUND)
 
 
     @request_logged

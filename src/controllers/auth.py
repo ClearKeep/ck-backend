@@ -30,11 +30,6 @@ class AuthController(BaseController):
 
             srv = srp.Verifier(email, salt, password_verifier, client_public)
             s, B = srv.get_challenge()
-            # need store private b of server
-            logger.info("server_public=")
-            logger.info(s)
-            logger.info("server_private=")
-            logger.info(B)
 
             server_private = srv.get_ephemeral_secret().hex()
             logger.info(server_private)
@@ -81,12 +76,10 @@ class AuthController(BaseController):
 
             token = self.service.token(user_name, user_info.password_verifier)
             if token:
-                # introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
                 user_id = user_info.id
                 mfa_state = self.user_service.get_mfa_state(user_id=user_id)
 
                 if not mfa_state:
-                    ### check if login require otp check
                     client_key_obj = SignalService().peer_get_client_key(user_id)
                     client_key_peer = auth_messages.PeerGetClientKeyResponse(
                                             clientId=user_id,
@@ -155,7 +148,6 @@ class AuthController(BaseController):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -183,7 +175,6 @@ class AuthController(BaseController):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -210,7 +201,6 @@ class AuthController(BaseController):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -232,11 +222,6 @@ class AuthController(BaseController):
 
             srv = srp.Verifier(user_name, salt, password_verifier, client_public)
             s, B = srv.get_challenge()
-            # need store private b of server
-            logger.info("server_public=")
-            logger.info(s)
-            logger.info("server_private=")
-            logger.info(B)
 
             server_private = srv.get_ephemeral_secret().hex()
             logger.info(server_private)
@@ -290,14 +275,11 @@ class AuthController(BaseController):
                 UserService().delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
 
-            return auth_messages.RegisterSRPRes(
-                error=''
-            )
+            return auth_messages.RegisterSRPRes()
 
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.REGISTER_USER_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -314,7 +296,6 @@ class AuthController(BaseController):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -387,7 +368,6 @@ class AuthController(BaseController):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.CHANGE_PASSWORD_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -408,16 +388,11 @@ class AuthController(BaseController):
             MessageService().un_subscribe(user_id, device_id)
             NotifyInAppService().un_subscribe(user_id, device_id)
             self.service.logout(refresh_token)
-            # KeyCloakUtils.remove_session(
-            #     session_id=introspect_token['session_state']
-            # )
-
             return auth_messages.BaseResponse()
 
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -432,7 +407,6 @@ class AuthController(BaseController):
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
 
             user_info = self.user_service.get_user_by_id(request.user_id)
-            token = self.service.token(user_info.email, user_info.password_verifier)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             require_action = ""
             client_key_obj = SignalService().peer_get_client_key(request.user_id)
@@ -449,6 +423,7 @@ class AuthController(BaseController):
                                     signedPreKeySignature=client_key_obj.signed_prekey_signature,
                                     identityKeyEncrypted=client_key_obj.identity_key_encrypted
                                 )
+            token = self.service.token(user_info.email, user_info.password_verifier)
             self.user_service.update_last_login(user_id=request.user_id)
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
@@ -469,7 +444,6 @@ class AuthController(BaseController):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -488,7 +462,6 @@ class AuthController(BaseController):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -508,7 +481,10 @@ class AuthController(BaseController):
             salt = request.salt
             self.user_service.change_password(request, None, request.hash_pincode, exists_user['id'])
             # using hash_pincode as password for social user
-            SignalService().peer_register_client_key(exists_user['id'], request.client_key_peer)
+            try:
+                SignalService().peer_register_client_key(exists_user['id'], request.client_key_peer)
+            except Exception as e:
+                logger.error(e)
             try:
                 UserService().update_hash_pin(exists_user['id'], request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:
@@ -533,7 +509,6 @@ class AuthController(BaseController):
                                 )
             token = self.service.token(request.user_name, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
-            hash_key = EncryptUtils.encoded_hash(introspect_token['sub'], introspect_token['sub'])
             self.user_service.update_last_login(user_id=introspect_token['sub'])
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
@@ -545,7 +520,6 @@ class AuthController(BaseController):
                 token_type=token['token_type'],
                 session_state=token['session_state'],
                 scope=token['scope'],
-                hash_key=hash_key,
                 salt=request.salt,
                 client_key_peer = client_key_peer,
                 iv_parameter=request.iv_parameter

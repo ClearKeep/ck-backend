@@ -36,9 +36,6 @@ class NotifyPushController(BaseController):
     @request_logged
     async def push_text(self, request, context):
         try:
-            # header_data = dict(context.invocation_metadata())
-            # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            # client_id = introspect_token['sub']
             title = request.title
             body = request.body
             notify_type = request.notify_type
@@ -61,9 +58,6 @@ class NotifyPushController(BaseController):
     @request_logged
     async def push_voip(self, request, context):
         try:
-            # header_data = dict(context.invocation_metadata())
-            # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            # client_id = introspect_token['sub']
             str_payload = request.payload
             payload = json.loads(str_payload)
             to_client_id = request.to_client_id

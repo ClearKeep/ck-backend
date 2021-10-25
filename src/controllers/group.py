@@ -6,7 +6,6 @@ from src.services.signal import SignalService
 from utils.config import get_owner_workspace_domain
 import protos.group_pb2 as group_messages
 from src.models.group import GroupChat
-from client.client_group import *
 from utils.keycloak import KeyCloakUtils
 from google.protobuf.json_format import MessageToDict
 import datetime
@@ -19,9 +18,6 @@ class GroupController(BaseController):
     @request_logged
     async def create_group(self, request, context):
         try:
-            # header_data = dict(context.invocation_metadata())
-            # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            # created_by_client_id = introspect_token['sub']
             group_name = request.group_name
             group_type = request.group_type
             lst_client = request.lst_client
@@ -69,26 +65,12 @@ class GroupController(BaseController):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
             group_id = request.group_id
-            # group = GroupChat().get_group(group_id)
-            # if not group.owner_workspace_domain:
             obj_res = self.service.get_group(group_id, client_id)
-            # else:
-            #     get_group_request = group_messages.GetGroupRequest(
-            #         group_id=group.owner_group_id
-            #     )
-            #     obj_res = ClientGroup(
-            #         group.owner_workspace_domain
-            #     ).get_group(get_group_request)
-            #     obj_res.group_id = group_id
 
-            # TODO: return client_key object here
             if obj_res is not None:
                 return obj_res
             else:
-                errors = [Message.get_error_object(Message.GROUP_CHAT_NOT_FOUND)]
-                context.set_details(json.dumps(
-                    errors, default=lambda x: x.__dict__))
-                context.set_code(grpc.StatusCode.NOT_FOUND)
+                raise Exception(Message.GROUP_CHAT_NOT_FOUND)
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
@@ -122,7 +104,6 @@ class GroupController(BaseController):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-            #client_id = request.client_id
             obj_res = self.service.get_joined_group(client_id)
             return obj_res
         except Exception as e:
@@ -138,6 +119,7 @@ class GroupController(BaseController):
     @request_logged
     async def join_group(self, request, context):
         try:
+            # TODO: implement this function
             pass
         except Exception as e:
             logger.error(e)

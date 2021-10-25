@@ -21,33 +21,8 @@ class UserService(BaseService):
     def __init__(self):
         super().__init__(User())
         self.authen_setting = AuthenSetting()
-        # self.workspace_domain = get_system_domain()
-
-    def create_new_user(self, id, email, display_name, salt, iv_parameter, auth_source):
-        # password, first_name, last_name,
-        try:
-            self.model = User(
-                id=id,
-                email=email,
-                display_name=display_name,
-                salt=salt,
-                iv_parameter=iv_parameter,
-                auth_source=auth_source
-            )
-            # if email:
-            #     self.model.email = EncryptUtils.encrypt_data(email, password, id)
-            # if first_name:
-            #     self.model.first_name = EncryptUtils.encrypt_data(first_name, password, id)
-            # if last_name:
-            #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
-            self.model.add()
-            return self
-        except Exception as e:
-            logger.error(e)
-            return None
 
     def create_new_user_srp(self, id, email, password_verifier, salt, iv_parameter, display_name, auth_source):
-        # password, first_name, last_name,
         try:
             self.model = User(
                 id=id,
@@ -69,15 +44,8 @@ class UserService(BaseService):
                 id=id,
                 email=email,
                 display_name=display_name,
-                auth_source=auth_source,
-                #last_login_at=datetime.datetime.now()
+                auth_source=auth_source
             )
-            # if email:
-            #     self.model.email = EncryptUtils.encrypt_data(email, password, id)
-            # if first_name:
-            #     self.model.first_name = EncryptUtils.encrypt_data(first_name, password, id)
-            # if last_name:
-            #     self.model.last_name = EncryptUtils.encrypt_data(last_name, password, id)
             self.model.add()
             return self
         except Exception as e:
@@ -99,9 +67,7 @@ class UserService(BaseService):
                 status=user_info.status,
                 avatar=user_info.avatar,
                 phone_number=user_info.phone_number,
-                created_at=user_info.created_at,
-
-                #last_login_at=datetime.datetime.now()
+                created_at=user_info.created_at
             )
             self.model.add()
             self.delete_user(user_info.id)
@@ -117,17 +83,8 @@ class UserService(BaseService):
         try:
             user_info = self.model.get(user_id)
             response = KeyCloakUtils.set_user_password(user_id, new_pass)
-            # if user_info.email:
-            #     email = EncryptUtils.decrypt_data(user_info.email, old_pass, user_id)
-            #     user_info.email = EncryptUtils.encrypt_data(email, new_pass, user_id)
-            # if user_info.first_name:
-            #     first_name = EncryptUtils.decrypt_data(user_info.first_name, old_pass, user_id)
-            #     user_info.first_name = EncryptUtils.encrypt_data(first_name, new_pass, user_id)
-            # if user_info.last_name:
-            #     last_name = EncryptUtils.decrypt_data(user_info.last_name, old_pass, user_id)
-            #     user_info.last_name = EncryptUtils.encrypt_data(last_name, new_pass, user_id)
 
-            return user_info # user_info.update()
+            return user_info
         except Exception as e:
             logger.info(e)
             raise Exception(Message.CHANGE_PASSWORD_FAILED)
@@ -526,12 +483,6 @@ class UserService(BaseService):
                 server_error_resp.append(tmp_client_response)
             return server_error_resp
         return client_resp.lst_client
-
-
-    # profile api
-
-
-    # profile api
 
     def base64_enconding_text_to_string(self, text):
         text_bytes = text.encode("ascii")

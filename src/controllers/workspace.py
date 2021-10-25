@@ -73,7 +73,6 @@ class WorkspaceController(BaseController):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.LEAVE_WORKSPACE_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]

@@ -45,7 +45,6 @@ class UploadFileService(BaseService):
         file_name = None
         file_content_type = None
 
-        #async for r in stub.FindNode(helloworld_pb2.FindNodeRequest()):
         async for request in request_iterator:
             m = hashlib.new('md5', request.file_data_block).hexdigest()
             if m != request.file_data_block_hash:

@@ -116,6 +116,7 @@ service SignalKeyDistribution {
       //peer
       rpc PeerRegisterClientKey (PeerRegisterClientKeyRequest) returns (BaseResponse);
       rpc PeerGetClientKey (PeerGetClientKeyRequest) returns (PeerGetClientKeyResponse);
+      rpc WorkspacePeerGetClientKey (PeerGetClientKeyRequest) returns (PeerGetClientKeyResponse);
       rpc ClientUpdatePeerKey (PeerRegisterClientKeyRequest) returns (BaseResponse);
       //group
       rpc GroupRegisterClientKey (GroupRegisterClientKeyRequest) returns (BaseResponse);

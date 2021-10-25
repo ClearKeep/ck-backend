@@ -42,7 +42,7 @@ class MessageController(BaseController):
                     off_set = request.off_set,
                     last_message_at = request.last_message_at
                 )
-                obj_res = ClientMessage(group.owner_workspace_domain).get_messages_in_group(workspace_request)
+                obj_res = ClientMessage(group.owner_workspace_domain).workspace_get_messages_in_group(workspace_request)
                 if obj_res and obj_res.lst_message:
                     for obj in obj_res.lst_message:
                         obj.group_id = group_id
@@ -230,15 +230,12 @@ class MessageController(BaseController):
         push_service = NotifyPushService()
 
         for client in lst_client:
-            #if client.GroupClientKey.client_id != request.fromClientId:
             if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
                 if client.User is None:
                     continue
 
                 new_message_res_object = deepcopy(message_res_object)
                 new_message_res_object.client_id = client.GroupClientKey.client_id
-                # for notify_token in client.User.tokens:
-                #     logger.info('device_id in handle {}'.format(notify_token.device_id))
                 for notify_token in client.User.tokens:
                     device_id = notify_token.device_id
                     logger.info('device_id in real loop in handle {}'.format(device_id))
@@ -377,8 +374,6 @@ class MessageController(BaseController):
         res_object = ClientMessage(group.owner_workspace_domain).workspace_publish_message(request1)
         if res_object is None:
             logger.error("send message to client failed")
-
-        # message_res_object.group_id = group.id
         return message_res_object
 
     @request_logged
@@ -401,23 +396,6 @@ class MessageController(BaseController):
                 logger.info('Client {} is disconnected'.format(user_id))
                 client_message_queue[message_channel] = None
                 del client_message_queue[message_channel]
-                # push text notification for client
-                # push_service = NotifyPushService()
-                # if message_response:
-                #     message = {
-                #         'id': message_response.id,
-                #         'client_id': message_response.client_id,
-                #         'client_workspace_domain': get_owner_workspace_domain(),
-                #         'created_at': message_response.created_at,
-                #         'from_client_id': message_response.from_client_id,
-                #         'from_client_workspace_domain': message_response.from_client_workspace_domain,
-                #         'group_id': message_response.group_id,
-                #         'group_type': message_response.group_type,
-                #         'message': base64.b64encode(message_response.message).decode('utf-8')
-                #     }
-                #     await push_service.push_text_to_clients(
-                #         [client_id], title="", body="You have a new message",
-                #         from_client_id=client_id, notify_type="new_message", data=json.dumps(message))
 
     @request_logged
     @auth_required
@@ -462,9 +440,6 @@ class MessageController(BaseController):
     @request_logged
     async def read_messages(self, request, context):
         try:
-            # header_data = dict(context.invocation_metadata())
-            # introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
-            # client_id = introspect_token['sub']
             client_id = request.client_id
             lst_message_id = request.lst_message_id
             self.service.read_messages(client_id, lst_message_id)

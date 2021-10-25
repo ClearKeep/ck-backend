@@ -28,16 +28,14 @@ class NotifyInAppController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
-    # @request_logged
+    @request_logged
     @auth_required
     async def listen(self, request, context):
         header_data = dict(context.invocation_metadata())
         introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
         user_id = introspect_token['sub']
 
-        logger.info('listen  {}'.format(user_id))
         notify_channel = "notify/{}/{}".format(user_id, request.device_id)
-
         while notify_channel in client_notify_queue:
             try:
                 if client_notify_queue[notify_channel].qsize() > 0:
@@ -86,7 +84,6 @@ class NotifyInAppController(BaseController):
     @auth_required
     async def un_subscribe(self, request, context):
         print("notify_inapp un_subscribe api")
-
         header_data = dict(context.invocation_metadata())
         introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
         user_id = introspect_token['sub']

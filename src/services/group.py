@@ -28,21 +28,6 @@ class GroupService(BaseService):
         self.transaction = 'ckbackendtransaction'
 
     def add_group(self, group_name, group_type, lst_client, created_by):
-        # check duplicate with create group peer
-        # if group_type == 'peer':
-        #     group_chat = self.check_joined(create_by=created_by, list_client=lst_client)
-        #     if group_chat:
-        #         res_obj = group_pb2.GroupObjectResponse(
-        #             group_id=group_chat.id,
-        #             group_name=group_chat.group_name,
-        #             group_type=group_chat.group_type,
-        #             group_avatar=group_chat.group_avatar,
-        #             created_by_client_id=group_chat.created_by,
-        #             created_at=int(group_chat.created_at.timestamp() * 1000),
-        #             updated_by_client_id=group_chat.updated_by,
-        #             group_rtc_token=group_chat.group_rtc_token
-        #         )
-        #         return res_obj
 
         tmp_list_client = []
         created_by_user = None
@@ -131,23 +116,6 @@ class GroupService(BaseService):
                     group_res_object.client_workspace_domain,
                     group_res_object.group_id)
                 client_group_key.add()
-                # client_in = group_pb2.ClientInGroupResponse(
-                #     id=group_res_object.client_id,
-                #     display_name=group_res_object.client_name,
-                #     workspace_domain=group_res_object.client_workspace_domain
-                # )
-                # res_obj.lst_client.append(client_in)
-
-        # list client in group
-        # lst_client_in_group = GroupClientKey().get_clients_in_group(new_group.id)
-        # for client in lst_client_in_group:
-        #     if client.GroupClientKey.client_workspace_domain is None:
-        #         client_in = group_pb2.ClientInGroupResponse(
-        #             id=client.User.id,
-        #             display_name=client.User.display_name,
-        #             workspace_domain=owner_workspace_domain
-        #         )
-        #         res_obj.lst_client.append(client_in)
         return res_obj
 
     def add_group_workspace(self, group_name, group_type, from_client_id, client_id, lst_client, owner_group_id,
@@ -158,7 +126,7 @@ class GroupService(BaseService):
             group_clients=lst_client,
             owner_group_id=owner_group_id,
             owner_workspace_domain=owner_workspace_domain,
-            #created_by=created_by,
+            created_by=from_client_id,
             updated_at=datetime.datetime.now()
         )
         new_group = self.model.add()
@@ -301,26 +269,6 @@ class GroupService(BaseService):
                     res_obj.client_key.publicKey = stored_client_key.client_public_key
                 if stored_client_key.client_private_key is not None:
                     res_obj.client_key.privateKey = stored_client_key.client_private_key
-            # lst_client_in_group = GroupClientKey().get_clients_in_group(group_id)
-            # owner_workspace_domain = get_owner_workspace_domain()
-            #
-            # for client in lst_client_in_group:
-            #     if client.GroupClientKey.client_workspace_domain is None:
-            #         client_in = group_pb2.ClientInGroupResponse(
-            #             id=client.User.id,
-            #             display_name=client.User.display_name,
-            #             workspace_domain=owner_workspace_domain,
-            #         )
-            #         res_obj.lst_client.append(client_in)
-            #     else:
-            #         #call to other workspace domain to get client
-            #         client_in_workspace = ClientUser(client.GroupClientKey.client_workspace_domain).get_user_info(client.GroupClientKey.client_id, client.GroupClientKey.client_workspace_domain )
-            #         client_in = group_pb2.ClientInGroupResponse(
-            #             id=client_in_workspace.id,
-            #             display_name=client_in_workspace.display_name,
-            #             workspace_domain=client.GroupClientKey.client_workspace_domain
-            #         )
-            #         res_obj.lst_client.append(client_in)
 
             if obj.last_message_at:
                 res_obj.last_message_at = int(obj.last_message_at.timestamp() * 1000)
@@ -351,7 +299,6 @@ class GroupService(BaseService):
         lst_group = self.model.search(keyword)
         lst_obj_res = []
         group_ids = (group.GroupChat.id for group in lst_group)
-        # lst_client_in_groups = GroupClientKey().get_clients_in_groups(group_ids)
 
         for item in lst_group:
             obj = item.GroupChat
@@ -367,17 +314,8 @@ class GroupService(BaseService):
             )
             if obj.updated_at is not None:
                 obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
-
             if obj.last_message_at:
                 obj_res.last_message_at = int(obj.last_message_at.timestamp() * 1000)
-
-            # for client in lst_client_in_groups:
-            #     if client.group_id == obj.id:
-            #         client_in = group_pb2.ClientInGroupResponse(
-            #             id=client.User.id,
-            #             display_name=client.User.display_name
-            #         )
-            #         obj_res.lst_client.append(client_in)
 
             # get last message
             if item.Message:
@@ -421,10 +359,8 @@ class GroupService(BaseService):
             )
             if obj.group_name:
                 obj_res.group_name = obj.group_name
-
             if obj.group_avatar:
                 obj_res.group_avatar = obj.group_avatar
-
             if obj.updated_at:
                 obj_res.updated_at = int(obj.updated_at.timestamp() * 1000)
 

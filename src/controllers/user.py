@@ -31,13 +31,8 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             srv = srp.Verifier(user_name, salt, password_verifier, client_public)
             s, B = srv.get_challenge()
             # need store private b of server
-            logger.info("server_public=")
-            logger.info(s)
-            logger.info("server_private=")
-            logger.info(B)
 
             server_private = srv.get_ephemeral_secret().hex()
-            logger.info(server_private)
             user_info.srp_server_private = server_private
             user_info.update()
 
@@ -51,7 +46,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.CHANGE_PASSWORD_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -104,7 +98,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.CHANGE_PASSWORD_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -124,7 +117,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -146,7 +138,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -173,7 +164,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -189,9 +179,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
             email = introspect_token['preferred_username']
-            # raise exception if user not in validate_password flow
 
-            logger.info('email {}, client_id {}'.format(email, client_id))
             self.service.mfa_validate_password_flow(client_id)
             user_info = self.service.get_user_by_id(client_id)
             password_verifier = bytes.fromhex(user_info.password_verifier)
@@ -200,19 +188,12 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
             srv = srp.Verifier(email, salt, password_verifier, client_public)
             s, B = srv.get_challenge()
-            # need store private b of server
-            logger.info("server_public=")
-            logger.info(s)
-            logger.info("server_private=")
-            logger.info(B)
 
             server_private = srv.get_ephemeral_secret().hex()
-            logger.info(server_private)
             user_info.srp_server_private = server_private
             user_info.update()
 
             public_challenge_b = B.hex()
-            logger.info('response salt {}, public_challenge_b {}'.format(user_info.salt, public_challenge_b))
 
             auth_challenge_res = user_messages.MfaAuthChallengeResponse(
                 salt=user_info.salt,
@@ -222,7 +203,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -258,7 +238,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.OTP_SERVER_NOT_RESPONDING)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -278,7 +257,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -298,7 +276,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.OTP_SERVER_NOT_RESPONDING)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -326,7 +303,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.GET_PROFILE_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -353,7 +329,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.UPDATE_PROFILE_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -386,7 +361,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.GET_USER_INFO_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -410,7 +384,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -421,20 +394,17 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     @request_logged
     @auth_required
     async def get_users(self, request, context):
-        logger.info("user get_users api")
         try:
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
             owner_workspace_domain = get_owner_workspace_domain()
-
             obj_res = self.service.get_users(client_id, owner_workspace_domain)
             return obj_res
 
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -454,7 +424,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -479,7 +448,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.UPDATE_USER_STATUS_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -500,7 +468,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.PING_PONG_SERVER_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -520,7 +487,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.GET_USER_STATUS_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -546,7 +512,6 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.GET_USER_STATUS_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]

@@ -171,9 +171,6 @@ class NotifyInAppService(BaseService):
                     logger.error(e)
                     logger.info('push notification: 1')
                     raise ValueError
-            # else:
-            #     logger.info('push notification: 2')
-            #     raise ValueError
 
     def notify_adding_member(
             self,

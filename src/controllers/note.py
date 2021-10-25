@@ -26,7 +26,6 @@ class NoteController(BaseController):
                 metadata['access_token']
             )
             user_id = access_token_information['sub']
-            # user_id = '081f2345-bcc8-4447-9da8-3b1e04ad6c51'
             note = self.service.create_note(
                 user_id,
                 request.title,
@@ -44,7 +43,6 @@ class NoteController(BaseController):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -60,7 +58,6 @@ class NoteController(BaseController):
                 metadata['access_token']
             )
             user_id = access_token_information['sub']
-            # user_id = '081f2345-bcc8-4447-9da8-3b1e04ad6c51'
             self.service.edit_note(
                 request.note_id,
                 request.title,
@@ -73,7 +70,6 @@ class NoteController(BaseController):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -92,7 +88,6 @@ class NoteController(BaseController):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
@@ -104,11 +99,8 @@ class NoteController(BaseController):
         """docstring for create_note"""
         try:
             metadata = dict(context.invocation_metadata())
-            access_token_information = KeyCloakUtils.introspect_token(
-                metadata['access_token']
-            )
+            access_token_information = KeyCloakUtils.introspect_token(metadata['access_token'])
             user_id = access_token_information['sub']
-            # user_id = '081f2345-bcc8-4447-9da8-3b1e04ad6c51'
             user_notes = self.service.get_user_notes(
                 user_id
             )
@@ -126,7 +118,6 @@ class NoteController(BaseController):
         except Exception as e:
             logger.error(e)
             if not e.args or e.args[0] not in Message.msg_dict:
-                # basic exception dont have any args / exception raised by some library may contains some args, but will not in listed message
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
                 errors = [Message.get_error_object(e.args[0])]

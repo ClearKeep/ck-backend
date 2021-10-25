@@ -12,19 +12,19 @@ class ClientSignal:
         channel = grpc.insecure_channel(workspace_domain)
         return signal_pb2_grpc.SignalKeyDistributionStub(channel)
 
-    def get_user_signal_key(self, client_id, workspace_domain):
+    def group_get_client_key(self, group_id, client_id):
         try:
-            request = signal_pb2.PeerGetClientKeyRequest(clientId=client_id, workspace_domain=workspace_domain)
-            response = self.stub.PeerGetClientKey(request)
+            request = signal_pb2.GroupGetClientKeyRequest(groupId=group_id, clientId=client_id)
+            response = self.stub.GroupGetClientKey(request)
             return response
         except Exception as e:
             logger.error(e)
             return None
 
-    def group_get_client_key(self, group_id, client_id):
+    def workspace_get_user_signal_key(self, client_id, workspace_domain):
         try:
-            request = signal_pb2.GroupGetClientKeyRequest(groupId=group_id, clientId=client_id)
-            response = self.stub.GroupGetClientKey(request)
+            request = signal_pb2.PeerGetClientKeyRequest(clientId=client_id, workspace_domain=workspace_domain)
+            response = self.stub.WorkspacePeerGetClientKey(request)
             return response
         except Exception as e:
             logger.error(e)
@@ -38,6 +38,3 @@ class ClientSignal:
         except Exception as e:
             logger.error(e)
             return None
-
-
-
