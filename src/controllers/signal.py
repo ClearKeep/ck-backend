@@ -72,8 +72,6 @@ class SignalController(BaseController):
                         signedPreKey=obj_resp.signed_prekey,
                         signedPreKeySignature=obj_resp.signed_prekey_signature
                     )
-                    if user_id == client_id:
-                        response.identityKeyEncrypted = obj_resp.identity_key_encrypted
                     return response
 
             raise Exception(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)
