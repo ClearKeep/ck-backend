@@ -120,9 +120,7 @@ class SignalService(BaseService):
                     lst_client_id = ast.literal_eval(group_peer.group_clients)
                     for client_peer_id in lst_client_id:
                         if client_peer_id != client_id:
-                            message_channel = "{}/message".format(client_peer_id)
-                            if message_channel in client_message_queue:
-                                notify_inapp_service.notify_client_update_peer_key(client_peer_id, client_id, group_peer.id)
+                            notify_inapp_service.notify_client_update_peer_key(client_peer_id, client_id, group_peer.id)
         except Exception as e:
             logger.error(e)
 
