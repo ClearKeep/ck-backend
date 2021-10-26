@@ -19,16 +19,20 @@ UPDATE_CALL = "update-call"
 MEMBER_REMOVAL = 'member-removal'
 MEMBER_LEAVE = 'member-leave'
 MEMBER_ADD = 'member-add'
-DEACTIVE_MEMBER = "deactive-account"
 
 client_notify_queue = {}
 
 
 class NotifyInAppService(BaseService):
+    """
+    Notify in app service, using for real time notifying user about specific events, described in notify type
+
+    """
     def __init__(self):
         super().__init__(Notify())
 
     def get_unread_notifies(self, client_id):
+        # get all unread notifies for client_id
         lst_notify = self.model.get_unread_notifies(client_id)
         lst_obj_res = []
         for obj in lst_notify:
@@ -60,6 +64,7 @@ class NotifyInAppService(BaseService):
         return response
 
     async def subscribe(self, client_id, device_id):
+        # subscribe a channel for client_id in device_id
         notify_channel = "notify/{}/{}".format(client_id, device_id)
         if notify_channel in client_notify_queue:
             client_notify_queue[notify_channel] = None
@@ -68,21 +73,20 @@ class NotifyInAppService(BaseService):
         client_notify_queue[notify_channel] = Queue()
 
     def un_subscribe(self, client_id, device_id):
+        # unsubscribe a channel for client_id in device_id
         notify_channel = "notify/{}/{}".format(client_id, device_id)
         if notify_channel in client_notify_queue:
-            logger.info('all queues before')
-            logger.info(client_notify_queue)
             client_notify_queue[notify_channel] = None
             del client_notify_queue[notify_channel]
-            logger.info('all queues after')
-            logger.info(client_notify_queue)
 
     def read_notify(self, notify_id):
+        # mark a notify as readed with id is notify_id
         self.model = Notify(id=notify_id, read_flg=True)
         self.model.update()
 
     # add notify
     def notify_invite_peer(self, client_id, ref_client_id, ref_group_id, ref_workspace_domain, ref_subject_name):
+        # notify a client_id that he/her was invited to chat peer to peer with ref_client_id in ref_group_id
         self.model = Notify(
             client_id=client_id,
             ref_client_id=ref_client_id,
@@ -108,6 +112,7 @@ class NotifyInAppService(BaseService):
                     logger.error(e)
 
     def notify_invite_group(self, client_id, ref_client_id, ref_group_id, ref_workspace_domain, ref_subject_name):
+        # notify a client_id that he/her was invited to chat in group with inviter is ref_client_id in ref_group_id
         self.model = Notify(
             client_id=client_id,
             client_workspace_domain=get_owner_workspace_domain(),
@@ -141,6 +146,7 @@ class NotifyInAppService(BaseService):
             ref_group_id,
             ref_subject_name,
             notify_type=MEMBER_REMOVAL):
+        # notify client_id about ref_client_id's leaving
         self.model = Notify(
             client_id=client_id,
             client_workspace_domain=client_workspace_domain,
@@ -156,20 +162,14 @@ class NotifyInAppService(BaseService):
         )
         logger.info('notify_removing_member:')
         new_notification = self.model.add()
-        # check queue and push
-        logger.info('current notify client queue')
-        logger.info(client_notify_queue)
         notify_tokens = NotifyToken().get_client_device_ids(client_id)
         for notify_token in notify_tokens:
             notify_channel = "notify/{}/{}".format(client_id, notify_token.device_id)
-            logger.info(notify_channel)
             if notify_channel in client_notify_queue:
                 try:
-                    logger.info('inapp notification')
                     client_notify_queue[notify_channel].put(new_notification)
                 except Exception as e:
                     logger.error(e)
-                    logger.info('push notification: 1')
                     raise ValueError
 
     def notify_adding_member(
@@ -181,6 +181,7 @@ class NotifyInAppService(BaseService):
             ref_group_id,
             ref_subject_name,
             notify_type=MEMBER_ADD):
+        # notify client_id is about added to ref_group_id by ref_client_id
         self.model = Notify(
             client_id=client_id,
             client_workspace_domain=client_workspace_domain,
@@ -197,27 +198,18 @@ class NotifyInAppService(BaseService):
         logger.info('notify_adding_member')
         new_notification = self.model.add()
         # check queue and push
-        logger.info('current notify client queue')
-        logger.info(client_notify_queue)
         notify_tokens = NotifyToken().get_client_device_ids(client_id)
         for notify_token in notify_tokens:
             notify_channel = "notify/{}/{}".format(client_id, notify_token.device_id)
-            logger.info(notify_channel)
             if notify_channel in client_notify_queue:
                 try:
-                    logger.info('inapp notification')
                     client_notify_queue[notify_channel].put(new_notification)
                 except Exception as e:
                     logger.error(e)
-                    logger.info('push notification: 1')
                     raise ValueError
 
-            # else:
-            #     logger.info('push notification: 2')
-            #     raise ValueError
-
     def notify_client_update_peer_key(self, client_id, ref_client_id, ref_group_id):
-        # TODO: list all device_id of client_id then notify to all of it
+        # notify client_id about event ref_client_id updated peer key
         notify = Notify(
             id=0,
             client_id=client_id,
@@ -237,7 +229,6 @@ class NotifyInAppService(BaseService):
         notify_tokens = NotifyToken().get_client_device_ids(client_id)
         for notify_token in notify_tokens:
             notify_channel = "notify/{}/{}".format(client_id, notify_token.device_id)
-            logger.info(notify_channel)
             if notify_channel in client_notify_queue:
                 try:
                     client_notify_queue[notify_channel].put(notify)
@@ -245,6 +236,7 @@ class NotifyInAppService(BaseService):
                     logger.error(e)
 
     def notify_client_update_call(self, notify_type, client_id, ref_client_id, ref_group_id):
+        # notify client_id about event ref_client_id is update call
         notify = Notify(
             id=0,
             client_id=client_id,
@@ -263,7 +255,6 @@ class NotifyInAppService(BaseService):
         notify_tokens = NotifyToken().get_client_device_ids(client_id)
         for notify_token in notify_tokens:
             notify_channel = "notify/{}/{}".format(client_id, notify_token.device_id)
-            logger.info(notify_channel)
             if notify_channel in client_notify_queue:
                 try:
                     client_notify_queue[notify_channel].put(notify)

@@ -140,30 +140,6 @@ class GroupClientKey(Database.get().Model):
             Database.get_session().rollback()
             return False
 
-    # def update_bulk_client_key_test(self, client_id, list_group_client_key):
-    #     try:
-    #         for group_client_key in list_group_client_key:
-    #             sql_update = 'UPDATE group_client_key SET ' \
-    #                 'device_id=:device_id, ' \
-    #                 'updated_at=NOW() ' \
-    #                 'WHERE group_id=:group_id ' \
-    #                 'AND client_id=:client_id'
-    #             Database.get_session().execute(
-    #                 sql_update,
-    #                 {
-    #                     'device_id': group_client_key.deviceId,
-    #                     'group_id': group_client_key.groupId,
-    #                     'client_id': client_id
-    #                 }
-    #             )
-    #         Database.get_session().commit()
-    #         return True
-    #     except Exception as e:
-    #         logger.error(e)
-    #         Database.get_session().rollback()
-    #         return False
-
-
     def delete(self):
         try:
             Database.get_session().delete(self)

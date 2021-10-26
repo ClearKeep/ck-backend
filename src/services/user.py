@@ -6,6 +6,7 @@ from utils.keycloak import KeyCloakUtils
 from protos import user_pb2
 from utils.logger import *
 from msg.message import Message
+from src.services.upload_file import UploadFileService
 import datetime
 from utils.config import get_system_config, get_owner_workspace_domain
 from utils.otp import OTPServer
@@ -18,11 +19,15 @@ client_records_list_in_memory = {}
 
 
 class UserService(BaseService):
+    """
+    UserService, using when create new user, edit user info, or delete user, or enable/disable mfa flow
+    """
     def __init__(self):
         super().__init__(User())
         self.authen_setting = AuthenSetting()
 
     def create_new_user_srp(self, id, email, password_verifier, salt, iv_parameter, display_name, auth_source):
+        # create new normal user with these parameter
         try:
             self.model = User(
                 id=id,
@@ -39,6 +44,7 @@ class UserService(BaseService):
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def create_user_social(self, id, email, display_name, auth_source):
+        # create new social user with these parameter
         try:
             self.model = User(
                 id=id,
@@ -53,6 +59,7 @@ class UserService(BaseService):
             return None
 
     def forgot_user(self, user_info, new_user_id, password_verifier, salt, iv_parameter):
+        # delete user, then recreate user with new user_id and security information
         try:
             self.model = User(
                 id=new_user_id,
@@ -76,10 +83,12 @@ class UserService(BaseService):
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def get_google_user(self, email, auth_source):
+        # get user with email and auth_source info
         user_info = self.model.get_google_user(email, auth_source)
         return user_info
 
     def change_password(self, request, old_pass, new_pass, user_id):
+        # change password in keycloak
         try:
             user_info = self.model.get(user_id)
             response = KeyCloakUtils.set_user_password(user_id, new_pass)
@@ -90,6 +99,7 @@ class UserService(BaseService):
             raise Exception(Message.CHANGE_PASSWORD_FAILED)
 
     def get_mfa_state(self, user_id):
+        # get mfa state of user_id
         user_info = self.model.get(user_id)
         if user_info is None:
             raise Exception(Message.AUTH_USER_NOT_FOUND)
@@ -99,6 +109,8 @@ class UserService(BaseService):
         return user_authen_setting.mfa_enable
 
     def init_mfa_state_enabling(self, user_id):
+        # start enable mfa for user_id
+        # if otp in frozen state, raising exception
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
             user_authen_setting = AuthenSetting(id=user_id).add()
@@ -116,6 +128,7 @@ class UserService(BaseService):
         return success, next_step
 
     def init_mfa_state_disabling(self, user_id):
+        # diable mfa for user_id
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
             user_authen_setting = AuthenSetting(id=user_id).add()
@@ -129,12 +142,14 @@ class UserService(BaseService):
         return success, next_step
 
     def mfa_validate_password_flow(self, user_id):
+        # check if user_id is in mfa_validate_password action
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting.require_action != 'mfa_validate_password':
             raise Exception(Message.AUTHEN_SETTING_FLOW_NOT_FOUND)
         return True
 
     def mfa_request_otp(self, user_id, phone_number):
+        # start request otp service for user_id with phone_number
         user_authen_setting = self.authen_setting.get(user_id)
         n_times = user_authen_setting.otp_request_counter + 1
         if n_times > OTPServer.valid_resend_time:
@@ -161,6 +176,7 @@ class UserService(BaseService):
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def validate_otp(self, user_id, otp):
+        # validate otp service for user_id
         user_authen_setting = self.authen_setting.get(user_id)
         if user_authen_setting is None:
             raise Exception(Message.AUTH_USER_NOT_FOUND)
@@ -191,6 +207,7 @@ class UserService(BaseService):
         return success, next_step
 
     def re_init_otp(self, user_id):
+        # retry request otp for user_id
         user_info = self.model.get(user_id)
         if user_info is None:
             raise Exception(Message.AUTH_USER_NOT_FOUND)
@@ -222,6 +239,7 @@ class UserService(BaseService):
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def update_hash_pass(self, user_id, hash_password, salt='', iv_parameter=''):
+        # update hash_password and relate security information for user_id
         user_info = self.model.get(user_id)
         user_info.password_verifier = hash_password
         if salt:
@@ -232,6 +250,7 @@ class UserService(BaseService):
         return (user_info.salt, user_info.iv_parameter)
 
     def update_hash_pin(self, user_id, hash_pincode, salt='', iv_parameter=''):
+        # update hash_pincode and relate security information for user_id
         user_info = self.model.get(user_id)
         user_info.password_verifier = hash_pincode
         if salt:
@@ -242,6 +261,7 @@ class UserService(BaseService):
         return user_info.salt, user_info.iv_parameter
 
     def get_profile(self, user_id):
+        # get profile of user_id
         try:
             user_info = self.model.get(user_id)
             if user_info is not None:
@@ -262,7 +282,8 @@ class UserService(BaseService):
             logger.info(e)
             raise Exception(Message.GET_PROFILE_FAILED)
 
-    def update_profile(self,  user_id, display_name, phone_number, avatar, clear_phone_number):
+    def update_profile(self, user_id, display_name, phone_number, avatar, clear_phone_number):
+        # update profile for user_id, with force clear phone number flag for clearing stored phone number in db
         try:
             profile = self.model.get(user_id)
             if display_name:
@@ -290,6 +311,7 @@ class UserService(BaseService):
             raise Exception(Message.UPDATE_PROFILE_FAILED)
 
     def get_user_info(self, client_id, workspace_domain):
+        # get information of client_id with additional infor about workspace_domain
         try:
             user_info = self.model.get(client_id)
             if user_info is not None:
@@ -305,15 +327,18 @@ class UserService(BaseService):
             raise Exception(Message.GET_USER_INFO_FAILED)
 
     def get_user_by_auth_source(self, email, auth_source):
+        # get fully stored information about user by email and auth_source
         user_info = self.model.get_user_by_auth_source(email, auth_source)
         return user_info
 
 
     def get_user_by_id(self, client_id):
+        # get fully stored information about user by user_id
         user_info = self.model.get(client_id)
         return user_info
 
     def search_user(self, keyword, client_id):
+        # searching user with keyword differ to client_id
         try:
             lst_user = self.model.search(keyword, client_id)
             lst_obj_res = []
@@ -333,6 +358,7 @@ class UserService(BaseService):
             raise Exception(Message.SEARCH_USER_FAILED)
 
     def get_users(self, client_id, workspace_domain):
+        # get other users for client_id within workspace_domain
         try:
             lst_user = self.model.get_users(client_id)
             lst_obj_res = []
@@ -353,6 +379,7 @@ class UserService(BaseService):
             raise Exception(Message.GET_USER_INFO_FAILED)
 
     def update_last_login(self, user_id):
+        # update last time login for user_id
         try:
             user_info = self.model.get(user_id)
             user_info.last_login_at = datetime.datetime.now()
@@ -361,6 +388,7 @@ class UserService(BaseService):
             logger.info(e)
 
     def set_user_status(self, client_id, status):
+        # set status for client_id
         try:
             user_info = self.model.get(client_id)
             if status == "":
@@ -375,6 +403,7 @@ class UserService(BaseService):
             raise Exception(Message.UPDATE_USER_STATUS_FAILED)
 
     def update_client_record(self, client_id):
+        # update client record in temp variable
         try:
             client_record = client_records_list_in_memory.get(str(client_id), None)
             if client_record is None:
@@ -393,6 +422,7 @@ class UserService(BaseService):
             raise Exception(Message.PING_PONG_SERVER_FAILED)
 
     def categorize_workspace_domains(self, list_clients):
+        # create and return categorize_workspace_domains, with client is devided into each workspace
         workspace_domains_dictionary = {}
 
         for client in list_clients:
@@ -405,6 +435,7 @@ class UserService(BaseService):
         return workspace_domains_dictionary
 
     def get_list_clients_status(self, list_clients, should_get_profile):
+        # get list of clients status, with returning additional basic infor of user is should_get_profile is True
         logger.info("get_list_clients_status")
         try:
             owner_workspace_domain = get_owner_workspace_domain()
@@ -450,6 +481,7 @@ class UserService(BaseService):
 
 
     def get_owner_workspace_client_status(self, client_id):
+        # get client record of client_id in this server
         client_record = client_records_list_in_memory.get(str(client_id), None)
 
         if client_record is not None:
@@ -467,6 +499,7 @@ class UserService(BaseService):
         return user_status
 
     def get_other_workspace_clients_status(self, workspace_domain, list_client, should_get_profile=False):
+        # get client record of client_id in other server
         server_error_resp = []
 
         client = ClientUser(workspace_domain)
@@ -485,11 +518,13 @@ class UserService(BaseService):
         return client_resp.lst_client
 
     def base64_enconding_text_to_string(self, text):
+        # encode utf-8 string to ascii string
         text_bytes = text.encode("ascii")
         encoded_text_bytes = base64.b64encode(text_bytes)
         return encoded_text_bytes.decode('ascii')
 
     def upload_avatar(self, client_id, file_name, file_content, file_type, file_hash):
+        # upload avatar for client_id
         m = hashlib.new('md5', file_content).hexdigest()
         if m != file_hash:
             raise Exception(Message.UPLOAD_FILE_DATA_LOSS)
@@ -497,24 +532,14 @@ class UserService(BaseService):
         tmp_file_name, file_ext = os.path.splitext(file_name)
         avatar_file_name = self.base64_enconding_text_to_string(client_id) + file_ext
 
-        avatar_url = self.upload_to_s3(avatar_file_name, file_content, file_type)
+        avatar_url = UploadFileService().upload_to_s3(avatar_file_name, file_content, file_type)
         obj_res = user_pb2.UploadAvatarResponse(
             file_url=avatar_url
         )
         return obj_res
 
-    def upload_to_s3(self, file_name, file_data, content_type):
-        s3_config = get_system_config()['storage_s3']
-        file_path = os.path.join(s3_config.get('avatar_folder'), file_name)
-        s3_client = boto3.client('s3', aws_access_key_id=s3_config.get('access_key_id'),
-                                 aws_secret_access_key=s3_config.get('access_key_secret'))
-
-        s3_client.put_object(Body=file_data, Bucket=s3_config.get('bucket'), Key=file_path, ContentType=content_type,
-                             ACL='public-read')
-        uploaded_file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)
-        return uploaded_file_url
-
     def delete_user(self, user_id):
+        # delete user, note that this function must be called only by admin
         user_info = self.model.get(user_id)
         user_info.delete()
         return True

@@ -125,7 +125,6 @@ class GroupChat(Database.get().Model):
             .filter(GroupChat.id == group_id) \
             .first()
         Database.get().session.remove()
-        # result = self.query.filter_by(id=group_id).first()
         return result
 
     def __repr__(self):

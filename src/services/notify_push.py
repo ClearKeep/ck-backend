@@ -8,10 +8,15 @@ from utils.config import *
 
 
 class NotifyPushService(BaseService):
+    """
+    Notify push service, using for pushing notification to client_id when he/her not log in
+
+    """
     def __init__(self):
         super().__init__(NotifyToken())
 
     def register_token(self, client_id, device_id, device_type, push_token):
+        # register push_token for device_id of client_id want to get notification not online
         try:
             self.model = NotifyToken(
                 client_id=client_id,
@@ -25,6 +30,7 @@ class NotifyPushService(BaseService):
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def delete_token(self, client_id, device_id):
+        # delete push_token for device_id of client_id
         try:
             id_device_token = self.model.get(client_id=client_id, device_id=device_id)
             if id_device_token:
@@ -36,6 +42,7 @@ class NotifyPushService(BaseService):
             raise Exception(Message.UNAUTHENTICATED)
 
     async def push_text_to_client_with_device(self, to_client_id, to_device_id, title, body, from_client_id, notify_type, data, from_client_device_id=None):
+        # push text to specific to_device_id of to_client_id with remained info
         logger.info('push_text_to_client')
         client_token = self.model.get(to_client_id, to_device_id)
         if client_token.device_id != from_client_device_id:
@@ -62,6 +69,7 @@ class NotifyPushService(BaseService):
                 pass
 
     async def push_text_to_client(self, to_client_id, title, body, from_client_id, notify_type, data, from_client_device_id=None):
+        # push text to all device of to_client_id with remained info
         logger.info('push_text_to_client')
         client_tokens = self.model.get_client_device_ids(to_client_id)
         if len(client_tokens) == 0:
@@ -93,6 +101,7 @@ class NotifyPushService(BaseService):
                     continue
 
     async def push_text_to_clients(self, lst_client, title, body, from_client_id, notify_type, data):
+        # push text to all device of list clients with remained info
         client_device_push_tokens = self.model.get_clients(lst_client)
         for client_token in client_device_push_tokens:
             try:
@@ -117,6 +126,7 @@ class NotifyPushService(BaseService):
                 continue
 
     async def push_voip_client(self, to_client_id, payload):
+        # push payload to all device of to_client_id without any addition info
         client_tokens = self.model.get_client_device_ids(to_client_id)
         for client_token in client_tokens:
             try:
@@ -131,6 +141,7 @@ class NotifyPushService(BaseService):
                 logger.error(e)
 
     async def push_voip_clients(self, lst_client, payload, from_client_id):
+        # push payload to all device of lst_client with infor about from_client_id
         client_device_push_tokens = self.model.get_clients(lst_client)
         for client_token in client_device_push_tokens:
             try:

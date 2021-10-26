@@ -15,7 +15,6 @@ class PeerClientKey(Database.get().Model):
     signed_prekey_id = Database.get().Column(Database.get().Integer, unique=False, nullable=False)
     signed_prekey = Database.get().Column(Database.get().Binary)
     signed_prekey_signature = Database.get().Column(Database.get().Binary)
-    #identity_key_encrypted = Database.get().Column(Database.get().Binary)
     identity_key_encrypted = Database.get().Column(Database.get().String(255), unique=False)
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_at = Database.get().Column(Database.get().DateTime, default=datetime.now, onupdate=datetime.now)

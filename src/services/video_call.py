@@ -18,6 +18,7 @@ class VideoCallService:
         self.push_service = NotifyPushService()
 
     def add_client_token(self, token):
+        # add a client calling token for janus_webrtc
         webrtc_config = get_system_config()["janus_webrtc"]
         transaction = str(uuid.uuid4()).replace("-", "")
         payload = {
@@ -33,6 +34,7 @@ class VideoCallService:
             return False
 
     def remove_client_token(self, token):
+        # remove a client calling token for janus_webrtc
         webrtc_config = get_system_config()["janus_webrtc"]
         transaction = str(uuid.uuid4()).replace("-", "")
         payload = {
@@ -49,6 +51,7 @@ class VideoCallService:
 
 
     def update_call(self, update_type, group_id, from_client_id):
+        # update a call from_client_id to group_id and notify all user in this group
         lst_client_in_groups = GroupClientKey().get_clients_in_group(group_id)
         notify_inapp_service = NotifyInAppService()
         for client in lst_client_in_groups:

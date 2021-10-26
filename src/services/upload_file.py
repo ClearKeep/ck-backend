@@ -9,10 +9,14 @@ from protos import upload_file_pb2
 
 
 class UploadFileService(BaseService):
+    """
+    Upload file service, for upload image/file to server
+    """
     def __init__(self):
         super().__init__(None)
 
     def upload_image(self, file_name, file_content, file_type, file_hash):
+        # upload an image with remained info, then return a downloaded link
         m = hashlib.new('md5', file_content).hexdigest()
         if m != file_hash:
             raise Exception(Message.UPLOAD_FILE_DATA_LOSS)
@@ -26,6 +30,7 @@ class UploadFileService(BaseService):
         return obj_res
 
     def upload_file(self, file_name, file_content, file_type, file_hash):
+        # upload a file_content with remained info, then return a downloaded link
         m = hashlib.new('md5', file_content).hexdigest()
         if m != file_hash:
             raise Exception(Message.UPLOAD_FILE_DATA_LOSS)
@@ -40,6 +45,7 @@ class UploadFileService(BaseService):
         return obj_res
 
     async def upload_chunked_file(self, request_iterator):
+        # upload a chunked_file, useful when upload large file
         data_blocks = []
         file_hash = None
         file_name = None
@@ -72,6 +78,7 @@ class UploadFileService(BaseService):
         return obj_res
 
     def upload_to_s3(self, file_name, file_data, content_type):
+        # s3 uploader
         s3_config = get_system_config()['storage_s3']
         file_path = os.path.join(s3_config.get('folder'), file_name)
         s3_client = boto3.client('s3', aws_access_key_id=s3_config.get('access_key_id'),
@@ -79,5 +86,4 @@ class UploadFileService(BaseService):
         s3_client.put_object(Body=file_data, Bucket=s3_config.get('bucket'), Key=file_path, ContentType=content_type,
                              ACL='public-read')
         uploaded_file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)
-        print("Uploaded file url=", uploaded_file_url)
         return uploaded_file_url

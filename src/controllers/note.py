@@ -8,18 +8,10 @@ from msg.message import Message
 
 class NoteController(BaseController):
 
-    """Docstring for NoteController. """
-
     def __init__(self, *args):
-        """TODO: to be defined.
-
-        :*args: TODO
-
-        """
         BaseController.__init__(self, NoteService())
 
     async def create_note(self, request, context):
-        """docstring for create_note"""
         try:
             metadata = dict(context.invocation_metadata())
             access_token_information = KeyCloakUtils.introspect_token(
@@ -51,7 +43,6 @@ class NoteController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     async def edit_note(self, request, context):
-        """docstring for create_note"""
         try:
             metadata = dict(context.invocation_metadata())
             access_token_information = KeyCloakUtils.introspect_token(
@@ -78,7 +69,6 @@ class NoteController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     async def delete_note(self, request, context):
-        """docstring for create_note"""
         try:
             self.service.delete_note(
                 request.note_id
@@ -96,7 +86,6 @@ class NoteController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     async def get_user_notes(self, request, context):
-        """docstring for create_note"""
         try:
             metadata = dict(context.invocation_metadata())
             access_token_information = KeyCloakUtils.introspect_token(metadata['access_token'])

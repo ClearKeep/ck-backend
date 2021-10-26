@@ -178,7 +178,6 @@ class GroupController(BaseController):
 
             # update group members first
             group.group_clients = json.dumps(new_group_clients)
-            #member_group.total_member = len(active_clients) + 1
             group.updated_by = adding_member_info.id
             group.updated_at = datetime.datetime.now()
             group.update()

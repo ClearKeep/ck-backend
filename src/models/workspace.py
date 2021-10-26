@@ -17,7 +17,6 @@ class Workspace(Database.get().Model):
     def add(self):
         Database.get_session().add(self)
         Database.get_session().commit()
-        # Database.get().session.remove()
         return self
 
     def get_joined_workspaces(self, client_id):

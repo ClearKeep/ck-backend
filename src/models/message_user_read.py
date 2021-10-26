@@ -20,7 +20,7 @@ class MessageUserRead(Database.get().Model):
         Database.get_session().commit()
         return self
 
-    
+
     def get_by_message_id(self, message_id):
         message_user_read = Database.get_session().query(MessageUserRead) \
             .filter(MessageUserRead.message_id == message_id) \
@@ -28,6 +28,3 @@ class MessageUserRead(Database.get().Model):
         if message_user_read:
             message_user_read.get().session.remove()
         return message_user_read
-
-    # def add_all(self, lst_message):
-    #     Database.get_session().add_all(lst_message)

@@ -29,7 +29,6 @@ class Message(Database.get().Model):
     def add(self):
         Database.get_session().add(self)
         Database.get_session().commit()
-        # Database.get().session.remove()
         return self
 
     def get(self, message_id):
@@ -48,10 +47,6 @@ class Message(Database.get().Model):
             dt = datetime.fromtimestamp(from_time / 1000)  # from time in milisecond => second
             message = message.filter(Message.created_at > dt)
         message = message.order_by(Message.created_at.desc())
-
-        # if offset != 0:
-        #     limit = get_system_config()['page_limit']
-        #     client = client.offset(offset).limit(limit)
         result = message.all()
         Database.get().session.remove()
         return result
@@ -60,7 +55,6 @@ class Message(Database.get().Model):
         try:
             Database.get_session().merge(self)
             Database.get_session().commit()
-            # Database.get().session.remove()
         except Exception as e:
             Database.get_session().rollback()
             logger.error(e)
