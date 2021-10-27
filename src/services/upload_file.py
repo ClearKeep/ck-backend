@@ -3,6 +3,7 @@ from utils.config import get_system_config
 import hashlib
 from src.models.message import Message
 import boto3
+from botocore.exceptions import ClientError
 import os
 import time
 from protos import upload_file_pb2
@@ -14,6 +15,44 @@ class UploadFileService(BaseService):
     """
     def __init__(self):
         super().__init__(None)
+
+    def get_upload_file_link(self, file_name, file_type, uploader, access_control_list='private', expiration=3600):
+        # get pre presigned url for directly upload file
+        s3_config = get_system_config()['storage_s3']
+        file_path = os.path.join(s3_config.get('folder'), uploader, str(round(time.time()*100)), file_name)
+        s3_client = boto3.client('s3', aws_access_key_id=s3_config.get('access_key_id'),
+                                 aws_secret_access_key=s3_config.get('access_key_secret'))
+        url_response = s3_client.generate_presigned_url('put_object',
+                                                        Params={'Bucket': s3_config.get('bucket'),
+                                                                'Key': file_path,
+                                                                'ContentType': file_type,
+                                                                'ACL': access_control_list
+                                                            },
+                                                        ExpiresIn=expiration
+                                                        )
+        if access_control_list in ['public-read', 'public-read-write']:
+            file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)
+        else:
+            file_url = ""
+        return upload_file_pb2.GetUploadFileLinkResponse(
+                uploaded_file_url=url_response,
+                download_file_url=file_url,
+                object_file_path=file_path
+        )
+
+    def get_download_file_link(self, file_path, downloader, expiration=3600):
+        # get pre presigned url for directly download file
+        assert downloader != "" # verify reading access of downloader
+        s3_config = get_system_config()['storage_s3']
+        s3_client = boto3.client('s3', aws_access_key_id=s3_config.get('access_key_id'),
+                                 aws_secret_access_key=s3_config.get('access_key_secret'))
+        url_response = s3_client.generate_presigned_url('get_object',
+                                                        Params={'Bucket': s3_config.get('bucket'),
+                                                                'Key': file_path},
+                                                        ExpiresIn=expiration)
+        return upload_file_pb2.GetDownloadFileLinkResponse(
+                download_file_url=url_response
+        )
 
     def upload_image(self, file_name, file_content, file_type, file_hash):
         # upload an image with remained info, then return a downloaded link

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x18protos/upload_file.proto\x12\x0bupload_file\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"g\n\x11\x46ileUploadRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x19\n\x11\x66ile_content_type\x18\x02 \x01(\t\x12\x11\n\tfile_data\x18\x03 \x01(\x0c\x12\x11\n\tfile_hash\x18\x04 \x01(\t\"\x8e\x01\n\x14\x46ileDataBlockRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x19\n\x11\x66ile_content_type\x18\x02 \x01(\t\x12\x17\n\x0f\x66ile_data_block\x18\x03 \x01(\x0c\x12\x1c\n\x14\x66ile_data_block_hash\x18\x04 \x01(\t\x12\x11\n\tfile_hash\x18\x05 \x01(\t\"\'\n\x13UploadFilesResponse\x12\x10\n\x08\x66ile_url\x18\x01 \x01(\t2\x93\x02\n\nUploadFile\x12R\n\x0cupload_image\x12\x1e.upload_file.FileUploadRequest\x1a .upload_file.UploadFilesResponse\"\x00\x12Q\n\x0bupload_file\x12\x1e.upload_file.FileUploadRequest\x1a .upload_file.UploadFilesResponse\"\x00\x12^\n\x13upload_chunked_file\x12!.upload_file.FileDataBlockRequest\x1a .upload_file.UploadFilesResponse\"\x00(\x01\x62\x06proto3'
+  serialized_pb=b'\n\x18protos/upload_file.proto\x12\x0bupload_file\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"[\n\x18GetUploadFileLinkRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x19\n\x11\x66ile_content_type\x18\x02 \x01(\t\x12\x11\n\tis_public\x18\x03 \x01(\x08\"k\n\x19GetUploadFileLinkResponse\x12\x19\n\x11uploaded_file_url\x18\x01 \x01(\t\x12\x19\n\x11\x64ownload_file_url\x18\x02 \x01(\t\x12\x18\n\x10object_file_path\x18\x03 \x01(\t\"6\n\x1aGetDownloadFileLinkRequest\x12\x18\n\x10object_file_path\x18\x01 \x01(\t\"8\n\x1bGetDownloadFileLinkResponse\x12\x19\n\x11\x64ownload_file_url\x18\x01 \x01(\t\"g\n\x11\x46ileUploadRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x19\n\x11\x66ile_content_type\x18\x02 \x01(\t\x12\x11\n\tfile_data\x18\x03 \x01(\x0c\x12\x11\n\tfile_hash\x18\x04 \x01(\t\"\x8e\x01\n\x14\x46ileDataBlockRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x19\n\x11\x66ile_content_type\x18\x02 \x01(\t\x12\x17\n\x0f\x66ile_data_block\x18\x03 \x01(\x0c\x12\x1c\n\x14\x66ile_data_block_hash\x18\x04 \x01(\t\x12\x11\n\tfile_hash\x18\x05 \x01(\t\"\'\n\x13UploadFilesResponse\x12\x10\n\x08\x66ile_url\x18\x01 \x01(\t2\xeb\x03\n\nUploadFile\x12R\n\x0cupload_image\x12\x1e.upload_file.FileUploadRequest\x1a .upload_file.UploadFilesResponse\"\x00\x12Q\n\x0bupload_file\x12\x1e.upload_file.FileUploadRequest\x1a .upload_file.UploadFilesResponse\"\x00\x12^\n\x13upload_chunked_file\x12!.upload_file.FileDataBlockRequest\x1a .upload_file.UploadFilesResponse\"\x00(\x01\x12g\n\x14get_upload_file_link\x12%.upload_file.GetUploadFileLinkRequest\x1a&.upload_file.GetUploadFileLinkResponse\"\x00\x12m\n\x16get_download_file_link\x12\'.upload_file.GetDownloadFileLinkRequest\x1a(.upload_file.GetDownloadFileLinkResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -54,6 +54,162 @@ _BASERESPONSE = _descriptor.Descriptor(
   ],
   serialized_start=41,
   serialized_end=70,
+)
+
+
+_GETUPLOADFILELINKREQUEST = _descriptor.Descriptor(
+  name='GetUploadFileLinkRequest',
+  full_name='upload_file.GetUploadFileLinkRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='file_name', full_name='upload_file.GetUploadFileLinkRequest.file_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='file_content_type', full_name='upload_file.GetUploadFileLinkRequest.file_content_type', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='is_public', full_name='upload_file.GetUploadFileLinkRequest.is_public', index=2,
+      number=3, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=72,
+  serialized_end=163,
+)
+
+
+_GETUPLOADFILELINKRESPONSE = _descriptor.Descriptor(
+  name='GetUploadFileLinkResponse',
+  full_name='upload_file.GetUploadFileLinkResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='uploaded_file_url', full_name='upload_file.GetUploadFileLinkResponse.uploaded_file_url', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='download_file_url', full_name='upload_file.GetUploadFileLinkResponse.download_file_url', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='object_file_path', full_name='upload_file.GetUploadFileLinkResponse.object_file_path', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=165,
+  serialized_end=272,
+)
+
+
+_GETDOWNLOADFILELINKREQUEST = _descriptor.Descriptor(
+  name='GetDownloadFileLinkRequest',
+  full_name='upload_file.GetDownloadFileLinkRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='object_file_path', full_name='upload_file.GetDownloadFileLinkRequest.object_file_path', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=274,
+  serialized_end=328,
+)
+
+
+_GETDOWNLOADFILELINKRESPONSE = _descriptor.Descriptor(
+  name='GetDownloadFileLinkResponse',
+  full_name='upload_file.GetDownloadFileLinkResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='download_file_url', full_name='upload_file.GetDownloadFileLinkResponse.download_file_url', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=330,
+  serialized_end=386,
 )
 
 
@@ -105,8 +261,8 @@ _FILEUPLOADREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=72,
-  serialized_end=175,
+  serialized_start=388,
+  serialized_end=491,
 )
 
 
@@ -165,8 +321,8 @@ _FILEDATABLOCKREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=178,
-  serialized_end=320,
+  serialized_start=494,
+  serialized_end=636,
 )
 
 
@@ -197,11 +353,15 @@ _UPLOADFILESRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=322,
-  serialized_end=361,
+  serialized_start=638,
+  serialized_end=677,
 )
 
 DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
+DESCRIPTOR.message_types_by_name['GetUploadFileLinkRequest'] = _GETUPLOADFILELINKREQUEST
+DESCRIPTOR.message_types_by_name['GetUploadFileLinkResponse'] = _GETUPLOADFILELINKRESPONSE
+DESCRIPTOR.message_types_by_name['GetDownloadFileLinkRequest'] = _GETDOWNLOADFILELINKREQUEST
+DESCRIPTOR.message_types_by_name['GetDownloadFileLinkResponse'] = _GETDOWNLOADFILELINKRESPONSE
 DESCRIPTOR.message_types_by_name['FileUploadRequest'] = _FILEUPLOADREQUEST
 DESCRIPTOR.message_types_by_name['FileDataBlockRequest'] = _FILEDATABLOCKREQUEST
 DESCRIPTOR.message_types_by_name['UploadFilesResponse'] = _UPLOADFILESRESPONSE
@@ -213,6 +373,34 @@ BaseResponse = _reflection.GeneratedProtocolMessageType('BaseResponse', (_messag
   # @@protoc_insertion_point(class_scope:upload_file.BaseResponse)
   })
 _sym_db.RegisterMessage(BaseResponse)
+
+GetUploadFileLinkRequest = _reflection.GeneratedProtocolMessageType('GetUploadFileLinkRequest', (_message.Message,), {
+  'DESCRIPTOR' : _GETUPLOADFILELINKREQUEST,
+  '__module__' : 'protos.upload_file_pb2'
+  # @@protoc_insertion_point(class_scope:upload_file.GetUploadFileLinkRequest)
+  })
+_sym_db.RegisterMessage(GetUploadFileLinkRequest)
+
+GetUploadFileLinkResponse = _reflection.GeneratedProtocolMessageType('GetUploadFileLinkResponse', (_message.Message,), {
+  'DESCRIPTOR' : _GETUPLOADFILELINKRESPONSE,
+  '__module__' : 'protos.upload_file_pb2'
+  # @@protoc_insertion_point(class_scope:upload_file.GetUploadFileLinkResponse)
+  })
+_sym_db.RegisterMessage(GetUploadFileLinkResponse)
+
+GetDownloadFileLinkRequest = _reflection.GeneratedProtocolMessageType('GetDownloadFileLinkRequest', (_message.Message,), {
+  'DESCRIPTOR' : _GETDOWNLOADFILELINKREQUEST,
+  '__module__' : 'protos.upload_file_pb2'
+  # @@protoc_insertion_point(class_scope:upload_file.GetDownloadFileLinkRequest)
+  })
+_sym_db.RegisterMessage(GetDownloadFileLinkRequest)
+
+GetDownloadFileLinkResponse = _reflection.GeneratedProtocolMessageType('GetDownloadFileLinkResponse', (_message.Message,), {
+  'DESCRIPTOR' : _GETDOWNLOADFILELINKRESPONSE,
+  '__module__' : 'protos.upload_file_pb2'
+  # @@protoc_insertion_point(class_scope:upload_file.GetDownloadFileLinkResponse)
+  })
+_sym_db.RegisterMessage(GetDownloadFileLinkResponse)
 
 FileUploadRequest = _reflection.GeneratedProtocolMessageType('FileUploadRequest', (_message.Message,), {
   'DESCRIPTOR' : _FILEUPLOADREQUEST,
@@ -244,8 +432,8 @@ _UPLOADFILE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=364,
-  serialized_end=639,
+  serialized_start=680,
+  serialized_end=1171,
   methods=[
   _descriptor.MethodDescriptor(
     name='upload_image',
@@ -274,6 +462,26 @@ _UPLOADFILE = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_FILEDATABLOCKREQUEST,
     output_type=_UPLOADFILESRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='get_upload_file_link',
+    full_name='upload_file.UploadFile.get_upload_file_link',
+    index=3,
+    containing_service=None,
+    input_type=_GETUPLOADFILELINKREQUEST,
+    output_type=_GETUPLOADFILELINKRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='get_download_file_link',
+    full_name='upload_file.UploadFile.get_download_file_link',
+    index=4,
+    containing_service=None,
+    input_type=_GETDOWNLOADFILELINKREQUEST,
+    output_type=_GETDOWNLOADFILELINKRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

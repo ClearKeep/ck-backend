@@ -29,6 +29,16 @@ class UploadFileStub(object):
                 request_serializer=protos_dot_upload__file__pb2.FileDataBlockRequest.SerializeToString,
                 response_deserializer=protos_dot_upload__file__pb2.UploadFilesResponse.FromString,
                 )
+        self.get_upload_file_link = channel.unary_unary(
+                '/upload_file.UploadFile/get_upload_file_link',
+                request_serializer=protos_dot_upload__file__pb2.GetUploadFileLinkRequest.SerializeToString,
+                response_deserializer=protos_dot_upload__file__pb2.GetUploadFileLinkResponse.FromString,
+                )
+        self.get_download_file_link = channel.unary_unary(
+                '/upload_file.UploadFile/get_download_file_link',
+                request_serializer=protos_dot_upload__file__pb2.GetDownloadFileLinkRequest.SerializeToString,
+                response_deserializer=protos_dot_upload__file__pb2.GetDownloadFileLinkResponse.FromString,
+                )
 
 
 class UploadFileServicer(object):
@@ -52,6 +62,18 @@ class UploadFileServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def get_upload_file_link(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def get_download_file_link(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_UploadFileServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -69,6 +91,16 @@ def add_UploadFileServicer_to_server(servicer, server):
                     servicer.upload_chunked_file,
                     request_deserializer=protos_dot_upload__file__pb2.FileDataBlockRequest.FromString,
                     response_serializer=protos_dot_upload__file__pb2.UploadFilesResponse.SerializeToString,
+            ),
+            'get_upload_file_link': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_upload_file_link,
+                    request_deserializer=protos_dot_upload__file__pb2.GetUploadFileLinkRequest.FromString,
+                    response_serializer=protos_dot_upload__file__pb2.GetUploadFileLinkResponse.SerializeToString,
+            ),
+            'get_download_file_link': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_download_file_link,
+                    request_deserializer=protos_dot_upload__file__pb2.GetDownloadFileLinkRequest.FromString,
+                    response_serializer=protos_dot_upload__file__pb2.GetDownloadFileLinkResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -128,5 +160,39 @@ class UploadFile(object):
         return grpc.experimental.stream_unary(request_iterator, target, '/upload_file.UploadFile/upload_chunked_file',
             protos_dot_upload__file__pb2.FileDataBlockRequest.SerializeToString,
             protos_dot_upload__file__pb2.UploadFilesResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def get_upload_file_link(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/upload_file.UploadFile/get_upload_file_link',
+            protos_dot_upload__file__pb2.GetUploadFileLinkRequest.SerializeToString,
+            protos_dot_upload__file__pb2.GetUploadFileLinkResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def get_download_file_link(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/upload_file.UploadFile/get_download_file_link',
+            protos_dot_upload__file__pb2.GetDownloadFileLinkRequest.SerializeToString,
+            protos_dot_upload__file__pb2.GetDownloadFileLinkResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

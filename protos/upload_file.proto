@@ -6,6 +6,26 @@ message BaseResponse {
     string error = 1;
 }
 
+message GetUploadFileLinkRequest{
+    string file_name = 1;
+    string file_content_type = 2;
+    bool is_public = 3;
+}
+
+message GetUploadFileLinkResponse{
+    string uploaded_file_url = 1;
+    string download_file_url = 2;
+    string object_file_path = 3;
+}
+
+message GetDownloadFileLinkRequest{
+    string object_file_path = 1;
+}
+
+message GetDownloadFileLinkResponse{
+    string download_file_url = 1;
+}
+
 message FileUploadRequest {
   string file_name = 1;
   string file_content_type = 2;
@@ -29,4 +49,6 @@ service UploadFile {
     rpc upload_image(FileUploadRequest) returns (UploadFilesResponse) {};
     rpc upload_file(FileUploadRequest) returns (UploadFilesResponse) {};
     rpc upload_chunked_file(stream FileDataBlockRequest) returns (UploadFilesResponse) {};
+    rpc get_upload_file_link(GetUploadFileLinkRequest) returns (GetUploadFileLinkResponse) {};
+    rpc get_download_file_link(GetDownloadFileLinkRequest) returns (GetDownloadFileLinkResponse) {};
 }
