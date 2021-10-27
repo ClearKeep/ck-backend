@@ -30,6 +30,8 @@ class UploadFileService(BaseService):
                                                             },
                                                         ExpiresIn=expiration
                                                         )
+        logger.info('file_path {}'.format(file_path))
+        logger.info('url_response {}'.format(url_response))
         if access_control_list in ['public-read', 'public-read-write']:
             file_url = os.path.join(s3_config.get('url'), s3_config.get('bucket'), file_path)
         else:
