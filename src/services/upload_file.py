@@ -7,6 +7,7 @@ from botocore.exceptions import ClientError
 import os
 import time
 from protos import upload_file_pb2
+from utils.logger import *
 
 
 class UploadFileService(BaseService):
