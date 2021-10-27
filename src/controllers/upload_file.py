@@ -73,7 +73,7 @@ class UploadFileController(BaseController):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
             access_control_list = 'public-read' if request.is_public else "private"
-            obj_res = self.service.get_upload_file_link(self, request.file_name, request.file_content_type, client_id, access_control_list=access_control_list)
+            obj_res = self.service.get_upload_file_link(request.file_name, request.file_content_type, client_id, access_control_list=access_control_list)
             return obj_res
 
         except Exception as e:
@@ -92,7 +92,7 @@ class UploadFileController(BaseController):
             header_data = dict(context.invocation_metadata())
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
-            obj_res = self.service.get_download_file_link(self, request.object_file_path, client_id)
+            obj_res = self.service.get_download_file_link(request.object_file_path, client_id)
             return obj_res
         except Exception as e:
             logger.error(e)
