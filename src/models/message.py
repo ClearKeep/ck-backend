@@ -43,10 +43,12 @@ class Message(Database.get().Model):
             .options(joinedload(Message.users_read).joinedload(MessageUserRead.user)) \
             .filter(Message.group_id == group_id)
 
+        message = message.order_by(Message.created_at.desc())
         if from_time != 0:
             dt = datetime.fromtimestamp(from_time / 1000)  # from time in milisecond => second
-            message = message.filter(Message.created_at > dt)
-        message = message.order_by(Message.created_at.desc())
+            message = message.filter(Message.created_at < dt)
+        if offset != 0:
+            message = message.limit(offset)
         result = message.all()
         Database.get().session.remove()
         return result
