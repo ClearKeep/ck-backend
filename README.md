@@ -37,6 +37,7 @@ For client **admin-cli**:
 - Access Type: select 'confidential'
 - In Service account role: assign role for manager user
 
+Need fill to the configuration file in project:
 
     "keycloak_admin": {  
           "server_url": "keycloak-server-url",  
@@ -45,12 +46,13 @@ For client **admin-cli**:
           "password": "admin-password",  
           "realm_name": "realm-name-1",  
           "client_secret_key": ""  
-      }
+    }
 
 For client **account**:
 - Direct Access Grants Enabled: switch ON
 - Access Type: select 'confidential'
 
+Need fill to the configuration file in project:
 
     "keycloak_account": {  
       "server_url": "keycloak-server-url",  
