@@ -52,6 +52,7 @@ class VideoCallController(BaseController):
 
             from_client_id = request.from_client_id
             from_client_name = request.from_client_name
+            from_client_avatar = request.from_client_avatar
             group_id = request.group_id
             client_id = request.client_id
 
@@ -87,7 +88,7 @@ class VideoCallController(BaseController):
                         'group_rtc_id': str(group_id),
                         'from_client_id': from_client_id,
                         'from_client_name': from_client_name,
-                        'from_client_avatar': '',
+                        'from_client_avatar': from_client_avatar,
                         'client_id': client_id,
                         'stun_server': server_info.stun_server,
                         'turn_server': server_info.turn_server
@@ -135,6 +136,7 @@ class VideoCallController(BaseController):
 
     async def call_to_group_owner(self, request, group_obj, from_client_id):
         from_client_name = ""
+        from_client_avatar = ""
         owner_workspace_domain = get_owner_workspace_domain()
         group_id = request.group_id
         logger.info("call_to_group_owner, group_id= {}".format(str(group_id)))
@@ -160,6 +162,7 @@ class VideoCallController(BaseController):
         for client in lst_client_in_groups:
             if client.User and client.User.id == from_client_id:
                 from_client_name = client.User.display_name
+                from_client_avatar = client.User.avatar
 
         for client in lst_client_in_groups:
             if client.User is None or client.User.id != from_client_id:
@@ -174,7 +177,7 @@ class VideoCallController(BaseController):
                     'group_rtc_id': str(group_id),
                     'from_client_id': from_client_id,
                     'from_client_name': from_client_name,
-                    'from_client_avatar': '',
+                    'from_client_avatar': from_client_avatar,
                     'client_id': client_id,
                     'stun_server': server_info.stun_server,
                     'turn_server': server_info.turn_server
@@ -216,6 +219,7 @@ class VideoCallController(BaseController):
         client_id = request.client_id
         call_type = request.call_type
         from_client_name = ""
+        from_client_avatar = ""
         owner_workspace_domain = get_owner_workspace_domain()
 
         logger.info("call_to_group_not_owner, group_id={}".format(str(group.id)))
@@ -226,6 +230,7 @@ class VideoCallController(BaseController):
         for client in lst_client:
             if client.User and client.User.id == from_client_id:
                 from_client_name = client.User.display_name
+                from_client_avatar = client.User.avatar
 
         other_client_in_this_workspace = []
         for client in lst_client:
@@ -239,7 +244,7 @@ class VideoCallController(BaseController):
         request = video_call_pb2.WorkspaceVideoCallRequest(
             from_client_id=from_client_id,
             from_client_name=from_client_name,
-            from_client_avatar="",
+            from_client_avatar=from_client_avatar,
             from_client_workspace_domain=owner_workspace_domain,
             client_id=client_id,
             group_id=group.owner_group_id,
@@ -260,7 +265,7 @@ class VideoCallController(BaseController):
                     'group_rtc_id': str(obj_res.group_rtc_id),
                     'from_client_id': from_client_id,
                     'from_client_name': from_client_name,
-                    'from_client_avatar': '',
+                    'from_client_avatar': from_client_avatar,
                     'client_id': client_id,
                     'stun_server': obj_res.stun_server,
                     'turn_server': obj_res.turn_server
@@ -304,6 +309,7 @@ class VideoCallController(BaseController):
 
             from_client_id = request.from_client_id
             from_client_name = request.from_client_name
+            from_client_avatar = request.from_client_avatar
             group_id = request.group_id
             client_id = request.client_id
             update_type = request.update_type
@@ -320,7 +326,7 @@ class VideoCallController(BaseController):
                         'group_id': str(client.GroupClientKey.group_id),
                         'from_client_id': from_client_id,
                         'from_client_name': from_client_name,
-                        'from_client_avatar': '',
+                        'from_client_avatar': from_client_avatar,
                         'client_id': client_id
                     }
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
@@ -352,6 +358,7 @@ class VideoCallController(BaseController):
         logger.info("update_call_to_group_owner")
 
         from_client_name = ""
+        from_client_avatar = ""
         owner_workspace_domain = get_owner_workspace_domain()
 
         group_id = request.group_id
@@ -364,6 +371,7 @@ class VideoCallController(BaseController):
         for client in lst_client_in_groups:
             if client.User and client.User.id == from_client_id:
                 from_client_name = client.User.display_name
+                from_client_avatar = client.User.avatar
 
         for client in lst_client_in_groups:
             if client.User is None or client.User.id != from_client_id:
@@ -372,7 +380,7 @@ class VideoCallController(BaseController):
                     'group_id': str(client.GroupClientKey.group_id),
                     'from_client_id': from_client_id,
                     'from_client_name': from_client_name,
-                    'from_client_avatar': '',
+                    'from_client_avatar': from_client_avatar,
                     'client_id': client_id
                 }
                 if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
@@ -402,6 +410,7 @@ class VideoCallController(BaseController):
         client_id = request.client_id
         update_type = request.update_type
         from_client_username = ""
+        from_client_avatar = ""
         owner_workspace_domain = get_owner_workspace_domain()
 
         # update call to owner server, response ọbject push notification
@@ -409,6 +418,7 @@ class VideoCallController(BaseController):
         for client in lst_client:
             if client.User.id == from_client_id:
                 from_client_username = client.User.display_name
+                from_client_avatar = client.User.avatar
             else:
                 # ret_val = NotifyInAppService().notify_client_update_call(update_type, client.GroupClientKey.client_id, from_client_id, client.GroupClientKey.group_id)
                 # if not ret_val:
@@ -417,7 +427,7 @@ class VideoCallController(BaseController):
                     'group_id': str(client.GroupClientKey.group_id),
                     'from_client_id': from_client_id,
                     'from_client_name': from_client_username,
-                    'from_client_avatar': '',
+                    'from_client_avatar': from_client_avatar,
                     'client_id': client_id
                 }
                 await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, push_payload)
@@ -425,7 +435,7 @@ class VideoCallController(BaseController):
         request = video_call_pb2.WorkspaceUpdateCallRequest(
             from_client_id=from_client_id,
             from_client_name=from_client_username,
-            from_client_avatar="",
+            from_client_avatar=from_client_avatar,
             from_client_workspace_domain=owner_workspace_domain,
             client_id=client_id,
             group_id=group.owner_group_id,
