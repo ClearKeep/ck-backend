@@ -1,13 +1,15 @@
 import os
-import random
+import hashlib
+import hmac
+import secrets
 import string
 import time
 import datetime
 import json
 from jose import jws
-from hashlib import md5
-from hmac import compare_digest as compare_hash
 from twilio.rest import Client
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from utils.config import get_otp_server
 from utils.logger import *
 
@@ -18,8 +20,9 @@ life_time = datetime.timedelta(seconds=get_otp_server()["otp_life_time"])
 message_form = 'Your OTP code is {}'
 # set up a phone number for sending
 code_length = get_otp_server()["otp_code_length"]
+limit_range = 10 ** code_length
 from_phone = get_otp_server()["otp_server_phone_number"]
-secret_key = get_otp_server()["otp_secret_key"]
+secret_key = get_otp_server()["otp_secret_key"].encode('utf-8')
 
 class OTPServer(object):
     valid_trying_time = get_otp_server()["input_otp_per_validate"]
@@ -30,11 +33,16 @@ class OTPServer(object):
         otp = OTPServer._create_otp()
         logger.info('{} sent to {}'.format(message_form.format(otp), phone_number))
         OTPServer._otp_message_sending(otp, phone_number)
-        return otp
+        hash_otp = generate_password_hash(otp, method='pbkdf2:sha256')
+        return hash_otp
+
+    @staticmethod
+    def check_otp(otp, hash_otp):
+        return check_password_hash(hash_otp, otp)
 
     @staticmethod
     def _create_otp():
-        otp = ''.join(random.choices(string.digits, k=code_length))
+        otp = str(secrets.randbelow(limit_range)).zfill(code_length)
         return otp
 
     @staticmethod
@@ -56,12 +64,9 @@ class OTPServer(object):
         return message
 
     @staticmethod
-    def hash_uid(user_id, valid_time, hash_valid_time=True):
-        if hash_valid_time:
-            secret_string = "{}{}{}".format(user_id, valid_time, secret_key)
-        else:
-            secret_string = "{}{}{}".format(user_id, secret_key)
-        hash_string = md5(secret_string.encode("utf-8")).hexdigest()
+    def hash_uid(user_id, valid_time):
+        secret_string = "{}{}".format(user_id, valid_time)
+        hash_string = hmac.new(secret_key, secret_string.encode("utf-8"), hashlib.blake2s).hexdigest()
         return hash_string
 
     @staticmethod
@@ -69,13 +74,10 @@ class OTPServer(object):
         return datetime.datetime.now().replace(hour=0, minute=0,second=0, microsecond=0) + datetime.timedelta(days=1)
 
     @staticmethod
-    def verify_hash_code(user_id, valid_time, hash_string, hash_valid_time=True):
-        if hash_valid_time:
-            verify_secret_string = "{}{}{}".format(user_id, valid_time, secret_key)
-        else:
-            verify_secret_string = "{}{}{}".format(user_id, secret_key)
-        verify_hash_string = md5(verify_secret_string.encode("utf-8")).hexdigest()
-        return compare_hash(verify_hash_string, hash_string)
+    def verify_hash_code(user_id, valid_time, hash_string):
+        verify_secret_string = "{}{}".format(user_id, valid_time)
+        verify_hash_string = hmac.new(secret_key, verify_secret_string.encode("utf-8"), hashlib.blake2s).hexdigest()
+        return hmac.compare_digest(verify_hash_string, hash_string)
 
     @staticmethod
     def _otp_message_sending(otp, phone_number):
