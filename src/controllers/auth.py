@@ -67,7 +67,13 @@ class AuthController(BaseController):
             salt = bytes.fromhex(user_info.salt)
             client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
 
-            srv = srp.Verifier(username=user_name, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
+            srv = srp.Verifier(
+                            username=user_name,
+                            bytes_s=salt,
+                            bytes_v=password_verifier,
+                            bytes_A=bytes.fromhex(request.client_public),
+                            bytes_b=bytes.fromhex(user_info.srp_server_private)
+                        )
             srv.verify_session(client_session_key_proof_bytes)
             authenticated = srv.authenticated()
 
@@ -606,7 +612,13 @@ class AuthController(BaseController):
             client_session_key_proof = request.client_session_key_proof
             client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
 
-            srv = srp.Verifier(username=request.user_name, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
+            srv = srp.Verifier(
+                        username=request.user_name,
+                        bytes_s=salt,
+                        bytes_v=password_verifier,
+                        bytes_A=bytes.fromhex(request.client_public),
+                        bytes_b=bytes.fromhex(user_info.srp_server_private)
+                    )
             srv.verify_session(client_session_key_proof_bytes)
             authenticated = srv.authenticated()
 

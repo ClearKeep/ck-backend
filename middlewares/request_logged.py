@@ -11,9 +11,3 @@ def request_logged(func):
         return await func(*args, **kwargs)
 
     return deco
-
-
-# class Logger(object):
-#     def __getattribute__(self, name):
-#         print('Accessed attribute %s' % name)
-#         return object.__getattribute__(self, name)
