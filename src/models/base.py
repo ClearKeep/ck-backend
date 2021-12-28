@@ -1,9 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
 from flask import Flask
 from utils.config import get_system_config
-# from src.models.base import db
-
-#db = SQLAlchemy()
 
 db_config = get_system_config()['db']
 db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(
@@ -15,6 +13,7 @@ db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(
 )
 
 app = Flask(__name__)
+csrf = CSRFProtect(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_connection
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
@@ -23,7 +22,6 @@ app.config["SQLALCHEMY_POOL_TIMEOUT"] = 300
 app.config["SQLALCHEMY_MAX_OVERFLOW"] = -1
 
 db = SQLAlchemy(app)
-#db.init_app(app)
 with app.app_context():
     db.create_all()
 

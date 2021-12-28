@@ -4,6 +4,8 @@ current_file_path = Path(__file__).resolve()
 sys.path.append(str(current_file_path.parent.parent.parent))
 from flask import Flask
 from flask_migrate import Migrate
+from flask_wtf.csrf import CSRFProtect
+
 from utils.config import get_system_config
 from src.controllers.turn_server import Server
 from src.models.base import *
@@ -34,6 +36,7 @@ db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(
 )
 
 app = Flask(__name__)
+csrf = CSRFProtect(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_connection
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
