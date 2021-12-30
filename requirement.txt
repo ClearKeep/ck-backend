@@ -21,6 +21,7 @@ Flask==1.1.2
 Flask-Migrate==3.0.1
 Flask-RESTful==0.3.8
 Flask-SQLAlchemy==2.4.4
+Flask-WTF==0.14.3
 google==3.0.0
 google-api-core==1.23.0
 google-api-python-client==1.12.8
