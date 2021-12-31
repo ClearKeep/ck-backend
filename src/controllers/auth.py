@@ -577,6 +577,7 @@ class AuthController(BaseController):
                 KeyCloakUtils.remove_session(session_id=user_session['id'])
             token = self.service.token(request.user_id, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
+            logger.info(workspace_domain + "\t" + token + '\t' + salt + '\t' + iv_parameter)
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
                 workspace_name=get_system_config()['server_name'],
