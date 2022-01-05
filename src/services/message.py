@@ -9,6 +9,7 @@ from queue import Queue
 import uuid
 import asyncio
 from utils.config import *
+from utils.logger import *
 
 client_message_queue = {}
 
@@ -131,6 +132,7 @@ class MessageService(BaseService):
 
     async def subscribe(self, client_id, device_id):
         message_channel = "message/{}/{}".format(client_id, device_id)
+        logger.info(f"subscribe message channel {message_channel}")
         if message_channel in client_message_queue:
             client_message_queue[message_channel] = None
             del client_message_queue[message_channel]
@@ -139,6 +141,7 @@ class MessageService(BaseService):
 
     def un_subscribe(self, client_id, device_id):
         message_channel = "message/{}/{}".format(client_id, device_id)
+        logger.info(f"unsubscribe message channel {message_channel}")
         if message_channel in client_message_queue:
             client_message_queue[message_channel] = None
             del client_message_queue[message_channel]

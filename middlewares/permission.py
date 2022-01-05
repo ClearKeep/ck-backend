@@ -26,12 +26,7 @@ def auth_required(f):
         logger.info('peer context: ' + json.dumps(context.peer()))
         if _fd_server_check(context.peer()):
             return await f(*args, **kwargs)
-        # return error
         return await f(*args, **kwargs)
-        errors = [Message.get_error_object(Message.UNAUTHENTICATED)]
-        context.set_details(json.dumps(errors, default=lambda x: x.__dict__))
-        context.set_code(grpc.StatusCode.UNAUTHENTICATED)
-        return
 
     return wrap
 
@@ -51,6 +46,7 @@ def _token_check(access_token):
 def _fd_server_check(ip_address):
     config = get_system_config()
     for item in config['fd_server']:
+        logger.info({"ip_address": item.get('ip_address', "Not found")})
         if item['ip_address'] in ip_address:
             return True
     return False

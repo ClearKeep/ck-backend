@@ -67,7 +67,13 @@ class AuthController(BaseController):
             salt = bytes.fromhex(user_info.salt)
             client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
 
-            srv = srp.Verifier(username=user_name, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
+            srv = srp.Verifier(
+                            username=user_name,
+                            bytes_s=salt,
+                            bytes_v=password_verifier,
+                            bytes_A=bytes.fromhex(request.client_public),
+                            bytes_b=bytes.fromhex(user_info.srp_server_private)
+                        )
             srv.verify_session(client_session_key_proof_bytes)
             authenticated = srv.authenticated()
 
@@ -536,8 +542,8 @@ class AuthController(BaseController):
 
     async def reset_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "verify_pincode")
-            exists_user = self.service.get_user_by_email(request.user_id)
+            success_status = self.service.verify_hash_pre_access_token(request.user_name, request.reset_pincode_token, "verify_pincode")
+            exists_user = self.service.get_user_by_email(request.user_name)
             if not exists_user:
                 raise Exception(Message.USER_NOT_FOUND)
             if not success_status:
@@ -569,7 +575,7 @@ class AuthController(BaseController):
             user_sessions = KeyCloakUtils.get_sessions(user_id=exists_user["id"])
             for user_session in user_sessions:
                 KeyCloakUtils.remove_session(session_id=user_session['id'])
-            token = self.service.token(request.user_id, request.hash_pincode)
+            token = self.service.token(request.user_name, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
@@ -606,7 +612,13 @@ class AuthController(BaseController):
             client_session_key_proof = request.client_session_key_proof
             client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
 
-            srv = srp.Verifier(username=request.user_name, bytes_s=salt, bytes_v=password_verifier, bytes_A=bytes.fromhex(request.client_public), bytes_b=bytes.fromhex(user_info.srp_server_private))
+            srv = srp.Verifier(
+                        username=request.user_name,
+                        bytes_s=salt,
+                        bytes_v=password_verifier,
+                        bytes_A=bytes.fromhex(request.client_public),
+                        bytes_b=bytes.fromhex(user_info.srp_server_private)
+                    )
             srv.verify_session(client_session_key_proof_bytes)
             authenticated = srv.authenticated()
 
