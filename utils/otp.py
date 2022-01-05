@@ -22,7 +22,7 @@ message_form = 'Your OTP code is {}'
 code_length = get_otp_server()["otp_code_length"]
 limit_range = 10 ** code_length
 from_phone = get_otp_server()["otp_server_phone_number"]
-secret_key = get_otp_server()["otp_secret_key"].encode('utf-8')
+secret_key = get_otp_server()["otp_secret_key"]
 
 class OTPServer(object):
     valid_trying_time = get_otp_server()["input_otp_per_validate"]
@@ -59,6 +59,7 @@ class OTPServer(object):
         signed_message = jws.sign(message, secret_key, algorithm='HS256')
         return signed_message
 
+    @staticmethod
     def verify_message(signed_message):
         message = json.loads(jws.verify(signed_message, secret_key, algorithms=['HS256']).decode('utf-8'))
         return message
