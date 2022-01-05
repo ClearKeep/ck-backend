@@ -542,8 +542,8 @@ class AuthController(BaseController):
 
     async def reset_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_id, request.pre_access_token, "verify_pincode")
-            exists_user = self.service.get_user_by_email(request.user_id)
+            success_status = self.service.verify_hash_pre_access_token(request.user_name, request.reset_pincode_token, "verify_pincode")
+            exists_user = self.service.get_user_by_email(request.user_name)
             if not exists_user:
                 raise Exception(Message.USER_NOT_FOUND)
             if not success_status:
@@ -575,7 +575,7 @@ class AuthController(BaseController):
             user_sessions = KeyCloakUtils.get_sessions(user_id=exists_user["id"])
             for user_session in user_sessions:
                 KeyCloakUtils.remove_session(session_id=user_session['id'])
-            token = self.service.token(request.user_id, request.hash_pincode)
+            token = self.service.token(request.user_name, request.hash_pincode)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
