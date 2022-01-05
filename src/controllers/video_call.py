@@ -52,7 +52,10 @@ class VideoCallController(BaseController):
 
             from_client_id = request.from_client_id
             from_client_name = request.from_client_name
-            from_client_avatar = request.from_client_avatar
+            if request.from_client_avatar:
+                from_client_avatar = request.from_client_avatar
+            else:
+                from_client_avatar = ""
             group_id = request.group_id
             client_id = request.client_id
 
@@ -162,7 +165,10 @@ class VideoCallController(BaseController):
         for client in lst_client_in_groups:
             if client.User and client.User.id == from_client_id:
                 from_client_name = client.User.display_name
-                from_client_avatar = client.User.avatar
+                if client.User.avatar:
+                    from_client_avatar = client.User.avatar
+                else:
+                    from_client_avatar = ""
 
         for client in lst_client_in_groups:
             if client.User is None or client.User.id != from_client_id:
@@ -230,7 +236,10 @@ class VideoCallController(BaseController):
         for client in lst_client:
             if client.User and client.User.id == from_client_id:
                 from_client_name = client.User.display_name
-                from_client_avatar = client.User.avatar
+                if client.User.avatar:
+                    from_client_avatar = client.User.avatar
+                else:
+                    from_client_avatar = ""
 
         other_client_in_this_workspace = []
         for client in lst_client:
