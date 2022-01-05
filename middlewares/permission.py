@@ -46,7 +46,7 @@ def _token_check(access_token):
 def _fd_server_check(ip_address):
     config = get_system_config()
     for item in config['fd_server']:
-        logger.info({"ip_address": item.get('ip_address', "Not found")]})
+        logger.info({"ip_address": item.get('ip_address', "Not found")})
         if item['ip_address'] in ip_address:
             return True
     return False
