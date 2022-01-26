@@ -12,7 +12,7 @@ class AuthenSetting(Database.get().Model):
     require_action = Database.get().Column(Database.get().String(36), unique=False, default=0)
     # otp setting
     mfa_enable = Database.get().Column(Database.get().Boolean, unique=False, default=False)
-    otp = Database.get().Column(Database.get().String(6), unique=False, nullable=True)
+    otp = Database.get().Column(Database.get().String(100), unique=False, nullable=True)
     otp_frozen_time = Database.get().Column(Database.get().DateTime, unique=False, default=datetime.min)
     otp_tried_time = Database.get().Column(Database.get().INTEGER, unique=False, default=0)
     otp_request_counter = Database.get().Column(Database.get().INTEGER, unique=False, default=0)
