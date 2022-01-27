@@ -67,7 +67,7 @@ class OTPServer(object):
     @staticmethod
     def hash_uid(user_id, valid_time):
         secret_string = "{}{}".format(user_id, valid_time)
-        hash_string = hmac.new(secret_key, secret_string.encode("utf-8"), hashlib.blake2s).hexdigest()
+        hash_string = hmac.new(secret_key.encode("utf-8"), secret_string.encode("utf-8"), hashlib.blake2s).hexdigest()
         return hash_string
 
     @staticmethod
@@ -77,7 +77,7 @@ class OTPServer(object):
     @staticmethod
     def verify_hash_code(user_id, valid_time, hash_string):
         verify_secret_string = "{}{}".format(user_id, valid_time)
-        verify_hash_string = hmac.new(secret_key, verify_secret_string.encode("utf-8"), hashlib.blake2s).hexdigest()
+        verify_hash_string = hmac.new(secret_key.encode("utf-8"), verify_secret_string.encode("utf-8"), hashlib.blake2s).hexdigest()
         return hmac.compare_digest(verify_hash_string, hash_string)
 
     @staticmethod
