@@ -413,6 +413,7 @@ class AuthController(BaseController):
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
 
             user_info = self.user_service.get_user_by_id(request.user_id)
+            token = self.service.token(user_info.email, user_info.password_verifier)
             introspect_token = KeyCloakUtils.introspect_token(token['access_token'])
             require_action = ""
             client_key_obj = SignalService().peer_get_client_key(request.user_id)
@@ -429,7 +430,6 @@ class AuthController(BaseController):
                                     signedPreKeySignature=client_key_obj.signed_prekey_signature,
                                     identityKeyEncrypted=client_key_obj.identity_key_encrypted
                                 )
-            token = self.service.token(user_info.email, user_info.password_verifier)
             self.user_service.update_last_login(user_id=request.user_id)
             return auth_messages.AuthRes(
                 workspace_domain=get_owner_workspace_domain(),
