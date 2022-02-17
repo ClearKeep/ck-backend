@@ -3,6 +3,7 @@ WORKDIR /clearkeep-backend
 ENV ENV=production
 COPY . ./
 # setup library
+RUN apt update && apt install cron -y
 RUN pip install --upgrade pip
 RUN pip install -r requirement.txt
 RUN pip install psycopg2
