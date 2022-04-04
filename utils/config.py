@@ -3,7 +3,7 @@ import json
 
 env = os.getenv("ENV")
 env_name = env if env else 'local'
-with open(f'./configs/{env_name}.json') as json_data_file:
+with open(f'./configs_secret_do_not_push/{env_name}.json') as json_data_file:
     data = json.load(json_data_file)
 print("Load config env=", env_name)
 
