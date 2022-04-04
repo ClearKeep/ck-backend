@@ -1,0 +1,13 @@
+
+
+
+
+export ENV=local-from-clk328-c18-group-chat-thanh-max-prod
+sh protos/gen.sh
+
+
+# 02 different terminal
+python app_http.py
+
+# 02 different terminal
+python app_grpc.py

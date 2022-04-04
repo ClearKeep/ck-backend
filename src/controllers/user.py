@@ -1,6 +1,6 @@
 import protos.user_pb2 as user_messages
 from src.controllers.base import *
-from src.services.auth import AuthService
+# from src.services.auth import AuthService
 from src.services.user import UserService
 from src.services.signal import SignalService
 from middlewares.permission import *
