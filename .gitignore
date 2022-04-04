@@ -130,5 +130,9 @@ dmypy.json
 
 #vs code
 .vscode
-.idea
+.idea/
 logs
+
+# Avoid accidentally push secrets
+configs/
+configs_secret_do_not_push/
