@@ -196,8 +196,8 @@ class AuthService:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
                 return office_id, new_user_id, True
-        except Exception as e:
-            logger.info(e)
+        except Exception:
+            logger.exception(Message.OFFICE_AUTH_FAILED)
             raise Exception(Message.OFFICE_AUTH_FAILED)
 
     # login facebook

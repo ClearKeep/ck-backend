@@ -8,7 +8,7 @@ async def start_http_server():
     http_port = get_system_config()['http_port']
     print("HTTP listening on port {}..".format(http_port))
     logger.info("HTTP listening on port {}..".format(http_port))
-    app.run(host="0.0.0.0", port=str(http_port), threaded=False, processes=3, debug=False)
+    app.run(host="0.0.0.0", port=str(http_port), threaded=False, processes=3, debug=True)
 
 
 if __name__ == '__main__':

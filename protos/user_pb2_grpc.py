@@ -69,6 +69,11 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.Empty.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.GetUsersResponse.FromString,
                 )
+        self.find_user_by_email = channel.unary_unary(
+                '/user.User/find_user_by_email',
+                request_serializer=protos_dot_user__pb2.FindUserByEmailRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.FindUserByEmailResponse.FromString,
+                )
         self.get_mfa_state = channel.unary_unary(
                 '/user.User/get_mfa_state',
                 request_serializer=protos_dot_user__pb2.MfaGetStateRequest.SerializeToString,
@@ -178,6 +183,12 @@ class UserServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def find_user_by_email(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def get_mfa_state(self, request, context):
         """----- MFA ENABLE FLOW -----
         """
@@ -278,6 +289,11 @@ def add_UserServicer_to_server(servicer, server):
                     servicer.get_users,
                     request_deserializer=protos_dot_user__pb2.Empty.FromString,
                     response_serializer=protos_dot_user__pb2.GetUsersResponse.SerializeToString,
+            ),
+            'find_user_by_email': grpc.unary_unary_rpc_method_handler(
+                    servicer.find_user_by_email,
+                    request_deserializer=protos_dot_user__pb2.FindUserByEmailRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.FindUserByEmailResponse.SerializeToString,
             ),
             'get_mfa_state': grpc.unary_unary_rpc_method_handler(
                     servicer.get_mfa_state,
@@ -508,6 +524,23 @@ class User(object):
         return grpc.experimental.unary_unary(request, target, '/user.User/get_users',
             protos_dot_user__pb2.Empty.SerializeToString,
             protos_dot_user__pb2.GetUsersResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def find_user_by_email(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/find_user_by_email',
+            protos_dot_user__pb2.FindUserByEmailRequest.SerializeToString,
+            protos_dot_user__pb2.FindUserByEmailResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

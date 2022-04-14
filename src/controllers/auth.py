@@ -179,7 +179,7 @@ class AuthController(BaseController):
             return auth_challenge_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(Message.AUTH_USER_NOT_FOUND, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:

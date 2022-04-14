@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x11protos/user.proto\x12\x04user\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"l\n\x13UserProfileResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x05 \x01(\t\"\x07\n\x05\x45mpty\"n\n\x14UpdateProfileRequest\x12\x14\n\x0c\x64isplay_name\x18\x01 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x02 \x01(\t\x12\x14\n\x0cphone_number\x18\x03 \x01(\t\x12\x1a\n\x12\x63lear_phone_number\x18\x04 \x01(\x08\"1\n\x18RequestChangePasswordReq\x12\x15\n\rclient_public\x18\x01 \x01(\t\"D\n\x18RequestChangePasswordRes\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"\xab\x01\n\x15\x43hangePasswordRequest\x12\x15\n\rclient_public\x18\x01 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\x12\x15\n\rhash_password\x18\x04 \x01(\t\x12\x0c\n\x04salt\x18\x05 \x01(\t\x12\x14\n\x0civ_parameter\x18\x06 \x01(\t\x12\x1e\n\x16identity_key_encrypted\x18\x07 \x01(\t\"N\n\x10UserInfoResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x18\n\x10workspace_domain\x18\x03 \x01(\t\"=\n\x0eGetUserRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"$\n\x11SearchUserRequest\x12\x0f\n\x07keyword\x18\x01 \x01(\t\">\n\x12SearchUserResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"<\n\x10GetUsersResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"&\n\x14SetUserStatusRequest\x12\x0e\n\x06status\x18\x01 \x01(\t\"\r\n\x0bPingRequest\"b\n\x17GetClientsStatusRequest\x12+\n\nlst_client\x18\x01 \x03(\x0b\x32\x17.user.MemberInfoRequest\x12\x1a\n\x12should_get_profile\x18\x02 \x01(\x08\"@\n\x11MemberInfoRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"C\n\x18GetClientsStatusResponse\x12\'\n\nlst_client\x18\x01 \x03(\x0b\x32\x13.user.MemberInfoRes\"\x88\x01\n\rMemberInfoRes\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x04 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x05 \x01(\t\x12\x14\n\x0cphone_number\x18\x06 \x01(\t\"i\n\x13UploadAvatarRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x19\n\x11\x66ile_content_type\x18\x02 \x01(\t\x12\x11\n\tfile_data\x18\x03 \x01(\x0c\x12\x11\n\tfile_hash\x18\x04 \x01(\t\"(\n\x14UploadAvatarResponse\x12\x10\n\x08\x66ile_url\x18\x01 \x01(\t\"D\n\x0fMfaBaseResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x11\n\tnext_step\x18\x02 \x01(\t\x12\r\n\x05\x65rror\x18\x03 \x01(\t\"5\n\x10MfaStateResponse\x12\x12\n\nmfa_enable\x18\x01 \x01(\x08\x12\r\n\x05\x65rror\x18\x02 \x01(\t\"\x14\n\x12MfaGetStateRequest\"\x19\n\x17MfaChangingStateRequest\"0\n\x17MfaAuthChallengeRequest\x12\x15\n\rclient_public\x18\x01 \x01(\t\"D\n\x18MfaAuthChallengeResponse\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"U\n\x1aMfaValidatePasswordRequest\x12\x15\n\rclient_public\x18\x01 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x02 \x01(\t\"$\n\x15MfaValidateOtpRequest\x12\x0b\n\x03otp\x18\x01 \x01(\t\"\x15\n\x13MfaResendOtpRequest2\x89\n\n\x04User\x12\x37\n\x0bget_profile\x12\x0b.user.Empty\x1a\x19.user.UserProfileResponse\"\x00\x12\x42\n\x0eupdate_profile\x12\x1a.user.UpdateProfileRequest\x1a\x12.user.BaseResponse\"\x00\x12H\n\rupload_avatar\x12\x19.user.UploadAvatarRequest\x1a\x1a.user.UploadAvatarResponse\"\x00\x12[\n\x17request_change_password\x12\x1e.user.RequestChangePasswordReq\x1a\x1e.user.RequestChangePasswordRes\"\x00\x12\x44\n\x0f\x63hange_password\x12\x1b.user.ChangePasswordRequest\x1a\x12.user.BaseResponse\"\x00\x12\x41\n\rupdate_status\x12\x1a.user.SetUserStatusRequest\x1a\x12.user.BaseResponse\"\x00\x12\x37\n\x0cping_request\x12\x11.user.PingRequest\x1a\x12.user.BaseResponse\"\x00\x12U\n\x12get_clients_status\x12\x1d.user.GetClientsStatusRequest\x1a\x1e.user.GetClientsStatusResponse\"\x00\x12?\n\rget_user_info\x12\x14.user.GetUserRequest\x1a\x16.user.UserInfoResponse\"\x00\x12\x42\n\x0bsearch_user\x12\x17.user.SearchUserRequest\x1a\x18.user.SearchUserResponse\"\x00\x12\x32\n\tget_users\x12\x0b.user.Empty\x1a\x16.user.GetUsersResponse\"\x00\x12\x43\n\rget_mfa_state\x12\x18.user.MfaGetStateRequest\x1a\x16.user.MfaStateResponse\"\x00\x12\x44\n\nenable_mfa\x12\x1d.user.MfaChangingStateRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12\x45\n\x0b\x64isable_mfa\x12\x1d.user.MfaChangingStateRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12U\n\x12mfa_auth_challenge\x12\x1d.user.MfaAuthChallengeRequest\x1a\x1e.user.MfaAuthChallengeResponse\"\x00\x12R\n\x15mfa_validate_password\x12 .user.MfaValidatePasswordRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12H\n\x10mfa_validate_otp\x12\x1b.user.MfaValidateOtpRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12\x44\n\x0emfa_resend_otp\x12\x19.user.MfaResendOtpRequest\x1a\x15.user.MfaBaseResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x11protos/user.proto\x12\x04user\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"l\n\x13UserProfileResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x05 \x01(\t\"\x07\n\x05\x45mpty\"n\n\x14UpdateProfileRequest\x12\x14\n\x0c\x64isplay_name\x18\x01 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x02 \x01(\t\x12\x14\n\x0cphone_number\x18\x03 \x01(\t\x12\x1a\n\x12\x63lear_phone_number\x18\x04 \x01(\x08\"1\n\x18RequestChangePasswordReq\x12\x15\n\rclient_public\x18\x01 \x01(\t\"D\n\x18RequestChangePasswordRes\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"\xab\x01\n\x15\x43hangePasswordRequest\x12\x15\n\rclient_public\x18\x01 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\x12\x15\n\rhash_password\x18\x04 \x01(\t\x12\x0c\n\x04salt\x18\x05 \x01(\t\x12\x14\n\x0civ_parameter\x18\x06 \x01(\t\x12\x1e\n\x16identity_key_encrypted\x18\x07 \x01(\t\"N\n\x10UserInfoResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x18\n\x10workspace_domain\x18\x03 \x01(\t\"=\n\x0eGetUserRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"$\n\x11SearchUserRequest\x12\x0f\n\x07keyword\x18\x01 \x01(\t\">\n\x12SearchUserResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\",\n\x16\x46indUserByEmailRequest\x12\x12\n\nemail_hash\x18\x01 \x01(\t\"C\n\x17\x46indUserByEmailResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"<\n\x10GetUsersResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"&\n\x14SetUserStatusRequest\x12\x0e\n\x06status\x18\x01 \x01(\t\"\r\n\x0bPingRequest\"b\n\x17GetClientsStatusRequest\x12+\n\nlst_client\x18\x01 \x03(\x0b\x32\x17.user.MemberInfoRequest\x12\x1a\n\x12should_get_profile\x18\x02 \x01(\x08\"@\n\x11MemberInfoRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"C\n\x18GetClientsStatusResponse\x12\'\n\nlst_client\x18\x01 \x03(\x0b\x32\x13.user.MemberInfoRes\"\x88\x01\n\rMemberInfoRes\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x04 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x05 \x01(\t\x12\x14\n\x0cphone_number\x18\x06 \x01(\t\"i\n\x13UploadAvatarRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x19\n\x11\x66ile_content_type\x18\x02 \x01(\t\x12\x11\n\tfile_data\x18\x03 \x01(\x0c\x12\x11\n\tfile_hash\x18\x04 \x01(\t\"(\n\x14UploadAvatarResponse\x12\x10\n\x08\x66ile_url\x18\x01 \x01(\t\"D\n\x0fMfaBaseResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x11\n\tnext_step\x18\x02 \x01(\t\x12\r\n\x05\x65rror\x18\x03 \x01(\t\"5\n\x10MfaStateResponse\x12\x12\n\nmfa_enable\x18\x01 \x01(\x08\x12\r\n\x05\x65rror\x18\x02 \x01(\t\"\x14\n\x12MfaGetStateRequest\"\x19\n\x17MfaChangingStateRequest\"0\n\x17MfaAuthChallengeRequest\x12\x15\n\rclient_public\x18\x01 \x01(\t\"D\n\x18MfaAuthChallengeResponse\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"U\n\x1aMfaValidatePasswordRequest\x12\x15\n\rclient_public\x18\x01 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x02 \x01(\t\"$\n\x15MfaValidateOtpRequest\x12\x0b\n\x03otp\x18\x01 \x01(\t\"\x15\n\x13MfaResendOtpRequest2\xde\n\n\x04User\x12\x37\n\x0bget_profile\x12\x0b.user.Empty\x1a\x19.user.UserProfileResponse\"\x00\x12\x42\n\x0eupdate_profile\x12\x1a.user.UpdateProfileRequest\x1a\x12.user.BaseResponse\"\x00\x12H\n\rupload_avatar\x12\x19.user.UploadAvatarRequest\x1a\x1a.user.UploadAvatarResponse\"\x00\x12[\n\x17request_change_password\x12\x1e.user.RequestChangePasswordReq\x1a\x1e.user.RequestChangePasswordRes\"\x00\x12\x44\n\x0f\x63hange_password\x12\x1b.user.ChangePasswordRequest\x1a\x12.user.BaseResponse\"\x00\x12\x41\n\rupdate_status\x12\x1a.user.SetUserStatusRequest\x1a\x12.user.BaseResponse\"\x00\x12\x37\n\x0cping_request\x12\x11.user.PingRequest\x1a\x12.user.BaseResponse\"\x00\x12U\n\x12get_clients_status\x12\x1d.user.GetClientsStatusRequest\x1a\x1e.user.GetClientsStatusResponse\"\x00\x12?\n\rget_user_info\x12\x14.user.GetUserRequest\x1a\x16.user.UserInfoResponse\"\x00\x12\x42\n\x0bsearch_user\x12\x17.user.SearchUserRequest\x1a\x18.user.SearchUserResponse\"\x00\x12\x32\n\tget_users\x12\x0b.user.Empty\x1a\x16.user.GetUsersResponse\"\x00\x12S\n\x12\x66ind_user_by_email\x12\x1c.user.FindUserByEmailRequest\x1a\x1d.user.FindUserByEmailResponse\"\x00\x12\x43\n\rget_mfa_state\x12\x18.user.MfaGetStateRequest\x1a\x16.user.MfaStateResponse\"\x00\x12\x44\n\nenable_mfa\x12\x1d.user.MfaChangingStateRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12\x45\n\x0b\x64isable_mfa\x12\x1d.user.MfaChangingStateRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12U\n\x12mfa_auth_challenge\x12\x1d.user.MfaAuthChallengeRequest\x1a\x1e.user.MfaAuthChallengeResponse\"\x00\x12R\n\x15mfa_validate_password\x12 .user.MfaValidatePasswordRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12H\n\x10mfa_validate_otp\x12\x1b.user.MfaValidateOtpRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12\x44\n\x0emfa_resend_otp\x12\x19.user.MfaResendOtpRequest\x1a\x15.user.MfaBaseResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -482,6 +482,70 @@ _SEARCHUSERRESPONSE = _descriptor.Descriptor(
 )
 
 
+_FINDUSERBYEMAILREQUEST = _descriptor.Descriptor(
+  name='FindUserByEmailRequest',
+  full_name='user.FindUserByEmailRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='email_hash', full_name='user.FindUserByEmailRequest.email_hash', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=829,
+  serialized_end=873,
+)
+
+
+_FINDUSERBYEMAILRESPONSE = _descriptor.Descriptor(
+  name='FindUserByEmailResponse',
+  full_name='user.FindUserByEmailResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='lst_user', full_name='user.FindUserByEmailResponse.lst_user', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=875,
+  serialized_end=942,
+)
+
+
 _GETUSERSRESPONSE = _descriptor.Descriptor(
   name='GetUsersResponse',
   full_name='user.GetUsersResponse',
@@ -509,8 +573,8 @@ _GETUSERSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=829,
-  serialized_end=889,
+  serialized_start=944,
+  serialized_end=1004,
 )
 
 
@@ -541,8 +605,8 @@ _SETUSERSTATUSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=891,
-  serialized_end=929,
+  serialized_start=1006,
+  serialized_end=1044,
 )
 
 
@@ -566,8 +630,8 @@ _PINGREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=931,
-  serialized_end=944,
+  serialized_start=1046,
+  serialized_end=1059,
 )
 
 
@@ -605,8 +669,8 @@ _GETCLIENTSSTATUSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=946,
-  serialized_end=1044,
+  serialized_start=1061,
+  serialized_end=1159,
 )
 
 
@@ -644,8 +708,8 @@ _MEMBERINFOREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1046,
-  serialized_end=1110,
+  serialized_start=1161,
+  serialized_end=1225,
 )
 
 
@@ -676,8 +740,8 @@ _GETCLIENTSSTATUSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1112,
-  serialized_end=1179,
+  serialized_start=1227,
+  serialized_end=1294,
 )
 
 
@@ -743,8 +807,8 @@ _MEMBERINFORES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1182,
-  serialized_end=1318,
+  serialized_start=1297,
+  serialized_end=1433,
 )
 
 
@@ -796,8 +860,8 @@ _UPLOADAVATARREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1320,
-  serialized_end=1425,
+  serialized_start=1435,
+  serialized_end=1540,
 )
 
 
@@ -828,8 +892,8 @@ _UPLOADAVATARRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1427,
-  serialized_end=1467,
+  serialized_start=1542,
+  serialized_end=1582,
 )
 
 
@@ -874,8 +938,8 @@ _MFABASERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1469,
-  serialized_end=1537,
+  serialized_start=1584,
+  serialized_end=1652,
 )
 
 
@@ -913,8 +977,8 @@ _MFASTATERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1539,
-  serialized_end=1592,
+  serialized_start=1654,
+  serialized_end=1707,
 )
 
 
@@ -938,8 +1002,8 @@ _MFAGETSTATEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1594,
-  serialized_end=1614,
+  serialized_start=1709,
+  serialized_end=1729,
 )
 
 
@@ -963,8 +1027,8 @@ _MFACHANGINGSTATEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1616,
-  serialized_end=1641,
+  serialized_start=1731,
+  serialized_end=1756,
 )
 
 
@@ -995,8 +1059,8 @@ _MFAAUTHCHALLENGEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1643,
-  serialized_end=1691,
+  serialized_start=1758,
+  serialized_end=1806,
 )
 
 
@@ -1034,8 +1098,8 @@ _MFAAUTHCHALLENGERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1693,
-  serialized_end=1761,
+  serialized_start=1808,
+  serialized_end=1876,
 )
 
 
@@ -1073,8 +1137,8 @@ _MFAVALIDATEPASSWORDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1763,
-  serialized_end=1848,
+  serialized_start=1878,
+  serialized_end=1963,
 )
 
 
@@ -1105,8 +1169,8 @@ _MFAVALIDATEOTPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1850,
-  serialized_end=1886,
+  serialized_start=1965,
+  serialized_end=2001,
 )
 
 
@@ -1130,11 +1194,12 @@ _MFARESENDOTPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1888,
-  serialized_end=1909,
+  serialized_start=2003,
+  serialized_end=2024,
 )
 
 _SEARCHUSERRESPONSE.fields_by_name['lst_user'].message_type = _USERINFORESPONSE
+_FINDUSERBYEMAILRESPONSE.fields_by_name['lst_user'].message_type = _USERINFORESPONSE
 _GETUSERSRESPONSE.fields_by_name['lst_user'].message_type = _USERINFORESPONSE
 _GETCLIENTSSTATUSREQUEST.fields_by_name['lst_client'].message_type = _MEMBERINFOREQUEST
 _GETCLIENTSSTATUSRESPONSE.fields_by_name['lst_client'].message_type = _MEMBERINFORES
@@ -1149,6 +1214,8 @@ DESCRIPTOR.message_types_by_name['UserInfoResponse'] = _USERINFORESPONSE
 DESCRIPTOR.message_types_by_name['GetUserRequest'] = _GETUSERREQUEST
 DESCRIPTOR.message_types_by_name['SearchUserRequest'] = _SEARCHUSERREQUEST
 DESCRIPTOR.message_types_by_name['SearchUserResponse'] = _SEARCHUSERRESPONSE
+DESCRIPTOR.message_types_by_name['FindUserByEmailRequest'] = _FINDUSERBYEMAILREQUEST
+DESCRIPTOR.message_types_by_name['FindUserByEmailResponse'] = _FINDUSERBYEMAILRESPONSE
 DESCRIPTOR.message_types_by_name['GetUsersResponse'] = _GETUSERSRESPONSE
 DESCRIPTOR.message_types_by_name['SetUserStatusRequest'] = _SETUSERSTATUSREQUEST
 DESCRIPTOR.message_types_by_name['PingRequest'] = _PINGREQUEST
@@ -1245,6 +1312,20 @@ SearchUserResponse = _reflection.GeneratedProtocolMessageType('SearchUserRespons
   # @@protoc_insertion_point(class_scope:user.SearchUserResponse)
   })
 _sym_db.RegisterMessage(SearchUserResponse)
+
+FindUserByEmailRequest = _reflection.GeneratedProtocolMessageType('FindUserByEmailRequest', (_message.Message,), {
+  'DESCRIPTOR' : _FINDUSERBYEMAILREQUEST,
+  '__module__' : 'protos.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.FindUserByEmailRequest)
+  })
+_sym_db.RegisterMessage(FindUserByEmailRequest)
+
+FindUserByEmailResponse = _reflection.GeneratedProtocolMessageType('FindUserByEmailResponse', (_message.Message,), {
+  'DESCRIPTOR' : _FINDUSERBYEMAILRESPONSE,
+  '__module__' : 'protos.user_pb2'
+  # @@protoc_insertion_point(class_scope:user.FindUserByEmailResponse)
+  })
+_sym_db.RegisterMessage(FindUserByEmailResponse)
 
 GetUsersResponse = _reflection.GeneratedProtocolMessageType('GetUsersResponse', (_message.Message,), {
   'DESCRIPTOR' : _GETUSERSRESPONSE,
@@ -1381,8 +1462,8 @@ _USER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1912,
-  serialized_end=3201,
+  serialized_start=2027,
+  serialized_end=3401,
   methods=[
   _descriptor.MethodDescriptor(
     name='get_profile',
@@ -1495,9 +1576,19 @@ _USER = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
+    name='find_user_by_email',
+    full_name='user.User.find_user_by_email',
+    index=11,
+    containing_service=None,
+    input_type=_FINDUSERBYEMAILREQUEST,
+    output_type=_FINDUSERBYEMAILRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
     name='get_mfa_state',
     full_name='user.User.get_mfa_state',
-    index=11,
+    index=12,
     containing_service=None,
     input_type=_MFAGETSTATEREQUEST,
     output_type=_MFASTATERESPONSE,
@@ -1507,7 +1598,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='enable_mfa',
     full_name='user.User.enable_mfa',
-    index=12,
+    index=13,
     containing_service=None,
     input_type=_MFACHANGINGSTATEREQUEST,
     output_type=_MFABASERESPONSE,
@@ -1517,7 +1608,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='disable_mfa',
     full_name='user.User.disable_mfa',
-    index=13,
+    index=14,
     containing_service=None,
     input_type=_MFACHANGINGSTATEREQUEST,
     output_type=_MFABASERESPONSE,
@@ -1527,7 +1618,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='mfa_auth_challenge',
     full_name='user.User.mfa_auth_challenge',
-    index=14,
+    index=15,
     containing_service=None,
     input_type=_MFAAUTHCHALLENGEREQUEST,
     output_type=_MFAAUTHCHALLENGERESPONSE,
@@ -1537,7 +1628,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='mfa_validate_password',
     full_name='user.User.mfa_validate_password',
-    index=15,
+    index=16,
     containing_service=None,
     input_type=_MFAVALIDATEPASSWORDREQUEST,
     output_type=_MFABASERESPONSE,
@@ -1547,7 +1638,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='mfa_validate_otp',
     full_name='user.User.mfa_validate_otp',
-    index=16,
+    index=17,
     containing_service=None,
     input_type=_MFAVALIDATEOTPREQUEST,
     output_type=_MFABASERESPONSE,
@@ -1557,7 +1648,7 @@ _USER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='mfa_resend_otp',
     full_name='user.User.mfa_resend_otp',
-    index=17,
+    index=18,
     containing_service=None,
     input_type=_MFARESENDOTPREQUEST,
     output_type=_MFABASERESPONSE,

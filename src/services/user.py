@@ -378,6 +378,86 @@ class UserService(BaseService):
             logger.info(e)
             raise Exception(Message.GET_USER_INFO_FAILED)
 
+    def find_user_by_email(self, email_hash):
+        try:
+            logger.debug(f'Finding user by email, {email_hash=}')
+
+            # =============MOCKS===========================
+            # TODO: IMP/fix these mocks
+
+            mock_email_list = ["user0@email_server0.com",
+                               "user1@email_server1.com",
+                               "user2@email_server2.com"]
+            import hashlib
+            email_hash_list = [hashlib.sha256(email.encode('ascii')).hexdigest() for email in mock_email_list]
+
+            mock_list_of_user_info = {
+                email_hash_list[0]: [
+                    {
+                        "id": "6092b16d-4d81-4270-9423-76367ab4b6ac",
+                        "displayName": "Nguy\u1EC5n Th\u1ECB Trang dev",
+                        "workspaceDomain": "54.235.68.160:25000"
+                    },
+                    {
+                        "id": "8cc42f22-f7c4-43ba-987a-af2f886c13c1",
+                        "displayName": "L\u01B0\u01A1ng Th\u1ECB Thu Ph\u01B0\u01A1ng (Emily)",
+                        "workspaceDomain": "54.235.68.160:25000"
+                    }
+                ],
+                email_hash_list[1]: [{
+                    "id": "773ff88e-7673-4946-8a69-fd77505a65c6",
+                    "displayName": "Obamaygggvvcc",
+                    "workspaceDomain": "54.235.68.160:25000"
+                }],
+                email_hash_list[2]: [
+                    {
+                        "id": "c551b558-b054-4246-b440-c295db4d561d",
+                        "displayName": "Phuong",
+                        "workspaceDomain": "54.235.68.160:25000"
+                    },
+                    {
+                        "id": "3b5ea2d2-bb64-49c8-b2aa-e9b8226de329",
+                        "displayName": "Xuan An Tong",
+                        "workspaceDomain": "54.235.68.160:25000"
+                    },
+                    {
+                        "id": "eb668747-4256-4292-943b-4ef2bc368f38",
+                        "displayName": "tt",
+                        "workspaceDomain": "54.235.68.160:25000"
+                    },
+                    {
+                        "id": "998caf43-e398-4df1-b993-6830eef989e8",
+                        "displayName": "Ph\u1EA1m T\u1EA5t Th\u00E0nh",
+                        "workspaceDomain": "54.235.68.160:25000"
+                    }
+                ]
+            }
+
+            try:
+                lst_user = mock_list_of_user_info[email_hash]
+            except KeyError:
+                lst_user = []
+
+            lst_obj_res = []
+            for obj in lst_user:
+                obj_res = user_pb2.UserInfoResponse(
+                    id=obj['id'],
+                    display_name=obj['displayName'],
+                    workspace_domain=obj['workspaceDomain']
+                )
+                lst_obj_res.append(obj_res)
+
+            # TODO: IMP/fix these mocks
+            # =============END MOCKS===========================
+
+            return user_pb2.FindUserByEmailResponse(lst_user=lst_obj_res)
+
+
+
+        except Exception:
+            logger.info('Error while finding user by email', exc_info=True)
+            raise Exception(Message.FIND_USER_BY_EMAIL_FAILED)
+
     def update_last_login(self, user_id):
         # update last time login for user_id
         try:
