@@ -15,15 +15,8 @@
 #fi
 
 
-echo "REMEMBER!!! generate protobuf files"
-export PYTHONPATH=./
-export PYTHONUNBUFFERED=1
-export ENV=development
-export GRPC_VERBOSITY=DEBUG
-export GRPC_TRACE=tcp,http
-
+bash ./run_common.sh
 
 python app_grpc.py
-python app_http.py
 
 
