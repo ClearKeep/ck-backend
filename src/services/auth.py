@@ -153,7 +153,8 @@ class AuthService:
                     raise Exception(Message.REGISTER_USER_FAILED)
                 return google_email, new_user_id, True
         except Exception as e:
-            logger.info(e)
+            raise
+            logger.info(e, exc_info=True)
             raise Exception(Message.GOOGLE_AUTH_FAILED)
 
     # login office
