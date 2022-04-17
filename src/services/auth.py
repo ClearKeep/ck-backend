@@ -76,7 +76,8 @@ class AuthService:
                 a = KeyCloakUtils.send_verify_email(user_id)
                 return user_id
         except Exception as e:
-            logger.info(e)
+            raise
+            logger.info(e, exc_info=True)
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def delete_user(self, userid):
