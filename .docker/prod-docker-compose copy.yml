@@ -1,0 +1,47 @@
+# Docker Compose Keycloak Postgres ( Docker compose for Keycloak with Postgres Database).
+# docker-compose -f prod-docker-compose.yml up -d
+version: '3.1'
+
+
+volumes:
+  postgres_data:
+      driver: local
+
+services:
+  postgres:
+      image: postgres
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      ports:
+              - 5432:5432
+      restart: always
+      environment:
+        POSTGRES_DB: prod-authen
+        POSTGRES_USER: admin
+        POSTGRES_PASSWORD: clk328@2021
+
+  prod_authen:
+      image: jboss/keycloak
+      restart: always
+      environment:
+        DB_VENDOR: POSTGRES
+        DB_ADDR: 54.235.68.160:5432
+        DB_DATABASE: prod-authen
+        DB_USER: admin
+        DB_PASSWORD: clk328@2021
+        KEYCLOAK_USER: admin
+        KEYCLOAK_PASSWORD: clk328@2021
+        JAVA_TOOL_OPTIONS: -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled -Dkeycloak.profile.feature.token_exchange=enabled
+
+      ports:
+        - 8080:8080
+      depends_on:
+        - postgres
+  prod_webrtc:
+      image: phuongvmodev/janus-webrtc-gateway-docker
+      restart: always
+      ports:
+        - 7088:7088
+        - 8288:80
+        - 8088:8088
+        - 8188:8188
