@@ -7,16 +7,15 @@ logger.setLevel(logging.DEBUG)
 
 
 
-handler = logging.FileHandler('thanhpt1-vmo_log.log', 'a+')
-
-
-handler.suffix = "%Y-%m-%d"
 formatter = logging.Formatter(u'%(asctime)s\t%(name)s\t%(levelname)s\t%(pathname)s:%(lineno)d\t%(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+
+file_handler = logging.FileHandler('thanhpt1-vmo_log.log', 'a+')
+# file_handler.suffix = "%Y-%m-%d"
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 console_handler = logging.StreamHandler()
-handler.setFormatter(formatter)
+console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 
 
