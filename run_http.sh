@@ -15,7 +15,7 @@
 #fi
 
 
-bash ./run_common.sh
+source ./run_common.sh
 
 python app_http.py
 
