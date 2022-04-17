@@ -17,6 +17,7 @@
 
 source ./run_common.sh
 
-python app_grpc.py
+# Use venv's python Avoid use the system-wide python
+./venv/bin/python app_grpc.py
 
 
