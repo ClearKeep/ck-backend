@@ -30,7 +30,7 @@ services:
         POSTGRES_USER: admin
         POSTGRES_PASSWORD: clk328@2021
 
-  prod_authen:
+  keycloak_authen:
       image: jboss/keycloak
       restart: always
       environment:
@@ -53,7 +53,7 @@ services:
         - 9990:9990
       depends_on:
         - postgres
-  prod_webrtc:
+  webrtc:
       image: phuongvmodev/janus-webrtc-gateway-docker
       restart: always
       ports:
