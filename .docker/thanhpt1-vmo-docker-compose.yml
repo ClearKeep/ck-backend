@@ -18,10 +18,6 @@ volumes:
       driver: local
 
 services:
-
-
-
-
   postgres:
       image: postgres
       volumes:
@@ -30,7 +26,7 @@ services:
         - 5432:5432
       restart: always
       environment:
-        POSTGRES_DB: prod-authen
+        POSTGRES_DB: thanhpt1_vmo_postgres_db
         POSTGRES_USER: admin
         POSTGRES_PASSWORD: clk328@2021
 
@@ -43,7 +39,7 @@ services:
 # prod_authen_1  | 09:54:57,777 FATAL [org.keycloak.services] (ServerService Thread Pool -- 65)
 # Error during startup: java.lang.RuntimeException: Failed to connect to database
         DB_ADDR: postgres:5432 # Dung duoc ten services de reference IP address, ten services lam hostname
-        DB_DATABASE: prod-authen
+        DB_DATABASE: thanhpt1_vmo_postgres_db
         DB_USER: admin
         DB_PASSWORD: clk328@2021
         KEYCLOAK_USER: admin
