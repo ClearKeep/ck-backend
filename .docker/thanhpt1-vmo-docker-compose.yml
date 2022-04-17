@@ -25,6 +25,7 @@ services:
       ports:
         - 5432:5432
       restart: always
+      command: ["postgres", "-c", "logging_collector=on", "-c", "log_directory=/logs", "-c", "log_filename=postgresql.log", "-c", "log_statement=all"]
       environment:
         POSTGRES_DB: thanhpt1_vmo_postgres_db
         POSTGRES_USER: admin
