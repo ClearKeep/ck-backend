@@ -19,7 +19,7 @@ volumes:
       driver: local
 
 services:
-  postgres:
+  thanhpt1-vmo_postgres:
       image: postgres
       volumes:
         - postgres_data:/var/lib/postgresql/data
@@ -33,7 +33,7 @@ services:
         POSTGRES_USER: admin
         POSTGRES_PASSWORD: clk328@2021
 
-  keycloak_authen:
+  thanhpt1-vmo_keycloak_authen:
       image: jboss/keycloak
       restart: always
       volumes:
@@ -59,8 +59,8 @@ services:
         - 38443:8443
         - 39990:9990
       depends_on:
-        - postgres
-  webrtc:
+        - thanhpt1-vmo_postgres
+  thanhpt1-vmo_webrtc:
       image: phuongvmodev/janus-webrtc-gateway-docker
       restart: always
       ports:
