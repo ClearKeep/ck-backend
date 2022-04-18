@@ -20,7 +20,7 @@ volumes:
 
 services:
   thanhpt1-vmo_postgres:
-      image: postgres
+      image: postgres@sha256:e3d8179786b8f16d066b313f381484a92efb175d1ce8355dc180fee1d5fa70ec
       volumes:
         - postgres_data:/var/lib/postgresql/data
       ports:
@@ -61,7 +61,7 @@ services:
       depends_on:
         - thanhpt1-vmo_postgres
   thanhpt1-vmo_webrtc:
-      image: phuongvmodev/janus-webrtc-gateway-docker
+      image: phuongvmodev/janus-webrtc-gateway-docker@sha256:6f87a609a92297c2dd38fee1ca078db53ad706fbf24d8941c5a7846b35c0e3bc
       restart: always
       ports:
         - 37088:7088
