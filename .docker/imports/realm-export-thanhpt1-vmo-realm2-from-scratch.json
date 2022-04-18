@@ -1390,7 +1390,7 @@
     "strictTransportSecurity": "max-age=31536000; includeSubDomains"
   },
   "smtpServer": {
-    "password": "**********",
+    "password": "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",
     "replyToDisplayName": "thanhpt1-vmo/SMTP/Keycloak",
     "starttls": "",
     "auth": "true",
