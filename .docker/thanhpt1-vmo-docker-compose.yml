@@ -43,7 +43,7 @@ services:
 #        DB_ADDR: 127.0.0.1:5432 # Bao loi FATAL, failed to connect to DB
 # prod_authen_1  | 09:54:57,777 FATAL [org.keycloak.services] (ServerService Thread Pool -- 65)
 # Error during startup: java.lang.RuntimeException: Failed to connect to database
-        DB_ADDR: thanhpt1-vmo_postgres:35432 # Dung duoc ten services de reference IP address, ten services lam hostname
+        DB_ADDR: thanhpt1-vmo_postgres:5432 # Dung duoc ten services de reference IP address, ten services lam hostname
         DB_DATABASE: thanhpt1_vmo_postgres_db
         DB_USER: admin
         DB_PASSWORD: clk328@2021
