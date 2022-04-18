@@ -528,7 +528,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "hDpeqejOKIFADJS1swN2KeiF9vwY1DL4",
       "redirectUris": [
         "/realms/thanhpt1-vmo-realm2-from-scratch/account/*"
       ],
@@ -644,7 +644,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "oEobls1BvcspAkGX3U8uoTgKyAWsQPZ8",
       "redirectUris": [],
       "webOrigins": [],
       "notBefore": 0,
