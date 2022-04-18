@@ -1,4 +1,5 @@
 import os
+from utils.logger import *
 import grpc
 from utils.config import get_system_config
 import protos.user_pb2_grpc as user_service
@@ -25,7 +26,6 @@ from src.controllers.server_info import ServerInfoController
 from src.controllers.upload_file import UploadFileController
 from src.controllers.workspace import WorkspaceController
 from src.controllers.note import NoteController
-from utils.logger import *
 # from middlewares.auth_interceptor import AuthInterceptor
 import asyncio
 from grpc import aio
