@@ -6,6 +6,7 @@
 
 
 # ` $ sudo DOCKER_BUILDKIT=1 docker-compose -f .docker/thanhpt1-vmo-docker-compose.yml up --remove-orphans  `
+# ` $ sudo DOCKER_BUILDKIT=1 docker-compose -f .docker/thanhpt1-vmo-docker-compose.yml down --remove-orphans --volumes  `
 
 
 
