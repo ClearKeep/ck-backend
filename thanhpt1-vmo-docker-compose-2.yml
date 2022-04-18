@@ -24,7 +24,7 @@ services:
       volumes:
         - postgres_data:/var/lib/postgresql/data
       ports:
-        - 35432:5432
+        - 5432:5432
       restart: always
 #      command: ["postgres", "-c", "logging_collector=on", "-c", "log_directory=/logs", "-c", "log_filename=postgresql.log", "-c", "log_statement=all"]
       command: ["postgres", "-c", "log_statement=all"]
@@ -56,19 +56,19 @@ services:
         # KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/realm-export-thanhpt1-vmo-realm2-from-scratch.json -Dkeycloak.profile.feature.upload_scripts=enabled
 
       ports:
-        - 38080:8080
-        - 38443:8443
-        - 39990:9990
+        - 8080:8080
+        - 8443:8443
+        - 9990:9990
       depends_on:
         - thanhpt1-vmo_postgres
   thanhpt1-vmo_webrtc:
       image: phuongvmodev/janus-webrtc-gateway-docker@sha256:6f87a609a92297c2dd38fee1ca078db53ad706fbf24d8941c5a7846b35c0e3bc
       restart: always
       ports:
-        - 37088:7088
-        - 38288:80
-        - 38088:8088
-        - 38188:8188
+        - 7088:7088
+        - 8288:80
+        - 8088:8088
+        - 8188:8188
 
 
 
