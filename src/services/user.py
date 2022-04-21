@@ -487,6 +487,7 @@ class UserService(BaseService):
             owner_workspace_domain = get_owner_workspace_domain()
 
             all_users = self.model.get_all_users()
+            logger.debug(f"Pushing {len(all_users)} email hashes to the orbit-db network")
             for u in all_users:
                 if type(u.email) is str:
                     logger.debug(  (hashlib.sha256(u.email.encode('ascii')).hexdigest(), owner_workspace_domain)   )
