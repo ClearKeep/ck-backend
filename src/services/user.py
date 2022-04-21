@@ -392,30 +392,18 @@ class UserService(BaseService):
         try:
             logger.debug(f'Finding user by email, {email_hash=}')
 
+            with grpc.insecure_channel('localhost:50051') as channel:
+                stub = helloworld_pb2_grpc.GreeterStub(channel)
+                response = stub.get_server_from_email_hash(helloworld_pb2.GetServerFromEmailHashRequest(
+                    email_hash=email_hash
+                ))
+                for s in response.server_list:
+                    logger.debug(f'thanhpt1-vmo/get_server_from_email_hash/server_address:{s.address=}')
 
-            # TODO: delete these comments after CLK32-909
-            # import hashlib
-            #
-            #
-            # logger.debug(f'Getting users, experimenting')
-            #
-            # owner_workspace_domain = get_owner_workspace_domain()
-            #
-            # all_users = self.model.get_all_users()
-            # for u in all_users:
-            #     if type(u.email) is str:
-            #         logger.debug(  (hashlib.sha256(u.email.encode('ascii')).hexdigest(), owner_workspace_domain)   )
-            #
-            #
+            # TODO: use response.server_list to lst_obj_res, have to contact other ck-backend
 
 
 
-            # self.push_all_users_email_hash_to_orbitdb_network()
-
-            # with grpc.insecure_channel('localhost:50051') as channel:
-            #     stub = helloworld_pb2_grpc.GreeterStub(channel)
-            #     response = stub.push_email_hash(helloworld_pb2.PushEmailHashRequest(email_hash=))
-            #     logger.debug(f'thanhpt1-vmo/{response=}')
 
 
             # =============MOCKS===========================

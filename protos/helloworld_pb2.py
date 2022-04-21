@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\n\033io.grpc.examples.helloworldB\017HelloWorldProtoP\001\242\002\003HLW',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x17protos/helloworld.proto\x12\nhelloworld\":\n\x14PushEmailHashRequest\x12\x12\n\nemail_hash\x18\x01 \x01(\t\x12\x0e\n\x06server\x18\x02 \x01(\t\"\'\n\x15PushEmailHashResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2c\n\x07Greeter\x12X\n\x0fpush_email_hash\x12 .helloworld.PushEmailHashRequest\x1a!.helloworld.PushEmailHashResponse\"\x00\x42\x36\n\x1bio.grpc.examples.helloworldB\x0fHelloWorldProtoP\x01\xa2\x02\x03HLWb\x06proto3'
+  serialized_pb=b'\n\x17protos/helloworld.proto\x12\nhelloworld\":\n\x14PushEmailHashRequest\x12\x12\n\nemail_hash\x18\x01 \x01(\t\x12\x0e\n\x06server\x18\x02 \x01(\t\"\'\n\x15PushEmailHashResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"3\n\x1dGetServerFromEmailHashRequest\x12\x12\n\nemail_hash\x18\x01 \x01(\t\"\x19\n\x06Server\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\"I\n\x1eGetServerFromEmailHashResponse\x12\'\n\x0bserver_list\x18\x01 \x03(\x0b\x32\x12.helloworld.Server2\xda\x01\n\x07Greeter\x12X\n\x0fpush_email_hash\x12 .helloworld.PushEmailHashRequest\x1a!.helloworld.PushEmailHashResponse\"\x00\x12u\n\x1aget_server_from_email_hash\x12).helloworld.GetServerFromEmailHashRequest\x1a*.helloworld.GetServerFromEmailHashResponse\"\x00\x42\x36\n\x1bio.grpc.examples.helloworldB\x0fHelloWorldProtoP\x01\xa2\x02\x03HLWb\x06proto3'
 )
 
 
@@ -95,8 +95,108 @@ _PUSHEMAILHASHRESPONSE = _descriptor.Descriptor(
   serialized_end=138,
 )
 
+
+_GETSERVERFROMEMAILHASHREQUEST = _descriptor.Descriptor(
+  name='GetServerFromEmailHashRequest',
+  full_name='helloworld.GetServerFromEmailHashRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='email_hash', full_name='helloworld.GetServerFromEmailHashRequest.email_hash', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=140,
+  serialized_end=191,
+)
+
+
+_SERVER = _descriptor.Descriptor(
+  name='Server',
+  full_name='helloworld.Server',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='address', full_name='helloworld.Server.address', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=193,
+  serialized_end=218,
+)
+
+
+_GETSERVERFROMEMAILHASHRESPONSE = _descriptor.Descriptor(
+  name='GetServerFromEmailHashResponse',
+  full_name='helloworld.GetServerFromEmailHashResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='server_list', full_name='helloworld.GetServerFromEmailHashResponse.server_list', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=220,
+  serialized_end=293,
+)
+
+_GETSERVERFROMEMAILHASHRESPONSE.fields_by_name['server_list'].message_type = _SERVER
 DESCRIPTOR.message_types_by_name['PushEmailHashRequest'] = _PUSHEMAILHASHREQUEST
 DESCRIPTOR.message_types_by_name['PushEmailHashResponse'] = _PUSHEMAILHASHRESPONSE
+DESCRIPTOR.message_types_by_name['GetServerFromEmailHashRequest'] = _GETSERVERFROMEMAILHASHREQUEST
+DESCRIPTOR.message_types_by_name['Server'] = _SERVER
+DESCRIPTOR.message_types_by_name['GetServerFromEmailHashResponse'] = _GETSERVERFROMEMAILHASHRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 PushEmailHashRequest = _reflection.GeneratedProtocolMessageType('PushEmailHashRequest', (_message.Message,), {
@@ -113,6 +213,27 @@ PushEmailHashResponse = _reflection.GeneratedProtocolMessageType('PushEmailHashR
   })
 _sym_db.RegisterMessage(PushEmailHashResponse)
 
+GetServerFromEmailHashRequest = _reflection.GeneratedProtocolMessageType('GetServerFromEmailHashRequest', (_message.Message,), {
+  'DESCRIPTOR' : _GETSERVERFROMEMAILHASHREQUEST,
+  '__module__' : 'protos.helloworld_pb2'
+  # @@protoc_insertion_point(class_scope:helloworld.GetServerFromEmailHashRequest)
+  })
+_sym_db.RegisterMessage(GetServerFromEmailHashRequest)
+
+Server = _reflection.GeneratedProtocolMessageType('Server', (_message.Message,), {
+  'DESCRIPTOR' : _SERVER,
+  '__module__' : 'protos.helloworld_pb2'
+  # @@protoc_insertion_point(class_scope:helloworld.Server)
+  })
+_sym_db.RegisterMessage(Server)
+
+GetServerFromEmailHashResponse = _reflection.GeneratedProtocolMessageType('GetServerFromEmailHashResponse', (_message.Message,), {
+  'DESCRIPTOR' : _GETSERVERFROMEMAILHASHRESPONSE,
+  '__module__' : 'protos.helloworld_pb2'
+  # @@protoc_insertion_point(class_scope:helloworld.GetServerFromEmailHashResponse)
+  })
+_sym_db.RegisterMessage(GetServerFromEmailHashResponse)
+
 
 DESCRIPTOR._options = None
 
@@ -123,8 +244,8 @@ _GREETER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=140,
-  serialized_end=239,
+  serialized_start=296,
+  serialized_end=514,
   methods=[
   _descriptor.MethodDescriptor(
     name='push_email_hash',
@@ -133,6 +254,16 @@ _GREETER = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_PUSHEMAILHASHREQUEST,
     output_type=_PUSHEMAILHASHRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='get_server_from_email_hash',
+    full_name='helloworld.Greeter.get_server_from_email_hash',
+    index=1,
+    containing_service=None,
+    input_type=_GETSERVERFROMEMAILHASHREQUEST,
+    output_type=_GETSERVERFROMEMAILHASHRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

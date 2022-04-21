@@ -24,6 +24,11 @@ class GreeterStub(object):
                 request_serializer=protos_dot_helloworld__pb2.PushEmailHashRequest.SerializeToString,
                 response_deserializer=protos_dot_helloworld__pb2.PushEmailHashResponse.FromString,
                 )
+        self.get_server_from_email_hash = channel.unary_unary(
+                '/helloworld.Greeter/get_server_from_email_hash',
+                request_serializer=protos_dot_helloworld__pb2.GetServerFromEmailHashRequest.SerializeToString,
+                response_deserializer=protos_dot_helloworld__pb2.GetServerFromEmailHashResponse.FromString,
+                )
 
 
 class GreeterServicer(object):
@@ -40,6 +45,12 @@ class GreeterServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def get_server_from_email_hash(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_GreeterServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -47,6 +58,11 @@ def add_GreeterServicer_to_server(servicer, server):
                     servicer.push_email_hash,
                     request_deserializer=protos_dot_helloworld__pb2.PushEmailHashRequest.FromString,
                     response_serializer=protos_dot_helloworld__pb2.PushEmailHashResponse.SerializeToString,
+            ),
+            'get_server_from_email_hash': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_server_from_email_hash,
+                    request_deserializer=protos_dot_helloworld__pb2.GetServerFromEmailHashRequest.FromString,
+                    response_serializer=protos_dot_helloworld__pb2.GetServerFromEmailHashResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -77,5 +93,22 @@ class Greeter(object):
         return grpc.experimental.unary_unary(request, target, '/helloworld.Greeter/push_email_hash',
             protos_dot_helloworld__pb2.PushEmailHashRequest.SerializeToString,
             protos_dot_helloworld__pb2.PushEmailHashResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def get_server_from_email_hash(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/helloworld.Greeter/get_server_from_email_hash',
+            protos_dot_helloworld__pb2.GetServerFromEmailHashRequest.SerializeToString,
+            protos_dot_helloworld__pb2.GetServerFromEmailHashResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

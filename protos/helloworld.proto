@@ -29,6 +29,7 @@ service Greeter {
 //  rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
 
   rpc push_email_hash(PushEmailHashRequest) returns (PushEmailHashResponse) {}
+  rpc get_server_from_email_hash(GetServerFromEmailHashRequest) returns (GetServerFromEmailHashResponse) {}
 
 }
 
@@ -41,4 +42,16 @@ message PushEmailHashRequest {
 // The response message containing the greetings
 message PushEmailHashResponse {
   string status = 1;
+}
+
+message GetServerFromEmailHashRequest {
+  string email_hash = 1;
+}
+
+message Server {
+  string address = 1;
+}
+
+message GetServerFromEmailHashResponse {
+  repeated Server server_list = 1;
 }
