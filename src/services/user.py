@@ -26,6 +26,9 @@ class UserService(BaseService):
         super().__init__(User())
         self.authen_setting = AuthenSetting()
 
+        # TODO: find better way to do this
+        self.push_all_users_email_hash_to_orbitdb_network()
+
     def create_new_user_srp(self, id, email, password_verifier, salt, iv_parameter, display_name, auth_source):
         # create new normal user with these parameter
         try:
