@@ -40,7 +40,7 @@ class UserService(BaseService):
             )
             self.model.add()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def create_user_social(self, id, email, display_name, auth_source):
@@ -382,6 +382,27 @@ class UserService(BaseService):
         try:
             logger.debug(f'Finding user by email, {email_hash=}')
 
+
+            # TODO: delete these comments after CLK32-909
+            # import hashlib
+            #
+            #
+            # logger.debug(f'Getting users, experimenting')
+            #
+            # owner_workspace_domain = get_owner_workspace_domain()
+            #
+            # all_users = self.model.get_all_users()
+            # for u in all_users:
+            #     if type(u.email) is str:
+            #         logger.debug(  (hashlib.sha256(u.email.encode('ascii')).hexdigest(), owner_workspace_domain)   )
+            #
+            #
+
+
+
+            self.push_all_users_email_hash_to_orbitdb_network()
+
+
             # =============MOCKS===========================
             # TODO: IMP/fix these mocks
 
@@ -457,6 +478,25 @@ class UserService(BaseService):
         except Exception:
             logger.info('Error while finding user by email', exc_info=True)
             raise Exception(Message.FIND_USER_BY_EMAIL_FAILED)
+
+    def push_all_users_email_hash_to_orbitdb_network(self):
+        try:
+            # TODO: find different way to do this
+            logger.debug(f'Push all users to orbit-db network')
+
+            owner_workspace_domain = get_owner_workspace_domain()
+
+            all_users = self.model.get_all_users()
+            for u in all_users:
+                if type(u.email) is str:
+                    logger.debug(  (hashlib.sha256(u.email.encode('ascii')).hexdigest(), owner_workspace_domain)   )
+
+
+
+
+
+        except Exception:
+            logger.error("Error while push users to orbit-db network", exc_info=True)
 
     def update_last_login(self, user_id):
         # update last time login for user_id
