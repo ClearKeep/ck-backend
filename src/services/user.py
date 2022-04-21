@@ -354,7 +354,7 @@ class UserService(BaseService):
             )
             return response
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.SEARCH_USER_FAILED)
 
     def get_users(self, client_id, workspace_domain):
