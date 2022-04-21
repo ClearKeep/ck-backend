@@ -412,10 +412,10 @@ class UserService(BaseService):
 
             # self.push_all_users_email_hash_to_orbitdb_network()
 
-            with grpc.insecure_channel('localhost:50051') as channel:
-                stub = helloworld_pb2_grpc.GreeterStub(channel)
-                response = stub.SayHelloAgain(helloworld_pb2.HelloRequest(name='you'))
-                logger.debug(f'thanhpt1-vmo/{response=}')
+            # with grpc.insecure_channel('localhost:50051') as channel:
+            #     stub = helloworld_pb2_grpc.GreeterStub(channel)
+            #     response = stub.push_email_hash(helloworld_pb2.PushEmailHashRequest(email_hash=))
+            #     logger.debug(f'thanhpt1-vmo/{response=}')
 
 
             # =============MOCKS===========================
@@ -505,7 +505,17 @@ class UserService(BaseService):
             logger.debug(f"Pushing {len(all_users)} email hashes to the orbit-db network")
             for u in all_users:
                 if type(u.email) is str:
-                    logger.debug(  (hashlib.sha256(u.email.encode('ascii')).hexdigest(), owner_workspace_domain)   )
+                    email_hash = hashlib.sha256(u.email.encode('ascii')).hexdigest()
+                    logger.debug(  (email_hash, owner_workspace_domain)   )
+                    with grpc.insecure_channel('localhost:50051') as channel:
+                        stub = helloworld_pb2_grpc.GreeterStub(channel)
+                        response = stub.push_email_hash(helloworld_pb2.PushEmailHashRequest(
+                            email_hash=email_hash,
+                            server=owner_workspace_domain
+                        ))
+                        status = response.status
+                        is_ok = 'STATUS_OK' in status
+                        logger.debug(f'thanhpt1-vmo/push_email_hash_response/{is_ok=}/{response=}')
 
         except Exception:
             logger.error("Error while push users to orbit-db network", exc_info=True)

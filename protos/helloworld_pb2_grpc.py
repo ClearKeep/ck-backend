@@ -7,6 +7,10 @@ from protos import helloworld_pb2 as protos_dot_helloworld__pb2
 
 class GreeterStub(object):
     """The greeting service definition.
+    // Sends a greeting
+    rpc SayHello (HelloRequest) returns (HelloReply) {}
+    // Sends another greeting
+    rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
     """
 
     def __init__(self, channel):
@@ -15,32 +19,23 @@ class GreeterStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.SayHello = channel.unary_unary(
-                '/helloworld.Greeter/SayHello',
-                request_serializer=protos_dot_helloworld__pb2.HelloRequest.SerializeToString,
-                response_deserializer=protos_dot_helloworld__pb2.HelloReply.FromString,
-                )
-        self.SayHelloAgain = channel.unary_unary(
-                '/helloworld.Greeter/SayHelloAgain',
-                request_serializer=protos_dot_helloworld__pb2.HelloRequest.SerializeToString,
-                response_deserializer=protos_dot_helloworld__pb2.HelloReply.FromString,
+        self.push_email_hash = channel.unary_unary(
+                '/helloworld.Greeter/push_email_hash',
+                request_serializer=protos_dot_helloworld__pb2.PushEmailHashRequest.SerializeToString,
+                response_deserializer=protos_dot_helloworld__pb2.PushEmailHashResponse.FromString,
                 )
 
 
 class GreeterServicer(object):
     """The greeting service definition.
+    // Sends a greeting
+    rpc SayHello (HelloRequest) returns (HelloReply) {}
+    // Sends another greeting
+    rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
     """
 
-    def SayHello(self, request, context):
-        """Sends a greeting
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def SayHelloAgain(self, request, context):
-        """Sends another greeting
-        """
+    def push_email_hash(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -48,15 +43,10 @@ class GreeterServicer(object):
 
 def add_GreeterServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'SayHello': grpc.unary_unary_rpc_method_handler(
-                    servicer.SayHello,
-                    request_deserializer=protos_dot_helloworld__pb2.HelloRequest.FromString,
-                    response_serializer=protos_dot_helloworld__pb2.HelloReply.SerializeToString,
-            ),
-            'SayHelloAgain': grpc.unary_unary_rpc_method_handler(
-                    servicer.SayHelloAgain,
-                    request_deserializer=protos_dot_helloworld__pb2.HelloRequest.FromString,
-                    response_serializer=protos_dot_helloworld__pb2.HelloReply.SerializeToString,
+            'push_email_hash': grpc.unary_unary_rpc_method_handler(
+                    servicer.push_email_hash,
+                    request_deserializer=protos_dot_helloworld__pb2.PushEmailHashRequest.FromString,
+                    response_serializer=protos_dot_helloworld__pb2.PushEmailHashResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -67,10 +57,14 @@ def add_GreeterServicer_to_server(servicer, server):
  # This class is part of an EXPERIMENTAL API.
 class Greeter(object):
     """The greeting service definition.
+    // Sends a greeting
+    rpc SayHello (HelloRequest) returns (HelloReply) {}
+    // Sends another greeting
+    rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
     """
 
     @staticmethod
-    def SayHello(request,
+    def push_email_hash(request,
             target,
             options=(),
             channel_credentials=None,
@@ -80,25 +74,8 @@ class Greeter(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/helloworld.Greeter/SayHello',
-            protos_dot_helloworld__pb2.HelloRequest.SerializeToString,
-            protos_dot_helloworld__pb2.HelloReply.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def SayHelloAgain(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/helloworld.Greeter/SayHelloAgain',
-            protos_dot_helloworld__pb2.HelloRequest.SerializeToString,
-            protos_dot_helloworld__pb2.HelloReply.FromString,
+        return grpc.experimental.unary_unary(request, target, '/helloworld.Greeter/push_email_hash',
+            protos_dot_helloworld__pb2.PushEmailHashRequest.SerializeToString,
+            protos_dot_helloworld__pb2.PushEmailHashResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

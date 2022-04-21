@@ -23,18 +23,22 @@ package helloworld;
 
 // The greeting service definition.
 service Greeter {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
-    // Sends another greeting
-  rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
+//  // Sends a greeting
+//  rpc SayHello (HelloRequest) returns (HelloReply) {}
+//    // Sends another greeting
+//  rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
+
+  rpc push_email_hash(PushEmailHashRequest) returns (PushEmailHashResponse) {}
+
 }
 
 // The request message containing the user's name.
-message HelloRequest {
-  string name = 1;
+message PushEmailHashRequest {
+  string email_hash = 1;
+  string server = 2;
 }
 
 // The response message containing the greetings
-message HelloReply {
-  string message = 1;
+message PushEmailHashResponse {
+  string status = 1;
 }

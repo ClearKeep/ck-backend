@@ -19,23 +19,30 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\n\033io.grpc.examples.helloworldB\017HelloWorldProtoP\001\242\002\003HLW',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x17protos/helloworld.proto\x12\nhelloworld\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t2\x8e\x01\n\x07Greeter\x12>\n\x08SayHello\x12\x18.helloworld.HelloRequest\x1a\x16.helloworld.HelloReply\"\x00\x12\x43\n\rSayHelloAgain\x12\x18.helloworld.HelloRequest\x1a\x16.helloworld.HelloReply\"\x00\x42\x36\n\x1bio.grpc.examples.helloworldB\x0fHelloWorldProtoP\x01\xa2\x02\x03HLWb\x06proto3'
+  serialized_pb=b'\n\x17protos/helloworld.proto\x12\nhelloworld\":\n\x14PushEmailHashRequest\x12\x12\n\nemail_hash\x18\x01 \x01(\t\x12\x0e\n\x06server\x18\x02 \x01(\t\"\'\n\x15PushEmailHashResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2c\n\x07Greeter\x12X\n\x0fpush_email_hash\x12 .helloworld.PushEmailHashRequest\x1a!.helloworld.PushEmailHashResponse\"\x00\x42\x36\n\x1bio.grpc.examples.helloworldB\x0fHelloWorldProtoP\x01\xa2\x02\x03HLWb\x06proto3'
 )
 
 
 
 
-_HELLOREQUEST = _descriptor.Descriptor(
-  name='HelloRequest',
-  full_name='helloworld.HelloRequest',
+_PUSHEMAILHASHREQUEST = _descriptor.Descriptor(
+  name='PushEmailHashRequest',
+  full_name='helloworld.PushEmailHashRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='name', full_name='helloworld.HelloRequest.name', index=0,
+      name='email_hash', full_name='helloworld.PushEmailHashRequest.email_hash', index=0,
       number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='server', full_name='helloworld.PushEmailHashRequest.server', index=1,
+      number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -53,20 +60,20 @@ _HELLOREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=39,
-  serialized_end=67,
+  serialized_end=97,
 )
 
 
-_HELLOREPLY = _descriptor.Descriptor(
-  name='HelloReply',
-  full_name='helloworld.HelloReply',
+_PUSHEMAILHASHRESPONSE = _descriptor.Descriptor(
+  name='PushEmailHashResponse',
+  full_name='helloworld.PushEmailHashResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='message', full_name='helloworld.HelloReply.message', index=0,
+      name='status', full_name='helloworld.PushEmailHashResponse.status', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -84,27 +91,27 @@ _HELLOREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=69,
-  serialized_end=98,
+  serialized_start=99,
+  serialized_end=138,
 )
 
-DESCRIPTOR.message_types_by_name['HelloRequest'] = _HELLOREQUEST
-DESCRIPTOR.message_types_by_name['HelloReply'] = _HELLOREPLY
+DESCRIPTOR.message_types_by_name['PushEmailHashRequest'] = _PUSHEMAILHASHREQUEST
+DESCRIPTOR.message_types_by_name['PushEmailHashResponse'] = _PUSHEMAILHASHRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-HelloRequest = _reflection.GeneratedProtocolMessageType('HelloRequest', (_message.Message,), {
-  'DESCRIPTOR' : _HELLOREQUEST,
+PushEmailHashRequest = _reflection.GeneratedProtocolMessageType('PushEmailHashRequest', (_message.Message,), {
+  'DESCRIPTOR' : _PUSHEMAILHASHREQUEST,
   '__module__' : 'protos.helloworld_pb2'
-  # @@protoc_insertion_point(class_scope:helloworld.HelloRequest)
+  # @@protoc_insertion_point(class_scope:helloworld.PushEmailHashRequest)
   })
-_sym_db.RegisterMessage(HelloRequest)
+_sym_db.RegisterMessage(PushEmailHashRequest)
 
-HelloReply = _reflection.GeneratedProtocolMessageType('HelloReply', (_message.Message,), {
-  'DESCRIPTOR' : _HELLOREPLY,
+PushEmailHashResponse = _reflection.GeneratedProtocolMessageType('PushEmailHashResponse', (_message.Message,), {
+  'DESCRIPTOR' : _PUSHEMAILHASHRESPONSE,
   '__module__' : 'protos.helloworld_pb2'
-  # @@protoc_insertion_point(class_scope:helloworld.HelloReply)
+  # @@protoc_insertion_point(class_scope:helloworld.PushEmailHashResponse)
   })
-_sym_db.RegisterMessage(HelloReply)
+_sym_db.RegisterMessage(PushEmailHashResponse)
 
 
 DESCRIPTOR._options = None
@@ -116,26 +123,16 @@ _GREETER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=101,
-  serialized_end=243,
+  serialized_start=140,
+  serialized_end=239,
   methods=[
   _descriptor.MethodDescriptor(
-    name='SayHello',
-    full_name='helloworld.Greeter.SayHello',
+    name='push_email_hash',
+    full_name='helloworld.Greeter.push_email_hash',
     index=0,
     containing_service=None,
-    input_type=_HELLOREQUEST,
-    output_type=_HELLOREPLY,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='SayHelloAgain',
-    full_name='helloworld.Greeter.SayHelloAgain',
-    index=1,
-    containing_service=None,
-    input_type=_HELLOREQUEST,
-    output_type=_HELLOREPLY,
+    input_type=_PUSHEMAILHASHREQUEST,
+    output_type=_PUSHEMAILHASHRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
