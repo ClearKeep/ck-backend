@@ -462,6 +462,8 @@ class UserService(BaseService):
         logger.debug(f'find_user_detail_info_from_email_hash')
         all_users = self.model.get_all_users()
         for u in all_users:
+            if type(u) is not str:
+                continue
             if hashlib.sha256(u.email.encode('ascii')).hexdigest().lower() == email_hash.lower():
                 return user_pb2.UserInfoResponse(
                     id=u.id,
