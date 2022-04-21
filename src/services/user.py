@@ -1,9 +1,11 @@
+import grpc
+
 from src.services.base import BaseService
 from src.models.user import User
 from src.models.authen_setting import AuthenSetting
 from utils.encrypt import EncryptUtils
 from utils.keycloak import KeyCloakUtils
-from protos import user_pb2
+from protos import user_pb2, helloworld_pb2_grpc, helloworld_pb2
 from utils.logger import *
 from msg.message import Message
 from src.services.upload_file import UploadFileService
@@ -408,7 +410,12 @@ class UserService(BaseService):
 
 
 
-            self.push_all_users_email_hash_to_orbitdb_network()
+            # self.push_all_users_email_hash_to_orbitdb_network()
+
+            with grpc.insecure_channel('localhost:50051') as channel:
+                stub = helloworld_pb2_grpc.GreeterStub(channel)
+                response = stub.SayHelloAgain(helloworld_pb2.HelloRequest(name='you'))
+                logger.debug(f'thanhpt1-vmo/{response=}')
 
 
             # =============MOCKS===========================

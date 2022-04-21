@@ -14,6 +14,8 @@ import protos.server_info_pb2_grpc as server_info_service
 import protos.upload_file_pb2_grpc as upload_file_service
 import protos.workspace_pb2_grpc as workspace_service
 import protos.note_pb2_grpc as note_service
+import protos
+from protos import helloworld_pb2_grpc, helloworld_pb2
 from src.controllers.user import UserController
 from src.controllers.auth import AuthController
 from src.controllers.signal import SignalController
@@ -32,11 +34,27 @@ from grpc import aio
 from utils.keycloak import KeyCloakUtils
 
 
+#
+# class HelloworldController(helloworld_pb2_grpc.GreeterServicer):
+#     def SayHelloAgain(self, request, context):
+#         """
+#         rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
+#         """
+#         return helloworld_pb2.HelloReply(message="thanhpt1-vmo/Hello request of python client")
+
+
 async def start_server():
     grpc_port = get_system_config()['grpc_port']
     server = grpc.aio.server()
     # server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), interceptors=(AuthInterceptor(),))
     # server = grpc.server(futures.ThreadPoolExecutor(max_workers=200))
+
+
+
+
+    # helloworld_pb2_grpc.add_GreeterServicer_to_server(HelloworldController(), server)
+
+
     user_service.add_UserServicer_to_server(UserController(), server)
     auth_service.add_AuthServicer_to_server(AuthController(), server)
     signal_service.add_SignalKeyDistributionServicer_to_server(SignalController(), server)
