@@ -462,6 +462,22 @@ class UserService(BaseService):
         except Exception:
             logger.error("Error while push users to orbit-db network", exc_info=True)
 
+    def find_user_detail_info_from_email_hash(self, email_hash):
+        # TODO: find different way to do this
+        logger.debug(f'find_user_detail_info_from_email_hash')
+        all_users = self.model.get_all_users()
+        for u in all_users:
+            if hashlib.sha256(u.email.encode('ascii')).hexdigest().lower() == email_hash.lower():
+                return user_pb2.UserInfoResponse(
+                    id=u.id,
+                    display_name = u.display_name,
+                    workspace_domain=get_owner_workspace_domain()
+                )
+        return user_pb2.UserInfoResponse()
+
+
+
+
     def update_last_login(self, user_id):
         # update last time login for user_id
         try:
