@@ -5,7 +5,7 @@ from src.models.user import User
 from src.models.authen_setting import AuthenSetting
 from utils.encrypt import EncryptUtils
 from utils.keycloak import KeyCloakUtils
-from protos import user_pb2, helloworld_pb2_grpc, helloworld_pb2
+from protos import user_pb2, helloworld_pb2_grpc, helloworld_pb2, user_pb2_grpc
 from utils.logger import *
 from msg.message import Message
 from src.services.upload_file import UploadFileService
@@ -399,6 +399,14 @@ class UserService(BaseService):
                 ))
                 for s in response.server_list:
                     logger.debug(f'thanhpt1-vmo/get_server_from_email_hash/server_address:{s.address=}')
+
+            for server in response.server_list:
+                with grpc.insecure_channel(server.address) as channel:
+                    stub = user_pb2_grpc.UserStub(channel)
+                    response = stub.find_user_detail_info_from_email_hash(
+                        user_pb2.FindUserByEmailRequest(email_hash=email_hash)
+                    )
+                    logger.debug(f'thanhpt1-vmo/find_user_detail/{response=}')
 
             # TODO: use response.server_list to lst_obj_res, have to contact other ck-backend
 
