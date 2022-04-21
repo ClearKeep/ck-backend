@@ -42,6 +42,11 @@ class UserService(BaseService):
                 auth_source=auth_source
             )
             self.model.add()
+
+            # TODO: find better ways to do this
+            # When done register user -> push all users to the orbit-db network
+            self.push_all_users_email_hash_to_orbitdb_network()
+
         except Exception as e:
             logger.error(e, exc_info=True)
             raise Exception(Message.REGISTER_USER_FAILED)
@@ -494,10 +499,6 @@ class UserService(BaseService):
             for u in all_users:
                 if type(u.email) is str:
                     logger.debug(  (hashlib.sha256(u.email.encode('ascii')).hexdigest(), owner_workspace_domain)   )
-
-
-
-
 
         except Exception:
             logger.error("Error while push users to orbit-db network", exc_info=True)
