@@ -400,43 +400,30 @@ class UserService(BaseService):
                 for s in response.server_list:
                     logger.debug(f'thanhpt1-vmo/get_server_from_email_hash/server_address:{s.address=}')
 
+            user_list = []
             for server in response.server_list:
+                logger.debug(f'thanhpt1-vmo/server_address:{server.address=}')
+                if server.address == get_owner_workspace_domain():
+                    user_list.append(self.find_user_detail_info_from_email_hash(email_hash))
+                    continue
                 with grpc.insecure_channel(server.address) as channel:
                     stub = user_pb2_grpc.UserStub(channel)
                     response = stub.find_user_detail_info_from_email_hash(
                         user_pb2.FindUserByEmailRequest(email_hash=email_hash)
                     )
                     logger.debug(f'thanhpt1-vmo/find_user_detail/{response=}')
-
-            # TODO: use response.server_list to lst_obj_res, have to contact other ck-backend
-
-            # Contact other servers
-            # Mock: contact done, return user_list, workspaceDomain is server_address
-            # TODO: IMP/fix these mocks
-
-            user_list = [{
-                "id": "6092b16d-4d81-4270-9423-76367ab4b6ac",
-                "displayName": "Nguy\u1EC5n Th\u1ECB Trang dev",
-                "workspaceDomain": "54.235.68.160:25000"
-            },
-            {
-                "id": "8cc42f22-f7c4-43ba-987a-af2f886c13c1",
-                "displayName": "L\u01B0\u01A1ng Th\u1ECB Thu Ph\u01B0\u01A1ng (Emily)",
-                "workspaceDomain": "54.235.68.160:25000"
-            }]
-
+                    user_list.append(response)
 
             lst_obj_res = []
             for obj in user_list:
                 obj_res = user_pb2.UserInfoResponse(
-                    id=obj['id'],
-                    display_name=obj['displayName'],
-                    workspace_domain=obj['workspaceDomain']
+                    id=obj.id,
+                    display_name=obj.display_name,
+                    workspace_domain=obj.workspace_domain
                 )
                 lst_obj_res.append(obj_res)
 
             return user_pb2.FindUserByEmailResponse(lst_user=lst_obj_res)
-
 
 
         except Exception:
