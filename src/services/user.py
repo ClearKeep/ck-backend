@@ -371,14 +371,63 @@ class UserService(BaseService):
         # get other users for client_id within workspace_domain
         try:
             lst_user = self.model.get_users(client_id)
+
+
+
+
+
+            # Start mock
+
+            users_dict_from_kreya = {
+                "lstUser": [
+                    {
+                        "id": "cb2611ba-75d5-4293-94ea-d78dab76dda6",
+                        "displayName": "u10c",
+                        "workspaceDomain": "dev3.clearkeep.org:25000"
+                    },
+                    {
+                        "id": "7ca4a0ab-2b97-44e4-967f-652e737d0772",
+                        "displayName": "u10b",
+                        "workspaceDomain": "dev2.clearkeep.org:25000"
+                    }
+                ]
+            }
+
+            lst_user = []
+            for u in users_dict_from_kreya['lstUser']:
+                class Object(object): pass
+
+                obj = Object()
+                obj.id = u['id']
+                obj.display_name = u['displayName']
+                obj.workspace_domain = u['workspaceDomain']
+                lst_user.append(obj)
+
+
+            # BEFORE MOCK, todo: return back to this when done mock
+            # lst_obj_res = []
+            # for obj in lst_user:
+            #     obj_res = user_pb2.UserInfoResponse(
+            #         id=obj.id,
+            #         display_name=obj.display_name,
+            #         workspace_domain=workspace_domain,
+            #     )
+            #     lst_obj_res.append(obj_res)
+
+
             lst_obj_res = []
             for obj in lst_user:
                 obj_res = user_pb2.UserInfoResponse(
                     id=obj.id,
                     display_name=obj.display_name,
-                    workspace_domain=workspace_domain,
+                    workspace_domain=obj.workspace_domain,
                 )
                 lst_obj_res.append(obj_res)
+
+            # End mock
+
+
+
 
             response = user_pb2.GetUsersResponse(
                 lst_user=lst_obj_res
