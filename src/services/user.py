@@ -403,6 +403,7 @@ class UserService(BaseService):
             user_list = []
             for server in response.server_list:
                 logger.debug(f'thanhpt1-vmo/server_address:{server.address=}')
+                # Don't need to open gRPC channel when server address is the current server
                 if server.address == get_owner_workspace_domain():
                     user_list.append(self.find_user_detail_info_from_email_hash(email_hash))
                     continue
