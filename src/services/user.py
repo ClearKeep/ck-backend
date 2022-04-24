@@ -389,6 +389,11 @@ class UserService(BaseService):
                         "id": "7ca4a0ab-2b97-44e4-967f-652e737d0772",
                         "displayName": "u10b",
                         "workspaceDomain": "dev2.clearkeep.org:25000"
+                    },
+                    {
+                        "id": "7de1e615-7f0c-42b0-ba2c-db6480027156",
+                        "displayName": "u10a",
+                        "workspaceDomain": "dev1.clearkeep.org:25000"
                     }
                 ]
             }
