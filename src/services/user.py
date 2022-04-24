@@ -385,7 +385,7 @@ class UserService(BaseService):
             )
             return response
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.GET_USER_INFO_FAILED)
 
     def find_user_by_email(self, email_hash):
