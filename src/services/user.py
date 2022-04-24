@@ -392,7 +392,7 @@ class UserService(BaseService):
         try:
             logger.debug(f'Finding user by email, {email_hash=}')
 
-            with grpc.insecure_channel('localhost:50051') as channel:
+            with grpc.insecure_channel(get_system_config()['orbit_db_grpc_port']) as channel:
                 stub = helloworld_pb2_grpc.GreeterStub(channel)
                 response = stub.get_server_from_email_hash(helloworld_pb2.GetServerFromEmailHashRequest(
                     email_hash=email_hash
@@ -444,7 +444,7 @@ class UserService(BaseService):
                     continue
                 email_hash = hashlib.sha256(u.email.encode('ascii')).hexdigest()
                 logger.debug(  (email_hash, owner_workspace_domain)   )
-                with grpc.insecure_channel('localhost:50051') as channel:
+                with grpc.insecure_channel(get_system_config()['orbit_db_grpc_port']) as channel:
                     stub = helloworld_pb2_grpc.GreeterStub(channel)
                     response = stub.push_email_hash(helloworld_pb2.PushEmailHashRequest(
                         email_hash=email_hash,
