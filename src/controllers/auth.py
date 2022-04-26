@@ -37,6 +37,10 @@ class AuthController(BaseController):
             user_info.update()
 
             public_challenge_b = B.hex()
+            logger.debug(f'{B.hex()=}')
+            logger.debug(f'{public_challenge_b=}')
+            logger.debug(f'{salt=}{len(salt)}=')
+
             auth_challenge_res = auth_messages.AuthChallengeRes(
                 salt=user_info.salt,
                 public_challenge_b=public_challenge_b
@@ -44,7 +48,7 @@ class AuthController(BaseController):
             return auth_challenge_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTHENTICATION_FAILED)]
             else:
@@ -56,16 +60,44 @@ class AuthController(BaseController):
     @request_logged
     async def login_authenticate(self, request, context):
         try:
+            logger.debug('login_authenticate BEGIN')
+            logger.debug('=====================')
+            logger.debug('=====================')
+            logger.debug('=====================')
             user_name = request.user_name
             exists_user = self.service.get_user_by_email(user_name)
             client_session_key_proof = request.client_session_key_proof
             user_info = self.user_service.get_user_by_id(exists_user["id"])
+
+            logger.debug(f'{user_name=}')
+            logger.debug(f'{exists_user=}')
+            logger.debug(f'{client_session_key_proof=}')
+            logger.debug(f'{user_info=}')
+
+            logger.debug(f'{request.client_public=}')
 
             if not user_info:
                 raise Exception(Message.AUTH_USER_NOT_FOUND)
             password_verifier = bytes.fromhex(user_info.password_verifier)
             salt = bytes.fromhex(user_info.salt)
             client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
+
+            logger.debug(f'{password_verifier=}{len(password_verifier)=}')
+            logger.debug(f'{salt=}{len(salt)=}')
+            logger.debug(f'{client_session_key_proof_bytes=}{len(client_session_key_proof_bytes)=}')
+
+
+
+            thanhpt1_vmo_bytes_s = salt
+            thanhpt1_vmo_bytes_v = password_verifier
+            thanhpt1_vmo_bytes_A = bytes.fromhex(request.client_public)
+            thanhpt1_vmo_bytes_b = bytes.fromhex(user_info.srp_server_private)
+
+
+            logger.debug(f'{thanhpt1_vmo_bytes_s=}{len(thanhpt1_vmo_bytes_s)=}')
+            logger.debug(f'{thanhpt1_vmo_bytes_v=}{len(thanhpt1_vmo_bytes_v)=}')
+            logger.debug(f'{thanhpt1_vmo_bytes_A=}{len(thanhpt1_vmo_bytes_A)=}')
+            logger.debug(f'{thanhpt1_vmo_bytes_b=}{len(thanhpt1_vmo_bytes_b)=}')
 
             srv = srp.Verifier(
                             username=user_name,
@@ -126,7 +158,7 @@ class AuthController(BaseController):
                     )
                 return auth_message
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -134,6 +166,11 @@ class AuthController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+        finally:
+            logger.debug('login_authenticate END')
+            logger.debug('=====================')
+            logger.debug('=====================')
+            logger.debug('=====================')
 
     @request_logged
     async def login_google(self, request, context):

@@ -1,3 +1,7 @@
+import json
+
+import grpc
+
 from src.controllers.base import BaseController
 from src.services.note import NoteService
 from utils.keycloak import KeyCloakUtils
@@ -33,7 +37,7 @@ class NoteController(BaseController):
             )
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
