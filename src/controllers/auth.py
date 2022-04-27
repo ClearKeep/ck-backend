@@ -110,9 +110,12 @@ class AuthController(BaseController):
                             bytes_b=bytes.fromhex(user_info.srp_server_private)
                         )
             verify_session_ret = srv.verify_session(client_session_key_proof_bytes)
-            verify_session_ret_string = verify_session_ret.hex()
+            if verify_session_ret is not None:
+                verify_session_ret_string = verify_session_ret.hex()
+                logger.debug(f'{verify_session_ret_string=}')
+            else:
+                logger.debug(f'cant convert, verify_session_ret isNone')
             logger.debug(f'{verify_session_ret=}')
-            logger.debug(f'{verify_session_ret_string=}')
 
             authenticated = srv.authenticated()
 
