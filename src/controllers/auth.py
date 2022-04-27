@@ -84,6 +84,7 @@ class AuthController(BaseController):
             salt = bytes.fromhex(user_info.salt)
             client_session_key_proof_bytes = bytes.fromhex(client_session_key_proof)
 
+            logger.debug(f'{user_info.password_verifier=}')
             logger.debug(f'{password_verifier=}{len(password_verifier)=}')
             logger.debug(f'{salt=}{len(salt)=}')
             logger.debug(f'{client_session_key_proof_bytes=}{len(client_session_key_proof_bytes)=}')
@@ -108,7 +109,11 @@ class AuthController(BaseController):
                             bytes_A=bytes.fromhex(request.client_public),
                             bytes_b=bytes.fromhex(user_info.srp_server_private)
                         )
-            srv.verify_session(client_session_key_proof_bytes)
+            verify_session_ret = srv.verify_session(client_session_key_proof_bytes)
+            verify_session_ret_string = verify_session_ret.hex()
+            logger.debug(f'{verify_session_ret=}')
+            logger.debug(f'{verify_session_ret_string=}')
+
             authenticated = srv.authenticated()
 
             if not authenticated:
@@ -192,7 +197,6 @@ class AuthController(BaseController):
                                 )
             return auth_challenge_res
         except Exception as e:
-            raise
             logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
@@ -222,7 +226,6 @@ class AuthController(BaseController):
         # TODO: fix this mock
         # except Exception as e:
         except IOError as e:
-            raise
             logger.error(Message.AUTH_USER_NOT_FOUND, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
@@ -286,7 +289,6 @@ class AuthController(BaseController):
             return auth_challenge_res
 
         except Exception as e:
-            raise
             logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTHENTICATION_FAILED)]
@@ -331,7 +333,6 @@ class AuthController(BaseController):
             return auth_messages.RegisterSRPRes()
 
         except Exception as e:
-            raise
             logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_USER_FAILED)]
@@ -579,7 +580,6 @@ class AuthController(BaseController):
                 iv_parameter=request.iv_parameter
             )
         except Exception as e:
-            raise
             logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
@@ -641,7 +641,6 @@ class AuthController(BaseController):
                 iv_parameter=iv_parameter
             )
         except Exception as e:
-            raise
             logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
@@ -710,7 +709,6 @@ class AuthController(BaseController):
                 iv_parameter=user_info.iv_parameter
             )
         except Exception as e:
-            raise
             logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.VERIFY_PINCODE_FAILED)]
