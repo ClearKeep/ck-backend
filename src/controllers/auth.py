@@ -20,6 +20,7 @@ class AuthController(BaseController):
     @request_logged
     async def login_challenge(self, request, context):
         try:
+            logger.debug('login_challenge BEGIN')
             email = request.email
             user_info = self.user_service.get_user_by_auth_source(email, "account")
             if not user_info:
@@ -45,6 +46,7 @@ class AuthController(BaseController):
                 salt=user_info.salt,
                 public_challenge_b=public_challenge_b
             )
+            logger.debug('login_challenge END')
             return auth_challenge_res
 
         except Exception as e:
@@ -110,6 +112,7 @@ class AuthController(BaseController):
             authenticated = srv.authenticated()
 
             if not authenticated:
+                logger.debug(f"srv.authenticated() is not True:<{authenticated=}>")
                 raise Exception(Message.AUTHENTICATION_FAILED)
 
             token = self.service.token(user_name, user_info.password_verifier)
@@ -297,6 +300,7 @@ class AuthController(BaseController):
     async def register_srp(self, request, context):
         # check exist user
         try:
+            logger.debug("register_srp BEGIN")
             email = request.email
             display_name = request.display_name
             password_verifier = request.password_verifier
@@ -323,6 +327,7 @@ class AuthController(BaseController):
                 UserService().delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
 
+            logger.debug("register_srp END")
             return auth_messages.RegisterSRPRes()
 
         except Exception as e:
