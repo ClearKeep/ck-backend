@@ -1,3 +1,12 @@
+#!/bin/bash
+DOCKER_BUILDKIT=1 docker-compose --project-name thanhpt1-vmo-self-contained-m1  -f .docker/thanhpt1-vmo-other-services-self-contained-m1.yml down --remove-orphans --volumes
+DOCKER_BUILDKIT=1 docker-compose --project-name thanhpt1-vmo-self-contained-m1  -f .docker/thanhpt1-vmo-other-services-self-contained-m1.yml up  --remove-orphans   2>&1 | tee docker-services-console-m1.logthanhpt1-vmo-self &
+
+
+read -r -p "Wait 60 seconds for Docker services to be ready, press any key to continue immediately" -t 360n 1 -s
+
+
+
 export PYTHONPATH=./
 export PYTHONUNBUFFERED=1
 export ENV=thanhpt1-vmo_dev
