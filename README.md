@@ -10,10 +10,27 @@
 
 ## 1. Installation  
 ### 1.1 Install PostgreSQL, Keycloak, Janus WebRTC  
-> docker-compose -f .docker/prod-docker-compose.yml up -d  
+
+TODO: fix this docs
+
+`docker-compose -f .docker/prod-docker-compose.yml up -d`
 
 ### 1.2 Using pip3 to install modules  
->pip3 install -r requirement.txt  
+```bash
+# Use venv to avoid conflict with system-wide python
+python3.8 -m venv venv/
+# Use venv/bin/python to avoid have to activate the environment
+venv/bin/python -m pip install --upgrade pip
+venv/bin/python install -r requirements.txt  
+```
+On Ubuntu 20.04 install these for pip install not to fail
+```bash
+sudo apt install build-essential libssl-dev libffi-dev libpq-dev  gcc 
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3.8 python3.8-dev python3.8-venv
+venv/bin/python -m pip install wheel
+```
 
 ## 2. Configuration  
 ### 2.1 Keycloak authentication  
