@@ -1,0 +1,92 @@
+
+
+
+
+
+
+
+# ` $ sudo DOCKER_BUILDKIT=1 docker-compose -f .docker/thanhpt1-vmo-docker-compose.yml up --remove-orphans  `
+# ` $ sudo DOCKER_BUILDKIT=1 docker-compose -f .docker/thanhpt1-vmo-docker-compose.yml down --remove-orphans --volumes  `
+
+
+
+# Docker Compose Keycloak Postgres ( Docker compose for Keycloak with Postgres Database).
+version: '3.1'
+
+
+volumes:
+  postgres_data:
+      driver: local
+
+services:
+  thanhpt1-vmo_postgres:
+      image: postgres@sha256:e3d8179786b8f16d066b313f381484a92efb175d1ce8355dc180fee1d5fa70ec
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      ports:
+        - 5432:5432
+      restart: always
+#      command: ["postgres", "-c", "logging_collector=on", "-c", "log_directory=/logs", "-c", "log_filename=postgresql.log", "-c", "log_statement=all"]
+      command: ["postgres", "-c", "log_statement=all"]
+      environment:
+        POSTGRES_DB: thanhpt1_vmo_postgres_db
+        POSTGRES_USER: admin
+        POSTGRES_PASSWORD: clk328@2021
+
+  thanhpt1-vmo_keycloak_authen:
+      image: jboss/keycloak@sha256:abdb1aea6c671f61a594af599f63fbe78c9631767886d9030bc774d908422d0a
+      restart: always
+      volumes:
+        - ../configs:/opt/jboss/keycloak/ck-backend-all-configs
+      environment:
+        DB_VENDOR: POSTGRES
+#        DB_ADDR: 127.0.0.1:5432 # Bao loi FATAL, failed to connect to DB
+# prod_authen_1  | 09:54:57,777 FATAL [org.keycloak.services] (ServerService Thread Pool -- 65)
+# Error during startup: java.lang.RuntimeException: Failed to connect to database
+        DB_ADDR: thanhpt1-vmo_postgres:5432 # Dung duoc ten services de reference IP address, ten services lam hostname
+        DB_DATABASE: thanhpt1_vmo_postgres_db
+        DB_USER: admin
+        DB_PASSWORD: clk328@2021
+        KEYCLOAK_USER: admin
+        KEYCLOAK_PASSWORD: clk328@2021
+        KEYCLOAK_LOGLEVEL: ALL
+        JAVA_TOOL_OPTIONS: -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled -Dkeycloak.profile.feature.token_exchange=enabled
+        command: -b 0.0.0.0 -bmanagement 0.0.0.0
+        KEYCLOAK_IMPORT: /opt/jboss/keycloak/ck-backend-all-configs/realm-export-thanhpt1-vmo-realm2-from-scratch.json -Dkeycloak.profile.feature.upload_scripts=enabled
+
+      ports:
+        - 32003:8080
+        - 32004:8443 # TODO: fix this, borrow port, https port, setup admin when just up
+        - 9990:9990
+      depends_on:
+        - thanhpt1-vmo_postgres
+  thanhpt1-vmo_webrtc:
+      image: phuongvmodev/janus-webrtc-gateway-docker@sha256:6f87a609a92297c2dd38fee1ca078db53ad706fbf24d8941c5a7846b35c0e3bc
+      restart: always
+      ports:
+        - 7088:7088
+        - 8288:80
+        - 8088:8088
+        - 8188:8188
+
+
+
+#  main_module:
+#    build:
+#      context: ..
+#      dockerfile: .docker/clearkeep-main-module.dockerfile
+#
+#    # Mapping of container port to host
+#    ports:
+#      - 25000:25000
+#      - 25001:25001
+#    # Mount volume
+#    volumes:
+#      - ../:/clearkeep-main-module-source
+#
+#    # Link database container to app container
+#    # for reachability.
+#    links:
+#      - postgres:5432
+#    depends_on:
+#      - postgres

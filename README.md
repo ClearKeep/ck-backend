@@ -10,10 +10,33 @@
 
 ## 1. Installation  
 ### 1.1 Install PostgreSQL, Keycloak, Janus WebRTC  
-> docker-compose -f .docker/prod-docker-compose.yml up -d  
+TODO: fix this docs
+```bash
+docker-compose -f .docker/prod-docker-compose.yml up -d
+```
+DOCKER_BUILDKIT for cache. --remove-orphans, --remove-volumes, avoid lingering data.
+```bash
+--project-name to avoid Docker serivce name conflict
+DOCKER_BUILDKIT=1 docker-compose --project-name thanhpt1-vmo-self-contained-m1  -f .docker/thanhpt1-vmo-other-services-self-contained-m1.yml down --remove-orphans --volumes
+DOCKER_BUILDKIT=1 docker-compose --project-name thanhpt1-vmo-self-contained-m1  -f .docker/thanhpt1-vmo-other-services-self-contained-m1.yml up  --remove-orphans   2>&1 | tee thanhpt1-vmo_docker-compose-console-m1.log
+```
 
 ### 1.2 Using pip3 to install modules  
->pip3 install -r requirement.txt  
+```bash
+# Use venv to avoid conflict with system-wide python
+python3.8 -m venv venv/
+# Use venv/bin/python to avoid have to activate the environment
+venv/bin/python -m pip install --upgrade pip
+venv/bin/python install -r requirements.txt  
+```
+On Ubuntu 20.04 install these for pip install not to fail
+```bash
+sudo apt install build-essential libssl-dev libffi-dev libpq-dev  gcc 
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3.8 python3.8-dev python3.8-venv
+venv/bin/python -m pip install wheel
+```
 
 ## 2. Configuration  
 ### 2.1 Keycloak authentication  
@@ -88,14 +111,13 @@ Project required some configurations, please fill in project config file:
 - Stun/turn server
 - OTP sender server (currently is twillio)
 
-
-
 ## 3. Run project  
-Genrate protobuf files:
-> sh proto/gen.sh
+Should generate the protobuf files when have new changes in proto files, might not be necessary
+because `./run.sh` already contains generating protobuf script.
 
 Run project
+```bash
+source run.sh
+```
 
-> python3 app_grpc.py
->
-> python3 app_http.py
+
