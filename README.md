@@ -111,14 +111,13 @@ Project required some configurations, please fill in project config file:
 - Stun/turn server
 - OTP sender server (currently is twillio)
 
-
-
 ## 3. Run project  
-Genrate protobuf files:
-> sh proto/gen.sh
+Should generate the protobuf files when have new changes in proto files, might not be necessary
+because `./run.sh` already contains generating protobuf script.
 
 Run project
+```bash
+source run.sh
+```
 
-> python3 app_grpc.py
->
-> python3 app_http.py
+
