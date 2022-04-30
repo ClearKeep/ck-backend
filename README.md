@@ -10,10 +10,15 @@
 
 ## 1. Installation  
 ### 1.1 Install PostgreSQL, Keycloak, Janus WebRTC  
-
 TODO: fix this docs
-
-`docker-compose -f .docker/prod-docker-compose.yml up -d`
+```bash
+docker-compose -f .docker/prod-docker-compose.yml up -d
+```
+DOCKER_BUILDKIT for cache. --remove-orphans, --remove-volumes, avoid lingering data.
+```bash
+DOCKER_BUILDKIT=1 docker-compose --project-name thanhpt1-vmo-self-contained-m1  -f .docker/thanhpt1-vmo-other-services-self-contained-m1.yml down --remove-orphans --volumes
+DOCKER_BUILDKIT=1 docker-compose --project-name thanhpt1-vmo-self-contained-m1  -f .docker/thanhpt1-vmo-other-services-self-contained-m1.yml up  --remove-orphans   2>&1 | tee thanhpt1-vmo_docker-compose-console-m1.log
+```
 
 ### 1.2 Using pip3 to install modules  
 ```bash
