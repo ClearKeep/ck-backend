@@ -6,7 +6,6 @@ from src.services.message import MessageService
 from src.services.signal import SignalService
 from src.services.notify_inapp import NotifyInAppService
 from src.services.group import GroupService
-from utils.encrypt import EncryptUtils
 from middlewares.permission import *
 from middlewares.request_logged import *
 from utils.config import *

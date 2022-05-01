@@ -1,7 +1,6 @@
 from src.services.base import BaseService
 from src.models.user import User
 from src.models.authen_setting import AuthenSetting
-from utils.encrypt import EncryptUtils
 from utils.keycloak import KeyCloakUtils
 from protos import user_pb2
 from utils.logger import *
