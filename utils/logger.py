@@ -19,7 +19,7 @@ def setup_logging(log_file_name):
             abs_sys_paths = map(os.path.abspath, sys.path)
             for path in sorted(abs_sys_paths, key=len, reverse=True):  # longer paths first
                 if pathname.as_posix().startswith(Path(path).as_posix()):
-                    # TODO: fix this hard-code "ck-backend-internal"
+                    # TODO: fix this hard-code "ck-backend"
                     record.relativepath = os.path.relpath(str(pathname), path) if 'ck-backend' in str(
                         pathname) else str(pathname)
                     break
@@ -77,16 +77,3 @@ def setup_logging(log_file_name):
         # monkey-patch a `print` global into the http.client module; all calls to
         # print() in that module will then use our print_to_log implementation
         http.client.print = print_to_log
-
-
-def create_timed_rotating_log(path):
-    # handler = TimedRotatingFileHandler(path,
-    #                                    when='midnight',
-    #                                    backupCount=1)
-
-    # handler.suffix = "%Y-%m-%d"
-    # formatter = logging.Formatter(u'%(asctime)s\t%(name)s\t%(levelname)s\t%(pathname)s:%(lineno)d\t%(message)s')
-    # handler.setFormatter(formatter)
-    # logger.addHandler(handler)
-
-    pass
