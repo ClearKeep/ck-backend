@@ -1,20 +1,20 @@
-from src.services.base import BaseService
-from src.models.user import User
-from src.models.authen_setting import AuthenSetting
-from utils.encrypt import EncryptUtils
-from utils.keycloak import KeyCloakUtils
-from protos import user_pb2
-from utils.logger import *
-from msg.message import Message
-from src.services.upload_file import UploadFileService
-import datetime
-from utils.config import get_system_config, get_owner_workspace_domain
-from utils.otp import OTPServer
-from client.client_user import ClientUser
 import base64
-import boto3
-import os
+import datetime
 import hashlib
+import os
+
+from client.client_user import ClientUser
+from msg.message import Message
+from protos import user_pb2
+from src.models.authen_setting import AuthenSetting
+from src.models.user import User
+from src.services.base import BaseService
+from src.services.upload_file import UploadFileService
+from utils.config import get_system_config, get_owner_workspace_domain
+from utils.keycloak import KeyCloakUtils
+from utils.logger import *
+from utils.otp import OTPServer
+
 client_records_list_in_memory = {}
 
 
@@ -22,6 +22,7 @@ class UserService(BaseService):
     """
     UserService, using when create new user, edit user info, or delete user, or enable/disable mfa flow
     """
+
     def __init__(self):
         super().__init__(User())
         self.authen_setting = AuthenSetting()

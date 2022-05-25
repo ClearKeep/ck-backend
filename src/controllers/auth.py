@@ -1,16 +1,17 @@
+import srp
+
 import protos.auth_pb2 as auth_messages
-from src.controllers.base import BaseController
-from src.services.auth import AuthService
-from src.services.user import UserService
-from src.services.message import MessageService
-from src.services.signal import SignalService
-from src.services.notify_inapp import NotifyInAppService
-from src.services.group import GroupService
-from utils.encrypt import EncryptUtils
 from middlewares.permission import *
 from middlewares.request_logged import *
+from src.controllers.base import BaseController
+from src.services.auth import AuthService
+from src.services.group import GroupService
+from src.services.message import MessageService
+from src.services.notify_inapp import NotifyInAppService
+from src.services.signal import SignalService
+from src.services.user import UserService
 from utils.config import *
-import srp
+
 
 class AuthController(BaseController):
     def __init__(self, *kwargs):
