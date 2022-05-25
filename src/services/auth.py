@@ -13,7 +13,8 @@ from src.models.authen_setting import AuthenSetting
 from utils.otp import OTPServer
 from utils.smtp import MailerServer
 from utils.config import get_system_config, get_owner_workspace_domain
-
+import logging
+logger = logging.getLogger(__name__)
 
 class AuthService:
     """

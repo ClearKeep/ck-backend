@@ -2,10 +2,10 @@ from kalyke.client import VoIPClient, APNsClient
 from utils.config import get_system_config
 import firebase_admin
 from firebase_admin import credentials, messaging
-from utils.logger import logger
 from kalyke.payload import PayloadAlert, Payload
 import time
-
+import logging
+logger = logging.getLogger(__name__)
 # init push service for iOS
 client_ios_voip = VoIPClient(
     auth_key_filepath=get_system_config()["device_ios"].get('certificates_voip'),

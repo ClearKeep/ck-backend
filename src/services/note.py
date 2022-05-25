@@ -1,9 +1,9 @@
 from src.models.note import Note
 import uuid
-from utils.logger import logger
 from msg.message import Message
 from datetime import datetime
-
+import logging
+logger = logging.getLogger(__name__)
 class NoteService:
 
     """NoteService for creating/editing/getting/deleting note. """

@@ -19,7 +19,8 @@ from msg.message import Message
 from google.protobuf.json_format import MessageToDict
 from utils.logger import *
 from src.services.notify_push import NotifyPushService
-
+import logging
+logger = logging.getLogger(__name__)
 
 class GroupService(BaseService):
     """

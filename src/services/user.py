@@ -12,10 +12,12 @@ from src.services.base import BaseService
 from src.services.upload_file import UploadFileService
 from utils.config import get_system_config, get_owner_workspace_domain
 from utils.keycloak import KeyCloakUtils
-from utils.logger import *
 from utils.otp import OTPServer
 
 client_records_list_in_memory = {}
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class UserService(BaseService):

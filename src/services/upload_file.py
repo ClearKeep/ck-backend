@@ -8,7 +8,8 @@ import os
 import time
 from protos import upload_file_pb2
 from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 
 class UploadFileService(BaseService):
     """
