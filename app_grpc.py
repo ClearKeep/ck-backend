@@ -1,4 +1,5 @@
-import os
+# TODO: remove this import *
+from utils.logger import *
 import grpc
 from utils.config import get_system_config
 import protos.user_pb2_grpc as user_service
@@ -25,11 +26,11 @@ from src.controllers.server_info import ServerInfoController
 from src.controllers.upload_file import UploadFileController
 from src.controllers.workspace import WorkspaceController
 from src.controllers.note import NoteController
-from utils.logger import *
 # from middlewares.auth_interceptor import AuthInterceptor
 import asyncio
 from grpc import aio
-from utils.keycloak import KeyCloakUtils
+
+logger = logging.getLogger(__name__)
 
 
 async def start_server():
@@ -65,5 +66,12 @@ async def start_server():
         await server.stop(0)
 
 
+def main():
+    os.makedirs("logs", exist_ok=True)
+    setup_logging(f'logs/app_grpc.log')
+    # TODO: fix this hard-code debug mode
+    asyncio.run(start_server(), debug=True)
+
+
 if __name__ == '__main__':
-    asyncio.run(start_server())
+    main()
