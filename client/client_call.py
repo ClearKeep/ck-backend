@@ -2,6 +2,7 @@ import logging
 
 import grpc
 from protos import video_call_pb2_grpc
+from utils.const import GRPC_TIMEOUT
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ class ClientVideoCall:
 
     def video_call(self, request):
         try:
-            response = self.stub.video_call(request)
+            response = self.stub.video_call(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -24,7 +25,7 @@ class ClientVideoCall:
 
     def workspace_video_call(self, request):
         try:
-            response = self.stub.workspace_video_call(request)
+            response = self.stub.workspace_video_call(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -32,7 +33,7 @@ class ClientVideoCall:
 
     def cancel_request_call(self, request):
         try:
-            response = self.stub.cancel_request_call(request)
+            response = self.stub.cancel_request_call(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -40,7 +41,7 @@ class ClientVideoCall:
 
     def workspace_update_call(self, request):
         try:
-            response = self.stub.workspace_update_call(request)
+            response = self.stub.workspace_update_call(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)

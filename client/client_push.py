@@ -1,6 +1,7 @@
 from __future__ import print_function
 import grpc
 from protos import notify_push_pb2, notify_push_pb2_grpc
+from utils.const import GRPC_TIMEOUT
 import logging
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ class ClientPush:
 
     def push_text(self, request):
         try:
-            response = self.stub.push_text(request)
+            response = self.stub.push_text(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -27,14 +28,14 @@ class ClientPush:
                 to_client_id=to_client_id,
                 payload=payload
             )
-            self.stub.push_voip(request)
+            self.stub.push_voip(request, timeout=GRPC_TIMEOUT)
         except Exception as e:
             logger.error(e, exc_info=True)
             return None
 
     def update_call(self, request):
         try:
-            response = self.stub.update_call(request)
+            response = self.stub.update_call(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)

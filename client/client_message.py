@@ -2,6 +2,7 @@ import logging
 
 import grpc
 from protos import message_pb2_grpc
+from utils.const import GRPC_TIMEOUT
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class ClientMessage:
 
     def workspace_get_messages_in_group(self, request):
         try:
-            response = self.stub.workspace_get_messages_in_group(request)
+            response = self.stub.workspace_get_messages_in_group(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -26,7 +27,7 @@ class ClientMessage:
 
     def workspace_publish_message(self, request):
         try:
-            response = self.stub.workspace_publish(request)
+            response = self.stub.workspace_publish(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)

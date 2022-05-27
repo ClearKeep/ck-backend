@@ -2,6 +2,7 @@ import logging
 
 import grpc
 from protos import user_pb2, user_pb2_grpc
+from utils.const import GRPC_TIMEOUT
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class ClientUser:
     def get_user_info(self, client_id, workspace_domain):
         try:
             request = user_pb2.GetUserRequest(client_id=client_id, workspace_domain=workspace_domain)
-            response = self.stub.get_user_info(request)
+            response = self.stub.get_user_info(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -26,7 +27,7 @@ class ClientUser:
     def get_user_signal_key(self, client_id, workspace_domain):
         try:
             request = user_pb2.GetUserRequest(client_id=client_id, workspace_domain=workspace_domain)
-            response = self.stub.get_user_info(request)
+            response = self.stub.get_user_info(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -36,7 +37,7 @@ class ClientUser:
         print("get_client_status",lst_client)
         try:
             request = user_pb2.GetClientsStatusRequest(lst_client=lst_client, should_get_profile=should_get_profile)
-            response = self.stub.get_clients_status(request)
+            response = self.stub.get_clients_status(request, timeout=GRPC_TIMEOUT)
             return response
         except:
             return None

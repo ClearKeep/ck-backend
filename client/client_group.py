@@ -3,6 +3,7 @@ import logging
 import grpc
 
 from protos import group_pb2_grpc
+from utils.const import GRPC_TIMEOUT
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class ClientGroup:
 
     def create_group_workspace(self, request):
         try:
-            response = self.stub.create_group_workspace(request)
+            response = self.stub.create_group_workspace(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -25,7 +26,7 @@ class ClientGroup:
 
     def add_member(self, request):
         try:
-            response = self.stub.add_member(request)
+            response = self.stub.add_member(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -33,7 +34,7 @@ class ClientGroup:
 
     def workspace_add_member(self, request):
         try:
-            response = self.stub.workspace_add_member(request)
+            response = self.stub.workspace_add_member(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -41,7 +42,7 @@ class ClientGroup:
 
     def get_group(self, request):
         try:
-            response = self.stub.get_group(request)
+            response = self.stub.get_group(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -49,7 +50,7 @@ class ClientGroup:
 
     def leave_group(self, request):
         try:
-            response = self.stub.leave_group(request)
+            response = self.stub.leave_group(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -57,7 +58,7 @@ class ClientGroup:
 
     def workspace_leave_group(self, request):
         try:
-            response = self.stub.workspace_leave_group(request)
+            response = self.stub.workspace_leave_group(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -65,7 +66,7 @@ class ClientGroup:
 
     def workspace_notify_deactive_member(self, request):
         try:
-            response = self.stub.workspace_notify_deactive_member(request)
+            response = self.stub.workspace_notify_deactive_member(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)

@@ -2,6 +2,7 @@ import logging
 
 import grpc
 from protos import signal_pb2, signal_pb2_grpc
+from utils.const import GRPC_TIMEOUT
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class ClientSignal:
     def group_get_client_key(self, group_id, client_id):
         try:
             request = signal_pb2.GroupGetClientKeyRequest(groupId=group_id, clientId=client_id)
-            response = self.stub.GroupGetClientKey(request)
+            response = self.stub.GroupGetClientKey(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -26,7 +27,7 @@ class ClientSignal:
     def workspace_get_user_signal_key(self, client_id, workspace_domain):
         try:
             request = signal_pb2.PeerGetClientKeyRequest(clientId=client_id, workspace_domain=workspace_domain)
-            response = self.stub.WorkspacePeerGetClientKey(request)
+            response = self.stub.WorkspacePeerGetClientKey(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -35,7 +36,7 @@ class ClientSignal:
     def workspace_group_get_client_key(self, group_id, client_id):
         try:
             request = signal_pb2.WorkspaceGroupGetClientKeyRequest(groupId=group_id, clientId=client_id)
-            response = self.stub.WorkspaceGroupGetClientKey(request)
+            response = self.stub.WorkspaceGroupGetClientKey(request, timeout=GRPC_TIMEOUT)
             return response
         except Exception as e:
             logger.error(e, exc_info=True)
