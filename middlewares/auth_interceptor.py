@@ -1,7 +1,7 @@
 import grpc
 from utils.keycloak import KeyCloakUtils
-
-
+import logging
+logger = logging.getLogger(__name__)
 # note: using ServerInterceptor can not access context in service level
 
 class AuthInterceptor(grpc.ServerInterceptor):

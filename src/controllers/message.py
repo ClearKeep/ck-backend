@@ -15,6 +15,8 @@ from copy import deepcopy
 from utils.config import *
 from protos import message_pb2
 
+import logging
+logger = logging.getLogger(__name__)
 
 class MessageController(BaseController):
     def __init__(self, *kwargs):
@@ -398,7 +400,7 @@ class MessageController(BaseController):
                     client_message_queue[message_channel] = None
                     del client_message_queue[message_channel]
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
