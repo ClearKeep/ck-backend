@@ -1,7 +1,8 @@
 from datetime import datetime
 from src.models.base import Database
 from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 
 class Notify(Database.get().Model):
     __tablename__ = 'notify'

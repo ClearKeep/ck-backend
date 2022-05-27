@@ -7,7 +7,8 @@ from sqlalchemy import desc
 from utils.logger import *
 from src.models.base import Database
 
-
+import logging
+logger = logging.getLogger(__name__)
 class NotifyToken(Database.get().Model):
     __tablename__ = 'notify_token'
     id = Database.get().Column(Database.get().String(36), primary_key=True)

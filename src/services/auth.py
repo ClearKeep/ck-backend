@@ -77,7 +77,7 @@ class AuthService:
                 a = KeyCloakUtils.send_verify_email(user_id)
                 return user_id
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def delete_user(self, userid):
@@ -154,7 +154,7 @@ class AuthService:
                     raise Exception(Message.REGISTER_USER_FAILED)
                 return google_email, new_user_id, True
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.GOOGLE_AUTH_FAILED)
 
     # login office
@@ -198,7 +198,7 @@ class AuthService:
                     raise Exception(Message.REGISTER_USER_FAILED)
                 return office_id, new_user_id, True
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.OFFICE_AUTH_FAILED)
 
     # login facebook

@@ -6,7 +6,8 @@ from src.models.user import User
 from src.models.notify_token import NotifyToken
 from utils.logger import *
 
-
+import logging
+logger = logging.getLogger(__name__)
 class GroupClientKey(Database.get().Model):
     __tablename__ = 'group_client_key'
     id = Database.get().Column(Database.get().Integer, primary_key=True)
