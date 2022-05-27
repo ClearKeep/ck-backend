@@ -1,5 +1,5 @@
-from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 
 def request_logged(func):
     async def deco(*args, **kwargs):
