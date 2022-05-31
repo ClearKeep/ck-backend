@@ -423,20 +423,20 @@ class UserService(BaseService):
                             timeout=3
                         )
                     except grpc.RpcError as e:
-                        logger.warning(f"thanhpt1-vmo/Error while find_user_by_email/{e.code()=}/{e.details()=}",
+                        logger.warning(f"Error while find_user_by_email/{e.code()=}/{e.details()=}",
                                         exc_info=True)
                         # And not append to user_list
                         continue
                     else:
                         user_list.append(response)
                     finally:
-                        logger.debug(f'thanhpt1-vmo/find_user_detail/END {server.address=}/{response=}')
+                        logger.debug(f'DONE contacting server {server.address=}/{response=}')
 
             lst_obj_res = []
             for obj in user_list:
-                logger.debug(f'thanhpt1-vmo/printing_user_list/{obj.id=}')
-                logger.debug(f'thanhpt1-vmo/printing_user_list/{obj.display_name=}')
-                logger.debug(f'thanhpt1-vmo/printing_user_list/{obj.workspace_domain=}')
+                logger.debug(f'{obj.id=}')
+                logger.debug(f'{obj.display_name=}')
+                logger.debug(f'{obj.workspace_domain=}')
                 obj_res = user_pb2.UserInfoResponse(
                     id=obj.id,
                     display_name=obj.display_name,
@@ -472,9 +472,7 @@ class UserService(BaseService):
                         server=owner_workspace_domain
                     ), timeout=3)
                     status = response.status
-                    is_ok = 'STATUS_OK' in status
-                    logger.debug(f'thanhpt1-vmo/push_email_hash_response/{is_ok=}/{response=}')
-
+                    logger.debug(f'{status=}/{response=}')
         except Exception:
             logger.error("Error while push users to orbit-db network", exc_info=True)
 
