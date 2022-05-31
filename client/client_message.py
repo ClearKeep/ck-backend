@@ -1,7 +1,9 @@
-from __future__ import print_function
+import logging
+
 import grpc
 from protos import message_pb2_grpc
-from utils.logger import *
+
+logger = logging.getLogger(__name__)
 
 
 class ClientMessage:
@@ -18,7 +20,7 @@ class ClientMessage:
             response = self.stub.workspace_get_messages_in_group(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
             
 
@@ -27,5 +29,5 @@ class ClientMessage:
             response = self.stub.workspace_publish(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None

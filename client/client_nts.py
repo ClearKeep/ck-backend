@@ -1,11 +1,15 @@
 # Retrieve a Network Traversal Service Token
-from twilio.rest import Client
 import json
-from protos import server_info_pb2, server_info_pb2_grpc
-import grpc
-from utils.logger import *
-from utils.config import get_system_config
+import logging
 from datetime import datetime
+
+import grpc
+from twilio.rest import Client
+
+from protos import server_info_pb2, server_info_pb2_grpc
+from utils.config import get_system_config
+
+logger = logging.getLogger(__name__)
 
 
 def generate_stun_turn_credential(data):
@@ -53,7 +57,7 @@ def update_stun_turn_credential():
         request = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
         stub.update_nts(request)
     except Exception as e:
-        logger.error(e)
+        logger.error(e, exc_info=True)
 
     try:
         #update for stagging branch
@@ -62,7 +66,7 @@ def update_stun_turn_credential():
         request2 = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
         stub2.update_nts(request2)
     except Exception as e:
-        logger.error(e)
+        logger.error(e, exc_info=True)
 
     try:
         # update for dev branch
@@ -71,7 +75,7 @@ def update_stun_turn_credential():
         request3 = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
         stub3.update_nts(request3)
     except Exception as e:
-        logger.error(e)
+        logger.error(e, exc_info=True)
 
     print('Set cronjob succesful')
 

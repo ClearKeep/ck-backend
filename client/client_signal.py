@@ -1,7 +1,9 @@
-from __future__ import print_function
+import logging
+
 import grpc
 from protos import signal_pb2, signal_pb2_grpc
-from utils.logger import *
+
+logger = logging.getLogger(__name__)
 
 
 class ClientSignal:
@@ -18,7 +20,7 @@ class ClientSignal:
             response = self.stub.GroupGetClientKey(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
 
     def workspace_get_user_signal_key(self, client_id, workspace_domain):
@@ -27,7 +29,7 @@ class ClientSignal:
             response = self.stub.WorkspacePeerGetClientKey(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
 
     def workspace_group_get_client_key(self, group_id, client_id):
@@ -36,5 +38,5 @@ class ClientSignal:
             response = self.stub.WorkspaceGroupGetClientKey(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
