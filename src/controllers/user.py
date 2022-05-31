@@ -414,6 +414,39 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
 
     @request_logged
     @auth_required
+    async def find_user_by_email(self, request, context):
+        try:
+            logger.debug(f'Finding user by email (user controller), {request=}, {context=}')
+            obj_res = self.service.find_user_by_email(request.email_hash)
+            return obj_res
+        except Exception as e:
+            logger.error("Error when find user by email", exc_info=True)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.FIND_USER_BY_EMAIL_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def find_user_detail_info_from_email_hash(self, request, context):
+        try:
+            logger.debug(f'find_user_detail_info_from_email_hash, {request=}, {context=}')
+            obj_res = self.service.find_user_detail_info_from_email_hash(request.email_hash)
+            return obj_res
+        except Exception as e:
+            logger.error("find_user_detail_info_from_email_hash", exc_info=True)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.FIND_USER_BY_EMAIL_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    @auth_required
     async def get_user_domain(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())

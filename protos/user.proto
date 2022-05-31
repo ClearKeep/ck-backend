@@ -72,6 +72,14 @@ message SearchUserResponse {
     repeated UserInfoResponse lst_user = 1;
 }
 
+message FindUserByEmailRequest {
+    string email_hash = 1;
+}
+
+message FindUserByEmailResponse {
+    repeated UserInfoResponse lst_user = 1;
+}
+
 // Request: Get Users
 // Response
 message GetUsersResponse {

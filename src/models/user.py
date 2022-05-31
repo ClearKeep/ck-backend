@@ -86,6 +86,15 @@ class User(Database.get().Model):
         Database.get().session.remove()
         return user
 
+    def get_all_users(self):
+        """
+        Experimenting, TODO: delete this
+        """
+        user = Database.get_session().query(User) \
+            .all()
+        Database.get().session.remove()
+        return user
+
     def get_client_id_with_push_token(self, id):
         result = Database.get_session().query(User.id, User) \
             .filter(User.id == id) \
