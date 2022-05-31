@@ -15,15 +15,15 @@ class FindUserByEmailServiceStub(object):
             channel: A grpc.Channel.
         """
         self.push_email_hash = channel.unary_unary(
-            '/find_user_by_email.FindUserByEmailService/push_email_hash',
-            request_serializer=protos_dot_find__user__by__email__pb2.PushEmailHashRequest.SerializeToString,
-            response_deserializer=protos_dot_find__user__by__email__pb2.PushEmailHashResponse.FromString,
-        )
+                '/find_user_by_email.FindUserByEmailService/push_email_hash',
+                request_serializer=protos_dot_find__user__by__email__pb2.PushEmailHashRequest.SerializeToString,
+                response_deserializer=protos_dot_find__user__by__email__pb2.PushEmailHashResponse.FromString,
+                )
         self.get_server_from_email_hash = channel.unary_unary(
-            '/find_user_by_email.FindUserByEmailService/get_server_from_email_hash',
-            request_serializer=protos_dot_find__user__by__email__pb2.GetServerFromEmailHashRequest.SerializeToString,
-            response_deserializer=protos_dot_find__user__by__email__pb2.GetServerFromEmailHashResponse.FromString,
-        )
+                '/find_user_by_email.FindUserByEmailService/get_server_from_email_hash',
+                request_serializer=protos_dot_find__user__by__email__pb2.GetServerFromEmailHashRequest.SerializeToString,
+                response_deserializer=protos_dot_find__user__by__email__pb2.GetServerFromEmailHashResponse.FromString,
+                )
 
 
 class FindUserByEmailServiceServicer(object):
@@ -44,19 +44,19 @@ class FindUserByEmailServiceServicer(object):
 
 def add_FindUserByEmailServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        'push_email_hash': grpc.unary_unary_rpc_method_handler(
-            servicer.push_email_hash,
-            request_deserializer=protos_dot_find__user__by__email__pb2.PushEmailHashRequest.FromString,
-            response_serializer=protos_dot_find__user__by__email__pb2.PushEmailHashResponse.SerializeToString,
-        ),
-        'get_server_from_email_hash': grpc.unary_unary_rpc_method_handler(
-            servicer.get_server_from_email_hash,
-            request_deserializer=protos_dot_find__user__by__email__pb2.GetServerFromEmailHashRequest.FromString,
-            response_serializer=protos_dot_find__user__by__email__pb2.GetServerFromEmailHashResponse.SerializeToString,
-        ),
+            'push_email_hash': grpc.unary_unary_rpc_method_handler(
+                    servicer.push_email_hash,
+                    request_deserializer=protos_dot_find__user__by__email__pb2.PushEmailHashRequest.FromString,
+                    response_serializer=protos_dot_find__user__by__email__pb2.PushEmailHashResponse.SerializeToString,
+            ),
+            'get_server_from_email_hash': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_server_from_email_hash,
+                    request_deserializer=protos_dot_find__user__by__email__pb2.GetServerFromEmailHashRequest.FromString,
+                    response_serializer=protos_dot_find__user__by__email__pb2.GetServerFromEmailHashResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-        'find_user_by_email.FindUserByEmailService', rpc_method_handlers)
+            'find_user_by_email.FindUserByEmailService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -66,36 +66,34 @@ class FindUserByEmailService(object):
 
     @staticmethod
     def push_email_hash(request,
-                        target,
-                        options=(),
-                        channel_credentials=None,
-                        call_credentials=None,
-                        insecure=False,
-                        compression=None,
-                        wait_for_ready=None,
-                        timeout=None,
-                        metadata=None):
-        return grpc.experimental.unary_unary(request, target,
-                                             '/find_user_by_email.FindUserByEmailService/push_email_hash',
-                                             protos_dot_find__user__by__email__pb2.PushEmailHashRequest.SerializeToString,
-                                             protos_dot_find__user__by__email__pb2.PushEmailHashResponse.FromString,
-                                             options, channel_credentials,
-                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/find_user_by_email.FindUserByEmailService/push_email_hash',
+            protos_dot_find__user__by__email__pb2.PushEmailHashRequest.SerializeToString,
+            protos_dot_find__user__by__email__pb2.PushEmailHashResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def get_server_from_email_hash(request,
-                                   target,
-                                   options=(),
-                                   channel_credentials=None,
-                                   call_credentials=None,
-                                   insecure=False,
-                                   compression=None,
-                                   wait_for_ready=None,
-                                   timeout=None,
-                                   metadata=None):
-        return grpc.experimental.unary_unary(request, target,
-                                             '/find_user_by_email.FindUserByEmailService/get_server_from_email_hash',
-                                             protos_dot_find__user__by__email__pb2.GetServerFromEmailHashRequest.SerializeToString,
-                                             protos_dot_find__user__by__email__pb2.GetServerFromEmailHashResponse.FromString,
-                                             options, channel_credentials,
-                                             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/find_user_by_email.FindUserByEmailService/get_server_from_email_hash',
+            protos_dot_find__user__by__email__pb2.GetServerFromEmailHashRequest.SerializeToString,
+            protos_dot_find__user__by__email__pb2.GetServerFromEmailHashResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

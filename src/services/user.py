@@ -404,17 +404,17 @@ class UserService(BaseService):
                     email_hash=email_hash_lower_case
                 ))
                 for s in response.server_list:
-                    logger.debug(f'thanhpt1-vmo/get_server_from_email_hash/server_address:{s.address=}')
+                    logger.debug(f'server_address:{s.address=}')
 
             user_list = []
             for server in response.server_list:
-                logger.debug(f'thanhpt1-vmo/server_address:{server.address=}')
+                logger.debug(f'server_address:{server.address=}')
                 # Don't need to open gRPC channel when server address is the current server
                 if server.address == get_owner_workspace_domain():
                     user_list.append(self.find_user_detail_info_from_email_hash(email_hash_lower_case))
                     continue
                 with grpc.insecure_channel(server.address) as channel:
-                    logger.debug(f'thanhpt1-vmo/find_user_detail/BEGIN {server.address=}')
+                    logger.debug(f'Contacting server {server.address=}')
                     response = 'INIT_VALUE'
                     stub = user_pb2_grpc.UserStub(channel)
                     try:
