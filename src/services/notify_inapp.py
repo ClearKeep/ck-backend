@@ -8,7 +8,8 @@ import asyncio
 from datetime import datetime
 from utils.config import *
 from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 # notify type
 NEW_PEER = "new-peer"
 IN_PEER = "in-peer"

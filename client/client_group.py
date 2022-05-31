@@ -1,7 +1,10 @@
-from __future__ import print_function
+import logging
+
 import grpc
-from protos import group_pb2, group_pb2_grpc
-from utils.logger import *
+
+from protos import group_pb2_grpc
+
+logger = logging.getLogger(__name__)
 
 
 class ClientGroup:
@@ -17,7 +20,7 @@ class ClientGroup:
             response = self.stub.create_group_workspace(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
 
     def add_member(self, request):
@@ -25,7 +28,7 @@ class ClientGroup:
             response = self.stub.add_member(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
 
     def workspace_add_member(self, request):
@@ -33,7 +36,7 @@ class ClientGroup:
             response = self.stub.workspace_add_member(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
 
     def get_group(self, request):
@@ -41,7 +44,7 @@ class ClientGroup:
             response = self.stub.get_group(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
 
     def leave_group(self, request):
@@ -49,7 +52,7 @@ class ClientGroup:
             response = self.stub.leave_group(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
 
     def workspace_leave_group(self, request):
@@ -57,7 +60,7 @@ class ClientGroup:
             response = self.stub.workspace_leave_group(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
 
     def workspace_notify_deactive_member(self, request):
@@ -65,5 +68,5 @@ class ClientGroup:
             response = self.stub.workspace_notify_deactive_member(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None

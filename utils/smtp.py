@@ -1,11 +1,14 @@
+import email.header
+import email.utils
+import logging
 import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 from utils.config import get_system_config
 
-import email.header
-import email.utils
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+logger = logging.getLogger(__name__)
+
 
 def format_addresses(addresses, header_name=None, charset='iso-8859-1'):
     """This is an extension of email.utils.formataddr.

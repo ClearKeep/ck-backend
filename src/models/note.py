@@ -1,9 +1,9 @@
 from datetime import datetime
 from src.models.base import Database
 from sqlalchemy.orm import relationship, joinedload
-from utils.logger import logger
 
-
+import logging
+logger = logging.getLogger(__name__)
 class Note(Database.get().Model):
     __tablename__ = 'note'
     id = Database.get().Column(

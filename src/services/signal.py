@@ -9,7 +9,8 @@ from utils.logger import *
 import ast
 from msg.message import Message
 
-
+import logging
+logger = logging.getLogger(__name__)
 client_queue = {}
 
 

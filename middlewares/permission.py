@@ -4,7 +4,8 @@ import grpc
 from utils.config import get_system_config
 from msg.message import Message
 import json
-from utils.logger import *
+import logging
+logger = logging.getLogger(__name__)
 
 
 def auth_required(f):

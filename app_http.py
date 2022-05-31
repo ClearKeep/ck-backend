@@ -2,7 +2,8 @@ from utils.config import get_system_config
 from utils.logger import *
 from src.controllers import app
 import asyncio
-
+import logging
+logger = logging.getLogger(__name__)
 async def start_http_server():
     # start http api
     http_port = get_system_config()['http_port']

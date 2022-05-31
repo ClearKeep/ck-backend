@@ -2,9 +2,9 @@ from datetime import datetime, timedelta
 
 from sqlalchemy.orm import relationship
 from src.models.base import Database
-from utils.logger import *
 
-
+import logging
+logger = logging.getLogger(__name__)
 class AuthenSetting(Database.get().Model):
     __tablename__ = 'authen_setting'
     #kid

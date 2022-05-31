@@ -12,7 +12,8 @@ from src.services.signal import SignalService
 from src.services.user import UserService
 from utils.config import *
 
-
+import logging
+logger = logging.getLogger(__name__)
 class AuthController(BaseController):
     def __init__(self, *kwargs):
         self.service = AuthService()
@@ -45,7 +46,7 @@ class AuthController(BaseController):
             return auth_challenge_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTHENTICATION_FAILED)]
             else:
@@ -127,7 +128,7 @@ class AuthController(BaseController):
                     )
                 return auth_message
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -153,7 +154,7 @@ class AuthController(BaseController):
                                 )
             return auth_challenge_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -243,7 +244,7 @@ class AuthController(BaseController):
             return auth_challenge_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTHENTICATION_FAILED)]
             else:
@@ -285,7 +286,7 @@ class AuthController(BaseController):
             return auth_messages.RegisterSRPRes()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_USER_FAILED)]
             else:
@@ -532,7 +533,7 @@ class AuthController(BaseController):
                 iv_parameter=request.iv_parameter
             )
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             else:
@@ -593,7 +594,7 @@ class AuthController(BaseController):
                 iv_parameter=iv_parameter
             )
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             else:
@@ -661,7 +662,7 @@ class AuthController(BaseController):
                 iv_parameter=user_info.iv_parameter
             )
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.VERIFY_PINCODE_FAILED)]
             else:

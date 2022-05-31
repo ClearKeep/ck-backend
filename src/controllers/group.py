@@ -10,6 +10,8 @@ from utils.keycloak import KeyCloakUtils
 from google.protobuf.json_format import MessageToDict
 import datetime
 
+import logging
+logger = logging.getLogger(__name__)
 
 class GroupController(BaseController):
     def __init__(self, *kwargs):
@@ -107,7 +109,7 @@ class GroupController(BaseController):
             obj_res = self.service.get_joined_group(client_id)
             return obj_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             else:
@@ -122,7 +124,7 @@ class GroupController(BaseController):
             # TODO: implement this function
             pass
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             else:

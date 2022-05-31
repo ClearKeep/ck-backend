@@ -1,7 +1,9 @@
-from __future__ import print_function
+import logging
+
 import grpc
 from protos import video_call_pb2_grpc
-from utils.logger import *
+
+logger = logging.getLogger(__name__)
 
 
 class ClientVideoCall:
@@ -17,7 +19,7 @@ class ClientVideoCall:
             response = self.stub.video_call(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
 
     def workspace_video_call(self, request):
@@ -25,7 +27,7 @@ class ClientVideoCall:
             response = self.stub.workspace_video_call(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
 
     def cancel_request_call(self, request):
@@ -33,7 +35,7 @@ class ClientVideoCall:
             response = self.stub.cancel_request_call(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
 
     def workspace_update_call(self, request):
@@ -41,5 +43,5 @@ class ClientVideoCall:
             response = self.stub.workspace_update_call(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None

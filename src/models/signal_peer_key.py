@@ -1,8 +1,8 @@
 from datetime import datetime
 from sqlalchemy import ForeignKey
 from src.models.base import Database
-from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 class PeerClientKey(Database.get().Model):
     __tablename__ = 'peer_client_key'
     id = Database.get().Column(Database.get().Integer, primary_key=True)

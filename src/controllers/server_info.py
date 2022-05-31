@@ -4,7 +4,8 @@ from src.services.server_info import ServerInfoService
 from protos import server_info_pb2
 import threading
 
-
+import logging
+logger = logging.getLogger(__name__)
 class ServerInfoController(BaseController):
     def __init__(self, *kwargs):
         self.service = ServerInfoService()

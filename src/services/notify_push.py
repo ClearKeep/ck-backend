@@ -6,7 +6,8 @@ from msg.message import Message
 from utils.logger import *
 from utils.config import *
 
-
+import logging
+logger = logging.getLogger(__name__)
 class NotifyPushService(BaseService):
     """
     Notify push service, using for pushing notification to client_id when he/her not log in
