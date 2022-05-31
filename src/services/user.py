@@ -53,7 +53,7 @@ class UserService(BaseService):
             self.push_all_users_email_hash_to_orbitdb_network()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def create_user_social(self, id, email, display_name, auth_source):
@@ -367,7 +367,7 @@ class UserService(BaseService):
             )
             return response
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.SEARCH_USER_FAILED)
 
     def get_users(self, client_id, workspace_domain):
@@ -388,7 +388,7 @@ class UserService(BaseService):
             )
             return response
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.GET_USER_INFO_FAILED)
 
     def find_user_by_email(self, email_hash):
@@ -622,7 +622,7 @@ class UserService(BaseService):
         client_resp = client.get_clients_status(list_client, should_get_profile)
 
         if client_resp is None:
-            logger.info("CALL WORKSPACE ERROR", workspace_domain)
+            logger.info(f"CALL WORKSPACE ERROR {workspace_domain}")
             for client in list_client:
                 tmp_client_response = user_pb2.MemberInfoRes(
                     client_id=client.client_id,
