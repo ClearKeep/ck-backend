@@ -107,6 +107,8 @@ class Message:
     # Workspace info
     GET_WORKSPACE_INFO_FAILED = 1066
 
+    FIND_USER_BY_EMAIL_FAILED = 1080
+
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
         AUTHENTICATION_FAILED: "Fail to authenticate",
@@ -198,7 +200,9 @@ class Message:
 
         GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again",
 
-        GET_SERVER_INFO_FAILED: "Get server info failed."
+        GET_SERVER_INFO_FAILED: "Get server info failed.",
+
+        FIND_USER_BY_EMAIL_FAILED: "Find user by email failed"
     }
 
     @staticmethod

@@ -3,9 +3,11 @@ import datetime
 import hashlib
 import os
 
+import grpc
+
 from client.client_user import ClientUser
 from msg.message import Message
-from protos import user_pb2
+from protos import user_pb2, user_pb2_grpc, find_user_by_email_pb2, find_user_by_email_pb2_grpc
 from src.models.authen_setting import AuthenSetting
 from src.models.user import User
 from src.services.base import BaseService
@@ -29,6 +31,9 @@ class UserService(BaseService):
         super().__init__(User())
         self.authen_setting = AuthenSetting()
 
+        # TODO: find better way to do this
+        self.push_all_users_email_hash_to_orbitdb_network()
+
     def create_new_user_srp(self, id, email, password_verifier, salt, iv_parameter, display_name, auth_source):
         # create new normal user with these parameter
         try:
@@ -42,6 +47,11 @@ class UserService(BaseService):
                 auth_source=auth_source
             )
             self.model.add()
+
+            # TODO: find better ways to do this
+            # When done register user -> push all users to the orbit-db network
+            self.push_all_users_email_hash_to_orbitdb_network()
+
         except Exception as e:
             logger.error(e)
             raise Exception(Message.REGISTER_USER_FAILED)
@@ -380,6 +390,109 @@ class UserService(BaseService):
         except Exception as e:
             logger.info(e)
             raise Exception(Message.GET_USER_INFO_FAILED)
+
+    def find_user_by_email(self, email_hash):
+        try:
+            logger.debug(f'Finding user by email, {email_hash=}')
+
+            # Make sure for mobile
+            email_hash_lower_case = email_hash.lower()
+
+            with grpc.insecure_channel(get_system_config()['orbit_db_grpc_address']) as channel:
+                stub = find_user_by_email_pb2_grpc.FindUserByEmailServiceStub(channel)
+                response = stub.get_server_from_email_hash(find_user_by_email_pb2.GetServerFromEmailHashRequest(
+                    email_hash=email_hash_lower_case
+                ))
+                for s in response.server_list:
+                    logger.debug(f'server_address:{s.address=}')
+
+            user_list = []
+            for server in response.server_list:
+                logger.debug(f'server_address:{server.address=}')
+                # Don't need to open gRPC channel when server address is the current server
+                if server.address == get_owner_workspace_domain():
+                    user_list.append(self.find_user_detail_info_from_email_hash(email_hash_lower_case))
+                    continue
+                with grpc.insecure_channel(server.address) as channel:
+                    logger.debug(f'Contacting server {server.address=}')
+                    response = 'INIT_VALUE'
+                    stub = user_pb2_grpc.UserStub(channel)
+                    try:
+                        response = stub.find_user_detail_info_from_email_hash(
+                            user_pb2.FindUserByEmailRequest(email_hash=email_hash_lower_case),
+                            timeout=3
+                        )
+                    except grpc.RpcError as e:
+                        logger.warning(f"Error while find_user_by_email/{e.code()=}/{e.details()=}",
+                                        exc_info=True)
+                        # And not append to user_list
+                        continue
+                    else:
+                        user_list.append(response)
+                    finally:
+                        logger.debug(f'DONE contacting server {server.address=}/{response=}')
+
+            lst_obj_res = []
+            for obj in user_list:
+                logger.debug(f'{obj.id=}')
+                logger.debug(f'{obj.display_name=}')
+                logger.debug(f'{obj.workspace_domain=}')
+                obj_res = user_pb2.UserInfoResponse(
+                    id=obj.id,
+                    display_name=obj.display_name,
+                    workspace_domain=obj.workspace_domain
+                )
+                lst_obj_res.append(obj_res)
+
+            return user_pb2.FindUserByEmailResponse(lst_user=lst_obj_res)
+
+
+        except Exception:
+            logger.info('Error while finding user by email', exc_info=True)
+            raise Exception(Message.FIND_USER_BY_EMAIL_FAILED)
+
+    def push_all_users_email_hash_to_orbitdb_network(self):
+        try:
+            # TODO: find different way to do this
+            logger.debug(f'Push all users to orbit-db network')
+
+            owner_workspace_domain = get_owner_workspace_domain()
+
+            all_users = self.model.get_all_users()
+            logger.debug(f"Pushing {len(all_users)} email hashes to the orbit-db network")
+            for u in all_users:
+                if type(u.email) is not str:
+                    continue
+                email_hash = hashlib.sha256(u.email.encode('ascii')).hexdigest()
+                logger.debug(  (email_hash, owner_workspace_domain)   )
+                with grpc.insecure_channel(get_system_config()['orbit_db_grpc_address']) as channel:
+                    stub = find_user_by_email_pb2_grpc.FindUserByEmailServiceStub(channel)
+                    response = stub.push_email_hash(find_user_by_email_pb2.PushEmailHashRequest(
+                        email_hash=email_hash,
+                        server=owner_workspace_domain
+                    ), timeout=3)
+                    status = response.status
+                    logger.debug(f'{status=}/{response=}')
+        except Exception:
+            logger.error("Error while push users to orbit-db network", exc_info=True)
+
+    def find_user_detail_info_from_email_hash(self, email_hash):
+        # TODO: find different way to do this
+        logger.debug(f'find_user_detail_info_from_email_hash')
+        all_users = self.model.get_all_users()
+        for u in all_users:
+            if type(u.email) is not str:
+                continue
+            if hashlib.sha256(u.email.encode('ascii')).hexdigest().lower() == email_hash.lower():
+                return user_pb2.UserInfoResponse(
+                    id=u.id,
+                    display_name = u.display_name,
+                    workspace_domain=get_owner_workspace_domain()
+                )
+        return user_pb2.UserInfoResponse()
+
+
+
 
     def update_last_login(self, user_id):
         # update last time login for user_id
