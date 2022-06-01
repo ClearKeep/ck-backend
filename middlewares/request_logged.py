@@ -1,8 +1,10 @@
 import logging
 import pprint
+from functools import wraps
 logger = logging.getLogger(__name__)
 
 def request_logged(func):
+    @wraps(func)
     async def deco(*args, **kwargs):
         try:
             # TODO: make more readable log, args,...
