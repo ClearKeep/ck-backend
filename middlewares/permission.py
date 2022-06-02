@@ -41,6 +41,7 @@ def _token_check(access_token):
         else:
             return False
     except Exception as e:
+        logger.error("Error in _token_check", exc_info=True)
         return False
 
 
