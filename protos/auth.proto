@@ -215,6 +215,20 @@ message RegisterSRPRes {
     string error = 1;
 }
 
+message RefreshTokenReq {
+    string refresh_token = 1;
+}
+
+message RefreshTokenRes {
+    string access_token = 1;
+    int64 expires_in = 2;
+    int64 refresh_expires_in = 3;
+    string refresh_token = 4;
+    string token_type = 5;
+    string session_state = 6;
+    string scope = 7;
+}
+
 service Auth {
 
     // rpc register(RegisterReq) returns (RegisterRes) {};
@@ -231,6 +245,7 @@ service Auth {
     rpc login_social_challange(AuthSocialChallengeReq) returns (AuthChallengeRes) {};
     // authenticated challange
     rpc login_authenticate(AuthenticateReq) returns (AuthRes) {};
+    rpc refresh_token(RefreshTokenReq) returns (RefreshTokenRes) {};
     //logout
     rpc logout(LogoutReq) returns (BaseResponse) {};
     //pincode flow

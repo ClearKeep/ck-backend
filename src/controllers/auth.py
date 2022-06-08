@@ -13,6 +13,7 @@ from src.services.user import UserService
 from utils.config import *
 
 import logging
+import asyncio
 logger = logging.getLogger(__name__)
 class AuthController(BaseController):
     def __init__(self, *kwargs):
@@ -673,3 +674,32 @@ class AuthController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def refresh_token(self, request, context):
+        def call_refresh_token():
+            return self.service.refresh_token(request.refresh_token)
+
+        loop = asyncio.get_running_loop()
+        try:
+            token = await loop.run_in_executor(None, call_refresh_token)
+
+            return auth_messages.RefreshTokenRes(
+                access_token=token['access_token'],
+                expires_in=token['expires_in'],
+                refresh_expires_in=token['refresh_expires_in'],
+                refresh_token=token['refresh_token'],
+                token_type=token['token_type'],
+                session_state=token['session_state'],
+                scope=token['scope']
+            )
+        except Exception as e:
+            if not e.args or e.args[0] not in Message.msg_dict:
+                logger.warning(e,exc_info=True)
+                raise
+            else:
+                logger.info(e)
+                errors = [Message.get_error_object(e.args[0])]
+                context.set_details(json.dumps(
+                    errors, default=lambda x: x.__dict__))
+                context.set_code(grpc.StatusCode.INTERNAL)

@@ -361,3 +361,7 @@ class AuthService:
         except Exception as e:
             logger.error(e, exc_info=True)
             return False
+
+    def refresh_token(self, refresh_token):
+        token = KeyCloakUtils.refresh_token(refresh_token)
+        return token

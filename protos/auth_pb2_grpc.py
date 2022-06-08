@@ -59,6 +59,11 @@ class AuthStub(object):
                 request_serializer=protos_dot_auth__pb2.AuthenticateReq.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
                 )
+        self.refresh_token = channel.unary_unary(
+                '/auth.Auth/refresh_token',
+                request_serializer=protos_dot_auth__pb2.RefreshTokenReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.RefreshTokenRes.FromString,
+                )
         self.logout = channel.unary_unary(
                 '/auth.Auth/logout',
                 request_serializer=protos_dot_auth__pb2.LogoutReq.SerializeToString,
@@ -153,6 +158,12 @@ class AuthServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def refresh_token(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def logout(self, request, context):
         """logout
         """
@@ -240,6 +251,11 @@ def add_AuthServicer_to_server(servicer, server):
                     servicer.login_authenticate,
                     request_deserializer=protos_dot_auth__pb2.AuthenticateReq.FromString,
                     response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
+            ),
+            'refresh_token': grpc.unary_unary_rpc_method_handler(
+                    servicer.refresh_token,
+                    request_deserializer=protos_dot_auth__pb2.RefreshTokenReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.RefreshTokenRes.SerializeToString,
             ),
             'logout': grpc.unary_unary_rpc_method_handler(
                     servicer.logout,
@@ -431,6 +447,23 @@ class Auth(object):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_authenticate',
             protos_dot_auth__pb2.AuthenticateReq.SerializeToString,
             protos_dot_auth__pb2.AuthRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def refresh_token(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/refresh_token',
+            protos_dot_auth__pb2.RefreshTokenReq.SerializeToString,
+            protos_dot_auth__pb2.RefreshTokenRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
