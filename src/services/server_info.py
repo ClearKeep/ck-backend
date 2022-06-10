@@ -1,5 +1,6 @@
 from src.models.server_info import ServerInfo
 from src.services.base import BaseService
+from utils.config import get_system_config
 
 
 class ServerInfoService(BaseService):
@@ -17,3 +18,20 @@ class ServerInfoService(BaseService):
             turn_server=turn_server
         )
         return self.model.update()
+
+    def get_stun(self):
+        config = get_system_config()
+        return {
+            'server': f'stun:{config["server_domain"]}:{config["stun_turn_port"]}',
+            'port': config["stun_turn_port"]
+        }
+
+    def get_turn(self):
+        config = get_system_config()
+        return {
+            "server": f'turn:{config["server_domain"]}:{config["stun_turn_port"]}',
+            "port": config["stun_turn_port"],
+            "type": "udp",
+            "user": config["stun_turn_credential"]["coturn_user"],
+            "pwd": config["stun_turn_credential"]["coturn_password"]
+        }

@@ -13,6 +13,7 @@ from utils.config import *
 from protos import video_call_pb2
 from copy import deepcopy
 import logging
+import json
 logger = logging.getLogger(__name__)
 
 class VideoCallController(BaseController):
@@ -60,7 +61,7 @@ class VideoCallController(BaseController):
             group_id = request.group_id
             client_id = request.client_id
 
-            server_info = ServerInfoService().get_server_info()
+            server_info = ServerInfoService()
             webrtc_token = secrets.token_hex(10)
 
             group_obj = GroupService().get_group_info(group_id)
@@ -94,8 +95,8 @@ class VideoCallController(BaseController):
                         'from_client_name': from_client_name,
                         'from_client_avatar': from_client_avatar,
                         'client_id': client_id,
-                        'stun_server': server_info.stun_server,
-                        'turn_server': server_info.turn_server
+                        'stun_server': json.dumps(server_info.get_stun()),
+                        'turn_server': json.dumps(server_info.get_turn())
                     }
                     logger.info(push_payload)
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
@@ -107,19 +108,9 @@ class VideoCallController(BaseController):
                         ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.User.id,
                                                                                             json.dumps(new_push_payload))
 
-            stun_server_obj = json.loads(server_info.stun_server)
-            stun_server = video_call_pb2.StunServer(
-                server=stun_server_obj["server"],
-                port=stun_server_obj["port"]
-            )
-            turn_server_obj = json.loads(server_info.turn_server)
-            turn_server = video_call_pb2.TurnServer(
-                server=turn_server_obj["server"],
-                port=turn_server_obj["port"],
-                type=turn_server_obj["type"],
-                user=turn_server_obj["user"],
-                pwd=turn_server_obj["pwd"]
-            )
+            stun_server = video_call_pb2.StunServer(**server_info.get_stun())
+
+            turn_server = video_call_pb2.TurnServer(**server_info.get_turn())
             return video_call_pb2.ServerResponse(
                 group_rtc_url=client_ws_url,
                 group_rtc_id=group_id,
@@ -147,7 +138,7 @@ class VideoCallController(BaseController):
 
         client_id = request.client_id
 
-        server_info = ServerInfoService().get_server_info()
+        server_info = ServerInfoService()
         webrtc_token = secrets.token_hex(10)
 
         group_obj.group_rtc_token = webrtc_token
@@ -186,8 +177,8 @@ class VideoCallController(BaseController):
                     'from_client_name': from_client_name,
                     'from_client_avatar': from_client_avatar,
                     'client_id': client_id,
-                    'stun_server': server_info.stun_server,
-                    'turn_server': server_info.turn_server
+                    'stun_server': json.dumps(server_info.get_stun()),
+                    'turn_server': json.dumps(server_info.get_turn())
                 }
                 logger.info(push_payload)
 
@@ -201,19 +192,8 @@ class VideoCallController(BaseController):
                     ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                         json.dumps(new_push_payload))
 
-        stun_server_obj = json.loads(server_info.stun_server)
-        stun_server = video_call_pb2.StunServer(
-            server=stun_server_obj["server"],
-            port=stun_server_obj["port"]
-        )
-        turn_server_obj = json.loads(server_info.turn_server)
-        turn_server = video_call_pb2.TurnServer(
-            server=turn_server_obj["server"],
-            port=turn_server_obj["port"],
-            type=turn_server_obj["type"],
-            user=turn_server_obj["user"],
-            pwd=turn_server_obj["pwd"]
-        )
+        stun_server = video_call_pb2.StunServer(**server_info.get_stun())
+        turn_server = video_call_pb2.TurnServer(**server_info.get_turn())
         return video_call_pb2.ServerResponse(
             group_rtc_url=client_ws_url,
             group_rtc_id=group_id,
