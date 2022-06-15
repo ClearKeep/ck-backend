@@ -210,6 +210,10 @@ message WorkspaceNotifyDeactiveMember {
   repeated string client_ids = 2;
 }
 
+message WorkspaceMemberForgotPasswordInGroup {
+  string user_id = 1;
+}
+
 // Method
 service Group {
     rpc create_group(CreateGroupRequest) returns (GroupObjectResponse) {};
@@ -226,4 +230,5 @@ service Group {
     rpc workspace_add_member(AddMemberWorkspaceRequest) returns (AddMemberWorkspaceResponse) {};
     rpc workspace_leave_group(WorkspaceLeaveGroupRequest) returns (BaseResponse) {};
     rpc workspace_notify_deactive_member(WorkspaceNotifyDeactiveMember) returns (BaseResponse) {};
+    rpc workspace_member_forgot_password_in_group(WorkspaceMemberForgotPasswordInGroup) returns (BaseResponse) {};
 }

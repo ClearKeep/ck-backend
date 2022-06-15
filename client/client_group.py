@@ -1,5 +1,5 @@
 import logging
-
+import asyncio
 import grpc
 
 from protos import group_pb2_grpc
@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 class ClientGroup:
     def __init__(self, workspace_domain):
+        self.workspace_domain = workspace_domain
         self.stub = self.grpc_stub(workspace_domain)
 
     def grpc_stub(self, workspace_domain):
@@ -71,3 +72,13 @@ class ClientGroup:
         except Exception as e:
             logger.error(e, exc_info=True)
             return None
+
+    async def workspace_member_forgot_password_in_group(self, request):
+        loop = asyncio.get_running_loop()
+        try:
+            return await loop.run_in_executor(None, lambda: self.stub.workspace_member_forgot_password_in_group(request))
+        except grpc._channel._InactiveRpcError as e:
+            if e.code() == grpc.StatusCode.UNIMPLEMENTED:
+                logger.info(f'no workspace_member_forgot_password_in_group in workspace {self.workspace_domain}')
+            else:
+                raise

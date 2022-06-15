@@ -5,6 +5,7 @@ from src.models.message import Message
 from src.models.signal_group_key import GroupClientKey
 from src.models.signal_peer_key import PeerClientKey
 from sqlalchemy.orm import joinedload
+from sqlalchemy import or_
 from src.models.message_user_read import MessageUserRead
 from utils.logger import *
 
@@ -128,5 +129,27 @@ class GroupChat(Database.get().Model):
         Database.get().session.remove()
         return result
 
+    def get_groups(self, group_ids, owner_group_ids):
+        groups = Database.get_session().query(GroupChat) \
+            .filter(or_(GroupChat.id.in_(group_ids), GroupChat.owner_group_id.in_(owner_group_ids))) \
+            .all()
+        Database.get().session.remove()
+        return groups
+
+    def is_owner_group(self):
+        return not self.owner_group_id
+
+    def delete_group_client_key_by_client_id(self, client_id):
+        try:
+            Database.get_session().query(GroupClientKey) \
+                .filter(GroupClientKey.group_id == GroupChat.id) \
+                .filter(GroupClientKey.client_id == client_id) \
+                .filter(GroupChat.group_type == 'group') \
+                .delete(synchronize_session=False)
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            raise
+
     def __repr__(self):
-        return '<Item(id=%s, group_name=%s, owner_group_id=%s)>' % (self.id, self.group_name, self.owner_group_id)
+        return '<GroupChat(id=%s, group_name=%s, owner_group_id=%s)>' % (self.id, self.group_name, self.owner_group_id)

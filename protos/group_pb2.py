@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x12protos/group.proto\x12\x05group\"\xf7\x01\n\x15MessageObjectResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x12\n\ngroup_type\x18\x03 \x01(\t\x12\x16\n\x0e\x66rom_client_id\x18\x04 \x01(\t\x12\x11\n\tclient_id\x18\x05 \x01(\t\x12\x0f\n\x07message\x18\x06 \x01(\x0c\x12\x30\n\x0flst_client_read\x18\x07 \x03(\x0b\x32\x17.group.ClientReadObject\x12\x12\n\ncreated_at\x18\x08 \x01(\x03\x12\x12\n\nupdated_at\x18\t \x01(\x03\x12\x16\n\x0esender_message\x18\n \x01(\x0c\"D\n\x10\x43lientReadObject\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x03 \x01(\t\"c\n\x15\x43lientInGroupResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x18\n\x10workspace_domain\x18\x03 \x01(\t\x12\x0e\n\x06status\x18\x04 \x01(\t\"\xc2\x01\n\x14GroupClientKeyObject\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x10\n\x08\x64\x65viceId\x18\x03 \x01(\x05\x12\x1d\n\x15\x63lientKeyDistribution\x18\x04 \x01(\x0c\x12\x13\n\x0bsenderKeyId\x18\x05 \x01(\x03\x12\x11\n\tsenderKey\x18\x06 \x01(\x0c\x12\x11\n\tpublicKey\x18\x07 \x01(\x0c\x12\x12\n\nprivateKey\x18\x08 \x01(\t\"\xae\x03\n\x13GroupObjectResponse\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x12\x14\n\x0cgroup_avatar\x18\x03 \x01(\t\x12\x12\n\ngroup_type\x18\x04 \x01(\t\x12\x30\n\nlst_client\x18\x05 \x03(\x0b\x32\x1c.group.ClientInGroupResponse\x12\x17\n\x0flast_message_at\x18\x06 \x01(\x03\x12\x32\n\x0clast_message\x18\x07 \x01(\x0b\x32\x1c.group.MessageObjectResponse\x12\x1c\n\x14\x63reated_by_client_id\x18\x08 \x01(\t\x12\x12\n\ncreated_at\x18\t \x01(\x03\x12\x1c\n\x14updated_by_client_id\x18\n \x01(\t\x12\x12\n\nupdated_at\x18\x0b \x01(\x03\x12\x17\n\x0fgroup_rtc_token\x18\x0c \x01(\t\x12\x1a\n\x12has_unread_message\x18\r \x01(\x08\x12/\n\nclient_key\x18\x0e \x01(\x0b\x32\x1b.group.GroupClientKeyObject\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"Q\n\x13\x43lientInGroupObject\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x18\n\x10workspace_domain\x18\x03 \x01(\t\"\x8a\x01\n\x12\x43reateGroupRequest\x12\x12\n\ngroup_name\x18\x01 \x01(\t\x12\x12\n\ngroup_type\x18\x02 \x01(\t\x12\x1c\n\x14\x63reated_by_client_id\x18\x03 \x01(\t\x12.\n\nlst_client\x18\x04 \x03(\x0b\x32\x1a.group.ClientInGroupObject\"n\n\x12UpdateGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x12\x14\n\x0cgroup_avatar\x18\x03 \x01(\t\x12\x1c\n\x14updated_by_client_id\x18\x04 \x01(\t\"#\n\x0fGetGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\"\x18\n\x16GetJoinedGroupsRequest\"H\n\x17GetJoinedGroupsResponse\x12-\n\tlst_group\x18\x01 \x03(\x0b\x32\x1a.group.GroupObjectResponse\"&\n\x13SearchGroupsRequest\x12\x0f\n\x07keyword\x18\x01 \x01(\t\"E\n\x14SearchGroupsResponse\x12-\n\tlst_group\x18\x01 \x03(\x0b\x32\x1a.group.GroupObjectResponse\"n\n\nMemberInfo\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x18\n\x10workspace_domain\x18\x03 \x01(\t\x12\x0e\n\x06status\x18\x04 \x01(\t\x12\x14\n\x0cref_group_id\x18\x05 \x01(\x03\"\x81\x01\n\x10\x41\x64\x64MemberRequest\x12,\n\x11\x61\x64\x64\x65\x64_member_info\x18\x01 \x01(\x0b\x32\x11.group.MemberInfo\x12-\n\x12\x61\x64\x64ing_member_info\x18\x02 \x01(\x0b\x32\x11.group.MemberInfo\x12\x10\n\x08group_id\x18\x03 \x01(\x03\"7\n\x10JoinGroupRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\"\xbc\x01\n\x1b\x43reateGroupWorkspaceRequest\x12\x12\n\ngroup_name\x18\x01 \x01(\t\x12\x12\n\ngroup_type\x18\x02 \x01(\t\x12\x16\n\x0e\x66rom_client_id\x18\x03 \x01(\t\x12\x11\n\tclient_id\x18\x04 \x01(\t\x12\x12\n\nlst_client\x18\x05 \x01(\t\x12\x16\n\x0eowner_group_id\x18\x06 \x01(\x03\x12\x1e\n\x16owner_workspace_domain\x18\x07 \x01(\t\"y\n\x1c\x43reateGroupWorkspaceResponse\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x11\n\tclient_id\x18\x02 \x01(\t\x12\x13\n\x0b\x63lient_name\x18\x03 \x01(\t\x12\x1f\n\x17\x63lient_workspace_domain\x18\x04 \x01(\t\"\x90\x01\n\tGroupInfo\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x12\x12\n\ngroup_type\x18\x03 \x01(\t\x12\x15\n\rgroup_clients\x18\x04 \x01(\t\x12\x1e\n\x16group_workspace_domain\x18\x05 \x01(\t\x12\x12\n\ncreated_by\x18\x06 \x01(\t\"\x9f\x01\n\x19\x41\x64\x64MemberWorkspaceRequest\x12,\n\x11\x61\x64\x64\x65\x64_member_info\x18\x01 \x01(\x0b\x32\x11.group.MemberInfo\x12-\n\x12\x61\x64\x64ing_member_info\x18\x02 \x01(\x0b\x32\x11.group.MemberInfo\x12%\n\x0bowner_group\x18\x03 \x01(\x0b\x32\x10.group.GroupInfo\"O\n\x1a\x41\x64\x64MemberWorkspaceResponse\x12\x1b\n\x13is_member_workspace\x18\x01 \x01(\x08\x12\x14\n\x0cref_group_id\x18\x02 \x01(\x03\"z\n\x11LeaveGroupRequest\x12\'\n\x0cleave_member\x18\x01 \x01(\x0b\x32\x11.group.MemberInfo\x12*\n\x0fleave_member_by\x18\x02 \x01(\x0b\x32\x11.group.MemberInfo\x12\x10\n\x08group_id\x18\x03 \x01(\x03\"\x98\x01\n\x1aWorkspaceLeaveGroupRequest\x12\'\n\x0cleave_member\x18\x01 \x01(\x0b\x32\x11.group.MemberInfo\x12*\n\x0fleave_member_by\x18\x02 \x01(\x0b\x32\x11.group.MemberInfo\x12%\n\x0bowner_group\x18\x03 \x01(\x0b\x32\x10.group.GroupInfo\"P\n\x1dWorkspaceNotifyDeactiveMember\x12\x1b\n\x13\x64\x65\x61\x63tive_account_id\x18\x01 \x01(\t\x12\x12\n\nclient_ids\x18\x02 \x03(\t2\xe9\x06\n\x05Group\x12G\n\x0c\x63reate_group\x12\x19.group.CreateGroupRequest\x1a\x1a.group.GroupObjectResponse\"\x00\x12\x63\n\x16\x63reate_group_workspace\x12\".group.CreateGroupWorkspaceRequest\x1a#.group.CreateGroupWorkspaceResponse\"\x00\x12\x41\n\tget_group\x12\x16.group.GetGroupRequest\x1a\x1a.group.GroupObjectResponse\"\x00\x12J\n\rsearch_groups\x12\x1a.group.SearchGroupsRequest\x1a\x1b.group.SearchGroupsResponse\"\x00\x12T\n\x11get_joined_groups\x12\x1d.group.GetJoinedGroupsRequest\x1a\x1e.group.GetJoinedGroupsResponse\"\x00\x12<\n\njoin_group\x12\x17.group.JoinGroupRequest\x1a\x13.group.BaseResponse\"\x00\x12<\n\nadd_member\x12\x17.group.AddMemberRequest\x1a\x13.group.BaseResponse\"\x00\x12>\n\x0bleave_group\x12\x18.group.LeaveGroupRequest\x1a\x13.group.BaseResponse\"\x00\x12]\n\x14workspace_add_member\x12 .group.AddMemberWorkspaceRequest\x1a!.group.AddMemberWorkspaceResponse\"\x00\x12Q\n\x15workspace_leave_group\x12!.group.WorkspaceLeaveGroupRequest\x1a\x13.group.BaseResponse\"\x00\x12_\n workspace_notify_deactive_member\x12$.group.WorkspaceNotifyDeactiveMember\x1a\x13.group.BaseResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x12protos/group.proto\x12\x05group\"\xf7\x01\n\x15MessageObjectResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\x12\x12\n\ngroup_type\x18\x03 \x01(\t\x12\x16\n\x0e\x66rom_client_id\x18\x04 \x01(\t\x12\x11\n\tclient_id\x18\x05 \x01(\t\x12\x0f\n\x07message\x18\x06 \x01(\x0c\x12\x30\n\x0flst_client_read\x18\x07 \x03(\x0b\x32\x17.group.ClientReadObject\x12\x12\n\ncreated_at\x18\x08 \x01(\x03\x12\x12\n\nupdated_at\x18\t \x01(\x03\x12\x16\n\x0esender_message\x18\n \x01(\x0c\"D\n\x10\x43lientReadObject\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x03 \x01(\t\"c\n\x15\x43lientInGroupResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x18\n\x10workspace_domain\x18\x03 \x01(\t\x12\x0e\n\x06status\x18\x04 \x01(\t\"\xc2\x01\n\x14GroupClientKeyObject\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08\x63lientId\x18\x02 \x01(\t\x12\x10\n\x08\x64\x65viceId\x18\x03 \x01(\x05\x12\x1d\n\x15\x63lientKeyDistribution\x18\x04 \x01(\x0c\x12\x13\n\x0bsenderKeyId\x18\x05 \x01(\x03\x12\x11\n\tsenderKey\x18\x06 \x01(\x0c\x12\x11\n\tpublicKey\x18\x07 \x01(\x0c\x12\x12\n\nprivateKey\x18\x08 \x01(\t\"\xae\x03\n\x13GroupObjectResponse\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x12\x14\n\x0cgroup_avatar\x18\x03 \x01(\t\x12\x12\n\ngroup_type\x18\x04 \x01(\t\x12\x30\n\nlst_client\x18\x05 \x03(\x0b\x32\x1c.group.ClientInGroupResponse\x12\x17\n\x0flast_message_at\x18\x06 \x01(\x03\x12\x32\n\x0clast_message\x18\x07 \x01(\x0b\x32\x1c.group.MessageObjectResponse\x12\x1c\n\x14\x63reated_by_client_id\x18\x08 \x01(\t\x12\x12\n\ncreated_at\x18\t \x01(\x03\x12\x1c\n\x14updated_by_client_id\x18\n \x01(\t\x12\x12\n\nupdated_at\x18\x0b \x01(\x03\x12\x17\n\x0fgroup_rtc_token\x18\x0c \x01(\t\x12\x1a\n\x12has_unread_message\x18\r \x01(\x08\x12/\n\nclient_key\x18\x0e \x01(\x0b\x32\x1b.group.GroupClientKeyObject\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"Q\n\x13\x43lientInGroupObject\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x18\n\x10workspace_domain\x18\x03 \x01(\t\"\x8a\x01\n\x12\x43reateGroupRequest\x12\x12\n\ngroup_name\x18\x01 \x01(\t\x12\x12\n\ngroup_type\x18\x02 \x01(\t\x12\x1c\n\x14\x63reated_by_client_id\x18\x03 \x01(\t\x12.\n\nlst_client\x18\x04 \x03(\x0b\x32\x1a.group.ClientInGroupObject\"n\n\x12UpdateGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x12\x14\n\x0cgroup_avatar\x18\x03 \x01(\t\x12\x1c\n\x14updated_by_client_id\x18\x04 \x01(\t\"#\n\x0fGetGroupRequest\x12\x10\n\x08group_id\x18\x01 \x01(\x03\"\x18\n\x16GetJoinedGroupsRequest\"H\n\x17GetJoinedGroupsResponse\x12-\n\tlst_group\x18\x01 \x03(\x0b\x32\x1a.group.GroupObjectResponse\"&\n\x13SearchGroupsRequest\x12\x0f\n\x07keyword\x18\x01 \x01(\t\"E\n\x14SearchGroupsResponse\x12-\n\tlst_group\x18\x01 \x03(\x0b\x32\x1a.group.GroupObjectResponse\"n\n\nMemberInfo\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x18\n\x10workspace_domain\x18\x03 \x01(\t\x12\x0e\n\x06status\x18\x04 \x01(\t\x12\x14\n\x0cref_group_id\x18\x05 \x01(\x03\"\x81\x01\n\x10\x41\x64\x64MemberRequest\x12,\n\x11\x61\x64\x64\x65\x64_member_info\x18\x01 \x01(\x0b\x32\x11.group.MemberInfo\x12-\n\x12\x61\x64\x64ing_member_info\x18\x02 \x01(\x0b\x32\x11.group.MemberInfo\x12\x10\n\x08group_id\x18\x03 \x01(\x03\"7\n\x10JoinGroupRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x10\n\x08group_id\x18\x02 \x01(\x03\"\xbc\x01\n\x1b\x43reateGroupWorkspaceRequest\x12\x12\n\ngroup_name\x18\x01 \x01(\t\x12\x12\n\ngroup_type\x18\x02 \x01(\t\x12\x16\n\x0e\x66rom_client_id\x18\x03 \x01(\t\x12\x11\n\tclient_id\x18\x04 \x01(\t\x12\x12\n\nlst_client\x18\x05 \x01(\t\x12\x16\n\x0eowner_group_id\x18\x06 \x01(\x03\x12\x1e\n\x16owner_workspace_domain\x18\x07 \x01(\t\"y\n\x1c\x43reateGroupWorkspaceResponse\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x11\n\tclient_id\x18\x02 \x01(\t\x12\x13\n\x0b\x63lient_name\x18\x03 \x01(\t\x12\x1f\n\x17\x63lient_workspace_domain\x18\x04 \x01(\t\"\x90\x01\n\tGroupInfo\x12\x10\n\x08group_id\x18\x01 \x01(\x03\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x12\x12\n\ngroup_type\x18\x03 \x01(\t\x12\x15\n\rgroup_clients\x18\x04 \x01(\t\x12\x1e\n\x16group_workspace_domain\x18\x05 \x01(\t\x12\x12\n\ncreated_by\x18\x06 \x01(\t\"\x9f\x01\n\x19\x41\x64\x64MemberWorkspaceRequest\x12,\n\x11\x61\x64\x64\x65\x64_member_info\x18\x01 \x01(\x0b\x32\x11.group.MemberInfo\x12-\n\x12\x61\x64\x64ing_member_info\x18\x02 \x01(\x0b\x32\x11.group.MemberInfo\x12%\n\x0bowner_group\x18\x03 \x01(\x0b\x32\x10.group.GroupInfo\"O\n\x1a\x41\x64\x64MemberWorkspaceResponse\x12\x1b\n\x13is_member_workspace\x18\x01 \x01(\x08\x12\x14\n\x0cref_group_id\x18\x02 \x01(\x03\"z\n\x11LeaveGroupRequest\x12\'\n\x0cleave_member\x18\x01 \x01(\x0b\x32\x11.group.MemberInfo\x12*\n\x0fleave_member_by\x18\x02 \x01(\x0b\x32\x11.group.MemberInfo\x12\x10\n\x08group_id\x18\x03 \x01(\x03\"\x98\x01\n\x1aWorkspaceLeaveGroupRequest\x12\'\n\x0cleave_member\x18\x01 \x01(\x0b\x32\x11.group.MemberInfo\x12*\n\x0fleave_member_by\x18\x02 \x01(\x0b\x32\x11.group.MemberInfo\x12%\n\x0bowner_group\x18\x03 \x01(\x0b\x32\x10.group.GroupInfo\"P\n\x1dWorkspaceNotifyDeactiveMember\x12\x1b\n\x13\x64\x65\x61\x63tive_account_id\x18\x01 \x01(\t\x12\x12\n\nclient_ids\x18\x02 \x03(\t\"7\n$WorkspaceMemberForgotPasswordInGroup\x12\x0f\n\x07user_id\x18\x01 \x01(\t2\xda\x07\n\x05Group\x12G\n\x0c\x63reate_group\x12\x19.group.CreateGroupRequest\x1a\x1a.group.GroupObjectResponse\"\x00\x12\x63\n\x16\x63reate_group_workspace\x12\".group.CreateGroupWorkspaceRequest\x1a#.group.CreateGroupWorkspaceResponse\"\x00\x12\x41\n\tget_group\x12\x16.group.GetGroupRequest\x1a\x1a.group.GroupObjectResponse\"\x00\x12J\n\rsearch_groups\x12\x1a.group.SearchGroupsRequest\x1a\x1b.group.SearchGroupsResponse\"\x00\x12T\n\x11get_joined_groups\x12\x1d.group.GetJoinedGroupsRequest\x1a\x1e.group.GetJoinedGroupsResponse\"\x00\x12<\n\njoin_group\x12\x17.group.JoinGroupRequest\x1a\x13.group.BaseResponse\"\x00\x12<\n\nadd_member\x12\x17.group.AddMemberRequest\x1a\x13.group.BaseResponse\"\x00\x12>\n\x0bleave_group\x12\x18.group.LeaveGroupRequest\x1a\x13.group.BaseResponse\"\x00\x12]\n\x14workspace_add_member\x12 .group.AddMemberWorkspaceRequest\x1a!.group.AddMemberWorkspaceResponse\"\x00\x12Q\n\x15workspace_leave_group\x12!.group.WorkspaceLeaveGroupRequest\x1a\x13.group.BaseResponse\"\x00\x12_\n workspace_notify_deactive_member\x12$.group.WorkspaceNotifyDeactiveMember\x1a\x13.group.BaseResponse\"\x00\x12o\n)workspace_member_forgot_password_in_group\x12+.group.WorkspaceMemberForgotPasswordInGroup\x1a\x13.group.BaseResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -1314,6 +1314,38 @@ _WORKSPACENOTIFYDEACTIVEMEMBER = _descriptor.Descriptor(
   serialized_end=3059,
 )
 
+
+_WORKSPACEMEMBERFORGOTPASSWORDINGROUP = _descriptor.Descriptor(
+  name='WorkspaceMemberForgotPasswordInGroup',
+  full_name='group.WorkspaceMemberForgotPasswordInGroup',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='user_id', full_name='group.WorkspaceMemberForgotPasswordInGroup.user_id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3061,
+  serialized_end=3116,
+)
+
 _MESSAGEOBJECTRESPONSE.fields_by_name['lst_client_read'].message_type = _CLIENTREADOBJECT
 _GROUPOBJECTRESPONSE.fields_by_name['lst_client'].message_type = _CLIENTINGROUPRESPONSE
 _GROUPOBJECTRESPONSE.fields_by_name['last_message'].message_type = _MESSAGEOBJECTRESPONSE
@@ -1356,6 +1388,7 @@ DESCRIPTOR.message_types_by_name['AddMemberWorkspaceResponse'] = _ADDMEMBERWORKS
 DESCRIPTOR.message_types_by_name['LeaveGroupRequest'] = _LEAVEGROUPREQUEST
 DESCRIPTOR.message_types_by_name['WorkspaceLeaveGroupRequest'] = _WORKSPACELEAVEGROUPREQUEST
 DESCRIPTOR.message_types_by_name['WorkspaceNotifyDeactiveMember'] = _WORKSPACENOTIFYDEACTIVEMEMBER
+DESCRIPTOR.message_types_by_name['WorkspaceMemberForgotPasswordInGroup'] = _WORKSPACEMEMBERFORGOTPASSWORDINGROUP
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 MessageObjectResponse = _reflection.GeneratedProtocolMessageType('MessageObjectResponse', (_message.Message,), {
@@ -1533,6 +1566,13 @@ WorkspaceNotifyDeactiveMember = _reflection.GeneratedProtocolMessageType('Worksp
   })
 _sym_db.RegisterMessage(WorkspaceNotifyDeactiveMember)
 
+WorkspaceMemberForgotPasswordInGroup = _reflection.GeneratedProtocolMessageType('WorkspaceMemberForgotPasswordInGroup', (_message.Message,), {
+  'DESCRIPTOR' : _WORKSPACEMEMBERFORGOTPASSWORDINGROUP,
+  '__module__' : 'protos.group_pb2'
+  # @@protoc_insertion_point(class_scope:group.WorkspaceMemberForgotPasswordInGroup)
+  })
+_sym_db.RegisterMessage(WorkspaceMemberForgotPasswordInGroup)
+
 
 
 _GROUP = _descriptor.ServiceDescriptor(
@@ -1542,8 +1582,8 @@ _GROUP = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=3062,
-  serialized_end=3935,
+  serialized_start=3119,
+  serialized_end=4105,
   methods=[
   _descriptor.MethodDescriptor(
     name='create_group',
@@ -1651,6 +1691,16 @@ _GROUP = _descriptor.ServiceDescriptor(
     index=10,
     containing_service=None,
     input_type=_WORKSPACENOTIFYDEACTIVEMEMBER,
+    output_type=_BASERESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='workspace_member_forgot_password_in_group',
+    full_name='group.Group.workspace_member_forgot_password_in_group',
+    index=11,
+    containing_service=None,
+    input_type=_WORKSPACEMEMBERFORGOTPASSWORDINGROUP,
     output_type=_BASERESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,

@@ -324,6 +324,7 @@ class AuthController(BaseController):
             except Exception as e:
                 logger.error("cannot send notify to other group")
                 logger.error(e, exc_info=True)
+            await GroupService().member_forgot_password_in_group(user_info)
             SignalService().delete_client_peer_key(old_user_id)
             if new_user_id:
                 # create new user in database
