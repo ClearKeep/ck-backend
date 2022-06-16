@@ -4,7 +4,8 @@ from middlewares.request_logged import *
 from src.services.upload_file import UploadFileService
 import hashlib
 
-
+import logging
+logger = logging.getLogger(__name__)
 class UploadFileController(BaseController):
     def __init__(self, *kwargs):
         self.service = UploadFileService()

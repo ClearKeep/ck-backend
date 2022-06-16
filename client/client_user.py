@@ -1,7 +1,9 @@
-from __future__ import print_function
+import logging
+
 import grpc
 from protos import user_pb2, user_pb2_grpc
-from utils.logger import *
+
+logger = logging.getLogger(__name__)
 
 
 class ClientUser:
@@ -18,7 +20,7 @@ class ClientUser:
             response = self.stub.get_user_info(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
 
     def get_user_signal_key(self, client_id, workspace_domain):
@@ -27,7 +29,7 @@ class ClientUser:
             response = self.stub.get_user_info(request)
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return None
 
     def get_clients_status(self, lst_client, should_get_profile):

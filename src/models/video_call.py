@@ -2,7 +2,8 @@ from datetime import datetime
 from sqlalchemy.orm import relationship
 from src.models.base import Database
 from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 class VideoCall(Database.get().Model):
     __tablename__ = 'video_call'
     id = Database.get().Column(Database.get().String(36), primary_key=True)

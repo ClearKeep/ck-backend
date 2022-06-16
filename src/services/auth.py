@@ -13,7 +13,8 @@ from src.models.authen_setting import AuthenSetting
 from utils.otp import OTPServer
 from utils.smtp import MailerServer
 from utils.config import get_system_config, get_owner_workspace_domain
-
+import logging
+logger = logging.getLogger(__name__)
 
 class AuthService:
     """
@@ -76,7 +77,7 @@ class AuthService:
                 a = KeyCloakUtils.send_verify_email(user_id)
                 return user_id
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def delete_user(self, userid):
@@ -153,7 +154,7 @@ class AuthService:
                     raise Exception(Message.REGISTER_USER_FAILED)
                 return google_email, new_user_id, True
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.GOOGLE_AUTH_FAILED)
 
     # login office
@@ -197,7 +198,7 @@ class AuthService:
                     raise Exception(Message.REGISTER_USER_FAILED)
                 return office_id, new_user_id, True
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.OFFICE_AUTH_FAILED)
 
     # login facebook

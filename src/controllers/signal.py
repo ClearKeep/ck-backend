@@ -8,7 +8,8 @@ from client.client_signal import *
 from utils.config import get_owner_workspace_domain
 
 
-
+import logging
+logger = logging.getLogger(__name__)
 class SignalController(BaseController):
     def __init__(self, *kwargs):
         self.service = SignalService()

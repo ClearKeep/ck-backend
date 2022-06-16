@@ -2,7 +2,8 @@ from datetime import datetime
 from sqlalchemy.orm import relationship
 from src.models.base import Database
 from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 
 class User(Database.get().Model):
     __tablename__ = 'user'
@@ -81,6 +82,15 @@ class User(Database.get().Model):
         user = Database.get_session().query(User) \
             .filter(User.id != client_id) \
             .filter(User.last_login_at != None) \
+            .all()
+        Database.get().session.remove()
+        return user
+
+    def get_all_users(self):
+        """
+        Experimenting, TODO: delete this
+        """
+        user = Database.get_session().query(User) \
             .all()
         Database.get().session.remove()
         return user

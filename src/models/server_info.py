@@ -2,7 +2,8 @@ from src.models.base import Database
 from datetime import datetime
 from utils.logger import *
 
-
+import logging
+logger = logging.getLogger(__name__)
 class ServerInfo(Database.get().Model):
     __tablename__ = 'server_info'
     id = Database.get().Column(Database.get().Integer, primary_key=True)

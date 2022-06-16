@@ -4,7 +4,8 @@ import grpc
 from utils.config import get_system_config
 from msg.message import Message
 import json
-from utils.logger import *
+import logging
+logger = logging.getLogger(__name__)
 
 
 def auth_required(f):
@@ -40,6 +41,7 @@ def _token_check(access_token):
         else:
             return False
     except Exception as e:
+        logger.error("Error in _token_check", exc_info=True)
         return False
 
 

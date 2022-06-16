@@ -1,7 +1,8 @@
 from crontab import CronTab
 import os
 from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 
 def cron_tab_update_turn_server():
     try:

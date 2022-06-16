@@ -4,7 +4,8 @@ from src.models.base import Database
 from src.models.message_user_read import MessageUserRead
 from sqlalchemy.orm import relationship, joinedload
 from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 
 class Message(Database.get().Model):
     __tablename__ = 'message'

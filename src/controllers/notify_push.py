@@ -4,7 +4,8 @@ from middlewares.permission import *
 from middlewares.request_logged import *
 from src.services.notify_push import NotifyPushService
 
-
+import logging
+logger = logging.getLogger(__name__)
 class NotifyPushController(BaseController):
     def __init__(self, *kwargs):
         self.service = NotifyPushService()

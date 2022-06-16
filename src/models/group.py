@@ -8,7 +8,8 @@ from sqlalchemy.orm import joinedload
 from src.models.message_user_read import MessageUserRead
 from utils.logger import *
 
-
+import logging
+logger = logging.getLogger(__name__)
 class GroupChat(Database.get().Model):
     __tablename__ = 'group_chat'
     id = Database.get().Column(Database.get().Integer, primary_key=True)

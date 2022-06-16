@@ -12,7 +12,8 @@ from utils.config import *
 from utils.logger import *
 
 client_message_queue = {}
-
+import logging
+logger = logging.getLogger(__name__)
 
 class MessageService(BaseService):
     """

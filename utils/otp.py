@@ -12,7 +12,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from utils.config import get_otp_server
 from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 account_sid = get_otp_server()["twilio_account_sid"]
 auth_token =  get_otp_server()["twilio_auth_token"]
 client = Client(account_sid, auth_token)

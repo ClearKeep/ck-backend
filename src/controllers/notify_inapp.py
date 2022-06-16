@@ -5,6 +5,8 @@ from middlewares.permission import *
 from middlewares.request_logged import *
 from src.services.notify_inapp import NotifyInAppService, client_notify_queue
 
+import logging
+logger = logging.getLogger(__name__)
 
 class NotifyInAppController(BaseController):
     def __init__(self, *kwargs):
