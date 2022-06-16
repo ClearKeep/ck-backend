@@ -25,16 +25,18 @@ services:
       restart: always
       environment:
         DB_VENDOR: POSTGRES
-        DB_ADDR: 54.235.68.160:5432
+        DB_ADDR: postgres
         DB_DATABASE: prod-authen
         DB_USER: admin
         DB_PASSWORD: clk328@2021
         KEYCLOAK_USER: admin
         KEYCLOAK_PASSWORD: clk328@2021
         JAVA_TOOL_OPTIONS: -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled -Dkeycloak.profile.feature.token_exchange=enabled
-
+      volumes:
+        - '../configs/keycloak:/etc/x509/https'
       ports:
         - 8080:8080
+        - 8443:8443
       depends_on:
         - postgres
   prod_webrtc:
@@ -45,3 +47,12 @@ services:
         - 8288:80
         - 8088:8088
         - 8188:8188
+
+  grpc:
+    build:
+      context: ../
+      dockerfile: .docker/Dockerfile
+    volumes:
+      - ../:/ck-backend
+    ports:
+      - 25000:25000
