@@ -2,6 +2,7 @@ const OrbitDB = require('orbit-db')
 const Ctl = require('ipfsd-ctl')
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
+const yargs = require('yargs/yargs')
 
 var PROTO_PATH = __dirname + '/find_user_by_email.proto';
 var packageDefinition = protoLoader.loadSync(
@@ -120,24 +121,28 @@ function print_db_all(db) {
 }
 
 async function main() {
+    const argv = yargs(process.argv.slice(2))
+        .option('ip', {
+            demandOption: true,
+            describe: 'external ip address for announce'
+        })
+        .option('type', {
+            demandOption: true,
+            choices: ['master', 'slave'],
+            describe: 'type of service'
+        })
+        .option('db', {
+            describe: 'this option is required when type is slave'
+        })
+        .check((argv, options) => {
+            if (argv.type == "slave" && !argv.db) {
+                throw new Error("db is required when type is slave")
+            }
+            return true
+        })
+        .argv
 
-    if (process.argv[2] === undefined || process.argv[3] === undefined) {
-        console.log('ERROR! Missing args')
-        return -1
-    }
-
-    const external_ip_address_for_announce = process.argv[2]
-
-    // Create DB
-    // db = await orbitdb.keyvalue(
-    //     'my_keyvalue_db_6',
-    //     {accessController: {write: ['*']}}
-    // )
-    // console.log('DB address:' + db.address.toString())
-    // const db_address = '/orbitdb/zdpuAppidkqvGE51yEEmrJZiCGVZi45FEieuXFhoHZTAqgycg/my_keyvalue_db_6'
-    const db_address = process.argv[3]
-
-    const ipfsd = await startIpfs(external_ip_address_for_announce)
+    const ipfsd = await startIpfs(argv.ip)
     const ipfs = ipfsd.api
     const id = await ipfsd.api.id()
     console.log(id)
@@ -145,22 +150,42 @@ async function main() {
     bootstrapData = await ipfsd.api.config.get('Bootstrap')
     console.log(bootstrapData)
 
-    const configApi = await ipfsd.api.config
-    console.log(configApi)
-
     const orbitdb = await OrbitDB.createInstance(
         ipfs,
         {directory: `./orbitdb_directory`}
     )
 
-
-    db = await orbitdb.keyvalue(db_address)
+    switch (argv.type) {
+        case 'master':
+            console.log('starting master db')
+            db = await orbitdb.keyvalue(
+                'ck_email',
+                {accessController: {write: ['*']}}
+            )
+            console.log('DB address:' + db.address.toString())
+            break
+        case 'slave':
+            console.log('starting slave db')
+            let retry = 0
+            while (true) {
+                try {
+                    db = await orbitdb.keyvalue(argv.db)
+                    break;
+                } catch(e) {
+                    retry++;
+                    console.log(`retry ${retry}`)
+                    console.log(e)
+                }
+            }
+            break
+        default:
+            throw new Error('option type is unsupported')
+    }
     db.events.on('replicated', (address) => {
         console.log('------------------REPLICATED------------------------')
         print_db_all(db)
     })
-
-    console.log("Started")
+    console.log("orbitdb started")
     var server = new grpc.Server();
     server.addService(find_user_by_email.FindUserByEmailService.service, {
         push_email_hash: pushEmailHash,

@@ -15,6 +15,7 @@
     "go-ipfs": "0.9.1",
     "ipfs-http-client": "54.0.2",
     "ipfsd-ctl": "10.0.6",
-    "orbit-db": "0.28.4"
+    "orbit-db": "0.28.4",
+    "yargs": "^17.5.1"
   }
 }
