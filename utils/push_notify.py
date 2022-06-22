@@ -1,26 +1,23 @@
-from kalyke.client import VoIPClient, APNsClient
 from utils.config import get_system_config
 import firebase_admin
 from firebase_admin import credentials, messaging
-from kalyke.payload import PayloadAlert, Payload
+from apns2.client import APNsClient
+from apns2.payload import Payload
 import time
+import asyncio
 import logging
 logger = logging.getLogger(__name__)
 # init push service for iOS
-client_ios_voip = VoIPClient(
-    auth_key_filepath=get_system_config()["device_ios"].get('certificates_voip'),
-    bundle_id=get_system_config()["device_ios"].get('bundle_id'),
-    use_sandbox=get_system_config()["device_ios"].get('use_sandbox')
+apns_voip_client = APNsClient(
+    get_system_config()["device_ios"].get('certificates_voip'), 
+    use_sandbox=get_system_config()["device_ios"].get('use_sandbox'),
+    use_alternative_port=False
 )
 
-client_ios_text = APNsClient(
-    team_id=get_system_config()["device_ios"].get('team_id'),
-    auth_key_id=get_system_config()["device_ios"].get('auth_key_id'),
-    auth_key_filepath=get_system_config()["device_ios"].get('certificates_apns'),
-    bundle_id=get_system_config()["device_ios"].get('bundle_id'),
+apns_client = APNsClient(
+    get_system_config()["device_ios"].get('certificates_apns'),
     use_sandbox=get_system_config()["device_ios"].get('use_sandbox'),
-    force_proto="h2",
-    apns_push_type="alert"
+    use_alternative_port=False
 )
 
 # init push service for Android
@@ -29,17 +26,19 @@ default_app = firebase_admin.initialize_app(cred)
 
 
 async def ios_data_notification(registration_token, payload):
+    loop = asyncio.get_running_loop()
+    topic = get_system_config()["device_ios"].get('bundle_id') + '.voip'
     try:
         expiration = int(time.time()) + 10
-        res_obj = await client_ios_voip._send_message(registration_token, payload, expiration=expiration)
+        await loop.run_in_executor(None, lambda: apns_voip_client.send_notification(registration_token, payload, topic, expiration=expiration))
         logger.info("Push iOS data notify success with token: {}".format(registration_token))
-        logger.info(res_obj)
     except Exception as e:
         logger.error(e, exc_info=True)
         raise Exception(e)
 
 
 async def ios_text_notifications(registration_token, alert, data):
+    loop = asyncio.get_running_loop()
     payload = Payload(
         alert=alert,
         badge=1,
@@ -47,11 +46,11 @@ async def ios_text_notifications(registration_token, alert, data):
         mutable_content=1,
         custom={'publication': data}
     )
+    topic = get_system_config()["device_ios"].get('bundle_id')
     try:
         expiration = int(time.time()) + 10
-        res = await client_ios_text._send_message(registration_token, payload, expiration=expiration)
+        await loop.run_in_executor(None, lambda: apns_client.send_notification(registration_token, payload, topic, expiration=expiration))
         logger.info("Push iOS text notify success with token: {}".format(registration_token))
-        logger.info(res)
     except Exception as e:
         logger.error(e, exc_info=True)
         raise Exception(e)

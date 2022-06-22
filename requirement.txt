@@ -50,9 +50,7 @@ jedi==0.18.0
 Jinja2==2.11.2
 jmespath==0.10.0
 
-# TODO: observe this library's new version
-# kalyke-apns==0.1.4
-kalyke-apns==0.1.8
+apns2==0.7.2
 
 libsignal==0.0.4
 Mako==1.1.4

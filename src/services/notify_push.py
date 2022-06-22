@@ -64,7 +64,7 @@ class NotifyPushService(BaseService):
                         'title': title,
                         'body': body
                     }
-                    await ios_text_notifications(arr_token[-1], push_payload)
+                    await ios_text_notifications(arr_token[-1], push_payload, data)
             except Exception as e:
                 logger.warning(e)
                 pass
@@ -97,7 +97,7 @@ class NotifyPushService(BaseService):
                             'title': title,
                             'body': body
                         }
-                        await ios_text_notifications(arr_token[-1], push_payload)
+                        await ios_text_notifications(arr_token[-1], push_payload, data)
                 except Exception as e:
                     continue
 
@@ -122,7 +122,7 @@ class NotifyPushService(BaseService):
                         'title': title,
                         'body': body
                     }
-                    await ios_text_notifications(arr_token[-1], push_payload)
+                    await ios_text_notifications(arr_token[-1], push_payload, data)
             except Exception as e:
                 continue
 
