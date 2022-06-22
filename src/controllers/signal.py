@@ -169,6 +169,7 @@ class SignalController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def GroupGetClientKey(self, request, context):
         try:
             group_id = request.groupId

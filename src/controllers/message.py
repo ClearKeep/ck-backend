@@ -88,6 +88,7 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def Publish(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -450,6 +451,7 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def read_messages(self, request, context):
         try:
             client_id = request.client_id
@@ -468,6 +470,7 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def edit_message(self, request, context):
         try:
             group_id = request.groupId

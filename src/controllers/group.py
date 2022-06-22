@@ -18,6 +18,7 @@ class GroupController(BaseController):
         self.service = GroupService()
 
     @request_logged
+    @auth_required
     async def create_group(self, request, context):
         try:
             group_name = request.group_name
@@ -61,6 +62,7 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def get_group(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -84,6 +86,7 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def search_groups(self, request, context):
         try:
             keyword = request.keyword
@@ -119,6 +122,7 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def join_group(self, request, context):
         try:
             # TODO: implement this function
@@ -135,6 +139,7 @@ class GroupController(BaseController):
 
 
     @request_logged
+    @auth_required
     async def add_member(self, request, context):
         try:
             group = GroupService().get_group_info(request.group_id)
@@ -235,6 +240,7 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def leave_group(self, request, context):
         try:
             leave_member = request.leave_member
