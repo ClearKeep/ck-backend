@@ -41,13 +41,15 @@ services:
         - postgres
 
   prod_webrtc:
-      image: phuongvmodev/janus-webrtc-gateway-docker
-      restart: always
-      ports:
-        - 7088:7088
-        - 8288:80
-        - 8088:8088
-        - 8188:8188
+    image: phuongvmodev/janus-webrtc-gateway-docker
+    restart: always
+    volumes:
+      - ../configs/janus/janus.jcfg:/usr/local/etc/janus/janus.jcfg
+    ports:
+      - 7088:7088
+      - 8288:80
+      - 8088:8088
+      - 8188:8188
 
   grpc:
     build:
@@ -66,10 +68,15 @@ services:
       - /src/orbitdb_directory
     ports:
       - 12016:12016
-      # - 10051:10051
-      # - 19090:19090
-    # network_mode: "host"
     environment:
       PUBLIC_IP_ADDRESS:
       TYPE: slave
       ORBITDB:
+
+  coturn:
+    image: instrumentisto/coturn:4.5.2
+    volumes:
+      - ../configs/coturn/turnserver.conf:/etc/coturn/turnserver.conf
+    ports:
+    - 49152-65535:49152-65535/udp
+    - 3478:3478
