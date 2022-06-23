@@ -150,6 +150,24 @@ class GroupChat(Database.get().Model):
         except Exception as e:
             Database.get_session().rollback()
             raise
+    
+    def reset_group_client_key_by_client_id(self, client_id):
+        try:
+            Database.get_session().query(GroupClientKey) \
+                .filter(GroupClientKey.group_id == GroupChat.id) \
+                .filter(GroupClientKey.client_id == client_id) \
+                .filter(GroupChat.group_type == 'group') \
+                .update({
+                    GroupClientKey.client_key: None,
+                    GroupClientKey.client_private_key: None,
+                    GroupClientKey.client_public_key: None,
+                    GroupClientKey.client_sender_key: None,
+                    GroupClientKey.client_sender_key_id: None,
+                }, synchronize_session=False)
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            raise
 
     def __repr__(self):
         return '<GroupChat(id=%s, group_name=%s, owner_group_id=%s)>' % (self.id, self.group_name, self.owner_group_id)

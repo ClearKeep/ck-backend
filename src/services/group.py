@@ -564,6 +564,27 @@ class GroupService(BaseService):
             ]
         )
 
+    async def member_reset_pincode_in_group(self, user_id):
+        groups = self.model.get_joined_group_type(user_id, 'group')
+        owner_workspace_domain = get_owner_workspace_domain()
+        workspaces = set()
+        for group in groups:
+            clients = json.loads(group.GroupChat.group_clients)
+            for client in clients:
+                if client["workspace_domain"] != owner_workspace_domain:
+                    workspaces.add(client["workspace_domain"])
+        self.model.reset_group_client_key_by_client_id(user_id)
+        await asyncio.gather(
+            *[
+                ClientGroup(workspace_domain).workspace_member_reset_pincode_in_group(
+                    group_pb2.WorkspaceMemberResetPincodeInGroup(
+                        user_id=user_id
+                    )
+                )
+                for workspace_domain in workspaces
+            ]
+        )
+
     async def workspace_notify_deactive_member(self, deactive_account_id, client_ids):
         # workspace call for notify all other users in different server involved in peer chat with that this user updated public key
         push_service = NotifyPushService()
@@ -615,6 +636,9 @@ class GroupService(BaseService):
             group.GroupChat.update()
 
         self.model.delete_group_client_key_by_client_id(user_id)
+    
+    async def workspace_member_reset_pincode_in_group(self, user_id):
+        self.model.reset_group_client_key_by_client_id(user_id)
 
     def get_clients_in_group(self, group_id):
         # get all client in group

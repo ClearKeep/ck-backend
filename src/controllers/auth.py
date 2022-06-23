@@ -554,6 +554,7 @@ class AuthController(BaseController):
             self.user_service.change_password(request, None, request.hash_pincode, exists_user["id"])
             old_client_key_peer = SignalService().peer_get_client_key(exists_user["id"])
             SignalService().client_update_peer_key(exists_user["id"], request.client_key_peer)
+            await GroupService().member_reset_pincode_in_group(exists_user["id"])
             try:
                 salt, iv_parameter = UserService().update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:

@@ -351,3 +351,14 @@ class GroupController(BaseController):
         except Exception as e:
             logger.error(e, exc_info=True)
             context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def workspace_member_reset_pincode_in_group(self, request, context):
+        try:
+            await self.service.workspace_member_reset_pincode_in_group(
+                user_id=request.user_id
+            )
+            return group_messages.BaseResponse()
+        except Exception as e:
+            logger.error(e, exc_info=True)
+            context.set_code(grpc.StatusCode.INTERNAL)

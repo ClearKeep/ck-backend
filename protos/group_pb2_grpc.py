@@ -75,6 +75,11 @@ class GroupStub(object):
                 request_serializer=protos_dot_group__pb2.WorkspaceMemberForgotPasswordInGroup.SerializeToString,
                 response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
                 )
+        self.workspace_member_reset_pincode_in_group = channel.unary_unary(
+                '/group.Group/workspace_member_reset_pincode_in_group',
+                request_serializer=protos_dot_group__pb2.WorkspaceMemberResetPincodeInGroup.SerializeToString,
+                response_deserializer=protos_dot_group__pb2.BaseResponse.FromString,
+                )
 
 
 class GroupServicer(object):
@@ -154,6 +159,12 @@ class GroupServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def workspace_member_reset_pincode_in_group(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_GroupServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -215,6 +226,11 @@ def add_GroupServicer_to_server(servicer, server):
             'workspace_member_forgot_password_in_group': grpc.unary_unary_rpc_method_handler(
                     servicer.workspace_member_forgot_password_in_group,
                     request_deserializer=protos_dot_group__pb2.WorkspaceMemberForgotPasswordInGroup.FromString,
+                    response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
+            ),
+            'workspace_member_reset_pincode_in_group': grpc.unary_unary_rpc_method_handler(
+                    servicer.workspace_member_reset_pincode_in_group,
+                    request_deserializer=protos_dot_group__pb2.WorkspaceMemberResetPincodeInGroup.FromString,
                     response_serializer=protos_dot_group__pb2.BaseResponse.SerializeToString,
             ),
     }
@@ -428,6 +444,23 @@ class Group(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/group.Group/workspace_member_forgot_password_in_group',
             protos_dot_group__pb2.WorkspaceMemberForgotPasswordInGroup.SerializeToString,
+            protos_dot_group__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def workspace_member_reset_pincode_in_group(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/group.Group/workspace_member_reset_pincode_in_group',
+            protos_dot_group__pb2.WorkspaceMemberResetPincodeInGroup.SerializeToString,
             protos_dot_group__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

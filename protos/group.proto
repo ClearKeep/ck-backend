@@ -214,6 +214,10 @@ message WorkspaceMemberForgotPasswordInGroup {
   string user_id = 1;
 }
 
+message WorkspaceMemberResetPincodeInGroup {
+  string user_id = 1;
+}
+
 // Method
 service Group {
     rpc create_group(CreateGroupRequest) returns (GroupObjectResponse) {};
@@ -231,4 +235,5 @@ service Group {
     rpc workspace_leave_group(WorkspaceLeaveGroupRequest) returns (BaseResponse) {};
     rpc workspace_notify_deactive_member(WorkspaceNotifyDeactiveMember) returns (BaseResponse) {};
     rpc workspace_member_forgot_password_in_group(WorkspaceMemberForgotPasswordInGroup) returns (BaseResponse) {};
+    rpc workspace_member_reset_pincode_in_group(WorkspaceMemberResetPincodeInGroup) returns (BaseResponse) {};
 }
