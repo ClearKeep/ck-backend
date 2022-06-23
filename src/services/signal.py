@@ -6,7 +6,7 @@ from src.services.notify_inapp import NotifyInAppService
 from src.models.group import GroupChat
 from msg.message import Message
 from utils.logger import *
-import ast
+import json
 from msg.message import Message
 
 import logging
@@ -118,10 +118,10 @@ class SignalService(BaseService):
             notify_inapp_service = NotifyInAppService()
             for group_peer in lst_group_peer:
                 if group_peer.group_clients:
-                    lst_client_id = ast.literal_eval(group_peer.group_clients)
+                    lst_client_id = json.loads(group_peer.group_clients)
                     for client_peer_id in lst_client_id:
-                        if client_peer_id != client_id:
-                            notify_inapp_service.notify_client_update_peer_key(client_peer_id, client_id, group_peer.id)
+                        if client_peer_id['id'] != client_id:
+                            notify_inapp_service.notify_client_update_peer_key(client_peer_id['id'], client_id, group_peer.id)
         except Exception as e:
             logger.error(e, exc_info=True)
 

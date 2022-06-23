@@ -543,6 +543,7 @@ class AuthController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
     async def reset_pincode(self, request, context):
         try:
             success_status = self.service.verify_hash_pre_access_token(request.user_name, request.reset_pincode_token, "reset_pincode")
