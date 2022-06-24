@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def auth_required(f):
-    # @wraps(f)
+    @wraps(f)
     async def wrap(*args, **kwargs):
         context = args[2]
         metadata = dict(context.invocation_metadata())
