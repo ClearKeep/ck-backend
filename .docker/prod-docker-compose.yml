@@ -77,6 +77,4 @@ services:
     image: instrumentisto/coturn:4.5.2
     volumes:
       - ../configs/coturn/turnserver.conf:/etc/coturn/turnserver.conf
-    ports:
-    - 49152-65535:49152-65535/udp
-    - 3478:3478
+    network_mode: "host"
