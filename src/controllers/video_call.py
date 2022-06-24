@@ -316,7 +316,7 @@ class VideoCallController(BaseController):
                         'group_id': str(client.GroupClientKey.group_id),
                         'from_client_id': from_client_id,
                         'from_client_name': from_client_name,
-                        'from_client_avatar': from_client_avatar,
+                        'from_client_avatar': from_client_avatar if from_client_avatar else "",
                         'client_id': client_id
                     }
                     if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
@@ -370,7 +370,7 @@ class VideoCallController(BaseController):
                     'group_id': str(client.GroupClientKey.group_id),
                     'from_client_id': from_client_id,
                     'from_client_name': from_client_name,
-                    'from_client_avatar': from_client_avatar,
+                    'from_client_avatar': from_client_avatar if from_client_avatar else "",
                     'client_id': client_id
                 }
                 if client.GroupClientKey.client_workspace_domain is None or client.GroupClientKey.client_workspace_domain == owner_workspace_domain:
@@ -417,7 +417,7 @@ class VideoCallController(BaseController):
                     'group_id': str(client.GroupClientKey.group_id),
                     'from_client_id': from_client_id,
                     'from_client_name': from_client_username,
-                    'from_client_avatar': from_client_avatar,
+                    'from_client_avatar': from_client_avatar if from_client_avatar else "",
                     'client_id': client_id
                 }
                 await NotifyPushService().push_voip_client(client.GroupClientKey.client_id, push_payload)
