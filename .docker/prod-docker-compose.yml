@@ -86,5 +86,6 @@ services:
       dockerfile: Dockerfile-haraka
     volumes:
       - ../configs/haraka/auth_flat_file.ini/:/etc/haraka/config/auth_flat_file.ini
+      - ../configs/haraka/tls.ini/:/etc/haraka/config/tls.ini
       - ../configs/haraka/tls_cert.pem:/etc/haraka/config/tls_cert.pem
       - ../configs/haraka/tls_key.pem:/etc/haraka/config/tls_key.pem
