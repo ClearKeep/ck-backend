@@ -18,7 +18,7 @@ def cron_tab_update_turn_server():
         logger.info("Cronjob cron_tab_update_turn_server set")
 
     except Exception as e:
-        logger.error(e)
+        logger.error(e, exc_info=True)
 
 
 if __name__ == '__main__':

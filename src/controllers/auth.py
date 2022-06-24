@@ -207,7 +207,7 @@ class AuthController(BaseController):
                                 )
             return auth_challenge_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -302,7 +302,7 @@ class AuthController(BaseController):
             return auth_messages.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -323,7 +323,7 @@ class AuthController(BaseController):
                 await GroupService().forgot_peer_groups_for_client(user_info)
             except Exception as e:
                 logger.error("cannot send notify to other group")
-                logger.error(e)
+                logger.error(e, exc_info=True)
             SignalService().delete_client_peer_key(old_user_id)
             if new_user_id:
                 # create new user in database
@@ -374,7 +374,7 @@ class AuthController(BaseController):
             return auth_message
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CHANGE_PASSWORD_FAILED)]
             else:
@@ -399,7 +399,7 @@ class AuthController(BaseController):
             return auth_messages.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -450,7 +450,7 @@ class AuthController(BaseController):
             )
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
@@ -468,7 +468,7 @@ class AuthController(BaseController):
                             )
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
@@ -492,11 +492,11 @@ class AuthController(BaseController):
             try:
                 SignalService().peer_register_client_key(exists_user['id'], request.client_key_peer)
             except Exception as e:
-                logger.error(e)
+                logger.error(e, exc_info=True)
             try:
                 UserService().update_hash_pin(exists_user['id'], request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:
-                logger.error(e)
+                logger.error(e, exc_info=True)
                 ## TODO: revert change_password
                 SignalService().delete_client_peer_key(exists_user['id'])
                 raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
@@ -556,7 +556,7 @@ class AuthController(BaseController):
             try:
                 salt, iv_parameter = UserService().update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:
-                logger.error(e)
+                logger.error(e, exc_info=True)
                 SignalService().client_update_peer_key(exists_user["id"], old_client_key_peer)
                 raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             client_key_obj = request.client_key_peer

@@ -139,7 +139,7 @@ class NotifyPushService(BaseService):
                     arr_token = client_token.push_token.split(',')
                     await ios_data_notification(arr_token[0], payload)
             except Exception as e:
-                logger.error(e)
+                logger.error(e, exc_info=True)
 
     async def push_voip_clients(self, lst_client, payload, from_client_id):
         # push payload to all device of lst_client with infor about from_client_id

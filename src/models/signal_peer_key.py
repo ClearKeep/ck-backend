@@ -51,7 +51,7 @@ class PeerClientKey(Database.get().Model):
                 return True
             except Exception as e:
                 Database.get_session().rollback()
-                logger.error(e)
+                logger.error(e, exc_info=True)
 
     def get_by_client_id(self, client_id):
         client = Database.get_session().query(PeerClientKey) \
@@ -66,7 +66,7 @@ class PeerClientKey(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def delete(self):
         try:
@@ -74,4 +74,4 @@ class PeerClientKey(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)

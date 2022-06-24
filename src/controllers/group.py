@@ -27,7 +27,7 @@ class GroupController(BaseController):
 
             return obj_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
             else:
@@ -51,7 +51,7 @@ class GroupController(BaseController):
 
             return obj_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
             else:
@@ -74,7 +74,7 @@ class GroupController(BaseController):
             else:
                 raise Exception(Message.GROUP_CHAT_NOT_FOUND)
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_GROUP_CHAT_FAILED)]
             else:
@@ -90,7 +90,7 @@ class GroupController(BaseController):
             obj_res = self.service.search_group(keyword)
             return obj_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.SEARCH_GROUP_CHAT_FAILED)]
             else:
@@ -202,7 +202,7 @@ class GroupController(BaseController):
 
             return group_messages.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
             else:
@@ -225,7 +225,7 @@ class GroupController(BaseController):
             )
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
             else:
@@ -284,7 +284,7 @@ class GroupController(BaseController):
 
             return group_messages.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.LEAVE_GROUP_FAILED)]
             else:
@@ -308,7 +308,7 @@ class GroupController(BaseController):
             )
             return group_messages.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
             else:
@@ -326,7 +326,7 @@ class GroupController(BaseController):
             )
             return group_messages.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.LEAVE_GROUP_FAILED)]
             else:

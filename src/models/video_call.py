@@ -28,7 +28,7 @@ class VideoCall(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def get(self, call_id):
         call = Database.get_session().query(VideoCall) \

@@ -24,7 +24,7 @@ class SignalController(BaseController):
             self.service.peer_register_client_key(user_id, request)
             return signal_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             else:
@@ -44,7 +44,7 @@ class SignalController(BaseController):
                 self.service.client_update_peer_key(user_id, request)
             return signal_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             else:
@@ -77,7 +77,7 @@ class SignalController(BaseController):
 
             raise Exception(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
             else:
@@ -121,7 +121,7 @@ class SignalController(BaseController):
 
                 raise Exception(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
             else:
@@ -140,7 +140,7 @@ class SignalController(BaseController):
             self.service.group_register_client_key(user_id, request)
             return signal_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_GROUP_KEY_FAILED)]
             else:
@@ -159,7 +159,7 @@ class SignalController(BaseController):
             self.service.group_bulk_update_client_key(user_id, request.listGroupClientKey)
             return signal_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_GROUP_KEY_FAILED)]
             else:

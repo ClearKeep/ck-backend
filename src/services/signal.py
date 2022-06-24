@@ -35,7 +35,7 @@ class SignalService(BaseService):
             # Check chatting available and push notify inapp for refreshing key, this should be unneeded as client_id now must register peer key when create account
             self.client_update_key_notify(client_id)
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
 
     def client_update_peer_key(self, client_id, request):
@@ -123,7 +123,7 @@ class SignalService(BaseService):
                         if client_peer_id != client_id:
                             notify_inapp_service.notify_client_update_peer_key(client_peer_id, client_id, group_peer.id)
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def delete_client_peer_key(self, client_id):
         # delete a client peer key

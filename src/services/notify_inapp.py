@@ -110,7 +110,7 @@ class NotifyInAppService(BaseService):
                 try:
                     client_notify_queue[notify_channel].put(new_group)
                 except Exception as e:
-                    logger.error(e)
+                    logger.error(e, exc_info=True)
 
     def notify_invite_group(self, client_id, ref_client_id, ref_group_id, ref_workspace_domain, ref_subject_name):
         # notify a client_id that he/her was invited to chat in group with inviter is ref_client_id in ref_group_id
@@ -136,7 +136,7 @@ class NotifyInAppService(BaseService):
                 try:
                     client_notify_queue[notify_channel].put(new_group)
                 except Exception as e:
-                    logger.error(e)
+                    logger.error(e, exc_info=True)
 
     def notify_removing_member(
             self,
@@ -170,7 +170,7 @@ class NotifyInAppService(BaseService):
                 try:
                     client_notify_queue[notify_channel].put(new_notification)
                 except Exception as e:
-                    logger.error(e)
+                    logger.error(e, exc_info=True)
                     raise ValueError
 
     def notify_adding_member(
@@ -206,7 +206,7 @@ class NotifyInAppService(BaseService):
                 try:
                     client_notify_queue[notify_channel].put(new_notification)
                 except Exception as e:
-                    logger.error(e)
+                    logger.error(e, exc_info=True)
                     raise ValueError
 
     def notify_client_update_peer_key(self, client_id, ref_client_id, ref_group_id):
@@ -234,7 +234,7 @@ class NotifyInAppService(BaseService):
                 try:
                     client_notify_queue[notify_channel].put(notify)
                 except Exception as e:
-                    logger.error(e)
+                    logger.error(e, exc_info=True)
 
     def notify_client_update_call(self, notify_type, client_id, ref_client_id, ref_group_id):
         # notify client_id about event ref_client_id is update call
@@ -261,5 +261,5 @@ class NotifyInAppService(BaseService):
                     client_notify_queue[notify_channel].put(notify)
                     return True
                 except Exception as e:
-                    logger.error(e)
+                    logger.error(e, exc_info=True)
                     return False

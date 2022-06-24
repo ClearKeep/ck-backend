@@ -36,7 +36,7 @@ class GroupChat(Database.get().Model):
             return self
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def get(self, group_id):
         group = Database.get_session().query(GroupChat, Message) \
@@ -111,7 +111,7 @@ class GroupChat(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def delete(self):
         try:
@@ -119,7 +119,7 @@ class GroupChat(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def get_group_rtc_token(self, group_id):
         result = Database.get_session().query(GroupChat.group_rtc_token) \

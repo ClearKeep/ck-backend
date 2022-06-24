@@ -35,7 +35,7 @@ async def ios_data_notification(registration_token, payload):
         logger.info("Push iOS data notify success with token: {}".format(registration_token))
         logger.info(res_obj)
     except Exception as e:
-        logger.error(e)
+        logger.error(e, exc_info=True)
         raise Exception(e)
 
 
@@ -53,7 +53,7 @@ async def ios_text_notifications(registration_token, alert, data):
         logger.info("Push iOS text notify success with token: {}".format(registration_token))
         logger.info(res)
     except Exception as e:
-        logger.error(e)
+        logger.error(e, exc_info=True)
         raise Exception(e)
 
 
@@ -71,5 +71,5 @@ def android_data_notification(registration_token, payload):
         logger.info('Android data notification')
         logger.info(response)
     except Exception as e:
-        logger.error(e)
+        logger.error(e, exc_info=True)
         raise Exception(e)

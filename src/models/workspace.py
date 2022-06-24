@@ -34,4 +34,4 @@ class Workspace(Database.get().Model):
             # Database.get().session.remove()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)

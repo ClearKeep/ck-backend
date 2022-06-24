@@ -22,7 +22,7 @@ class UploadFileController(BaseController):
             return obj_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.UPLOAD_FILE_FAILED)]
             else:
@@ -42,7 +42,7 @@ class UploadFileController(BaseController):
             return obj_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.UPLOAD_FILE_FAILED)]
             else:
@@ -58,7 +58,7 @@ class UploadFileController(BaseController):
             return obj_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.UPLOAD_FILE_FAILED)]
             else:
@@ -78,7 +78,7 @@ class UploadFileController(BaseController):
             return obj_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.UPLOAD_FILE_FAILED)]
             else:
@@ -96,7 +96,7 @@ class UploadFileController(BaseController):
             obj_res = self.service.get_download_file_link(request.object_file_path, client_id)
             return obj_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.UPLOAD_FILE_FAILED)]
             else:

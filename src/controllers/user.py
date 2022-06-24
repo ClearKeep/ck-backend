@@ -479,7 +479,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.UPDATE_USER_STATUS_FAILED)]
             else:

@@ -359,5 +359,5 @@ class AuthService:
                 return False
             return True
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return False

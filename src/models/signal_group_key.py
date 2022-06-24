@@ -62,7 +62,7 @@ class GroupClientKey(Database.get().Model):
                 return self
             except Exception as e:
                 Database.get_session().rollback()
-                logger.error(e)
+                logger.error(e, exc_info=True)
 
     def get(self, group_id, client_id):
         client = Database.get_session().query(GroupClientKey) \
@@ -106,7 +106,7 @@ class GroupClientKey(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def update_bulk_client_key(self, client_id, list_group_client_key):
         try:
@@ -137,7 +137,7 @@ class GroupClientKey(Database.get().Model):
             Database.get_session().commit()
             return True
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             Database.get_session().rollback()
             return False
 
@@ -147,4 +147,4 @@ class GroupClientKey(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)

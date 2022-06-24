@@ -56,7 +56,7 @@ class MessageController(BaseController):
                 obj_res = self.service.get_message_in_group(client_id, group_id, off_set, last_message_at)
                 return obj_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 # TODO: change message when got error
                 errors = [Message.get_error_object(Message.GET_MESSAGE_IN_GROUP_FAILED)]
@@ -78,7 +78,7 @@ class MessageController(BaseController):
                 raise Exception(Message.GET_MESSAGE_IN_GROUP_FAILED)
             return obj_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_MESSAGE_IN_GROUP_FAILED)]
             else:
@@ -104,7 +104,7 @@ class MessageController(BaseController):
                 res_obj = await self.publish_to_group_owner(request, user_id, group)
                 return res_obj
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_PUBLISH_MESSAGE_FAILED)]
             else:
@@ -200,7 +200,7 @@ class MessageController(BaseController):
             return new_message
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_PUBLISH_MESSAGE_FAILED)]
             else:
@@ -420,7 +420,7 @@ class MessageController(BaseController):
             await self.service.subscribe(user_id, request.device_id)
             return message_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
             else:
@@ -440,7 +440,7 @@ class MessageController(BaseController):
             self.service.un_subscribe(user_id, request.device_id)
             return message_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
             else:
@@ -458,7 +458,7 @@ class MessageController(BaseController):
 
             return message_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.MESSAGE_READ_FAILED)]
             else:
@@ -522,7 +522,7 @@ class MessageController(BaseController):
             return new_message
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_EDIT_MESSAGE_FAILED)]
             else:

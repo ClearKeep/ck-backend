@@ -24,7 +24,7 @@ class NoteService:
             )
             return self.note.add()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.CREATE_NOTE_FAILED)
 
     def edit_note(self, note_id, title, content, note_type, user_id):
@@ -38,7 +38,7 @@ class NoteService:
             self.note.updated_at = datetime.now()
             self.note.update()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.EDIT_NOTE_FAILED)
 
     def delete_note(self, note_id):
@@ -47,7 +47,7 @@ class NoteService:
             self.note = Note().get(note_id)
             self.note.delete()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.DELETE_NOTE_FAILED)
 
     def get_user_notes(self, user_id):
@@ -56,5 +56,5 @@ class NoteService:
             user_notes = Note().get_user_notes(user_id)
             return user_notes
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.GET_USER_NOTES_FAILED)

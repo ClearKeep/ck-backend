@@ -92,7 +92,7 @@ class UserService(BaseService):
             self.model.add()
             self.delete_user(user_info.id)
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def get_google_user(self, email, auth_source):
@@ -185,7 +185,7 @@ class UserService(BaseService):
             success = True
             return success, next_step
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def validate_otp(self, user_id, otp):
@@ -248,7 +248,7 @@ class UserService(BaseService):
             next_step = 'mfa_validate_otp'
             return success, next_step
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def update_hash_pass(self, user_id, hash_password, salt='', iv_parameter=''):
@@ -515,7 +515,7 @@ class UserService(BaseService):
             client_record = client_records_list_in_memory.get(str(client_id), None)
             client_record["user_status"] = status
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.UPDATE_USER_STATUS_FAILED)
 
     def update_client_record(self, client_id):
@@ -534,7 +534,7 @@ class UserService(BaseService):
                 client_record["prev_active"] = client_record["last_active"]
                 client_record["last_active"] = datetime.datetime.now()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.PING_PONG_SERVER_FAILED)
 
     def categorize_workspace_domains(self, list_clients):
@@ -591,7 +591,7 @@ class UserService(BaseService):
             )
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.GET_USER_STATUS_FAILED)
 
 

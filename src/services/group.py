@@ -491,7 +491,7 @@ class GroupService(BaseService):
                             )
                         except Exception as e:
                             logger.error("Cannot notify to client {}".format(client["id"]))
-                            logger.error(e)
+                            logger.error(e, exc_info=True)
                     else:
                         if client["workspace_domain"] not in informed_workspace_domain:
                             informed_workspace_domain[client["workspace_domain"]] = group_pb2.WorkspaceNotifyDeactiveMember(
@@ -502,7 +502,7 @@ class GroupService(BaseService):
             try:
                 await ClientGroup(workspace_domain).workspace_notify_deactive_member(informed_workspace_domain[workspace_domain])
             except Exception as e:
-                logger.error(e)
+                logger.error(e, exc_info=True)
 
     async def workspace_notify_deactive_member(self, deactive_account_id, client_ids):
         # workspace call for notify all other users in different server involved in peer chat with that this user updated public key
@@ -524,7 +524,7 @@ class GroupService(BaseService):
                         data=json.dumps(data)
                     )
             except Exception as e:
-                logger.error(e)
+                logger.error(e, exc_info=True)
 
     def get_clients_in_group(self, group_id):
         # get all client in group
