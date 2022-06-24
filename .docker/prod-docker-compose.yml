@@ -45,6 +45,7 @@ services:
     restart: always
     volumes:
       - ../configs/janus/janus.jcfg:/usr/local/etc/janus/janus.jcfg
+      - ../configs/janus/janus.transport.http.jcfg:/usr/local/etc/janus/janus.transport.http.jcfg
     ports:
       - 7088:7088
       - 8288:80
