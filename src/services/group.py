@@ -185,7 +185,8 @@ class GroupService(BaseService):
         if json_response.get("janus") == 'success':
             return token
         else:
-            raise
+            logger.debug(json_response)
+            raise Exception('Fail register webrtc token')
 
     def create_rtc_group(self, group_id, rtc_token):
         # create Janus
