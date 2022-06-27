@@ -7,6 +7,7 @@ import re
 import sys
 from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
+from middlewares.request_logged import request_id
 
 import pytz
 
@@ -24,11 +25,16 @@ def setup_logging(log_file_name):
                         pathname) else str(pathname)
                     break
             return True
+    
+    class RequestIdFilter(logging.Filter):
+        def filter(self, record):
+            record.request_id = request_id.get(None)
+            return True
 
     class FormatterCustom(logging.Formatter):
         def __init__(self, *args, **kwargs):
-            fmt = '[%(levelname).1s][%(asctime)s][%(name)30s] ' \
-                  '"%(relativepath)s:%(lineno)d".%(funcName)s()>>> %(message)s'
+            fmt = '[%(levelname).1s][%(asctime)s][%(name)30s][request_id:%(request_id)s] ' \
+                  '"%(relativepath)s:%(lineno)d".%(funcName)s() >>> %(message)s'
             super().__init__(fmt=fmt, *args, **kwargs)
 
         def formatTime(self, record, *_unused_args, **_unused_kwargs) -> str:
@@ -49,7 +55,9 @@ def setup_logging(log_file_name):
 
     console_handler = logging.StreamHandler()
     timed_rotating_file_handler.addFilter(PackagePathFilter())
+    timed_rotating_file_handler.addFilter(RequestIdFilter())
     console_handler.addFilter(PackagePathFilter())
+    console_handler.addFilter(RequestIdFilter())
     timed_rotating_file_handler.setFormatter(FormatterCustom())
     console_handler.setFormatter(FormatterCustom())
 
