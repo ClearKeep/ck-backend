@@ -61,6 +61,14 @@ services:
     ports:
       - 25000:25000
   
+  http:
+    image: docker_grpc:latest
+    volumes:
+      - ../:/ck-backend
+    entrypoint: python app_http.py
+    ports:
+      - 25001:25001
+  
   find_user_by_email:
     build: ../find-user-by-email
     volumes:
