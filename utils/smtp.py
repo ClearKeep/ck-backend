@@ -88,7 +88,10 @@ class MailerServer(object):
         part2 = MIMEText(html, 'html')
         msg.attach(part1)
         msg.attach(part2)
-        server = smtplib.SMTP_SSL(MailerServer.host, MailerServer.port)
+        if get_system_config()["smtp_server"]['SSL']:
+            server = smtplib.SMTP_SSL(MailerServer.host, MailerServer.port)
+        else:
+            server = smtplib.SMTP(MailerServer.host, MailerServer.port)
         server.ehlo()
         server.login(MailerServer.user_name, MailerServer.password)
         server.sendmail(
