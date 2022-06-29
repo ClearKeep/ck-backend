@@ -23,7 +23,7 @@ Setup Keycloak and login as Administrator.
 - Use default Master realm or create new realm  
 - In General tab: setting value for *Frontend URL* if you want to use custom domain
 - In Login tab: switch on *Verify email* and *Login with email*
-- In Token tab: setting value for token/refresh_token
+- In Token tab: enable `Revoke Refresh Token`
 - In Email tab: setting SMTP email
 
 **Setting for client:**
@@ -31,11 +31,14 @@ Setup Keycloak and login as Administrator.
 In menu Clients, need config for client **admin-cli** and client **account**. Get the config and fill to json config file in project:
 
 For client **admin-cli**:
-
-- Direct Access Grants Enabled: swicht ON
-- Service Accounts Enabled: switch ON
-- Access Type: select 'confidential'
-- In Service account role: assign role for manager user
+- In `Settings`:
+  - Direct Access Grants Enabled: swicht ON
+  - Service Accounts Enabled: switch ON
+  - Access Type: select 'confidential'
+  - In section `OpenID Connect Compatibility Modes`:
+    - Enable `Use Refresh Tokens For Client Credentials Grant`
+- In `Service Account Roles`:
+  - Assign role `manage-users` to `Client Roles` `realm-management`
 
 
     "keycloak_admin": {  
@@ -48,8 +51,11 @@ For client **admin-cli**:
       }
 
 For client **account**:
-- Direct Access Grants Enabled: switch ON
-- Access Type: select 'confidential'
+- In `Settings`:
+  - Direct Access Grants Enabled: switch ON
+  - Access Type: select 'confidential'
+  - In section `OpenID Connect Compatibility Modes`:
+    - Enable `Use Refresh Tokens For Client Credentials Grant`
 
 
     "keycloak_account": {  
