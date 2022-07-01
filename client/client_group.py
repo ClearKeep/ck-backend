@@ -76,7 +76,7 @@ class ClientGroup:
     async def workspace_member_forgot_password_in_group(self, request):
         loop = asyncio.get_running_loop()
         try:
-            return await loop.run_in_executor(None, lambda: self.stub.workspace_member_forgot_password_in_group(request))
+            return await loop.run_in_executor(None, lambda: self.stub.workspace_member_forgot_password_in_group(request, timeout=GRPC_TIMEOUT))
         except grpc._channel._InactiveRpcError as e:
             if e.code() == grpc.StatusCode.UNIMPLEMENTED:
                 logger.info(f'no workspace_member_forgot_password_in_group in workspace {self.workspace_domain}')
@@ -86,7 +86,7 @@ class ClientGroup:
     async def workspace_member_reset_pincode_in_group(self, request):
         loop = asyncio.get_running_loop()
         try:
-            return await loop.run_in_executor(None, lambda: self.stub.workspace_member_reset_pincode_in_group(request))
+            return await loop.run_in_executor(None, lambda: self.stub.workspace_member_reset_pincode_in_group(request, timeout=GRPC_TIMEOUT))
         except grpc._channel._InactiveRpcError as e:
             if e.code() == grpc.StatusCode.UNIMPLEMENTED:
                 logger.info(f'no workspace_member_forgot_password_in_group in workspace {self.workspace_domain}')
