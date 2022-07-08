@@ -54,6 +54,7 @@ message UserInfoResponse {
     string id = 1;
     string display_name = 2;
     string workspace_domain = 3;
+    string avatar = 4;
 }
 
 //Request: get other user info

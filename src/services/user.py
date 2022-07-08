@@ -432,19 +432,7 @@ class UserService(BaseService):
                     finally:
                         logger.debug(f'DONE contacting server {server.address=}/{response=}')
 
-            lst_obj_res = []
-            for obj in user_list:
-                logger.debug(f'{obj.id=}')
-                logger.debug(f'{obj.display_name=}')
-                logger.debug(f'{obj.workspace_domain=}')
-                obj_res = user_pb2.UserInfoResponse(
-                    id=obj.id,
-                    display_name=obj.display_name,
-                    workspace_domain=obj.workspace_domain
-                )
-                lst_obj_res.append(obj_res)
-
-            return user_pb2.FindUserByEmailResponse(lst_user=lst_obj_res)
+            return user_pb2.FindUserByEmailResponse(lst_user=user_list)
 
 
         except Exception:
@@ -487,7 +475,8 @@ class UserService(BaseService):
                 return user_pb2.UserInfoResponse(
                     id=u.id,
                     display_name = u.display_name,
-                    workspace_domain=get_owner_workspace_domain()
+                    workspace_domain=get_owner_workspace_domain(),
+                    avatar=u.avatar
                 )
         return user_pb2.UserInfoResponse()
 
