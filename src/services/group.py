@@ -869,6 +869,9 @@ class GroupService(BaseService):
                         notify_type="member_leave",
                         data=json.dumps(data)
                     )
+
+        self.model.delete_group_messages_by_client_id(leave_member.id, group.id)
+
         # call workspace leave for other server
         informed_workspace_domain = []
         for client in lst_client_in_group:

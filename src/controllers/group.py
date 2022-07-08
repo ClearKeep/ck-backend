@@ -240,7 +240,6 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
-    @auth_required
     async def leave_group(self, request, context):
         try:
             leave_member = request.leave_member

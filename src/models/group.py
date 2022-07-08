@@ -151,6 +151,17 @@ class GroupChat(Database.get().Model):
             Database.get_session().rollback()
             raise
     
+    def delete_group_messages_by_client_id(self, client_id, group_id):
+        try:
+            Database.get_session().query(Message) \
+                .filter(Message.group_id == group_id) \
+                .filter(Message.from_client_id == client_id) \
+                .delete()
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            raise
+
     def reset_group_client_key_by_client_id(self, client_id):
         try:
             Database.get_session().query(GroupClientKey) \
