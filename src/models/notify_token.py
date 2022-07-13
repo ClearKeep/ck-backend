@@ -19,6 +19,7 @@ class NotifyToken(Database.get().Model):
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
     user = relationship('User', back_populates='tokens')
+    end_user_env = Database.get().Column(Database.get().String(16))
 
     def add(self):
         client_device = self.get(self.client_id, self.device_id)

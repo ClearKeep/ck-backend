@@ -21,7 +21,7 @@ class NotifyPushController(BaseController):
             token = request.token
             device_type = request.device_type
 
-            self.service.register_token(client_id, device_id, device_type, token)
+            self.service.register_token(client_id, device_id, device_type, token, end_user_env=request.end_user_env)
             return notify_push_pb2.BaseResponse()
 
         except Exception as e:

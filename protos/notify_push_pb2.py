@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x18protos/notify_push.proto\x12\x0bnotify_push\"M\n\x14RegisterTokenRequest\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x02 \x01(\t\x12\r\n\x05token\x18\x03 \x01(\t\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"n\n\x0fPushTextRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0c\n\x04\x62ody\x18\x02 \x01(\t\x12\x13\n\x0bnotify_type\x18\x03 \x01(\t\x12\x13\n\x0b\x63ustom_data\x18\x04 \x01(\t\x12\x14\n\x0cto_client_id\x18\x05 \x01(\t\"8\n\x0fPushVoipRequest\x12\x14\n\x0cto_client_id\x18\x01 \x01(\t\x12\x0f\n\x07payload\x18\x02 \x01(\t2\xe8\x01\n\nNotifyPush\x12N\n\x0eregister_token\x12!.notify_push.RegisterTokenRequest\x1a\x19.notify_push.BaseResponse\x12\x44\n\tpush_text\x12\x1c.notify_push.PushTextRequest\x1a\x19.notify_push.BaseResponse\x12\x44\n\tpush_voip\x12\x1c.notify_push.PushVoipRequest\x1a\x19.notify_push.BaseResponseb\x06proto3'
+  serialized_pb=b'\n\x18protos/notify_push.proto\x12\x0bnotify_push\"c\n\x14RegisterTokenRequest\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x02 \x01(\t\x12\r\n\x05token\x18\x03 \x01(\t\x12\x14\n\x0c\x65nd_user_env\x18\x04 \x01(\t\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"n\n\x0fPushTextRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0c\n\x04\x62ody\x18\x02 \x01(\t\x12\x13\n\x0bnotify_type\x18\x03 \x01(\t\x12\x13\n\x0b\x63ustom_data\x18\x04 \x01(\t\x12\x14\n\x0cto_client_id\x18\x05 \x01(\t\"8\n\x0fPushVoipRequest\x12\x14\n\x0cto_client_id\x18\x01 \x01(\t\x12\x0f\n\x07payload\x18\x02 \x01(\t2\xe8\x01\n\nNotifyPush\x12N\n\x0eregister_token\x12!.notify_push.RegisterTokenRequest\x1a\x19.notify_push.BaseResponse\x12\x44\n\tpush_text\x12\x1c.notify_push.PushTextRequest\x1a\x19.notify_push.BaseResponse\x12\x44\n\tpush_voip\x12\x1c.notify_push.PushVoipRequest\x1a\x19.notify_push.BaseResponseb\x06proto3'
 )
 
 
@@ -54,6 +54,13 @@ _REGISTERTOKENREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='end_user_env', full_name='notify_push.RegisterTokenRequest.end_user_env', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -67,7 +74,7 @@ _REGISTERTOKENREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=41,
-  serialized_end=118,
+  serialized_end=140,
 )
 
 
@@ -98,8 +105,8 @@ _BASERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=120,
-  serialized_end=149,
+  serialized_start=142,
+  serialized_end=171,
 )
 
 
@@ -158,8 +165,8 @@ _PUSHTEXTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=151,
-  serialized_end=261,
+  serialized_start=173,
+  serialized_end=283,
 )
 
 
@@ -197,8 +204,8 @@ _PUSHVOIPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=263,
-  serialized_end=319,
+  serialized_start=285,
+  serialized_end=341,
 )
 
 DESCRIPTOR.message_types_by_name['RegisterTokenRequest'] = _REGISTERTOKENREQUEST
@@ -244,8 +251,8 @@ _NOTIFYPUSH = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=322,
-  serialized_end=554,
+  serialized_start=344,
+  serialized_end=576,
   methods=[
   _descriptor.MethodDescriptor(
     name='register_token',
