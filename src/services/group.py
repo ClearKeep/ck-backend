@@ -19,7 +19,7 @@ from protos import group_pb2
 from msg.message import Message
 from google.protobuf.json_format import MessageToDict
 from utils.logger import *
-from src.services.notify_push import NotifyPushService
+from src.services.notify_push import NotifyPushService, PushType
 import logging
 logger = logging.getLogger(__name__)
 
@@ -488,7 +488,7 @@ class GroupService(BaseService):
                                 title="Deactivate Member",
                                 body="A user has been deactived",
                                 from_client_id=client_id,
-                                notify_type="deactive_account",
+                                notify_type=PushType.DEACTIVE_ACCOUNT.value,
                                 data=json.dumps(data)
                             )
                         except Exception as e:
@@ -573,7 +573,7 @@ class GroupService(BaseService):
                         title="Deactivate Member",
                         body="A user has been deactived",
                         from_client_id=deactive_account_id,
-                        notify_type="deactive_account",
+                        notify_type=PushType.DEACTIVE_ACCOUNT.value,
                         data=json.dumps(data)
                     )
             except Exception as e:
