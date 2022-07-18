@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 class PushType(Enum):
     DEACTIVE_ACCOUNT = 'deactive_account'
+    RESET_PINCODE = 'reset_pincode'
 
 
 class NotifyPushService(BaseService):

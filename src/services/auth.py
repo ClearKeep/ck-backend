@@ -375,6 +375,21 @@ class AuthService:
             logger.error(e, exc_info=True)
             return False
 
+    async def notify_myself_reset_pincode(self, user_id):
+        push_service = NotifyPushService()
+        data = {
+                'user_id': user_id,
+                'reset_pincode_user_id': user_id
+            }
+        await push_service.push_text_to_client(
+            to_client_id=user_id,
+            title="Reset pincode",
+            body="A user has been reset pincode",
+            from_client_id=user_id,
+            notify_type=PushType.RESET_PINCODE.value,
+            data=json.dumps(data)
+        )
+
     def refresh_token(self, refresh_token):
         token = KeyCloakUtils.refresh_token(refresh_token)
         return token
