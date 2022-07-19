@@ -67,6 +67,7 @@ services:
       dockerfile: .docker/Dockerfile
     volumes:
       - ../:/ck-backend
+      - /ck-backend/.venv
     restart: unless-stopped
     logging:
       options:

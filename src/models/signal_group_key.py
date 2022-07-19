@@ -17,10 +17,10 @@ class GroupClientKey(Database.get().Model):
     client_workspace_group_id = Database.get().Column(Database.get().Integer, nullable=True)
     device_id = Database.get().Column(Database.get().Integer, unique=False, nullable=True)
     # client key for group
-    client_key = Database.get().Column(Database.get().Binary, nullable=True)
+    client_key = Database.get().Column(Database.get().LargeBinary, nullable=True)
     client_sender_key_id = Database.get().Column(Database.get().Integer, unique=False, nullable=True)
-    client_sender_key = Database.get().Column(Database.get().Binary)
-    client_public_key = Database.get().Column(Database.get().Binary)
+    client_sender_key = Database.get().Column(Database.get().LargeBinary)
+    client_public_key = Database.get().Column(Database.get().LargeBinary)
     client_private_key = Database.get().Column(Database.get().String(1024), nullable=True)
     # end client key for group
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)

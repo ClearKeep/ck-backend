@@ -1,6 +1,6 @@
 # ref https://pypi.org/project/python-keycloak/
 from keycloak import KeycloakOpenID, KeycloakAdmin
-from keycloak import raise_error_from_response
+from keycloak.keycloak_admin import raise_error_from_response
 from keycloak import KeycloakGetError
 import keycloak
 from msg.message import Message
