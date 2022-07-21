@@ -44,7 +44,7 @@ class UserService(BaseService):
                 salt=salt,
                 iv_parameter=iv_parameter,
                 display_name=display_name,
-                auth_source=auth_source
+                auth_source=auth_source.value
             )
             self.model.add()
 
@@ -63,12 +63,12 @@ class UserService(BaseService):
                 id=id,
                 email=email,
                 display_name=display_name,
-                auth_source=auth_source
+                auth_source=auth_source.value
             )
             self.model.add()
             return self
         except Exception as e:
-            logger.info(e)
+            logger.error(e, exc_info=True)
             return None
 
     def forgot_user(self, user_info, new_user_id, password_verifier, salt, iv_parameter):
