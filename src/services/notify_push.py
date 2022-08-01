@@ -1,4 +1,5 @@
 import asyncio
+from enum import Enum, unique
 
 from src.models.notify_token import NotifyToken
 from src.services.base import BaseService
@@ -10,6 +11,13 @@ from utils.config import *
 
 import logging
 logger = logging.getLogger(__name__)
+
+
+class PushType(Enum):
+    DEACTIVE_ACCOUNT = 'deactive_account'
+    RESET_PINCODE = 'reset_pincode'
+
+
 class NotifyPushService(BaseService):
     """
     Notify push service, using for pushing notification to client_id when he/her not log in

@@ -319,7 +319,7 @@ class AuthController(BaseController):
             user_info = self.user_service.get_user_by_auth_source(request.email, "account")
             old_user_id = user_info.id
             self.service.verify_hash_pre_access_token(old_user_id, request.pre_access_token, "forgot_password")
-            new_user_id = self.service.forgot_user(request.email, request.password_verifier, user_info.display_name)
+            new_user_id = await self.service.forgot_user(request.email, request.password_verifier, user_info.display_name)
             try:
                 await GroupService().forgot_peer_groups_for_client(user_info)
             except Exception as e:
@@ -554,6 +554,7 @@ class AuthController(BaseController):
             if not success_status:
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             self.user_service.change_password(request, None, request.hash_pincode, exists_user["id"])
+            await self.service.notify_myself_reset_pincode(exists_user["id"])
             old_client_key_peer = SignalService().peer_get_client_key(exists_user["id"])
             SignalService().client_update_peer_key(exists_user["id"], request.client_key_peer)
             await GroupService().member_reset_pincode_in_group(exists_user["id"])

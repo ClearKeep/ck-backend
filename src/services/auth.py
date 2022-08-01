@@ -4,7 +4,7 @@ import requests
 from msg.message import Message
 from utils.keycloak import KeyCloakUtils
 from utils.logger import *
-from src.services.notify_push import NotifyPushService
+from src.services.notify_push import NotifyPushService, PushType
 import json
 from src.services.user import UserService
 from src.models.base import Database
@@ -56,10 +56,23 @@ class AuthService:
             logger.info(e)
             raise Exception(Message.UNAUTHENTICATED)
 
-    def forgot_user(self, email, password_verifier, display_name):
+    async def forgot_user(self, email, password_verifier, display_name):
         try:
             # delete user, then re create new user with activate status is True
             old_user_id = self.get_user_by_email(email)["id"]
+            push_service = NotifyPushService()
+            data = {
+                    'client_id': old_user_id,
+                    'deactive_account_id': old_user_id
+                }
+            await push_service.push_text_to_client(
+                to_client_id=old_user_id,
+                title="Deactivate Member",
+                body="A user has been deactived",
+                from_client_id=old_user_id,
+                notify_type=PushType.DEACTIVE_ACCOUNT.value,
+                data=json.dumps(data)
+            )
             self.delete_user(old_user_id)
             new_user_id = KeyCloakUtils.create_user(email, email, password_verifier, "", display_name)
             if new_user_id:
@@ -361,6 +374,21 @@ class AuthService:
         except Exception as e:
             logger.error(e, exc_info=True)
             return False
+
+    async def notify_myself_reset_pincode(self, user_id):
+        push_service = NotifyPushService()
+        data = {
+                'user_id': user_id,
+                'reset_pincode_user_id': user_id
+            }
+        await push_service.push_text_to_client(
+            to_client_id=user_id,
+            title="Reset pincode",
+            body="A user has been reset pincode",
+            from_client_id=user_id,
+            notify_type=PushType.RESET_PINCODE.value,
+            data=json.dumps(data)
+        )
 
     def refresh_token(self, refresh_token):
         token = KeyCloakUtils.refresh_token(refresh_token)
