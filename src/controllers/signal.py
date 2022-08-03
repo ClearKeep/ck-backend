@@ -99,7 +99,7 @@ class SignalController(BaseController):
             owner_workspace_domain = get_owner_workspace_domain()
             if client_workspace_domain and client_workspace_domain != owner_workspace_domain:
                 # get key from other server
-                obj_resp = ClientSignal(client_workspace_domain).workspace_get_user_signal_key(client_id, client_workspace_domain)
+                obj_resp = await ClientSignal(client_workspace_domain).workspace_get_user_signal_key(client_id, client_workspace_domain)
                 return obj_resp
             else:
                 obj_resp = self.service.peer_get_client_key(client_id)
@@ -191,13 +191,13 @@ class SignalController(BaseController):
                     )
                     return response
                 else:
-                    obj_resp = ClientSignal(group.owner_workspace_domain).group_get_client_key(group.owner_group_id, client_id)
+                    obj_resp = await ClientSignal(group.owner_workspace_domain).group_get_client_key(group.owner_group_id, client_id)
                     return obj_resp
             else:
                 obj_resp = self.service.group_get_client_key(group_id, client_id)
                 if obj_resp is not None:
                     if obj_resp.client_workspace_domain and obj_resp.client_workspace_domain != owner_workspace_domain:
-                        obj_resp = ClientSignal(obj_resp.client_workspace_domain).workspace_group_get_client_key(obj_resp.client_workspace_group_id, obj_resp.client_id)
+                        obj_resp = await ClientSignal(obj_resp.client_workspace_domain).workspace_group_get_client_key(obj_resp.client_workspace_group_id, obj_resp.client_id)
                         return obj_resp
                     else:
                         response = signal_pb2.GroupGetClientKeyResponse(

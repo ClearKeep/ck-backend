@@ -348,7 +348,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 user_info = self.service.get_user_info(client_id, owner_workspace_domain)
             else:
                 client = ClientUser(client_workspace_domain)
-                user_info = client.get_user_info(client_id=client_id, workspace_domain=client_workspace_domain)
+                user_info = await client.get_user_info(client_id=client_id, workspace_domain=client_workspace_domain)
 
             if user_info is not None:
                 return user_info
@@ -514,8 +514,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         try:
             list_clients = request.lst_client
             should_get_profile = request.should_get_profile
-            list_user_status = self.service.get_list_clients_status(list_clients,should_get_profile)
-            return list_user_status
+            return await self.service.get_list_clients_status(list_clients,should_get_profile)
 
         except Exception as e:
             logger.error(e, exc_info=True)
