@@ -1,3 +1,5 @@
+from cerberus import Validator
+
 from src.controllers.base import *
 from middlewares.permission import *
 from middlewares.request_logged import *
@@ -9,6 +11,7 @@ from src.models.group import GroupChat
 from utils.keycloak import KeyCloakUtils
 from google.protobuf.json_format import MessageToDict
 import datetime
+from cerberus import Validator
 
 import logging
 logger = logging.getLogger(__name__)
@@ -142,6 +145,7 @@ class GroupController(BaseController):
     @auth_required
     async def add_member(self, request, context):
         try:
+            self._validate_add_member_request(request)
             group = GroupService().get_group_info(request.group_id)
             group_clients = json.loads(group.group_clients)
             added_member_info = request.added_member_info
@@ -215,6 +219,65 @@ class GroupController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
+    def _validate_add_member_request(self, request):
+        schema = {
+            'added_member_info': {
+                'type': 'dict',
+                'required': True,
+                'schema': {
+                    'id': {
+                        'type':'string',
+                        'required': True
+                    },
+                    'display_name': {
+                        'type': 'string'
+                    },
+                    'workspace_domain': {
+                        'type': 'string',
+                        'required': True
+                    },
+                    'status': {
+                        'type': 'string'
+                    },
+                    'ref_group_id': {
+                        'type': 'string'
+                    },
+                }
+            },
+            'adding_member_info': {
+                'type': 'dict',
+                'required': True,
+                'schema': {
+                    'id': {
+                        'type':'string',
+                        'required': True
+                    },
+                    'display_name': {
+                        'type': 'string'
+                    },
+                    'workspace_domain': {
+                        'type': 'string',
+                        'required': True
+                    },
+                    'status': {
+                        'type': 'string'
+                    },
+                    'ref_group_id': {
+                        'type': 'string'
+                    },
+                }
+            },
+            'group_id': {
+                'type': 'string',
+                'required': True
+            }
+        }
+        validator = Validator(schema)
+        if not validator.validate(MessageToDict(request, preserving_proto_field_name=True)):
+            logger.info('invalid_add_member_request')
+            logger.debug(validator.errors)
+            raise Exception('invalid_add_member_request')
 
     @request_logged
     async def workspace_add_member(self, request, context):
