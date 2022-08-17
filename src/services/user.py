@@ -552,6 +552,9 @@ class UserService(BaseService):
                 list_client = workspace_domains_dictionary[workspace_domain]
                 if workspace_domain == owner_workspace_domain:
                     for client in list_client:
+                        user_info = self.model.get(client.client_id)
+                        if not user_info:
+                            continue
                         user_status = self.get_owner_workspace_client_status(client.client_id)
 
                         tmp_client_response = user_pb2.MemberInfoRes(
@@ -560,14 +563,12 @@ class UserService(BaseService):
                             status=user_status,
                         )
                         if should_get_profile:
-                            user_info = self.model.get(client.client_id)
-                            if user_info is not None:
-                                if user_info.display_name:
-                                    tmp_client_response.display_name = user_info.display_name
-                                if user_info.phone_number:
-                                    tmp_client_response.phone_number = user_info.phone_number
-                                if user_info.avatar:
-                                    tmp_client_response.avatar = user_info.avatar
+                            if user_info.display_name:
+                                tmp_client_response.display_name = user_info.display_name
+                            if user_info.phone_number:
+                                tmp_client_response.phone_number = user_info.phone_number
+                            if user_info.avatar:
+                                tmp_client_response.avatar = user_info.avatar
                             logger.info("user info {}: {}".format(client.client_id, tmp_client_response))
                         list_clients_status.append(tmp_client_response)
                 else:
