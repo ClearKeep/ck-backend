@@ -318,7 +318,9 @@ class AuthController(BaseController):
             logger.info("from email {}".format(request.email))
             user_info = self.user_service.get_user_by_auth_source(request.email, "account")
             old_user_id = user_info.id
-            self.service.verify_hash_pre_access_token(old_user_id, request.pre_access_token, "forgot_password")
+            success_status = self.service.verify_hash_pre_access_token(old_user_id, request.pre_access_token, "forgot_password")
+            if not success_status:
+                raise Exception(Message.CHANGE_PASSWORD_FAILED)
             new_user_id = await self.service.forgot_user(request.email, request.password_verifier, user_info.display_name)
             try:
                 await GroupService().forgot_peer_groups_for_client(user_info)

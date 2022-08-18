@@ -1,5 +1,6 @@
 from datetime import datetime
 import secrets
+import json
 from src.models.base import Database
 from src.models.message import Message
 from src.models.signal_group_key import GroupClientKey
@@ -179,6 +180,15 @@ class GroupChat(Database.get().Model):
         except Exception as e:
             Database.get_session().rollback()
             raise
+
+    def remove_client(self, client_id):
+        clients = json.loads(self.group_clients)
+        for client in clients:
+            if client['id'] == client_id:
+                clients.remove(client)
+        self.group_clients = json.dumps(clients)
+        self.total_member = len(clients)
+        self.update()
 
     def __repr__(self):
         return '<GroupChat(id=%s, group_name=%s, owner_group_id=%s)>' % (self.id, self.group_name, self.owner_group_id)

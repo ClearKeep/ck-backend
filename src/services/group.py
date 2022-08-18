@@ -500,6 +500,7 @@ class GroupService(BaseService):
                                                                                                           deactive_account_id=client_id
                                                                                                             )
                         informed_workspace_domain[client["workspace_domain"]].client_ids.append(client["id"])
+            group.GroupChat.remove_client(client_id)
         for workspace_domain in informed_workspace_domain:
             try:
                 await ClientGroup(workspace_domain).workspace_notify_deactive_member(informed_workspace_domain[workspace_domain])
@@ -513,16 +514,10 @@ class GroupService(BaseService):
         workspaces = set()
         for group in groups:
             clients = json.loads(group.GroupChat.group_clients)
-            _clients = []
             for client in clients:
-                if client['id'] != user_info.id:
-                    _clients.append(client)
                 if client["workspace_domain"] != owner_workspace_domain:
                     workspaces.add(client["workspace_domain"])
-
-            group.GroupChat.group_clients = json.dumps(_clients)
-            group.GroupChat.total_member = len(_clients)
-            group.GroupChat.update()
+            group.GroupChat.remove_client(user_info.id)
         self.model.delete_group_client_key_by_client_id(user_info.id)
 
         await asyncio.gather(
@@ -558,6 +553,9 @@ class GroupService(BaseService):
         )
 
     async def workspace_notify_deactive_member(self, deactive_account_id, client_ids):
+        groups = self.model.get_joined_group_type(deactive_account_id, 'peer')
+        for group in groups:
+            group.GroupChat.remove_client(deactive_account_id)
         # workspace call for notify all other users in different server involved in peer chat with that this user updated public key
         push_service = NotifyPushService()
         for client_id in client_ids:
@@ -583,15 +581,7 @@ class GroupService(BaseService):
     async def workspace_member_forgot_password_in_group(self, user_id):
         groups = self.model.get_joined_group_type(user_id, 'group')
         for group in groups:
-            clients = json.loads(group.GroupChat.group_clients)
-            clients = [
-                client
-                for client in clients
-                if client['id'] != user_id
-            ]
-            group.GroupChat.group_clients = json.dumps(clients)
-            group.GroupChat.total_member = len(clients)
-            group.GroupChat.update()
+            group.GroupChat.remove_client(user_id)
 
         self.model.delete_group_client_key_by_client_id(user_id)
     
