@@ -87,11 +87,32 @@ class SignalService(BaseService):
         if new_group_key is None:
             raise Exception(Message.REGISTER_CLIENT_GROUP_FAILED_AVAILABLE)
 
-    def group_bulk_update_client_key(self, client_id, list_group_client_key):
+    def group_bulk_update_client_key(self, client_id, group_client_keys):
         # update client_id's multi group keys
-        is_updated = GroupClientKey().update_bulk_client_key(client_id, list_group_client_key)
-        if not is_updated:
-            raise Exception(Message.UPDATE_CLIENT_KEY_GROUPS_FAILED)
+        group_ids = [
+            key.groupId
+            for key in group_client_keys
+        ]
+        keys = self.group_client_key_model.list_by_user_id_group_ids(client_id, group_ids)
+
+        field_mapping = {
+            'groupId': 'group_id',
+            'deviceId': 'device_id',
+            'clientKeyDistribution': 'client_key',
+            'senderKeyId': 'client_sender_key_id',
+            'senderKey': 'client_sender_key',
+            'publicKey': 'client_public_key',
+            'privateKey': 'client_private_key'
+
+        }
+        for key in keys:
+            for _key in group_client_keys:
+                if key.group_id != _key.groupId:
+                    continue
+                for name in field_mapping.keys():
+                    if getattr(_key, name):
+                        setattr(key, field_mapping[name], getattr(_key, name))
+        self.group_client_key_model.bulk_update(keys)
 
     def group_get_client_key(self, group_id, client_id):
         # get client_id's group key in group_id
