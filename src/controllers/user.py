@@ -323,7 +323,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
 
-            self.service.update_profile(client_id, display_name, phone_number, avatar, clear_phone_number)
+            await self.service.update_profile(client_id, display_name, phone_number, avatar, clear_phone_number)
             return user_messages.BaseResponse()
 
         except Exception as e:
@@ -550,4 +550,16 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def workspace_update_display_name(self, request, context):
+        try:
+            await self.service.workspace_update_display_name(
+                user_id=request.user_id,
+                display_name=request.display_name
+            )
+            return user_messages.BaseResponse()
+        except Exception as e:
+            logger.error(e, exc_info=True)
             context.set_code(grpc.StatusCode.INTERNAL)

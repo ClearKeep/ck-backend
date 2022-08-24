@@ -81,15 +81,13 @@ class GroupChat(Database.get().Model):
         Database.get().session.remove()
         return result
 
-
     def get_joined_group_type(self, client_id, group_type):
-        result = Database.get_session().query(GroupChat, GroupClientKey.id, GroupChat.group_clients) \
+        query = Database.get_session().query(GroupChat, GroupClientKey.id, GroupChat.group_clients) \
             .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \
-            .filter(GroupClientKey.client_id == client_id) \
-            .filter(GroupChat.group_type == group_type) \
-            .all()
-        Database.get().session.remove()
-        return result
+            .filter(GroupClientKey.client_id == client_id)
+        if group_type:
+            query = query.filter(GroupChat.group_type == group_type)
+        return query.all()
 
     def get_by_group_owner(self, owner_group_id):
         result = Database.get_session().query(GroupChat) \
@@ -113,6 +111,15 @@ class GroupChat(Database.get().Model):
         except Exception as e:
             Database.get_session().rollback()
             logger.error(e, exc_info=True)
+
+    def bulk_update(self, groups):
+        try:
+            for group in groups:
+                Database.get_session().merge(group)
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            raise
 
     def delete(self):
         try:

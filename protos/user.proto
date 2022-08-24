@@ -177,6 +177,11 @@ message MfaValidateOtpRequest {
 message MfaResendOtpRequest {}
 // Response: MfaBaseResponse
 
+message WorkspaceUpdateDisplayNameRequest {
+    string user_id = 1;
+    string display_name = 2;
+}
+
 service User {
     //----- FROM MY ACCOUNT -----
     // => profile api
@@ -206,4 +211,6 @@ service User {
     rpc mfa_validate_password(MfaValidatePasswordRequest) returns (MfaBaseResponse) {};
     rpc mfa_validate_otp(MfaValidateOtpRequest) returns (MfaBaseResponse) {};
     rpc mfa_resend_otp(MfaResendOtpRequest) returns (MfaBaseResponse) {};
+
+    rpc workspace_update_display_name(WorkspaceUpdateDisplayNameRequest) returns (BaseResponse) {};
 }
