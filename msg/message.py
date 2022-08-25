@@ -58,6 +58,9 @@ class Message:
     INVALID_SOCIAL_AUTH_SOURCE = 1036
     INVALID_ACCOUNT_AUTH_SOURCE = 1037
 
+    #apple_login
+    APPLE_ID_TOKEN_INVALID = 1038
+
     #upload file
     UPLOAD_FILE_DATA_LOSS = 1040
     UPLOAD_FILE_FAILED = 1041
@@ -160,6 +163,7 @@ class Message:
         FACEBOOK_AUTH_FAILED: "Login Facebook failed. Please try again",
         INVALID_SOCIAL_AUTH_SOURCE: "An account with your email already exists. Please log-in with that email and your password.",
         INVALID_ACCOUNT_AUTH_SOURCE: "An account with your email already exists. Please log-in with your social network account.",
+        APPLE_ID_TOKEN_INVALID: "Login Apple failed. Please try again",
 
         UPLOAD_FILE_DATA_LOSS: "Upload file failed. Data is corrupted",
         UPLOAD_FILE_FAILED: "Upload file failed. Please try again",

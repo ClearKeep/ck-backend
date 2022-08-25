@@ -17,6 +17,7 @@ class AuthSource(Enum):
     FACEBOOK = 'facebook'
     OFFICE = 'office'
     ACCOUNT = 'account'
+    APPLE = 'apple'
 
 
 class User(Database.get().Model):

@@ -119,6 +119,11 @@ message FacebookLoginReq {
     string access_token = 2;
 }
 
+message AppleLoginReq {
+    string id_token = 1;
+    string end_user_env = 2;
+}
+
 message SocialLoginRes {
     string user_name = 1;
     string require_action = 2;
@@ -242,6 +247,7 @@ service Auth {
     rpc login_google(GoogleLoginReq) returns (SocialLoginRes) {};
     rpc login_office(OfficeLoginReq) returns (SocialLoginRes) {};
     rpc login_facebook(FacebookLoginReq) returns (SocialLoginRes) {};
+    rpc login_apple(AppleLoginReq) returns (SocialLoginRes) {};
     rpc login_social_challange(AuthSocialChallengeReq) returns (AuthChallengeRes) {};
     // authenticated challange
     rpc login_authenticate(AuthenticateReq) returns (AuthRes) {};
