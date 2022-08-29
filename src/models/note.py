@@ -17,7 +17,7 @@ class Note(Database.get().Model):
         Database.get().String(36), unique=False,
         nullable=True
     )
-    content = Database.get().Column(Database.get().Binary)
+    content = Database.get().Column(Database.get().LargeBinary)
     note_type = Database.get().Column(
         Database.get().String(128),
         default='text',
