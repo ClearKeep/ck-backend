@@ -27,9 +27,8 @@ class GroupController(BaseController):
             group_name = request.group_name
             group_type = request.group_type
             lst_client = request.lst_client
-            obj_res = self.service.add_group(group_name, group_type, lst_client, request.created_by_client_id)
+            return await self.service.add_group(group_name, group_type, lst_client, request.created_by_client_id)
 
-            return obj_res
         except Exception as e:
             logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:

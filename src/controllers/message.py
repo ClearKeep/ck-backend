@@ -44,7 +44,7 @@ class MessageController(BaseController):
                     off_set = request.off_set,
                     last_message_at = request.last_message_at
                 )
-                obj_res = ClientMessage(group.owner_workspace_domain).workspace_get_messages_in_group(workspace_request)
+                obj_res = await ClientMessage(group.owner_workspace_domain).workspace_get_messages_in_group(workspace_request)
                 if obj_res and obj_res.lst_message:
                     for obj in obj_res.lst_message:
                         obj.group_id = group_id
@@ -194,7 +194,7 @@ class MessageController(BaseController):
                     else:
                         # call to other server
                         request.group_id = client.GroupClientKey.client_workspace_group_id
-                        res_object = ClientMessage(
+                        res_object = await ClientMessage(
                             client.GroupClientKey.client_workspace_domain).workspace_publish_message(request)
                         if res_object is None:
                             logger.error("Workspace Publish Message to client failed")
@@ -289,7 +289,7 @@ class MessageController(BaseController):
                     from_client_device_id=request.from_client_device_id,
                     sender_message=request.sender_message
                 )
-                message_res_object2 = ClientMessage(
+                message_res_object2 = await ClientMessage(
                     client.GroupClientKey.client_workspace_domain).workspace_publish_message(request2)
                 if message_res_object2 is None:
                     logger.error("send message to client failed")
@@ -374,7 +374,7 @@ class MessageController(BaseController):
             sender_message=request.sender_message,
             from_client_device_id=request.from_client_device_id,
         )
-        res_object = ClientMessage(group.owner_workspace_domain).workspace_publish_message(request1)
+        res_object = await ClientMessage(group.owner_workspace_domain).workspace_publish_message(request1)
         if res_object is None:
             logger.error("send message to client failed")
         return message_res_object

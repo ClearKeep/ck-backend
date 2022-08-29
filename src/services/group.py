@@ -32,7 +32,7 @@ class GroupService(BaseService):
         self.notify_service = NotifyInAppService()
         self.transaction = 'ckbackendtransaction'
 
-    def add_group(self, group_name, group_type, lst_client, created_by):
+    async def add_group(self, group_name, group_type, lst_client, created_by):
         # service for create new group with following info:
         # group_name: name of group in request, using for searching group
         # group_type: type of group in request, must be one of this values: [peer/group]
@@ -116,8 +116,7 @@ class GroupService(BaseService):
                     owner_workspace_domain=owner_workspace_domain
                 )
 
-                group_res_object = \
-                    ClientGroup(obj.workspace_domain).create_group_workspace(
+                group_res_object = await ClientGroup(obj.workspace_domain).create_group_workspace(
                         request
                     )
                 client_group_key = GroupClientKey().set_key(
@@ -668,7 +667,7 @@ class GroupService(BaseService):
             adding_member_info=adding_member_info,
             group_id=group.owner_group_id,
         )
-        ClientGroup(group.owner_workspace_domain).add_member(add_member_request)
+        await ClientGroup(group.owner_workspace_domain).add_member(add_member_request)
 
         # for compatible with old code, should be remove in future?
         return group_pb2.BaseResponse()
@@ -739,7 +738,7 @@ class GroupService(BaseService):
                 )
                 logger.info(
                     "call add member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
-                response = ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_add_member(request)
+                response = await ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_add_member(request)
                 if response.is_member_workspace:
                     logger.info("update ref_group to main server {}".format(response.ref_group_id))
                     group_client_key.client_workspace_group_id = response.ref_group_id
@@ -887,7 +886,7 @@ class GroupService(BaseService):
                 )
                 logger.info(
                     "call leave member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
-                ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_leave_group(request)
+                await ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_leave_group(request)
 
         # for compatible with old code, should be remove in future?
         return group_pb2.BaseResponse()
@@ -948,7 +947,7 @@ class GroupService(BaseService):
             leave_member_by=leave_member_by,
             group_id=group.owner_group_id,
         )
-        ClientGroup(group.owner_workspace_domain).leave_group(leave_group_request)
+        await ClientGroup(group.owner_workspace_domain).leave_group(leave_group_request)
         # for compatible with old code, should be remove in future?
         return group_pb2.BaseResponse()
 

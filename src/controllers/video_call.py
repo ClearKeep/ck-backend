@@ -105,7 +105,7 @@ class VideoCallController(BaseController):
                         new_push_payload = deepcopy(push_payload)
                         new_push_payload['group_id'] = str(client.GroupClientKey.client_workspace_group_id)
                         logger.info(new_push_payload)
-                        ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.User.id,
+                        await ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.User.id,
                                                                                             json.dumps(new_push_payload))
 
             stun_server = video_call_pb2.StunServer(**server_info.get_stun())
@@ -189,7 +189,7 @@ class VideoCallController(BaseController):
                     new_push_payload = deepcopy(push_payload)
                     new_push_payload['group_id'] = str(client.GroupClientKey.client_workspace_group_id)
                     logger.info(new_push_payload)
-                    ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
+                    await ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                         json.dumps(new_push_payload))
 
         stun_server = video_call_pb2.StunServer(**server_info.get_stun())
@@ -240,7 +240,7 @@ class VideoCallController(BaseController):
             group_id=group.owner_group_id,
             call_type=call_type
         )
-        obj_res = ClientVideoCall(group.owner_workspace_domain).workspace_video_call(request)
+        obj_res = await ClientVideoCall(group.owner_workspace_domain).workspace_video_call(request)
         if obj_res:
             # push for other user in this server
             for client in other_client_in_this_workspace:
@@ -330,7 +330,7 @@ class VideoCallController(BaseController):
                         new_push_payload = deepcopy(push_payload)
                         new_push_payload["group_id"] = str(client.GroupClientKey.client_workspace_group_id)
                         logger.info(new_push_payload)
-                        ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
+                        await ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                             json.dumps(new_push_payload))
                         #continue
             return video_call_pb2.BaseResponse()
@@ -387,7 +387,7 @@ class VideoCallController(BaseController):
                 new_push_payload = deepcopy(push_payload)
                 new_push_payload["group_id"] = str(client.GroupClientKey.client_workspace_group_id)
                 logger.info(new_push_payload)
-                ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
+                await ClientPush(client.GroupClientKey.client_workspace_domain).push_voip(client.GroupClientKey.client_id,
                                                                                     json.dumps(new_push_payload))
                 #continue
 
@@ -430,5 +430,5 @@ class VideoCallController(BaseController):
             group_id=group.owner_group_id,
             update_type=update_type
         )
-        obj_res = ClientVideoCall(group.owner_workspace_domain).workspace_update_call(request)
+        await ClientVideoCall(group.owner_workspace_domain).workspace_update_call(request)
         return video_call_pb2.BaseResponse()
