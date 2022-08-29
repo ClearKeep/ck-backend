@@ -53,8 +53,6 @@ services:
     logging:
       options:
         max-size: 100m
-    profiles:
-      - video
     volumes:
       - ../configs/janus/janus.jcfg:/usr/local/etc/janus/janus.jcfg
       - ../configs/janus/janus.transport.http.jcfg:/usr/local/etc/janus/janus.transport.http.jcfg
@@ -120,8 +118,6 @@ services:
     volumes:
       - ../configs/coturn/turnserver.conf:/etc/coturn/turnserver.conf
     network_mode: "host"
-    profiles:
-      - video
   
   smtp:
     build:
@@ -131,8 +127,6 @@ services:
     logging:
       options:
         max-size: 100m
-    profiles:
-      - email
     volumes:
       - ../configs/haraka/auth_flat_file.ini/:/etc/haraka/config/auth_flat_file.ini
       - ../configs/haraka/tls.ini/:/etc/haraka/config/tls.ini
