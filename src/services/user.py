@@ -2,14 +2,16 @@ import base64
 import datetime
 import hashlib
 import os
-
+import json
 import grpc
+import asyncio
 
 from client.client_user import ClientUser
 from msg.message import Message
 from protos import user_pb2, user_pb2_grpc, find_user_by_email_pb2, find_user_by_email_pb2_grpc
 from src.models.authen_setting import AuthenSetting
 from src.models.user import User
+from src.models.group import GroupChat
 from src.services.base import BaseService
 from src.services.upload_file import UploadFileService
 from utils.config import get_system_config, get_owner_workspace_domain
@@ -295,7 +297,7 @@ class UserService(BaseService):
             logger.info(e)
             raise Exception(Message.GET_PROFILE_FAILED)
 
-    def update_profile(self, user_id, display_name, phone_number, avatar, clear_phone_number):
+    async def update_profile(self, user_id, display_name, phone_number, avatar, clear_phone_number):
         # update profile for user_id, with force clear phone number flag for clearing stored phone number in db
         try:
             profile = self.model.get(user_id)
@@ -317,11 +319,38 @@ class UserService(BaseService):
                 profile.phone_number = phone_number
             if avatar:
                 profile.avatar = avatar
-            return profile.update()
+            profile.update()
+            if display_name:
+                await self.update_display_name_in_group(profile)
 
         except Exception as e:
             logger.info(e)
             raise Exception(Message.UPDATE_PROFILE_FAILED)
+
+    async def update_display_name_in_group(self, user):
+        group_chat = GroupChat()
+        items = group_chat.get_joined_group_type(user.id, None)
+        here = get_owner_workspace_domain()
+        workspace_domains = set()
+        groups = []
+        for item in items:
+            group_clients = json.loads(item.GroupChat.group_clients)
+            for client in group_clients:
+                if client['workspace_domain'] != here:
+                    workspace_domains.add(client['workspace_domain'])
+                if client['id'] != user.id:
+                    continue
+                client['display_name'] = user.display_name
+            item.GroupChat.group_clients = json.dumps(group_clients)
+            groups.append(item.GroupChat)
+        group_chat.bulk_update(groups)
+
+        await asyncio.gather(
+            *[
+                ClientUser(workspace_domain).update_display_name(user.id, user.display_name)
+                for workspace_domain in workspace_domains
+            ]
+        )
 
     def get_user_info(self, client_id, workspace_domain):
         # get information of client_id with additional infor about workspace_domain
@@ -649,3 +678,17 @@ class UserService(BaseService):
         user_info = self.model.get(user_id)
         user_info.delete()
         return True
+
+    async def workspace_update_display_name(self, user_id, display_name):
+        group_chat = GroupChat()
+        items = group_chat.get_joined_group_type(user_id, None)
+        groups = []
+        for item in items:
+            group_clients = json.loads(item.GroupChat.group_clients)
+            for client in group_clients:
+                if client['id'] != user_id:
+                    continue
+                client['display_name'] = display_name
+            item.GroupChat.group_clients = json.dumps(group_clients)
+            groups.append(item.GroupChat)
+        group_chat.bulk_update(groups)

@@ -114,6 +114,11 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.MfaResendOtpRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
                 )
+        self.workspace_update_display_name = channel.unary_unary(
+                '/user.User/workspace_update_display_name',
+                request_serializer=protos_dot_user__pb2.WorkspaceUpdateDisplayNameRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
+                )
 
 
 class UserServicer(object):
@@ -243,6 +248,12 @@ class UserServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def workspace_update_display_name(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_UserServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -345,6 +356,11 @@ def add_UserServicer_to_server(servicer, server):
                     servicer.mfa_resend_otp,
                     request_deserializer=protos_dot_user__pb2.MfaResendOtpRequest.FromString,
                     response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
+            ),
+            'workspace_update_display_name': grpc.unary_unary_rpc_method_handler(
+                    servicer.workspace_update_display_name,
+                    request_deserializer=protos_dot_user__pb2.WorkspaceUpdateDisplayNameRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -693,5 +709,22 @@ class User(object):
         return grpc.experimental.unary_unary(request, target, '/user.User/mfa_resend_otp',
             protos_dot_user__pb2.MfaResendOtpRequest.SerializeToString,
             protos_dot_user__pb2.MfaBaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def workspace_update_display_name(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/workspace_update_display_name',
+            protos_dot_user__pb2.WorkspaceUpdateDisplayNameRequest.SerializeToString,
+            protos_dot_user__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
