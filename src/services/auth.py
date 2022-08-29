@@ -8,7 +8,7 @@ from src.services.notify_push import NotifyPushService, PushType
 import json
 from src.services.user import UserService
 from src.models.base import Database
-from src.models.user import User
+from src.models.user import User, AuthSource, InvalidAuthSourceException
 from src.models.authen_setting import AuthenSetting
 from utils.otp import OTPServer
 from utils.smtp import MailerServer
@@ -155,17 +155,21 @@ class AuthService:
                 if not user["emailVerified"]:
                     KeyCloakUtils.active_user(user["id"])
                 user_info = UserService().get_user_by_id(user["id"])
+                user_info.check_auth_source(AuthSource.GOOGLE)
                 return google_email, user["id"], user_info.password_verifier is None or user_info.password_verifier == ""
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(google_email, google_email, "", google_token_info["name"])
                 new_user = UserService().create_user_social(id=new_user_id, email=google_email,
                                                           display_name=google_token_info["name"],
-                                                          auth_source='google')
+                                                          auth_source=AuthSource.GOOGLE)
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
                 return google_email, new_user_id, True
+        except InvalidAuthSourceException as e:
+            logger.info(e, exc_info=True)
+            raise Exception(Message.INVALID_SOCIAL_AUTH_SOURCE)
         except Exception as e:
             logger.info(e, exc_info=True)
             raise Exception(Message.GOOGLE_AUTH_FAILED)
@@ -191,6 +195,7 @@ class AuthService:
             user = self.get_user_by_email(office_id)
             if user:
                 user_info = UserService().get_user_by_id(user["id"])
+                user_info.check_auth_source(AuthSource.OFFICE)
                 return office_id, user["id"], user_info.password_verifier is None or user_info.password_verifier == ""
             else:
                 display_name = office_token_info["displayName"]
@@ -205,11 +210,14 @@ class AuthService:
                 new_user_id = KeyCloakUtils.create_user_without_password(email, office_id, "", display_name)
                 new_user = UserService().create_user_social(id=new_user_id, email=office_token_info["mail"],
                                                           display_name=display_name,
-                                                          auth_source='office')
+                                                          auth_source=AuthSource.OFFICE)
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
                 return office_id, new_user_id, True
+        except InvalidAuthSourceException as e:
+            logger.info(e, exc_info=True)
+            raise Exception(Message.INVALID_SOCIAL_AUTH_SOURCE)
         except Exception as e:
             logger.info(e, exc_info=True)
             raise Exception(Message.OFFICE_AUTH_FAILED)
@@ -247,17 +255,21 @@ class AuthService:
             user = self.get_user_by_email(facebook_id)
             if user:
                 user_info = UserService().get_user_by_id(user["id"])
+                user_info.check_auth_source(AuthSource.FACEBOOK)
                 return facebook_id, user["id"], user_info.password_verifier is None or user_info.password_verifier == ""
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(facebook_email, facebook_id, "", facebook_name)
                 new_user = UserService().create_user_social(id=new_user_id, email=facebook_email,
                                                           display_name=facebook_name,
-                                                          auth_source='facebook')
+                                                          auth_source=AuthSource.FACEBOOK)
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
                 return facebook_id, new_user_id, True
+        except InvalidAuthSourceException as e:
+            logger.info(e, exc_info=True)
+            raise Exception(Message.INVALID_SOCIAL_AUTH_SOURCE)
         except Exception as e:
             logger.info(e)
             raise Exception(Message.FACEBOOK_AUTH_FAILED)

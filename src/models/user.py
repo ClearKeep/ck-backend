@@ -1,9 +1,23 @@
 from datetime import datetime
 from sqlalchemy.orm import relationship
+from enum import Enum
+
 from src.models.base import Database
 from utils.logger import *
 import logging
 logger = logging.getLogger(__name__)
+
+
+class InvalidAuthSourceException(Exception):
+    pass
+
+
+class AuthSource(Enum):
+    GOOGLE = 'google'
+    FACEBOOK = 'facebook'
+    OFFICE = 'office'
+    ACCOUNT = 'account'
+
 
 class User(Database.get().Model):
     __tablename__ = 'user'
@@ -110,5 +124,11 @@ class User(Database.get().Model):
             Database.get_session().rollback()
             logger.error(e, exc_info=True)
 
+
+    def check_auth_source(self, auth_source):
+        if self.auth_source != auth_source.value:
+            raise InvalidAuthSourceException('auth source not match')
+
+
     def __repr__(self):
-        return '<Item(id=%s, display_name=%s, email=%s)>' % (self.id, self.display_name, self.email)
+        return '<User(id=%s, display_name=%s, email=%s)>' % (self.id, self.display_name, self.email)

@@ -10,6 +10,7 @@ from src.services.message import MessageService
 from src.services.notify_inapp import NotifyInAppService
 from src.services.signal import SignalService
 from src.services.user import UserService
+from src.models.user import AuthSource, InvalidAuthSourceException
 from utils.config import *
 
 import logging
@@ -142,7 +143,6 @@ class AuthController(BaseController):
     async def login_google(self, request, context):
         try:
             user_name, user_id, is_registered_pincode = self.service.google_login(request.id_token)
-            user_info = self.user_service.get_user_by_id(user_id)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
             if require_action_mess == "verify_pincode":
                 reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
@@ -266,6 +266,11 @@ class AuthController(BaseController):
 
             exists_user = self.service.get_user_by_email(email)
             if exists_user:
+                user_info = UserService().get_user_by_id(exists_user["id"])
+                try:
+                    user_info.check_auth_source(AuthSource.ACCOUNT)
+                except InvalidAuthSourceException as e:
+                    raise Exception(Message.INVALID_ACCOUNT_AUTH_SOURCE)
                 raise Exception(Message.REGISTER_USER_ALREADY_EXISTS)
 
             # register new user
@@ -273,7 +278,7 @@ class AuthController(BaseController):
 
             if new_user_id:
                 # create new user in database
-                UserService().create_new_user_srp(new_user_id, email, password_verifier, salt, iv_parameter, display_name, 'account')
+                UserService().create_new_user_srp(new_user_id, email, password_verifier, salt, iv_parameter, display_name, AuthSource.ACCOUNT)
             else:
                 self.service.delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)

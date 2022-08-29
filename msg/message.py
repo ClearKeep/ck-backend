@@ -55,6 +55,8 @@ class Message:
     # facebook login
     FACEBOOK_ACCESS_TOKEN_INVALID = 1034
     FACEBOOK_AUTH_FAILED = 1035
+    INVALID_SOCIAL_AUTH_SOURCE = 1036
+    INVALID_ACCOUNT_AUTH_SOURCE = 1037
 
     #upload file
     UPLOAD_FILE_DATA_LOSS = 1040
@@ -156,6 +158,8 @@ class Message:
         OFFICE_AUTH_FAILED: "Login Office 365 failed. Please try again",
         FACEBOOK_ACCESS_TOKEN_INVALID: "Login Facebook failed. Please try again",
         FACEBOOK_AUTH_FAILED: "Login Facebook failed. Please try again",
+        INVALID_SOCIAL_AUTH_SOURCE: "An account with your email already exists. Please log-in with that email and your password.",
+        INVALID_ACCOUNT_AUTH_SOURCE: "An account with your email already exists. Please log-in with your social network account.",
 
         UPLOAD_FILE_DATA_LOSS: "Upload file failed. Data is corrupted",
         UPLOAD_FILE_FAILED: "Upload file failed. Please try again",
