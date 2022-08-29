@@ -25,6 +25,8 @@ werkzeug = "*"
 psycopg2 = "*"
 keycloak = "*"
 python-keycloak = "*"
+cerberus = "*"
+grpcio-tools = "*"
 
 [dev-packages]
 
