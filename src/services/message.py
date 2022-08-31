@@ -37,12 +37,7 @@ class MessageService(BaseService):
             sender_message=sender_message
         )
         self.model.add()
-        # update group last message
-        GroupChat(
-            id=group_id,
-            last_message_at=created_at,
-            last_message_id=message_id
-        ).update()
+        self.update_group_last_message(group_id, created_at, message_id)
         # response
         new_message = self.model.get(message_id)
         res_obj = message_pb2.MessageObjectResponse(
@@ -63,6 +58,14 @@ class MessageService(BaseService):
         res_obj.client_workspace_domain = get_owner_workspace_domain()
 
         return res_obj
+
+    def update_group_last_message(self, group_id, created_at, message_id):
+        GroupChat(
+            id=group_id,
+            last_message_at=created_at,
+            last_message_id=message_id
+        ).update()
+
 
     def update_message(
             self,

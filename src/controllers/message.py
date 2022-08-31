@@ -133,6 +133,8 @@ class MessageController(BaseController):
                     message=request.message,
                     sender_message=request.sender_message
                 )
+            else:
+                MessageService().update_group_last_message(group_id=request.group_id, created_at=datetime.now(), message_id=request.message_id)
 
             new_message = message_pb2.MessageObjectResponse(
                 id=request.message_id,
@@ -302,6 +304,8 @@ class MessageController(BaseController):
         owner_workspace_domain = get_owner_workspace_domain()
         message_id = str(uuid.uuid4())
         created_at = datetime.now()
+
+        MessageService().update_group_last_message(group_id=group.id, created_at=created_at, message_id=message_id)
 
         message_res_object = message_pb2.MessageObjectResponse(
             id=message_id,
