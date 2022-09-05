@@ -194,6 +194,7 @@ service User {
     rpc update_status(SetUserStatusRequest) returns (BaseResponse) {};
     rpc ping_request(PingRequest) returns (BaseResponse) {};
     rpc get_clients_status(GetClientsStatusRequest) returns (GetClientsStatusResponse) {};
+    rpc delete_account(Empty) returns (BaseResponse) {};
 
 
     //----- FROM OTHER ACCOUNT -----

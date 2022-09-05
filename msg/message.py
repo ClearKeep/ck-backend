@@ -31,6 +31,7 @@ class Message:
     SEARCH_GROUP_CHAT_FAILED = 1019
     CLIENT_QUEUE_NOT_FOUND = 1020
     GET_MESSAGE_IN_GROUP_FAILED = 1078
+    DELETE_ACCOUNT_FAILED = 1029
 
     # notify
     GET_CLIENT_NOTIFIES_FAILED = 1021
@@ -148,6 +149,7 @@ class Message:
         VERIFY_PINCODE_FAILED: "Can not verify pincode. Please try again",
         NOT_SOCIAL_ACCOUNT: "This user do not have pincode",
         GET_MESSAGE_IN_GROUP_FAILED: "Get message in this group failed. Please try again",
+        DELETE_ACCOUNT_FAILED: "Delete account failed. Please try again",
 
         GET_CLIENT_NOTIFIES_FAILED: "Get client notify failed. Please try again",
         CLIENT_READ_NOTIFY_FAILED: "Client read notify failed. Please try again",

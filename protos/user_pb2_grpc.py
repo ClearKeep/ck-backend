@@ -54,6 +54,11 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.GetClientsStatusRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.GetClientsStatusResponse.FromString,
                 )
+        self.delete_account = channel.unary_unary(
+                '/user.User/delete_account',
+                request_serializer=protos_dot_user__pb2.Empty.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
+                )
         self.get_user_info = channel.unary_unary(
                 '/user.User/get_user_info',
                 request_serializer=protos_dot_user__pb2.GetUserRequest.SerializeToString,
@@ -169,6 +174,12 @@ class UserServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def get_clients_status(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def delete_account(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -296,6 +307,11 @@ def add_UserServicer_to_server(servicer, server):
                     servicer.get_clients_status,
                     request_deserializer=protos_dot_user__pb2.GetClientsStatusRequest.FromString,
                     response_serializer=protos_dot_user__pb2.GetClientsStatusResponse.SerializeToString,
+            ),
+            'delete_account': grpc.unary_unary_rpc_method_handler(
+                    servicer.delete_account,
+                    request_deserializer=protos_dot_user__pb2.Empty.FromString,
+                    response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
             ),
             'get_user_info': grpc.unary_unary_rpc_method_handler(
                     servicer.get_user_info,
@@ -505,6 +521,23 @@ class User(object):
         return grpc.experimental.unary_unary(request, target, '/user.User/get_clients_status',
             protos_dot_user__pb2.GetClientsStatusRequest.SerializeToString,
             protos_dot_user__pb2.GetClientsStatusResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def delete_account(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/delete_account',
+            protos_dot_user__pb2.Empty.SerializeToString,
+            protos_dot_user__pb2.BaseResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

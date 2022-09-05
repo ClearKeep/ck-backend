@@ -3,6 +3,7 @@ from src.controllers.base import *
 from src.services.auth import AuthService
 from src.services.user import UserService
 from src.services.signal import SignalService
+from src.services.group import GroupService
 from middlewares.permission import *
 from middlewares.request_logged import *
 from utils.logger import *
@@ -545,6 +546,30 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_USER_STATUS_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    @auth_required
+    async def delete_account(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            user_info = self.service.get_user_by_id(client_id)
+            await GroupService().forgot_peer_groups_for_client(user_info)
+            await GroupService().member_forgot_password_in_group(user_info)
+            SignalService().delete_client_peer_key(client_id)
+            AuthService().delete_user(client_id)
+            UserService().delete_user(client_id)
+            return user_messages.BaseResponse()
+        except Exception as e:
+            logger.error(e, exc_info=True)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.DELETE_ACCOUNT_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
