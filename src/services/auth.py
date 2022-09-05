@@ -1,6 +1,8 @@
 import time
 import datetime
 import requests
+import jwt
+from jwt.algorithms import RSAAlgorithm
 from msg.message import Message
 from utils.keycloak import KeyCloakUtils
 from utils.logger import *
@@ -273,6 +275,36 @@ class AuthService:
         except Exception as e:
             logger.info(e)
             raise Exception(Message.FACEBOOK_AUTH_FAILED)
+
+    def apple_login(self, id_token, end_user_env):
+        apple_authen = get_system_config()['apple_authen']
+        if not end_user_env or end_user_env not in apple_authen:
+            audience = apple_authen['default']['audience']
+        else:
+            audience = apple_authen[end_user_env]['audience']
+        public_keys = requests.get(url='https://appleid.apple.com/auth/keys').json()['keys']
+        for key in public_keys:
+            try:
+                public_key = RSAAlgorithm.from_jwk(json.dumps(key))
+                decoded = jwt.decode(id_token, public_key, algorithms=["RS256"], audience=audience)
+            except jwt.exceptions.InvalidSignatureError:
+                continue
+        if not decoded:
+            raise Exception(Message.APPLE_ID_TOKEN_INVALID)
+        user = self.get_user_by_email(decoded['sub'])
+        if user:
+            user_info = UserService().get_user_by_id(user["id"])
+            user_info.check_auth_source(AuthSource.APPLE)
+            return decoded['sub'], user["id"], user_info.password_verifier is None or user_info.password_verifier == ""
+        else:
+            new_user_id = KeyCloakUtils.create_user_without_password(decoded['email'], decoded['sub'], "", decoded['email'])
+            new_user = UserService().create_user_social(id=new_user_id, email=decoded['email'],
+                display_name=decoded['email'],
+                auth_source=AuthSource.APPLE)
+            if new_user is None:
+                self.delete_user(new_user_id)
+                raise Exception(Message.REGISTER_USER_FAILED)
+            return decoded['sub'], new_user_id, True
 
     def create_otp_service(self, client_id):
         # start opt service for client if mfa is enabled, raising FROZEN_STATE_OTP_SERVICE if mfa is enabled and in frozen state (request resend otp too many times)

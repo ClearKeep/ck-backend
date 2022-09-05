@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11protos/auth.proto\x12\x04\x61uth\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\xf0\x01\n\x1cPeerRegisterClientKeyRequest\x12\x16\n\x0eregistrationId\x18\x01 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x02 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x03 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x04 \x01(\x05\x12\x0e\n\x06preKey\x18\x05 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x06 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\x07 \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\x08 \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\t \x01(\t\"\x98\x02\n\x18PeerGetClientKeyResponse\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x16\n\x0eregistrationId\x18\x03 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x04 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x05 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x06 \x01(\x05\x12\x0e\n\x06preKey\x18\x07 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x08 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\t \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\n \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\x0b \x01(\t\"\\\n\x07\x41uthReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x15\n\rhash_password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"5\n\tLogoutReq\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x15\n\rrefresh_token\x18\x02 \x01(\t\"\"\n\x11\x46orgotPasswordReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"\xbe\x01\n\x17\x46orgotPasswordUpdateReq\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x19\n\x11password_verifier\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x06 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\"\x8f\x03\n\x07\x41uthRes\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x16\n\x0eworkspace_name\x18\x02 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x03 \x01(\t\x12\x12\n\nexpires_in\x18\x04 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x05 \x01(\x03\x12\x15\n\rrefresh_token\x18\x06 \x01(\t\x12\x12\n\ntoken_type\x18\x07 \x01(\t\x12\x15\n\rsession_state\x18\x08 \x01(\t\x12\r\n\x05scope\x18\t \x01(\t\x12\x10\n\x08hash_key\x18\n \x01(\t\x12\x0b\n\x03sub\x18\x0b \x01(\t\x12\x18\n\x10pre_access_token\x18\x0c \x01(\t\x12\x16\n\x0erequire_action\x18\r \x01(\t\x12\x0c\n\x04salt\x18\x0e \x01(\t\x12\x37\n\x0f\x63lient_key_peer\x18\x0f \x01(\x0b\x32\x1e.auth.PeerGetClientKeyResponse\x12\x14\n\x0civ_parameter\x18\x10 \x01(\t\x12\r\n\x05\x65rror\x18\x11 \x01(\t\"\xfe\x01\n\x0bRegisterReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x15\n\rhash_password\x18\x04 \x01(\t\x12\x11\n\tauth_type\x18\x05 \x01(\x03\x12\x12\n\nfirst_name\x18\x06 \x01(\t\x12\x11\n\tlast_name\x18\x07 \x01(\t\x12\x0c\n\x04salt\x18\x08 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\t \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\n \x01(\t\"\x1c\n\x0bRegisterRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"<\n\x0eGoogleLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08id_token\x18\x02 \x01(\t\"@\n\x0eOfficeLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"B\n\x10\x46\x61\x63\x65\x62ookLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"X\n\x0eSocialLoginRes\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x16\n\x0erequire_action\x18\x02 \x01(\t\x12\x1b\n\x13reset_pincode_token\x18\x03 \x01(\t\"\x9e\x01\n\x12RegisterPinCodeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x14\n\x0chash_pincode\x18\x02 \x01(\t\x12\x0c\n\x04salt\x18\x03 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x04 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\"^\n\x10VerifyPinCodeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\"\xb8\x01\n\x0fResetPinCodeReq\x12\x1b\n\x13reset_pincode_token\x18\x01 \x01(\t\x12\x11\n\tuser_name\x18\x02 \x01(\t\x12\x14\n\x0chash_pincode\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x06 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\"T\n\x15MfaValidateOtpRequest\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\x10\n\x08otp_code\x18\x02 \x01(\t\x12\x0f\n\x07user_id\x18\x03 \x01(\t\"<\n\x0fMfaResendOtpReq\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x18\n\x10pre_access_token\x18\x02 \x01(\t\"K\n\x0fMfaResendOtpRes\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\r\n\x05\x65rror\x18\x03 \x01(\t\"8\n\x10\x41uthChallengeReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\"B\n\x16\x41uthSocialChallengeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\"<\n\x10\x41uthChallengeRes\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"]\n\x0f\x41uthenticateReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\"\x85\x02\n\x0eRegisterSRPReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x19\n\x11password_verifier\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x05 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\x06 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x07 \x01(\t\x12\x11\n\tauth_type\x18\x08 \x01(\x03\x12\x12\n\nfirst_name\x18\t \x01(\t\x12\x11\n\tlast_name\x18\n \x01(\t\"\x1f\n\x0eRegisterSRPRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"(\n\x0fRefreshTokenReq\x12\x15\n\rrefresh_token\x18\x01 \x01(\t\"\xa8\x01\n\x0fRefreshTokenRes\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x01 \x01(\t\x12\x12\n\nexpires_in\x18\x02 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x03 \x01(\x03\x12\x15\n\rrefresh_token\x18\x04 \x01(\t\x12\x12\n\ntoken_type\x18\x05 \x01(\t\x12\x15\n\rsession_state\x18\x06 \x01(\t\x12\r\n\x05scope\x18\x07 \x01(\t2\x84\x08\n\x04\x41uth\x12<\n\x0cregister_srp\x12\x14.auth.RegisterSRPReq\x1a\x14.auth.RegisterSRPRes\"\x00\x12@\n\x0f\x66orgot_password\x12\x17.auth.ForgotPasswordReq\x1a\x12.auth.BaseResponse\"\x00\x12\x43\n\x0flogin_challenge\x12\x16.auth.AuthChallengeReq\x1a\x16.auth.AuthChallengeRes\"\x00\x12H\n\x16\x66orgot_password_update\x12\x1d.auth.ForgotPasswordUpdateReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0clogin_google\x12\x14.auth.GoogleLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12<\n\x0clogin_office\x12\x14.auth.OfficeLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12@\n\x0elogin_facebook\x12\x16.auth.FacebookLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12P\n\x16login_social_challange\x12\x1c.auth.AuthSocialChallengeReq\x1a\x16.auth.AuthChallengeRes\"\x00\x12<\n\x12login_authenticate\x12\x15.auth.AuthenticateReq\x1a\r.auth.AuthRes\"\x00\x12?\n\rrefresh_token\x12\x15.auth.RefreshTokenReq\x1a\x15.auth.RefreshTokenRes\"\x00\x12/\n\x06logout\x12\x0f.auth.LogoutReq\x1a\x12.auth.BaseResponse\"\x00\x12=\n\x10register_pincode\x12\x18.auth.RegisterPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x39\n\x0everify_pincode\x12\x16.auth.VerifyPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x37\n\rreset_pincode\x12\x15.auth.ResetPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0cvalidate_otp\x12\x1b.auth.MfaValidateOtpRequest\x1a\r.auth.AuthRes\"\x00\x12<\n\nresend_otp\x12\x15.auth.MfaResendOtpReq\x1a\x15.auth.MfaResendOtpRes\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11protos/auth.proto\x12\x04\x61uth\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\xf0\x01\n\x1cPeerRegisterClientKeyRequest\x12\x16\n\x0eregistrationId\x18\x01 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x02 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x03 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x04 \x01(\x05\x12\x0e\n\x06preKey\x18\x05 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x06 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\x07 \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\x08 \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\t \x01(\t\"\x98\x02\n\x18PeerGetClientKeyResponse\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x16\n\x0eregistrationId\x18\x03 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x04 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x05 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x06 \x01(\x05\x12\x0e\n\x06preKey\x18\x07 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x08 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\t \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\n \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\x0b \x01(\t\"\\\n\x07\x41uthReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x15\n\rhash_password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"5\n\tLogoutReq\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x15\n\rrefresh_token\x18\x02 \x01(\t\"\"\n\x11\x46orgotPasswordReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"\xbe\x01\n\x17\x46orgotPasswordUpdateReq\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x19\n\x11password_verifier\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x06 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\"\x8f\x03\n\x07\x41uthRes\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x16\n\x0eworkspace_name\x18\x02 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x03 \x01(\t\x12\x12\n\nexpires_in\x18\x04 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x05 \x01(\x03\x12\x15\n\rrefresh_token\x18\x06 \x01(\t\x12\x12\n\ntoken_type\x18\x07 \x01(\t\x12\x15\n\rsession_state\x18\x08 \x01(\t\x12\r\n\x05scope\x18\t \x01(\t\x12\x10\n\x08hash_key\x18\n \x01(\t\x12\x0b\n\x03sub\x18\x0b \x01(\t\x12\x18\n\x10pre_access_token\x18\x0c \x01(\t\x12\x16\n\x0erequire_action\x18\r \x01(\t\x12\x0c\n\x04salt\x18\x0e \x01(\t\x12\x37\n\x0f\x63lient_key_peer\x18\x0f \x01(\x0b\x32\x1e.auth.PeerGetClientKeyResponse\x12\x14\n\x0civ_parameter\x18\x10 \x01(\t\x12\r\n\x05\x65rror\x18\x11 \x01(\t\"\xfe\x01\n\x0bRegisterReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x15\n\rhash_password\x18\x04 \x01(\t\x12\x11\n\tauth_type\x18\x05 \x01(\x03\x12\x12\n\nfirst_name\x18\x06 \x01(\t\x12\x11\n\tlast_name\x18\x07 \x01(\t\x12\x0c\n\x04salt\x18\x08 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\t \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\n \x01(\t\"\x1c\n\x0bRegisterRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"<\n\x0eGoogleLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08id_token\x18\x02 \x01(\t\"@\n\x0eOfficeLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"B\n\x10\x46\x61\x63\x65\x62ookLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"7\n\rAppleLoginReq\x12\x10\n\x08id_token\x18\x01 \x01(\t\x12\x14\n\x0c\x65nd_user_env\x18\x02 \x01(\t\"X\n\x0eSocialLoginRes\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x16\n\x0erequire_action\x18\x02 \x01(\t\x12\x1b\n\x13reset_pincode_token\x18\x03 \x01(\t\"\x9e\x01\n\x12RegisterPinCodeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x14\n\x0chash_pincode\x18\x02 \x01(\t\x12\x0c\n\x04salt\x18\x03 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x04 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\"^\n\x10VerifyPinCodeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\"\xb8\x01\n\x0fResetPinCodeReq\x12\x1b\n\x13reset_pincode_token\x18\x01 \x01(\t\x12\x11\n\tuser_name\x18\x02 \x01(\t\x12\x14\n\x0chash_pincode\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x06 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\"T\n\x15MfaValidateOtpRequest\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\x10\n\x08otp_code\x18\x02 \x01(\t\x12\x0f\n\x07user_id\x18\x03 \x01(\t\"<\n\x0fMfaResendOtpReq\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x18\n\x10pre_access_token\x18\x02 \x01(\t\"K\n\x0fMfaResendOtpRes\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\r\n\x05\x65rror\x18\x03 \x01(\t\"8\n\x10\x41uthChallengeReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\"B\n\x16\x41uthSocialChallengeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\"<\n\x10\x41uthChallengeRes\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"]\n\x0f\x41uthenticateReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\"\x85\x02\n\x0eRegisterSRPReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x19\n\x11password_verifier\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x05 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\x06 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x07 \x01(\t\x12\x11\n\tauth_type\x18\x08 \x01(\x03\x12\x12\n\nfirst_name\x18\t \x01(\t\x12\x11\n\tlast_name\x18\n \x01(\t\"\x1f\n\x0eRegisterSRPRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"(\n\x0fRefreshTokenReq\x12\x15\n\rrefresh_token\x18\x01 \x01(\t\"\xa8\x01\n\x0fRefreshTokenRes\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x01 \x01(\t\x12\x12\n\nexpires_in\x18\x02 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x03 \x01(\x03\x12\x15\n\rrefresh_token\x18\x04 \x01(\t\x12\x12\n\ntoken_type\x18\x05 \x01(\t\x12\x15\n\rsession_state\x18\x06 \x01(\t\x12\r\n\x05scope\x18\x07 \x01(\t2\xc0\x08\n\x04\x41uth\x12<\n\x0cregister_srp\x12\x14.auth.RegisterSRPReq\x1a\x14.auth.RegisterSRPRes\"\x00\x12@\n\x0f\x66orgot_password\x12\x17.auth.ForgotPasswordReq\x1a\x12.auth.BaseResponse\"\x00\x12\x43\n\x0flogin_challenge\x12\x16.auth.AuthChallengeReq\x1a\x16.auth.AuthChallengeRes\"\x00\x12H\n\x16\x66orgot_password_update\x12\x1d.auth.ForgotPasswordUpdateReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0clogin_google\x12\x14.auth.GoogleLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12<\n\x0clogin_office\x12\x14.auth.OfficeLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12@\n\x0elogin_facebook\x12\x16.auth.FacebookLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12:\n\x0blogin_apple\x12\x13.auth.AppleLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12P\n\x16login_social_challange\x12\x1c.auth.AuthSocialChallengeReq\x1a\x16.auth.AuthChallengeRes\"\x00\x12<\n\x12login_authenticate\x12\x15.auth.AuthenticateReq\x1a\r.auth.AuthRes\"\x00\x12?\n\rrefresh_token\x12\x15.auth.RefreshTokenReq\x1a\x15.auth.RefreshTokenRes\"\x00\x12/\n\x06logout\x12\x0f.auth.LogoutReq\x1a\x12.auth.BaseResponse\"\x00\x12=\n\x10register_pincode\x12\x18.auth.RegisterPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x39\n\x0everify_pincode\x12\x16.auth.VerifyPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x37\n\rreset_pincode\x12\x15.auth.ResetPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0cvalidate_otp\x12\x1b.auth.MfaValidateOtpRequest\x1a\r.auth.AuthRes\"\x00\x12<\n\nresend_otp\x12\x15.auth.MfaResendOtpReq\x1a\x15.auth.MfaResendOtpRes\"\x00\x62\x06proto3')
 
 
 
@@ -31,6 +31,7 @@ _REGISTERRES = DESCRIPTOR.message_types_by_name['RegisterRes']
 _GOOGLELOGINREQ = DESCRIPTOR.message_types_by_name['GoogleLoginReq']
 _OFFICELOGINREQ = DESCRIPTOR.message_types_by_name['OfficeLoginReq']
 _FACEBOOKLOGINREQ = DESCRIPTOR.message_types_by_name['FacebookLoginReq']
+_APPLELOGINREQ = DESCRIPTOR.message_types_by_name['AppleLoginReq']
 _SOCIALLOGINRES = DESCRIPTOR.message_types_by_name['SocialLoginRes']
 _REGISTERPINCODEREQ = DESCRIPTOR.message_types_by_name['RegisterPinCodeReq']
 _VERIFYPINCODEREQ = DESCRIPTOR.message_types_by_name['VerifyPinCodeReq']
@@ -136,6 +137,13 @@ FacebookLoginReq = _reflection.GeneratedProtocolMessageType('FacebookLoginReq', 
   # @@protoc_insertion_point(class_scope:auth.FacebookLoginReq)
   })
 _sym_db.RegisterMessage(FacebookLoginReq)
+
+AppleLoginReq = _reflection.GeneratedProtocolMessageType('AppleLoginReq', (_message.Message,), {
+  'DESCRIPTOR' : _APPLELOGINREQ,
+  '__module__' : 'protos.auth_pb2'
+  # @@protoc_insertion_point(class_scope:auth.AppleLoginReq)
+  })
+_sym_db.RegisterMessage(AppleLoginReq)
 
 SocialLoginRes = _reflection.GeneratedProtocolMessageType('SocialLoginRes', (_message.Message,), {
   'DESCRIPTOR' : _SOCIALLOGINRES,
@@ -272,36 +280,38 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _OFFICELOGINREQ._serialized_end=1777
   _FACEBOOKLOGINREQ._serialized_start=1779
   _FACEBOOKLOGINREQ._serialized_end=1845
-  _SOCIALLOGINRES._serialized_start=1847
-  _SOCIALLOGINRES._serialized_end=1935
-  _REGISTERPINCODEREQ._serialized_start=1938
-  _REGISTERPINCODEREQ._serialized_end=2096
-  _VERIFYPINCODEREQ._serialized_start=2098
-  _VERIFYPINCODEREQ._serialized_end=2192
-  _RESETPINCODEREQ._serialized_start=2195
-  _RESETPINCODEREQ._serialized_end=2379
-  _MFAVALIDATEOTPREQUEST._serialized_start=2381
-  _MFAVALIDATEOTPREQUEST._serialized_end=2465
-  _MFARESENDOTPREQ._serialized_start=2467
-  _MFARESENDOTPREQ._serialized_end=2527
-  _MFARESENDOTPRES._serialized_start=2529
-  _MFARESENDOTPRES._serialized_end=2604
-  _AUTHCHALLENGEREQ._serialized_start=2606
-  _AUTHCHALLENGEREQ._serialized_end=2662
-  _AUTHSOCIALCHALLENGEREQ._serialized_start=2664
-  _AUTHSOCIALCHALLENGEREQ._serialized_end=2730
-  _AUTHCHALLENGERES._serialized_start=2732
-  _AUTHCHALLENGERES._serialized_end=2792
-  _AUTHENTICATEREQ._serialized_start=2794
-  _AUTHENTICATEREQ._serialized_end=2887
-  _REGISTERSRPREQ._serialized_start=2890
-  _REGISTERSRPREQ._serialized_end=3151
-  _REGISTERSRPRES._serialized_start=3153
-  _REGISTERSRPRES._serialized_end=3184
-  _REFRESHTOKENREQ._serialized_start=3186
-  _REFRESHTOKENREQ._serialized_end=3226
-  _REFRESHTOKENRES._serialized_start=3229
-  _REFRESHTOKENRES._serialized_end=3397
-  _AUTH._serialized_start=3400
-  _AUTH._serialized_end=4428
+  _APPLELOGINREQ._serialized_start=1847
+  _APPLELOGINREQ._serialized_end=1902
+  _SOCIALLOGINRES._serialized_start=1904
+  _SOCIALLOGINRES._serialized_end=1992
+  _REGISTERPINCODEREQ._serialized_start=1995
+  _REGISTERPINCODEREQ._serialized_end=2153
+  _VERIFYPINCODEREQ._serialized_start=2155
+  _VERIFYPINCODEREQ._serialized_end=2249
+  _RESETPINCODEREQ._serialized_start=2252
+  _RESETPINCODEREQ._serialized_end=2436
+  _MFAVALIDATEOTPREQUEST._serialized_start=2438
+  _MFAVALIDATEOTPREQUEST._serialized_end=2522
+  _MFARESENDOTPREQ._serialized_start=2524
+  _MFARESENDOTPREQ._serialized_end=2584
+  _MFARESENDOTPRES._serialized_start=2586
+  _MFARESENDOTPRES._serialized_end=2661
+  _AUTHCHALLENGEREQ._serialized_start=2663
+  _AUTHCHALLENGEREQ._serialized_end=2719
+  _AUTHSOCIALCHALLENGEREQ._serialized_start=2721
+  _AUTHSOCIALCHALLENGEREQ._serialized_end=2787
+  _AUTHCHALLENGERES._serialized_start=2789
+  _AUTHCHALLENGERES._serialized_end=2849
+  _AUTHENTICATEREQ._serialized_start=2851
+  _AUTHENTICATEREQ._serialized_end=2944
+  _REGISTERSRPREQ._serialized_start=2947
+  _REGISTERSRPREQ._serialized_end=3208
+  _REGISTERSRPRES._serialized_start=3210
+  _REGISTERSRPRES._serialized_end=3241
+  _REFRESHTOKENREQ._serialized_start=3243
+  _REFRESHTOKENREQ._serialized_end=3283
+  _REFRESHTOKENRES._serialized_start=3286
+  _REFRESHTOKENRES._serialized_end=3454
+  _AUTH._serialized_start=3457
+  _AUTH._serialized_end=4545
 # @@protoc_insertion_point(module_scope)

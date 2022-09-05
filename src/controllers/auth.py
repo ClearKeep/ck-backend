@@ -218,6 +218,31 @@ class AuthController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    async def login_apple(self, request, context):
+        try:
+            user_name, user_id, is_registered_pincode = self.service.apple_login(request.id_token, request.end_user_env)
+            require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
+            if require_action_mess == "verify_pincode":
+                reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
+            else:
+                reset_pincode_token = ""
+            auth_challenge_res = auth_messages.SocialLoginRes(
+                                    user_name=user_name,
+                                    require_action=require_action_mess,
+                                    reset_pincode_token=reset_pincode_token
+                                )
+            return auth_challenge_res
+        except Exception as e:
+            logger.error(e, exc_info=True)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
     async def login_social_challange(self, request, context):
         try:
             user_name = request.user_name

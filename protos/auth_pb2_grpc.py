@@ -49,6 +49,11 @@ class AuthStub(object):
                 request_serializer=protos_dot_auth__pb2.FacebookLoginReq.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.SocialLoginRes.FromString,
                 )
+        self.login_apple = channel.unary_unary(
+                '/auth.Auth/login_apple',
+                request_serializer=protos_dot_auth__pb2.AppleLoginReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.SocialLoginRes.FromString,
+                )
         self.login_social_challange = channel.unary_unary(
                 '/auth.Auth/login_social_challange',
                 request_serializer=protos_dot_auth__pb2.AuthSocialChallengeReq.SerializeToString,
@@ -140,6 +145,12 @@ class AuthServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def login_facebook(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def login_apple(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -240,6 +251,11 @@ def add_AuthServicer_to_server(servicer, server):
             'login_facebook': grpc.unary_unary_rpc_method_handler(
                     servicer.login_facebook,
                     request_deserializer=protos_dot_auth__pb2.FacebookLoginReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.SocialLoginRes.SerializeToString,
+            ),
+            'login_apple': grpc.unary_unary_rpc_method_handler(
+                    servicer.login_apple,
+                    request_deserializer=protos_dot_auth__pb2.AppleLoginReq.FromString,
                     response_serializer=protos_dot_auth__pb2.SocialLoginRes.SerializeToString,
             ),
             'login_social_challange': grpc.unary_unary_rpc_method_handler(
@@ -412,6 +428,23 @@ class Auth(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_facebook',
             protos_dot_auth__pb2.FacebookLoginReq.SerializeToString,
+            protos_dot_auth__pb2.SocialLoginRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def login_apple(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_apple',
+            protos_dot_auth__pb2.AppleLoginReq.SerializeToString,
             protos_dot_auth__pb2.SocialLoginRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
