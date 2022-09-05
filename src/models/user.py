@@ -117,6 +117,11 @@ class User(Database.get().Model):
         Database.get().session.remove()
         return result
 
+    def get_by_email(self, email):
+        return Database.get_session().query(User) \
+            .filter(User.email == email) \
+            .first()
+
     def delete(self):
         try:
             Database.get_session().delete(self)

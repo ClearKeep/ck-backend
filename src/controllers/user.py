@@ -417,11 +417,9 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
     @auth_required
     async def find_user_by_email(self, request, context):
         try:
-            logger.debug(f'Finding user by email (user controller), {request=}, {context=}')
-            obj_res = self.service.find_user_by_email(request.email_hash)
-            return obj_res
+            return await self.service.find_user_by_email(request.email)
         except Exception as e:
-            logger.error("Error when find user by email", exc_info=True)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.FIND_USER_BY_EMAIL_FAILED)]
             else:
@@ -584,6 +582,14 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 display_name=request.display_name
             )
             return user_messages.BaseResponse()
+        except Exception as e:
+            logger.error(e, exc_info=True)
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def workspace_find_user_by_email(self, request, context):
+        try:
+            return self.service.find_user_by_email_here(email=request.email)
         except Exception as e:
             logger.error(e, exc_info=True)
             context.set_code(grpc.StatusCode.INTERNAL)

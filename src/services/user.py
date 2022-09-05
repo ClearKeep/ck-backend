@@ -17,6 +17,7 @@ from src.services.upload_file import UploadFileService
 from utils.config import get_system_config, get_owner_workspace_domain
 from utils.keycloak import KeyCloakUtils
 from utils.otp import OTPServer
+from utils.const import GRPC_PORT
 
 client_records_list_in_memory = {}
 import logging
@@ -33,9 +34,6 @@ class UserService(BaseService):
         super().__init__(User())
         self.authen_setting = AuthenSetting()
 
-        # TODO: find better way to do this
-        self.push_all_users_email_hash_to_orbitdb_network()
-
     def create_new_user_srp(self, id, email, password_verifier, salt, iv_parameter, display_name, auth_source):
         # create new normal user with these parameter
         try:
@@ -49,10 +47,6 @@ class UserService(BaseService):
                 auth_source=auth_source.value
             )
             self.model.add()
-
-            # TODO: find better ways to do this
-            # When done register user -> push all users to the orbit-db network
-            self.push_all_users_email_hash_to_orbitdb_network()
 
         except Exception as e:
             logger.error(e, exc_info=True)
@@ -420,78 +414,27 @@ class UserService(BaseService):
             logger.info(e, exc_info=True)
             raise Exception(Message.GET_USER_INFO_FAILED)
 
-    def find_user_by_email(self, email_hash):
-        try:
-            logger.debug(f'Finding user by email, {email_hash=}')
+    async def find_user_by_email(self, email):
+        parts = email.split('@')
+        if len(parts) != 2:
+            return user_pb2.UserInfoResponse()
+        if parts[1] == get_system_config()['server_domain']:
+            return self.find_user_by_email_here(email)
+        else:
+            workspace_domain = f'{parts[1]}:{GRPC_PORT}'
+            response = await ClientUser(workspace_domain).find_user_by_email(email)
+            return response if response else user_pb2.UserInfoResponse()
 
-            # Make sure for mobile
-            email_hash_lower_case = email_hash.lower()
-
-            with grpc.insecure_channel(get_system_config()['orbit_db_grpc_address']) as channel:
-                stub = find_user_by_email_pb2_grpc.FindUserByEmailServiceStub(channel)
-                response = stub.get_server_from_email_hash(find_user_by_email_pb2.GetServerFromEmailHashRequest(
-                    email_hash=email_hash_lower_case
-                ))
-                for s in response.server_list:
-                    logger.debug(f'server_address:{s.address=}')
-
-            user_list = []
-            for server in response.server_list:
-                logger.debug(f'server_address:{server.address=}')
-                # Don't need to open gRPC channel when server address is the current server
-                if server.address == get_owner_workspace_domain():
-                    user_list.append(self.find_user_detail_info_from_email_hash(email_hash_lower_case))
-                    continue
-                with grpc.insecure_channel(server.address) as channel:
-                    logger.debug(f'Contacting server {server.address=}')
-                    response = 'INIT_VALUE'
-                    stub = user_pb2_grpc.UserStub(channel)
-                    try:
-                        response = stub.find_user_detail_info_from_email_hash(
-                            user_pb2.FindUserByEmailRequest(email_hash=email_hash_lower_case),
-                            timeout=3
-                        )
-                    except grpc.RpcError as e:
-                        logger.warning(f"Error while find_user_by_email/{e.code()=}/{e.details()=}",
-                                        exc_info=True)
-                        # And not append to user_list
-                        continue
-                    else:
-                        user_list.append(response)
-                    finally:
-                        logger.debug(f'DONE contacting server {server.address=}/{response=}')
-
-            return user_pb2.FindUserByEmailResponse(lst_user=user_list)
-
-
-        except Exception:
-            logger.info('Error while finding user by email', exc_info=True)
-            raise Exception(Message.FIND_USER_BY_EMAIL_FAILED)
-
-    def push_all_users_email_hash_to_orbitdb_network(self):
-        try:
-            # TODO: find different way to do this
-            logger.debug(f'Push all users to orbit-db network')
-
-            owner_workspace_domain = get_owner_workspace_domain()
-
-            all_users = self.model.get_all_users()
-            logger.debug(f"Pushing {len(all_users)} email hashes to the orbit-db network")
-            for u in all_users:
-                if type(u.email) is not str:
-                    continue
-                email_hash = hashlib.sha256(u.email.encode('ascii')).hexdigest()
-                logger.debug(  (email_hash, owner_workspace_domain)   )
-                with grpc.insecure_channel(get_system_config()['orbit_db_grpc_address']) as channel:
-                    stub = find_user_by_email_pb2_grpc.FindUserByEmailServiceStub(channel)
-                    response = stub.push_email_hash(find_user_by_email_pb2.PushEmailHashRequest(
-                        email_hash=email_hash,
-                        server=owner_workspace_domain
-                    ), timeout=3)
-                    status = response.status
-                    logger.debug(f'{status=}/{response=}')
-        except Exception:
-            logger.error("Error while push users to orbit-db network", exc_info=True)
+    def find_user_by_email_here(self, email):
+        user = self.model.get_by_email(email)
+        if not user:
+            return user_pb2.UserInfoResponse()
+        return user_pb2.UserInfoResponse(
+            id=user.id,
+            display_name = user.display_name,
+            workspace_domain=get_owner_workspace_domain(),
+            avatar=user.avatar
+        )
 
     def find_user_detail_info_from_email_hash(self, email_hash):
         # TODO: find different way to do this

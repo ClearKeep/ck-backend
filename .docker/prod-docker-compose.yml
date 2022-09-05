@@ -77,7 +77,6 @@ services:
     ports:
       - 25000:25000
     depends_on:
-      - find_user_by_email
       - prod_authen
   
   http:
@@ -94,24 +93,6 @@ services:
       - 25001:25001
     depends_on:
       - grpc
-  
-  find_user_by_email:
-    restart: unless-stopped
-    build: ../find-user-by-email
-    restart: always
-    volumes:
-      - ../find-user-by-email:/src
-      - /src/node_modules
-      - /src/orbitdb_directory
-    ports:
-      - 12016:12016
-    logging:
-      options:
-        max-size: 100m
-    environment:
-      PUBLIC_IP_ADDRESS:
-      TYPE: slave
-      ORBITDB:
 
   coturn:
     image: instrumentisto/coturn:4.5.2
