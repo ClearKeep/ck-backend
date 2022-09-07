@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11protos/user.proto\x12\x04user\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"l\n\x13UserProfileResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x05 \x01(\t\"\x07\n\x05\x45mpty\"n\n\x14UpdateProfileRequest\x12\x14\n\x0c\x64isplay_name\x18\x01 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x02 \x01(\t\x12\x14\n\x0cphone_number\x18\x03 \x01(\t\x12\x1a\n\x12\x63lear_phone_number\x18\x04 \x01(\x08\"1\n\x18RequestChangePasswordReq\x12\x15\n\rclient_public\x18\x01 \x01(\t\"D\n\x18RequestChangePasswordRes\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"\xab\x01\n\x15\x43hangePasswordRequest\x12\x15\n\rclient_public\x18\x01 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\x12\x15\n\rhash_password\x18\x04 \x01(\t\x12\x0c\n\x04salt\x18\x05 \x01(\t\x12\x14\n\x0civ_parameter\x18\x06 \x01(\t\x12\x1e\n\x16identity_key_encrypted\x18\x07 \x01(\t\"^\n\x10UserInfoResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x18\n\x10workspace_domain\x18\x03 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x04 \x01(\t\"=\n\x0eGetUserRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"$\n\x11SearchUserRequest\x12\x0f\n\x07keyword\x18\x01 \x01(\t\">\n\x12SearchUserResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\",\n\x16\x46indUserByEmailRequest\x12\x12\n\nemail_hash\x18\x01 \x01(\t\"C\n\x17\x46indUserByEmailResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"<\n\x10GetUsersResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"&\n\x14SetUserStatusRequest\x12\x0e\n\x06status\x18\x01 \x01(\t\"\r\n\x0bPingRequest\"b\n\x17GetClientsStatusRequest\x12+\n\nlst_client\x18\x01 \x03(\x0b\x32\x17.user.MemberInfoRequest\x12\x1a\n\x12should_get_profile\x18\x02 \x01(\x08\"@\n\x11MemberInfoRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"C\n\x18GetClientsStatusResponse\x12\'\n\nlst_client\x18\x01 \x03(\x0b\x32\x13.user.MemberInfoRes\"\x88\x01\n\rMemberInfoRes\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x04 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x05 \x01(\t\x12\x14\n\x0cphone_number\x18\x06 \x01(\t\"i\n\x13UploadAvatarRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x19\n\x11\x66ile_content_type\x18\x02 \x01(\t\x12\x11\n\tfile_data\x18\x03 \x01(\x0c\x12\x11\n\tfile_hash\x18\x04 \x01(\t\"(\n\x14UploadAvatarResponse\x12\x10\n\x08\x66ile_url\x18\x01 \x01(\t\"D\n\x0fMfaBaseResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x11\n\tnext_step\x18\x02 \x01(\t\x12\r\n\x05\x65rror\x18\x03 \x01(\t\"5\n\x10MfaStateResponse\x12\x12\n\nmfa_enable\x18\x01 \x01(\x08\x12\r\n\x05\x65rror\x18\x02 \x01(\t\"\x14\n\x12MfaGetStateRequest\"\x19\n\x17MfaChangingStateRequest\"0\n\x17MfaAuthChallengeRequest\x12\x15\n\rclient_public\x18\x01 \x01(\t\"D\n\x18MfaAuthChallengeResponse\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"U\n\x1aMfaValidatePasswordRequest\x12\x15\n\rclient_public\x18\x01 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x02 \x01(\t\"$\n\x15MfaValidateOtpRequest\x12\x0b\n\x03otp\x18\x01 \x01(\t\"\x15\n\x13MfaResendOtpRequest\"J\n!WorkspaceUpdateDisplayNameRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t2\xd4\x0c\n\x04User\x12\x37\n\x0bget_profile\x12\x0b.user.Empty\x1a\x19.user.UserProfileResponse\"\x00\x12\x42\n\x0eupdate_profile\x12\x1a.user.UpdateProfileRequest\x1a\x12.user.BaseResponse\"\x00\x12H\n\rupload_avatar\x12\x19.user.UploadAvatarRequest\x1a\x1a.user.UploadAvatarResponse\"\x00\x12[\n\x17request_change_password\x12\x1e.user.RequestChangePasswordReq\x1a\x1e.user.RequestChangePasswordRes\"\x00\x12\x44\n\x0f\x63hange_password\x12\x1b.user.ChangePasswordRequest\x1a\x12.user.BaseResponse\"\x00\x12\x41\n\rupdate_status\x12\x1a.user.SetUserStatusRequest\x1a\x12.user.BaseResponse\"\x00\x12\x37\n\x0cping_request\x12\x11.user.PingRequest\x1a\x12.user.BaseResponse\"\x00\x12U\n\x12get_clients_status\x12\x1d.user.GetClientsStatusRequest\x1a\x1e.user.GetClientsStatusResponse\"\x00\x12\x33\n\x0e\x64\x65lete_account\x12\x0b.user.Empty\x1a\x12.user.BaseResponse\"\x00\x12?\n\rget_user_info\x12\x14.user.GetUserRequest\x1a\x16.user.UserInfoResponse\"\x00\x12\x42\n\x0bsearch_user\x12\x17.user.SearchUserRequest\x1a\x18.user.SearchUserResponse\"\x00\x12\x32\n\tget_users\x12\x0b.user.Empty\x1a\x16.user.GetUsersResponse\"\x00\x12S\n\x12\x66ind_user_by_email\x12\x1c.user.FindUserByEmailRequest\x1a\x1d.user.FindUserByEmailResponse\"\x00\x12_\n%find_user_detail_info_from_email_hash\x12\x1c.user.FindUserByEmailRequest\x1a\x16.user.UserInfoResponse\"\x00\x12\x43\n\rget_mfa_state\x12\x18.user.MfaGetStateRequest\x1a\x16.user.MfaStateResponse\"\x00\x12\x44\n\nenable_mfa\x12\x1d.user.MfaChangingStateRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12\x45\n\x0b\x64isable_mfa\x12\x1d.user.MfaChangingStateRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12U\n\x12mfa_auth_challenge\x12\x1d.user.MfaAuthChallengeRequest\x1a\x1e.user.MfaAuthChallengeResponse\"\x00\x12R\n\x15mfa_validate_password\x12 .user.MfaValidatePasswordRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12H\n\x10mfa_validate_otp\x12\x1b.user.MfaValidateOtpRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12\x44\n\x0emfa_resend_otp\x12\x19.user.MfaResendOtpRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12^\n\x1dworkspace_update_display_name\x12\'.user.WorkspaceUpdateDisplayNameRequest\x1a\x12.user.BaseResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11protos/user.proto\x12\x04user\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"l\n\x13UserProfileResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x14\n\x0cphone_number\x18\x04 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x05 \x01(\t\"\x07\n\x05\x45mpty\"n\n\x14UpdateProfileRequest\x12\x14\n\x0c\x64isplay_name\x18\x01 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x02 \x01(\t\x12\x14\n\x0cphone_number\x18\x03 \x01(\t\x12\x1a\n\x12\x63lear_phone_number\x18\x04 \x01(\x08\"1\n\x18RequestChangePasswordReq\x12\x15\n\rclient_public\x18\x01 \x01(\t\"D\n\x18RequestChangePasswordRes\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"\xab\x01\n\x15\x43hangePasswordRequest\x12\x15\n\rclient_public\x18\x01 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\x12\x15\n\rhash_password\x18\x04 \x01(\t\x12\x0c\n\x04salt\x18\x05 \x01(\t\x12\x14\n\x0civ_parameter\x18\x06 \x01(\t\x12\x1e\n\x16identity_key_encrypted\x18\x07 \x01(\t\"^\n\x10UserInfoResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t\x12\x18\n\x10workspace_domain\x18\x03 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x04 \x01(\t\"=\n\x0eGetUserRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"$\n\x11SearchUserRequest\x12\x0f\n\x07keyword\x18\x01 \x01(\t\">\n\x12SearchUserResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"\'\n\x16\x46indUserByEmailRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"<\n\x10GetUsersResponse\x12(\n\x08lst_user\x18\x01 \x03(\x0b\x32\x16.user.UserInfoResponse\"&\n\x14SetUserStatusRequest\x12\x0e\n\x06status\x18\x01 \x01(\t\"\r\n\x0bPingRequest\"b\n\x17GetClientsStatusRequest\x12+\n\nlst_client\x18\x01 \x03(\x0b\x32\x17.user.MemberInfoRequest\x12\x1a\n\x12should_get_profile\x18\x02 \x01(\x08\"@\n\x11MemberInfoRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\"C\n\x18GetClientsStatusResponse\x12\'\n\nlst_client\x18\x01 \x03(\x0b\x32\x13.user.MemberInfoRes\"\x88\x01\n\rMemberInfoRes\x12\x11\n\tclient_id\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x04 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x05 \x01(\t\x12\x14\n\x0cphone_number\x18\x06 \x01(\t\"i\n\x13UploadAvatarRequest\x12\x11\n\tfile_name\x18\x01 \x01(\t\x12\x19\n\x11\x66ile_content_type\x18\x02 \x01(\t\x12\x11\n\tfile_data\x18\x03 \x01(\x0c\x12\x11\n\tfile_hash\x18\x04 \x01(\t\"(\n\x14UploadAvatarResponse\x12\x10\n\x08\x66ile_url\x18\x01 \x01(\t\"D\n\x0fMfaBaseResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x11\n\tnext_step\x18\x02 \x01(\t\x12\r\n\x05\x65rror\x18\x03 \x01(\t\"5\n\x10MfaStateResponse\x12\x12\n\nmfa_enable\x18\x01 \x01(\x08\x12\r\n\x05\x65rror\x18\x02 \x01(\t\"\x14\n\x12MfaGetStateRequest\"\x19\n\x17MfaChangingStateRequest\"0\n\x17MfaAuthChallengeRequest\x12\x15\n\rclient_public\x18\x01 \x01(\t\"D\n\x18MfaAuthChallengeResponse\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"U\n\x1aMfaValidatePasswordRequest\x12\x15\n\rclient_public\x18\x01 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x02 \x01(\t\"$\n\x15MfaValidateOtpRequest\x12\x0b\n\x03otp\x18\x01 \x01(\t\"\x15\n\x13MfaResendOtpRequest\"J\n!WorkspaceUpdateDisplayNameRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x02 \x01(\t2\xc2\x0c\n\x04User\x12\x37\n\x0bget_profile\x12\x0b.user.Empty\x1a\x19.user.UserProfileResponse\"\x00\x12\x42\n\x0eupdate_profile\x12\x1a.user.UpdateProfileRequest\x1a\x12.user.BaseResponse\"\x00\x12H\n\rupload_avatar\x12\x19.user.UploadAvatarRequest\x1a\x1a.user.UploadAvatarResponse\"\x00\x12[\n\x17request_change_password\x12\x1e.user.RequestChangePasswordReq\x1a\x1e.user.RequestChangePasswordRes\"\x00\x12\x44\n\x0f\x63hange_password\x12\x1b.user.ChangePasswordRequest\x1a\x12.user.BaseResponse\"\x00\x12\x41\n\rupdate_status\x12\x1a.user.SetUserStatusRequest\x1a\x12.user.BaseResponse\"\x00\x12\x37\n\x0cping_request\x12\x11.user.PingRequest\x1a\x12.user.BaseResponse\"\x00\x12U\n\x12get_clients_status\x12\x1d.user.GetClientsStatusRequest\x1a\x1e.user.GetClientsStatusResponse\"\x00\x12\x33\n\x0e\x64\x65lete_account\x12\x0b.user.Empty\x1a\x12.user.BaseResponse\"\x00\x12?\n\rget_user_info\x12\x14.user.GetUserRequest\x1a\x16.user.UserInfoResponse\"\x00\x12\x42\n\x0bsearch_user\x12\x17.user.SearchUserRequest\x1a\x18.user.SearchUserResponse\"\x00\x12\x32\n\tget_users\x12\x0b.user.Empty\x1a\x16.user.GetUsersResponse\"\x00\x12L\n\x12\x66ind_user_by_email\x12\x1c.user.FindUserByEmailRequest\x1a\x16.user.UserInfoResponse\"\x00\x12\x43\n\rget_mfa_state\x12\x18.user.MfaGetStateRequest\x1a\x16.user.MfaStateResponse\"\x00\x12\x44\n\nenable_mfa\x12\x1d.user.MfaChangingStateRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12\x45\n\x0b\x64isable_mfa\x12\x1d.user.MfaChangingStateRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12U\n\x12mfa_auth_challenge\x12\x1d.user.MfaAuthChallengeRequest\x1a\x1e.user.MfaAuthChallengeResponse\"\x00\x12R\n\x15mfa_validate_password\x12 .user.MfaValidatePasswordRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12H\n\x10mfa_validate_otp\x12\x1b.user.MfaValidateOtpRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12\x44\n\x0emfa_resend_otp\x12\x19.user.MfaResendOtpRequest\x1a\x15.user.MfaBaseResponse\"\x00\x12^\n\x1dworkspace_update_display_name\x12\'.user.WorkspaceUpdateDisplayNameRequest\x1a\x12.user.BaseResponse\"\x00\x12T\n\x1cworkspace_find_user_by_email\x12\x1c.user.FindUserByEmailRequest\x1a\x16.user.UserInfoResponseb\x06proto3')
 
 
 
@@ -30,7 +30,6 @@ _GETUSERREQUEST = DESCRIPTOR.message_types_by_name['GetUserRequest']
 _SEARCHUSERREQUEST = DESCRIPTOR.message_types_by_name['SearchUserRequest']
 _SEARCHUSERRESPONSE = DESCRIPTOR.message_types_by_name['SearchUserResponse']
 _FINDUSERBYEMAILREQUEST = DESCRIPTOR.message_types_by_name['FindUserByEmailRequest']
-_FINDUSERBYEMAILRESPONSE = DESCRIPTOR.message_types_by_name['FindUserByEmailResponse']
 _GETUSERSRESPONSE = DESCRIPTOR.message_types_by_name['GetUsersResponse']
 _SETUSERSTATUSREQUEST = DESCRIPTOR.message_types_by_name['SetUserStatusRequest']
 _PINGREQUEST = DESCRIPTOR.message_types_by_name['PingRequest']
@@ -133,13 +132,6 @@ FindUserByEmailRequest = _reflection.GeneratedProtocolMessageType('FindUserByEma
   # @@protoc_insertion_point(class_scope:user.FindUserByEmailRequest)
   })
 _sym_db.RegisterMessage(FindUserByEmailRequest)
-
-FindUserByEmailResponse = _reflection.GeneratedProtocolMessageType('FindUserByEmailResponse', (_message.Message,), {
-  'DESCRIPTOR' : _FINDUSERBYEMAILRESPONSE,
-  '__module__' : 'protos.user_pb2'
-  # @@protoc_insertion_point(class_scope:user.FindUserByEmailResponse)
-  })
-_sym_db.RegisterMessage(FindUserByEmailResponse)
 
 GetUsersResponse = _reflection.GeneratedProtocolMessageType('GetUsersResponse', (_message.Message,), {
   'DESCRIPTOR' : _GETUSERSRESPONSE,
@@ -301,47 +293,45 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _SEARCHUSERRESPONSE._serialized_start=781
   _SEARCHUSERRESPONSE._serialized_end=843
   _FINDUSERBYEMAILREQUEST._serialized_start=845
-  _FINDUSERBYEMAILREQUEST._serialized_end=889
-  _FINDUSERBYEMAILRESPONSE._serialized_start=891
-  _FINDUSERBYEMAILRESPONSE._serialized_end=958
-  _GETUSERSRESPONSE._serialized_start=960
-  _GETUSERSRESPONSE._serialized_end=1020
-  _SETUSERSTATUSREQUEST._serialized_start=1022
-  _SETUSERSTATUSREQUEST._serialized_end=1060
-  _PINGREQUEST._serialized_start=1062
-  _PINGREQUEST._serialized_end=1075
-  _GETCLIENTSSTATUSREQUEST._serialized_start=1077
-  _GETCLIENTSSTATUSREQUEST._serialized_end=1175
-  _MEMBERINFOREQUEST._serialized_start=1177
-  _MEMBERINFOREQUEST._serialized_end=1241
-  _GETCLIENTSSTATUSRESPONSE._serialized_start=1243
-  _GETCLIENTSSTATUSRESPONSE._serialized_end=1310
-  _MEMBERINFORES._serialized_start=1313
-  _MEMBERINFORES._serialized_end=1449
-  _UPLOADAVATARREQUEST._serialized_start=1451
-  _UPLOADAVATARREQUEST._serialized_end=1556
-  _UPLOADAVATARRESPONSE._serialized_start=1558
-  _UPLOADAVATARRESPONSE._serialized_end=1598
-  _MFABASERESPONSE._serialized_start=1600
-  _MFABASERESPONSE._serialized_end=1668
-  _MFASTATERESPONSE._serialized_start=1670
-  _MFASTATERESPONSE._serialized_end=1723
-  _MFAGETSTATEREQUEST._serialized_start=1725
-  _MFAGETSTATEREQUEST._serialized_end=1745
-  _MFACHANGINGSTATEREQUEST._serialized_start=1747
-  _MFACHANGINGSTATEREQUEST._serialized_end=1772
-  _MFAAUTHCHALLENGEREQUEST._serialized_start=1774
-  _MFAAUTHCHALLENGEREQUEST._serialized_end=1822
-  _MFAAUTHCHALLENGERESPONSE._serialized_start=1824
-  _MFAAUTHCHALLENGERESPONSE._serialized_end=1892
-  _MFAVALIDATEPASSWORDREQUEST._serialized_start=1894
-  _MFAVALIDATEPASSWORDREQUEST._serialized_end=1979
-  _MFAVALIDATEOTPREQUEST._serialized_start=1981
-  _MFAVALIDATEOTPREQUEST._serialized_end=2017
-  _MFARESENDOTPREQUEST._serialized_start=2019
-  _MFARESENDOTPREQUEST._serialized_end=2040
-  _WORKSPACEUPDATEDISPLAYNAMEREQUEST._serialized_start=2042
-  _WORKSPACEUPDATEDISPLAYNAMEREQUEST._serialized_end=2116
-  _USER._serialized_start=2119
-  _USER._serialized_end=3739
+  _FINDUSERBYEMAILREQUEST._serialized_end=884
+  _GETUSERSRESPONSE._serialized_start=886
+  _GETUSERSRESPONSE._serialized_end=946
+  _SETUSERSTATUSREQUEST._serialized_start=948
+  _SETUSERSTATUSREQUEST._serialized_end=986
+  _PINGREQUEST._serialized_start=988
+  _PINGREQUEST._serialized_end=1001
+  _GETCLIENTSSTATUSREQUEST._serialized_start=1003
+  _GETCLIENTSSTATUSREQUEST._serialized_end=1101
+  _MEMBERINFOREQUEST._serialized_start=1103
+  _MEMBERINFOREQUEST._serialized_end=1167
+  _GETCLIENTSSTATUSRESPONSE._serialized_start=1169
+  _GETCLIENTSSTATUSRESPONSE._serialized_end=1236
+  _MEMBERINFORES._serialized_start=1239
+  _MEMBERINFORES._serialized_end=1375
+  _UPLOADAVATARREQUEST._serialized_start=1377
+  _UPLOADAVATARREQUEST._serialized_end=1482
+  _UPLOADAVATARRESPONSE._serialized_start=1484
+  _UPLOADAVATARRESPONSE._serialized_end=1524
+  _MFABASERESPONSE._serialized_start=1526
+  _MFABASERESPONSE._serialized_end=1594
+  _MFASTATERESPONSE._serialized_start=1596
+  _MFASTATERESPONSE._serialized_end=1649
+  _MFAGETSTATEREQUEST._serialized_start=1651
+  _MFAGETSTATEREQUEST._serialized_end=1671
+  _MFACHANGINGSTATEREQUEST._serialized_start=1673
+  _MFACHANGINGSTATEREQUEST._serialized_end=1698
+  _MFAAUTHCHALLENGEREQUEST._serialized_start=1700
+  _MFAAUTHCHALLENGEREQUEST._serialized_end=1748
+  _MFAAUTHCHALLENGERESPONSE._serialized_start=1750
+  _MFAAUTHCHALLENGERESPONSE._serialized_end=1818
+  _MFAVALIDATEPASSWORDREQUEST._serialized_start=1820
+  _MFAVALIDATEPASSWORDREQUEST._serialized_end=1905
+  _MFAVALIDATEOTPREQUEST._serialized_start=1907
+  _MFAVALIDATEOTPREQUEST._serialized_end=1943
+  _MFARESENDOTPREQUEST._serialized_start=1945
+  _MFARESENDOTPREQUEST._serialized_end=1966
+  _WORKSPACEUPDATEDISPLAYNAMEREQUEST._serialized_start=1968
+  _WORKSPACEUPDATEDISPLAYNAMEREQUEST._serialized_end=2042
+  _USER._serialized_start=2045
+  _USER._serialized_end=3647
 # @@protoc_insertion_point(module_scope)

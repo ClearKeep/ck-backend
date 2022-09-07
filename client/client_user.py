@@ -39,8 +39,20 @@ class ClientUser:
         request = user_pb2.WorkspaceUpdateDisplayNameRequest(user_id=user_id, display_name=display_name)
         try:
             await self.stub.workspace_update_display_name(request, timeout=GRPC_TIMEOUT)
-        except grpc._channel._InactiveRpcError as e:
+        except grpc.aio._call.AioRpcError as e:
             if e.code() == grpc.StatusCode.UNIMPLEMENTED:
                 logger.info(f'no workspace_update_display_name in workspace {self.workspace_domain}')
+            else:
+                raise
+
+    @workspace_tolerance
+    async def find_user_by_email(self, email):
+        request = user_pb2.FindUserByEmailRequest(email=email)
+        try:
+            return await self.stub.workspace_find_user_by_email(request, timeout=GRPC_TIMEOUT)
+        except grpc.aio._call.AioRpcError as e:
+            if e.code() == grpc.StatusCode.UNIMPLEMENTED:
+                logger.info(f'no workspace_find_user_by_email in workspace {self.workspace_domain}')
+                return
             else:
                 raise
