@@ -382,6 +382,8 @@ class UserService(BaseService):
                 obj_res = user_pb2.UserInfoResponse(
                     id=obj.id,
                     display_name=obj.display_name,
+                    avatar=obj.avatar,
+                    workspace_domain=get_owner_workspace_domain()
                 )
                 lst_obj_res.append(obj_res)
 
