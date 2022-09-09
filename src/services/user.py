@@ -430,13 +430,15 @@ class UserService(BaseService):
     def find_user_by_email_here(self, email):
         user = self.model.get_by_email(email)
         if not user:
-            return user_pb2.UserInfoResponse()
-        return user_pb2.UserInfoResponse(
-            id=user.id,
-            display_name = user.display_name,
-            workspace_domain=get_owner_workspace_domain(),
-            avatar=user.avatar
-        )
+            return user_pb2.FindUserByEmailResponse(lst_user=[])
+        return user_pb2.FindUserByEmailResponse(lst_user=[
+            user_pb2.UserInfoResponse(
+                id=user.id,
+                display_name = user.display_name,
+                workspace_domain=get_owner_workspace_domain(),
+                avatar=user.avatar
+            )
+        ])
 
     def find_user_detail_info_from_email_hash(self, email_hash):
         # TODO: find different way to do this
