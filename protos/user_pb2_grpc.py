@@ -77,7 +77,7 @@ class UserStub(object):
         self.find_user_by_email = channel.unary_unary(
                 '/user.User/find_user_by_email',
                 request_serializer=protos_dot_user__pb2.FindUserByEmailRequest.SerializeToString,
-                response_deserializer=protos_dot_user__pb2.UserInfoResponse.FromString,
+                response_deserializer=protos_dot_user__pb2.FindUserByEmailResponse.FromString,
                 )
         self.get_mfa_state = channel.unary_unary(
                 '/user.User/get_mfa_state',
@@ -122,7 +122,7 @@ class UserStub(object):
         self.workspace_find_user_by_email = channel.unary_unary(
                 '/user.User/workspace_find_user_by_email',
                 request_serializer=protos_dot_user__pb2.FindUserByEmailRequest.SerializeToString,
-                response_deserializer=protos_dot_user__pb2.UserInfoResponse.FromString,
+                response_deserializer=protos_dot_user__pb2.FindUserByEmailResponse.FromString,
                 )
 
 
@@ -331,7 +331,7 @@ def add_UserServicer_to_server(servicer, server):
             'find_user_by_email': grpc.unary_unary_rpc_method_handler(
                     servicer.find_user_by_email,
                     request_deserializer=protos_dot_user__pb2.FindUserByEmailRequest.FromString,
-                    response_serializer=protos_dot_user__pb2.UserInfoResponse.SerializeToString,
+                    response_serializer=protos_dot_user__pb2.FindUserByEmailResponse.SerializeToString,
             ),
             'get_mfa_state': grpc.unary_unary_rpc_method_handler(
                     servicer.get_mfa_state,
@@ -376,7 +376,7 @@ def add_UserServicer_to_server(servicer, server):
             'workspace_find_user_by_email': grpc.unary_unary_rpc_method_handler(
                     servicer.workspace_find_user_by_email,
                     request_deserializer=protos_dot_user__pb2.FindUserByEmailRequest.FromString,
-                    response_serializer=protos_dot_user__pb2.UserInfoResponse.SerializeToString,
+                    response_serializer=protos_dot_user__pb2.FindUserByEmailResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -605,7 +605,7 @@ class User(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/user.User/find_user_by_email',
             protos_dot_user__pb2.FindUserByEmailRequest.SerializeToString,
-            protos_dot_user__pb2.UserInfoResponse.FromString,
+            protos_dot_user__pb2.FindUserByEmailResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -758,6 +758,6 @@ class User(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/user.User/workspace_find_user_by_email',
             protos_dot_user__pb2.FindUserByEmailRequest.SerializeToString,
-            protos_dot_user__pb2.UserInfoResponse.FromString,
+            protos_dot_user__pb2.FindUserByEmailResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -77,6 +77,10 @@ message FindUserByEmailRequest {
     string email = 1;
 }
 
+message FindUserByEmailResponse {
+    repeated UserInfoResponse lst_user = 1;
+}
+
 // Request: Get Users
 // Response
 message GetUsersResponse {
@@ -197,7 +201,7 @@ service User {
     rpc get_user_info(GetUserRequest) returns (UserInfoResponse) {};
     rpc search_user(SearchUserRequest) returns (SearchUserResponse) {};
     rpc get_users(Empty) returns (GetUsersResponse) {};
-    rpc find_user_by_email(FindUserByEmailRequest) returns (UserInfoResponse) {};
+    rpc find_user_by_email(FindUserByEmailRequest) returns (FindUserByEmailResponse) {};
 
     //----- MFA ENABLE FLOW -----
     rpc get_mfa_state(MfaGetStateRequest) returns (MfaStateResponse) {};
@@ -209,5 +213,5 @@ service User {
     rpc mfa_resend_otp(MfaResendOtpRequest) returns (MfaBaseResponse) {};
 
     rpc workspace_update_display_name(WorkspaceUpdateDisplayNameRequest) returns (BaseResponse) {};
-    rpc workspace_find_user_by_email(FindUserByEmailRequest) returns (UserInfoResponse);
+    rpc workspace_find_user_by_email(FindUserByEmailRequest) returns (FindUserByEmailResponse);
 }
