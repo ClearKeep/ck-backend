@@ -4,11 +4,14 @@ import grpc
 from utils.config import get_system_config
 from msg.message import Message
 import json
-from utils.logger import *
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def auth_required(f):
-    # @wraps(f)
+    @wraps(f)
     async def wrap(*args, **kwargs):
         context = args[2]
         metadata = dict(context.invocation_metadata())
@@ -40,6 +43,7 @@ def _token_check(access_token):
         else:
             return False
     except Exception as e:
+        logger.error("Error in _token_check", exc_info=True)
         return False
 
 

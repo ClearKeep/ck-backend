@@ -2,7 +2,8 @@ from datetime import datetime
 from sqlalchemy.orm import relationship
 from src.models.base import Database
 from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 class VideoCall(Database.get().Model):
     __tablename__ = 'video_call'
     id = Database.get().Column(Database.get().String(36), primary_key=True)
@@ -27,7 +28,7 @@ class VideoCall(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def get(self, call_id):
         call = Database.get_session().query(VideoCall) \

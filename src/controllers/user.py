@@ -3,6 +3,7 @@ from src.controllers.base import *
 from src.services.auth import AuthService
 from src.services.user import UserService
 from src.services.signal import SignalService
+from src.services.group import GroupService
 from middlewares.permission import *
 from middlewares.request_logged import *
 from utils.logger import *
@@ -44,7 +45,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return auth_challenge_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CHANGE_PASSWORD_FAILED)]
             else:
@@ -79,13 +80,13 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             try:
                 old_identity_key_encrypted = SignalService().client_update_identity_key(introspect_token["sub"], request.identity_key_encrypted)
             except Exception as e:
-                logger.error(e)
+                logger.error(e, exc_info=True)
                 self.service.change_password(request, request.hash_password, user_info.password_verifier, introspect_token['sub'])
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             try:
                 salt, iv_parameter = self.service.update_hash_pass(introspect_token["sub"], request.hash_password, request.salt, request.iv_parameter)
             except Exception as e:
-                logger.error(e)
+                logger.error(e, exc_info=True)
                 self.service.change_password(request, request.hash_password, request.password_verifier, introspect_token['sub'])
                 SignalService().client_update_identity_key(introspect_token["sub"], old_identity_key_encrypted)
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
@@ -96,7 +97,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CHANGE_PASSWORD_FAILED)]
             else:
@@ -115,7 +116,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return  user_messages.MfaStateResponse(mfa_enable=mfa_enable,)
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
@@ -136,7 +137,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
@@ -162,7 +163,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.MfaBaseResponse(success=success,next_step=next_step)
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
@@ -201,7 +202,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             )
             return auth_challenge_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
@@ -236,7 +237,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.OTP_SERVER_NOT_RESPONDING)]
             else:
@@ -255,7 +256,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
@@ -274,7 +275,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.MfaBaseResponse(success=success, next_step=next_step)
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.OTP_SERVER_NOT_RESPONDING)]
             else:
@@ -301,7 +302,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 context.set_code(grpc.StatusCode.NOT_FOUND)
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_PROFILE_FAILED)]
             else:
@@ -323,11 +324,11 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
             client_id = introspect_token['sub']
 
-            self.service.update_profile(client_id, display_name, phone_number, avatar, clear_phone_number)
+            await self.service.update_profile(client_id, display_name, phone_number, avatar, clear_phone_number)
             return user_messages.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.UPDATE_PROFILE_FAILED)]
             else:
@@ -348,7 +349,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 user_info = self.service.get_user_info(client_id, owner_workspace_domain)
             else:
                 client = ClientUser(client_workspace_domain)
-                user_info = client.get_user_info(client_id=client_id, workspace_domain=client_workspace_domain)
+                user_info = await client.get_user_info(client_id=client_id, workspace_domain=client_workspace_domain)
 
             if user_info is not None:
                 return user_info
@@ -359,7 +360,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
                 context.set_code(grpc.StatusCode.NOT_FOUND)
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_USER_INFO_FAILED)]
             else:
@@ -382,7 +383,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return obj_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
             else:
@@ -403,9 +404,40 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return obj_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    @auth_required
+    async def find_user_by_email(self, request, context):
+        try:
+            return await self.service.find_user_by_email(request.email)
+        except Exception as e:
+            logger.error(e, exc_info=True)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.FIND_USER_BY_EMAIL_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def find_user_detail_info_from_email_hash(self, request, context):
+        try:
+            logger.debug(f'find_user_detail_info_from_email_hash, {request=}, {context=}')
+            obj_res = self.service.find_user_detail_info_from_email_hash(request.email_hash)
+            return obj_res
+        except Exception as e:
+            logger.error("find_user_detail_info_from_email_hash", exc_info=True)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.FIND_USER_BY_EMAIL_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
@@ -422,7 +454,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return obj_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.SEARCH_USER_FAILED)]
             else:
@@ -446,7 +478,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.UPDATE_USER_STATUS_FAILED)]
             else:
@@ -466,7 +498,7 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return user_messages.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.PING_PONG_SERVER_FAILED)]
             else:
@@ -481,11 +513,10 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
         try:
             list_clients = request.lst_client
             should_get_profile = request.should_get_profile
-            list_user_status = self.service.get_list_clients_status(list_clients,should_get_profile)
-            return list_user_status
+            return await self.service.get_list_clients_status(list_clients,should_get_profile)
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_USER_STATUS_FAILED)]
             else:
@@ -510,11 +541,55 @@ class UserController(BaseController, user_pb2_grpc.UserServicer):
             return obj_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_USER_STATUS_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    @auth_required
+    async def delete_account(self, request, context):
+        try:
+            header_data = dict(context.invocation_metadata())
+            introspect_token = KeyCloakUtils.introspect_token(header_data['access_token'])
+            client_id = introspect_token['sub']
+            user_info = self.service.get_user_by_id(client_id)
+            await GroupService().forgot_peer_groups_for_client(user_info)
+            await GroupService().member_forgot_password_in_group(user_info)
+            SignalService().delete_client_peer_key(client_id)
+            AuthService().delete_user(client_id)
+            UserService().delete_user(client_id)
+            return user_messages.BaseResponse()
+        except Exception as e:
+            logger.error(e, exc_info=True)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.DELETE_ACCOUNT_FAILED)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def workspace_update_display_name(self, request, context):
+        try:
+            await self.service.workspace_update_display_name(
+                user_id=request.user_id,
+                display_name=request.display_name
+            )
+            return user_messages.BaseResponse()
+        except Exception as e:
+            logger.error(e, exc_info=True)
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def workspace_find_user_by_email(self, request, context):
+        try:
+            return self.service.find_user_by_email_here(email=request.email)
+        except Exception as e:
+            logger.error(e, exc_info=True)
             context.set_code(grpc.StatusCode.INTERNAL)

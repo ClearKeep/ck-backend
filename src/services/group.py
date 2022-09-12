@@ -13,13 +13,15 @@ from client.client_user import *
 import requests
 import secrets
 import datetime
+import asyncio
 from utils.config import *
 from protos import group_pb2
 from msg.message import Message
 from google.protobuf.json_format import MessageToDict
 from utils.logger import *
-from src.services.notify_push import NotifyPushService
-
+from src.services.notify_push import NotifyPushService, PushType
+import logging
+logger = logging.getLogger(__name__)
 
 class GroupService(BaseService):
     """
@@ -30,7 +32,7 @@ class GroupService(BaseService):
         self.notify_service = NotifyInAppService()
         self.transaction = 'ckbackendtransaction'
 
-    def add_group(self, group_name, group_type, lst_client, created_by):
+    async def add_group(self, group_name, group_type, lst_client, created_by):
         # service for create new group with following info:
         # group_name: name of group in request, using for searching group
         # group_type: type of group in request, must be one of this values: [peer/group]
@@ -114,8 +116,7 @@ class GroupService(BaseService):
                     owner_workspace_domain=owner_workspace_domain
                 )
 
-                group_res_object = \
-                    ClientGroup(obj.workspace_domain).create_group_workspace(
+                group_res_object = await ClientGroup(obj.workspace_domain).create_group_workspace(
                         request
                     )
                 client_group_key = GroupClientKey().set_key(
@@ -184,7 +185,8 @@ class GroupService(BaseService):
         if json_response.get("janus") == 'success':
             return token
         else:
-            raise
+            logger.debug(json_response)
+            raise Exception('Fail register webrtc token')
 
     def create_rtc_group(self, group_id, rtc_token):
         # create Janus
@@ -485,25 +487,74 @@ class GroupService(BaseService):
                                 title="Deactivate Member",
                                 body="A user has been deactived",
                                 from_client_id=client_id,
-                                notify_type="deactive_account",
+                                notify_type=PushType.DEACTIVE_ACCOUNT.value,
                                 data=json.dumps(data)
                             )
                         except Exception as e:
                             logger.error("Cannot notify to client {}".format(client["id"]))
-                            logger.error(e)
+                            logger.error(e, exc_info=True)
                     else:
                         if client["workspace_domain"] not in informed_workspace_domain:
                             informed_workspace_domain[client["workspace_domain"]] = group_pb2.WorkspaceNotifyDeactiveMember(
                                                                                                           deactive_account_id=client_id
                                                                                                             )
                         informed_workspace_domain[client["workspace_domain"]].client_ids.append(client["id"])
+            group.GroupChat.remove_client(client_id)
         for workspace_domain in informed_workspace_domain:
             try:
                 await ClientGroup(workspace_domain).workspace_notify_deactive_member(informed_workspace_domain[workspace_domain])
             except Exception as e:
-                logger.error(e)
+                logger.error(e, exc_info=True)
+
+
+    async def member_forgot_password_in_group(self, user_info):
+        groups = self.model.get_joined_group_type(user_info.id, 'group')
+        owner_workspace_domain = get_owner_workspace_domain()
+        workspaces = set()
+        for group in groups:
+            clients = json.loads(group.GroupChat.group_clients)
+            for client in clients:
+                if client["workspace_domain"] != owner_workspace_domain:
+                    workspaces.add(client["workspace_domain"])
+            group.GroupChat.remove_client(user_info.id)
+        self.model.delete_group_client_key_by_client_id(user_info.id)
+
+        await asyncio.gather(
+            *[
+                ClientGroup(workspace_domain).workspace_member_forgot_password_in_group(
+                    group_pb2.WorkspaceMemberForgotPasswordInGroup(
+                        user_id=user_info.id
+                    )
+                )
+                for workspace_domain in workspaces
+            ]
+        )
+
+    async def member_reset_pincode_in_group(self, user_id):
+        groups = self.model.get_joined_group_type(user_id, 'group')
+        owner_workspace_domain = get_owner_workspace_domain()
+        workspaces = set()
+        for group in groups:
+            clients = json.loads(group.GroupChat.group_clients)
+            for client in clients:
+                if client["workspace_domain"] != owner_workspace_domain:
+                    workspaces.add(client["workspace_domain"])
+        self.model.reset_group_client_key_by_client_id(user_id)
+        await asyncio.gather(
+            *[
+                ClientGroup(workspace_domain).workspace_member_reset_pincode_in_group(
+                    group_pb2.WorkspaceMemberResetPincodeInGroup(
+                        user_id=user_id
+                    )
+                )
+                for workspace_domain in workspaces
+            ]
+        )
 
     async def workspace_notify_deactive_member(self, deactive_account_id, client_ids):
+        groups = self.model.get_joined_group_type(deactive_account_id, 'peer')
+        for group in groups:
+            group.GroupChat.remove_client(deactive_account_id)
         # workspace call for notify all other users in different server involved in peer chat with that this user updated public key
         push_service = NotifyPushService()
         for client_id in client_ids:
@@ -519,11 +570,22 @@ class GroupService(BaseService):
                         title="Deactivate Member",
                         body="A user has been deactived",
                         from_client_id=deactive_account_id,
-                        notify_type="deactive_account",
+                        notify_type=PushType.DEACTIVE_ACCOUNT.value,
                         data=json.dumps(data)
                     )
             except Exception as e:
-                logger.error(e)
+                logger.error(e, exc_info=True)
+
+
+    async def workspace_member_forgot_password_in_group(self, user_id):
+        groups = self.model.get_joined_group_type(user_id, 'group')
+        for group in groups:
+            group.GroupChat.remove_client(user_id)
+
+        self.model.delete_group_client_key_by_client_id(user_id)
+    
+    async def workspace_member_reset_pincode_in_group(self, user_id):
+        self.model.reset_group_client_key_by_client_id(user_id)
 
     def get_clients_in_group(self, group_id):
         # get all client in group
@@ -605,7 +667,7 @@ class GroupService(BaseService):
             adding_member_info=adding_member_info,
             group_id=group.owner_group_id,
         )
-        ClientGroup(group.owner_workspace_domain).add_member(add_member_request)
+        await ClientGroup(group.owner_workspace_domain).add_member(add_member_request)
 
         # for compatible with old code, should be remove in future?
         return group_pb2.BaseResponse()
@@ -676,7 +738,7 @@ class GroupService(BaseService):
                 )
                 logger.info(
                     "call add member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
-                response = ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_add_member(request)
+                response = await ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_add_member(request)
                 if response.is_member_workspace:
                     logger.info("update ref_group to main server {}".format(response.ref_group_id))
                     group_client_key.client_workspace_group_id = response.ref_group_id
@@ -796,6 +858,9 @@ class GroupService(BaseService):
                         notify_type="member_leave",
                         data=json.dumps(data)
                     )
+
+        self.model.delete_group_messages_by_client_id(leave_member.id, group.id)
+
         # call workspace leave for other server
         informed_workspace_domain = []
         for client in lst_client_in_group:
@@ -821,7 +886,7 @@ class GroupService(BaseService):
                 )
                 logger.info(
                     "call leave member to workspace domain {}".format(client.GroupClientKey.client_workspace_domain))
-                ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_leave_group(request)
+                await ClientGroup(client.GroupClientKey.client_workspace_domain).workspace_leave_group(request)
 
         # for compatible with old code, should be remove in future?
         return group_pb2.BaseResponse()
@@ -882,7 +947,7 @@ class GroupService(BaseService):
             leave_member_by=leave_member_by,
             group_id=group.owner_group_id,
         )
-        ClientGroup(group.owner_workspace_domain).leave_group(leave_group_request)
+        await ClientGroup(group.owner_workspace_domain).leave_group(leave_group_request)
         # for compatible with old code, should be remove in future?
         return group_pb2.BaseResponse()
 

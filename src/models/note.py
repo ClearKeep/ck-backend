@@ -1,9 +1,9 @@
 from datetime import datetime
 from src.models.base import Database
 from sqlalchemy.orm import relationship, joinedload
-from utils.logger import logger
 
-
+import logging
+logger = logging.getLogger(__name__)
 class Note(Database.get().Model):
     __tablename__ = 'note'
     id = Database.get().Column(
@@ -17,7 +17,7 @@ class Note(Database.get().Model):
         Database.get().String(36), unique=False,
         nullable=True
     )
-    content = Database.get().Column(Database.get().Binary)
+    content = Database.get().Column(Database.get().LargeBinary)
     note_type = Database.get().Column(
         Database.get().String(128),
         default='text',
@@ -59,7 +59,7 @@ class Note(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def delete(self):
         try:
@@ -67,4 +67,4 @@ class Note(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)

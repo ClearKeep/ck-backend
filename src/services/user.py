@@ -1,27 +1,35 @@
-from src.services.base import BaseService
-from src.models.user import User
-from src.models.authen_setting import AuthenSetting
-from utils.encrypt import EncryptUtils
-from utils.keycloak import KeyCloakUtils
-from protos import user_pb2
-from utils.logger import *
-from msg.message import Message
-from src.services.upload_file import UploadFileService
-import datetime
-from utils.config import get_system_config, get_owner_workspace_domain
-from utils.otp import OTPServer
-from client.client_user import ClientUser
 import base64
-import boto3
-import os
+import datetime
 import hashlib
+import os
+import json
+import grpc
+import asyncio
+
+from client.client_user import ClientUser
+from msg.message import Message
+from protos import user_pb2, user_pb2_grpc, find_user_by_email_pb2, find_user_by_email_pb2_grpc
+from src.models.authen_setting import AuthenSetting
+from src.models.user import User
+from src.models.group import GroupChat
+from src.services.base import BaseService
+from src.services.upload_file import UploadFileService
+from utils.config import get_system_config, get_owner_workspace_domain
+from utils.keycloak import KeyCloakUtils
+from utils.otp import OTPServer
+from utils.const import GRPC_PORT
+
 client_records_list_in_memory = {}
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class UserService(BaseService):
     """
     UserService, using when create new user, edit user info, or delete user, or enable/disable mfa flow
     """
+
     def __init__(self):
         super().__init__(User())
         self.authen_setting = AuthenSetting()
@@ -36,11 +44,12 @@ class UserService(BaseService):
                 salt=salt,
                 iv_parameter=iv_parameter,
                 display_name=display_name,
-                auth_source=auth_source
+                auth_source=auth_source.value
             )
             self.model.add()
+
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def create_user_social(self, id, email, display_name, auth_source):
@@ -50,12 +59,12 @@ class UserService(BaseService):
                 id=id,
                 email=email,
                 display_name=display_name,
-                auth_source=auth_source
+                auth_source=auth_source.value
             )
             self.model.add()
             return self
         except Exception as e:
-            logger.info(e)
+            logger.error(e, exc_info=True)
             return None
 
     def forgot_user(self, user_info, new_user_id, password_verifier, salt, iv_parameter):
@@ -79,7 +88,7 @@ class UserService(BaseService):
             self.model.add()
             self.delete_user(user_info.id)
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def get_google_user(self, email, auth_source):
@@ -172,7 +181,7 @@ class UserService(BaseService):
             success = True
             return success, next_step
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def validate_otp(self, user_id, otp):
@@ -235,7 +244,7 @@ class UserService(BaseService):
             next_step = 'mfa_validate_otp'
             return success, next_step
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.OTP_SERVER_NOT_RESPONDING)
 
     def update_hash_pass(self, user_id, hash_password, salt='', iv_parameter=''):
@@ -282,7 +291,7 @@ class UserService(BaseService):
             logger.info(e)
             raise Exception(Message.GET_PROFILE_FAILED)
 
-    def update_profile(self, user_id, display_name, phone_number, avatar, clear_phone_number):
+    async def update_profile(self, user_id, display_name, phone_number, avatar, clear_phone_number):
         # update profile for user_id, with force clear phone number flag for clearing stored phone number in db
         try:
             profile = self.model.get(user_id)
@@ -304,11 +313,38 @@ class UserService(BaseService):
                 profile.phone_number = phone_number
             if avatar:
                 profile.avatar = avatar
-            return profile.update()
+            profile.update()
+            if display_name:
+                await self.update_display_name_in_group(profile)
 
         except Exception as e:
             logger.info(e)
             raise Exception(Message.UPDATE_PROFILE_FAILED)
+
+    async def update_display_name_in_group(self, user):
+        group_chat = GroupChat()
+        items = group_chat.get_joined_group_type(user.id, None)
+        here = get_owner_workspace_domain()
+        workspace_domains = set()
+        groups = []
+        for item in items:
+            group_clients = json.loads(item.GroupChat.group_clients)
+            for client in group_clients:
+                if client['workspace_domain'] != here:
+                    workspace_domains.add(client['workspace_domain'])
+                if client['id'] != user.id:
+                    continue
+                client['display_name'] = user.display_name
+            item.GroupChat.group_clients = json.dumps(group_clients)
+            groups.append(item.GroupChat)
+        group_chat.bulk_update(groups)
+
+        await asyncio.gather(
+            *[
+                ClientUser(workspace_domain).update_display_name(user.id, user.display_name)
+                for workspace_domain in workspace_domains
+            ]
+        )
 
     def get_user_info(self, client_id, workspace_domain):
         # get information of client_id with additional infor about workspace_domain
@@ -346,6 +382,8 @@ class UserService(BaseService):
                 obj_res = user_pb2.UserInfoResponse(
                     id=obj.id,
                     display_name=obj.display_name,
+                    avatar=obj.avatar,
+                    workspace_domain=get_owner_workspace_domain()
                 )
                 lst_obj_res.append(obj_res)
 
@@ -354,7 +392,7 @@ class UserService(BaseService):
             )
             return response
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.SEARCH_USER_FAILED)
 
     def get_users(self, client_id, workspace_domain):
@@ -375,8 +413,51 @@ class UserService(BaseService):
             )
             return response
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.GET_USER_INFO_FAILED)
+
+    async def find_user_by_email(self, email):
+        parts = email.split('@')
+        if len(parts) != 2:
+            return user_pb2.UserInfoResponse()
+        if parts[1] == get_system_config()['server_domain']:
+            return self.find_user_by_email_here(email)
+        else:
+            workspace_domain = f'{parts[1]}:{GRPC_PORT}'
+            response = await ClientUser(workspace_domain).find_user_by_email(email)
+            return response if response else user_pb2.UserInfoResponse()
+
+    def find_user_by_email_here(self, email):
+        user = self.model.get_by_email(email)
+        if not user:
+            return user_pb2.FindUserByEmailResponse(lst_user=[])
+        return user_pb2.FindUserByEmailResponse(lst_user=[
+            user_pb2.UserInfoResponse(
+                id=user.id,
+                display_name = user.display_name,
+                workspace_domain=get_owner_workspace_domain(),
+                avatar=user.avatar
+            )
+        ])
+
+    def find_user_detail_info_from_email_hash(self, email_hash):
+        # TODO: find different way to do this
+        logger.debug(f'find_user_detail_info_from_email_hash')
+        all_users = self.model.get_all_users()
+        for u in all_users:
+            if type(u.email) is not str:
+                continue
+            if hashlib.sha256(u.email.encode('ascii')).hexdigest().lower() == email_hash.lower():
+                return user_pb2.UserInfoResponse(
+                    id=u.id,
+                    display_name = u.display_name,
+                    workspace_domain=get_owner_workspace_domain(),
+                    avatar=u.avatar
+                )
+        return user_pb2.UserInfoResponse()
+
+
+
 
     def update_last_login(self, user_id):
         # update last time login for user_id
@@ -399,7 +480,7 @@ class UserService(BaseService):
             client_record = client_records_list_in_memory.get(str(client_id), None)
             client_record["user_status"] = status
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.UPDATE_USER_STATUS_FAILED)
 
     def update_client_record(self, client_id):
@@ -418,7 +499,7 @@ class UserService(BaseService):
                 client_record["prev_active"] = client_record["last_active"]
                 client_record["last_active"] = datetime.datetime.now()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.PING_PONG_SERVER_FAILED)
 
     def categorize_workspace_domains(self, list_clients):
@@ -434,7 +515,7 @@ class UserService(BaseService):
                 })
         return workspace_domains_dictionary
 
-    def get_list_clients_status(self, list_clients, should_get_profile):
+    async def get_list_clients_status(self, list_clients, should_get_profile):
         # get list of clients status, with returning additional basic infor of user is should_get_profile is True
         logger.info("get_list_clients_status")
         try:
@@ -447,6 +528,9 @@ class UserService(BaseService):
                 list_client = workspace_domains_dictionary[workspace_domain]
                 if workspace_domain == owner_workspace_domain:
                     for client in list_client:
+                        user_info = self.model.get(client.client_id)
+                        if not user_info:
+                            continue
                         user_status = self.get_owner_workspace_client_status(client.client_id)
 
                         tmp_client_response = user_pb2.MemberInfoRes(
@@ -455,19 +539,17 @@ class UserService(BaseService):
                             status=user_status,
                         )
                         if should_get_profile:
-                            user_info = self.model.get(client.client_id)
-                            if user_info is not None:
-                                if user_info.display_name:
-                                    tmp_client_response.display_name = user_info.display_name
-                                if user_info.phone_number:
-                                    tmp_client_response.phone_number = user_info.phone_number
-                                if user_info.avatar:
-                                    tmp_client_response.avatar = user_info.avatar
+                            if user_info.display_name:
+                                tmp_client_response.display_name = user_info.display_name
+                            if user_info.phone_number:
+                                tmp_client_response.phone_number = user_info.phone_number
+                            if user_info.avatar:
+                                tmp_client_response.avatar = user_info.avatar
                             logger.info("user info {}: {}".format(client.client_id, tmp_client_response))
                         list_clients_status.append(tmp_client_response)
                 else:
                     logger.info("workspace request other server {}".format(workspace_domain))
-                    other_clients_response = self.get_other_workspace_clients_status(workspace_domain, list_client, should_get_profile)
+                    other_clients_response = await self.get_other_workspace_clients_status(workspace_domain, list_client, should_get_profile)
                     list_clients_status.extend(other_clients_response)
 
             response = user_pb2.GetClientsStatusResponse(
@@ -475,7 +557,7 @@ class UserService(BaseService):
             )
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.GET_USER_STATUS_FAILED)
 
 
@@ -498,15 +580,15 @@ class UserService(BaseService):
             user_status = "Undefined"
         return user_status
 
-    def get_other_workspace_clients_status(self, workspace_domain, list_client, should_get_profile=False):
+    async def get_other_workspace_clients_status(self, workspace_domain, list_client, should_get_profile=False):
         # get client record of client_id in other server
         server_error_resp = []
 
         client = ClientUser(workspace_domain)
-        client_resp = client.get_clients_status(list_client, should_get_profile)
+        client_resp = await client.get_clients_status(list_client, should_get_profile)
 
         if client_resp is None:
-            logger.info("CALL WORKSPACE ERROR", workspace_domain)
+            logger.info(f"CALL WORKSPACE ERROR {workspace_domain}")
             for client in list_client:
                 tmp_client_response = user_pb2.MemberInfoRes(
                     client_id=client.client_id,
@@ -543,3 +625,17 @@ class UserService(BaseService):
         user_info = self.model.get(user_id)
         user_info.delete()
         return True
+
+    async def workspace_update_display_name(self, user_id, display_name):
+        group_chat = GroupChat()
+        items = group_chat.get_joined_group_type(user_id, None)
+        groups = []
+        for item in items:
+            group_clients = json.loads(item.GroupChat.group_clients)
+            for client in group_clients:
+                if client['id'] != user_id:
+                    continue
+                client['display_name'] = display_name
+            item.GroupChat.group_clients = json.dumps(group_clients)
+            groups.append(item.GroupChat)
+        group_chat.bulk_update(groups)

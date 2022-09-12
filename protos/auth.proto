@@ -119,6 +119,11 @@ message FacebookLoginReq {
     string access_token = 2;
 }
 
+message AppleLoginReq {
+    string id_token = 1;
+    string end_user_env = 2;
+}
+
 message SocialLoginRes {
     string user_name = 1;
     string require_action = 2;
@@ -215,6 +220,20 @@ message RegisterSRPRes {
     string error = 1;
 }
 
+message RefreshTokenReq {
+    string refresh_token = 1;
+}
+
+message RefreshTokenRes {
+    string access_token = 1;
+    int64 expires_in = 2;
+    int64 refresh_expires_in = 3;
+    string refresh_token = 4;
+    string token_type = 5;
+    string session_state = 6;
+    string scope = 7;
+}
+
 service Auth {
 
     // rpc register(RegisterReq) returns (RegisterRes) {};
@@ -228,9 +247,11 @@ service Auth {
     rpc login_google(GoogleLoginReq) returns (SocialLoginRes) {};
     rpc login_office(OfficeLoginReq) returns (SocialLoginRes) {};
     rpc login_facebook(FacebookLoginReq) returns (SocialLoginRes) {};
+    rpc login_apple(AppleLoginReq) returns (SocialLoginRes) {};
     rpc login_social_challange(AuthSocialChallengeReq) returns (AuthChallengeRes) {};
     // authenticated challange
     rpc login_authenticate(AuthenticateReq) returns (AuthRes) {};
+    rpc refresh_token(RefreshTokenReq) returns (RefreshTokenRes) {};
     //logout
     rpc logout(LogoutReq) returns (BaseResponse) {};
     //pincode flow

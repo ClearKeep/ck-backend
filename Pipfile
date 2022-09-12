@@ -1,0 +1,33 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+alembic = "*"
+apns2 = "*"
+boto3 = "*"
+botocore = "*"
+firebase-admin = "*"
+flask = "*"
+flask-migrate = "*"
+flask-sqlalchemy = "*"
+flask-wtf = "*"
+grpcio = "*"
+protobuf = "*"
+python-jose = "*"
+pytz = "*"
+requests = "*"
+sqlalchemy = "*"
+srp = "*"
+twilio = "*"
+werkzeug = "*"
+psycopg2 = "*"
+python-keycloak = "*"
+cerberus = "*"
+grpcio-tools = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"

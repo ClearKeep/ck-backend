@@ -5,6 +5,7 @@ message RegisterTokenRequest {
   string device_id = 1;
   string device_type = 2;
   string token = 3;
+  string end_user_env = 4;
 }
 
 

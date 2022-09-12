@@ -1,75 +1,124 @@
-from kalyke.client import VoIPClient, APNsClient
 from utils.config import get_system_config
 import firebase_admin
 from firebase_admin import credentials, messaging
-from utils.logger import logger
-from kalyke.payload import PayloadAlert, Payload
+from apns2.client import APNsClient
+from apns2.payload import Payload
+from utils.const import DeviceType
 import time
+import asyncio
+from functools import wraps
+import logging
+logger = logging.getLogger(__name__)
 
-# init push service for iOS
-client_ios_voip = VoIPClient(
-    auth_key_filepath=get_system_config()["device_ios"].get('certificates_voip'),
-    bundle_id=get_system_config()["device_ios"].get('bundle_id'),
-    use_sandbox=get_system_config()["device_ios"].get('use_sandbox')
-)
-
-client_ios_text = APNsClient(
-    team_id=get_system_config()["device_ios"].get('team_id'),
-    auth_key_id=get_system_config()["device_ios"].get('auth_key_id'),
-    auth_key_filepath=get_system_config()["device_ios"].get('certificates_apns'),
-    bundle_id=get_system_config()["device_ios"].get('bundle_id'),
-    use_sandbox=get_system_config()["device_ios"].get('use_sandbox'),
-    force_proto="h2",
-    apns_push_type="alert"
-)
-
-# init push service for Android
-cred = credentials.Certificate(get_system_config()["device_android"].get("fire_base_config"))
-default_app = firebase_admin.initialize_app(cred)
+push_clients = {
+    "android": {},
+    "ios": {}
+}
 
 
-async def ios_data_notification(registration_token, payload):
-    try:
+def _ios_retry(func):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        retry = 0
+        while retry <= 1:
+            try:
+                await func(*args, **kwargs)
+            except Exception as e:
+                logger.debug("retry push ios")
+                logger.debug(e, exc_info=True)
+                push_clients[DeviceType.ios] = {}
+                retry += 1
+            else:
+                break
+
+    return wrapper
+
+
+@_ios_retry
+async def ios_data_notification(registration_token, data, end_user_env):
+    loop = asyncio.get_running_loop()
+    def _run_in_executor():
+        topic = _get_topic(end_user_env) + '.voip'
         expiration = int(time.time()) + 10
-        res_obj = await client_ios_voip._send_message(registration_token, payload, expiration=expiration)
-        logger.info("Push iOS data notify success with token: {}".format(registration_token))
-        logger.info(res_obj)
-    except Exception as e:
-        logger.error(e)
-        raise Exception(e)
+        apns_client = _get_push_client("ios", end_user_env)["voip"]
+        payload = Payload(custom={'publication': data})
+        apns_client.send_notification(registration_token, payload, topic, expiration=expiration)
+
+    await loop.run_in_executor(None, _run_in_executor)
+    logger.info("Push iOS data notify success with token: {}".format(registration_token))
 
 
-async def ios_text_notifications(registration_token, alert, data):
-    payload = Payload(
-        alert=alert,
-        badge=1,
-        sound="default",
-        mutable_content=1,
-        custom={'publication': data}
+@_ios_retry
+async def ios_text_notifications(registration_token, alert, data, end_user_env):
+    loop = asyncio.get_running_loop()
+    def _run_in_executor():
+        payload = Payload(
+            alert=alert,
+            badge=1,
+            sound="default",
+            mutable_content=1,
+            custom={'publication': data}
+        )
+        topic = _get_topic(end_user_env)
+        expiration = int(time.time()) + 10
+        apns_client = _get_push_client(DeviceType.ios, end_user_env)["alert"]
+        apns_client.send_notification(registration_token, payload, topic, expiration=expiration)
+
+    await loop.run_in_executor(None, _run_in_executor)
+    logger.info("Push iOS text notify success with token: {}".format(registration_token))
+
+
+async def android_data_notification(registration_token, payload, end_user_env):
+    loop = asyncio.get_running_loop()
+    app = _get_push_client(DeviceType.android, end_user_env)
+    message = messaging.Message(
+        token=registration_token,
+        data=payload,
+        android=messaging.AndroidConfig(
+            priority="high",
+            ttl=10
+        )
     )
     try:
-        expiration = int(time.time()) + 10
-        res = await client_ios_text._send_message(registration_token, payload, expiration=expiration)
-        logger.info("Push iOS text notify success with token: {}".format(registration_token))
-        logger.info(res)
-    except Exception as e:
-        logger.error(e)
-        raise Exception(e)
-
-
-def android_data_notification(registration_token, payload):
-    try:
-        message = messaging.Message(
-            token=registration_token,
-            data=payload,
-            android=messaging.AndroidConfig(
-                priority="high",
-                ttl=10
-            )
-        )
-        response = messaging.send(message)
+        response = await loop.run_in_executor(None, lambda: messaging.send(message, app=app))
         logger.info('Android data notification')
         logger.info(response)
     except Exception as e:
-        logger.error(e)
-        raise Exception(e)
+        logger.debug(e, exc_info=True)
+
+
+def _get_topic(end_user_env):
+    config = get_system_config()["notification"]
+    if not end_user_env or end_user_env not in config[DeviceType.ios]:
+        if end_user_env:
+            logger.debug('end_user_env not set')
+        end_user_env = 'default'
+    return config[DeviceType.ios][end_user_env]["bundle_id"]
+
+
+def _get_push_client(device_type, end_user_env):
+    config = get_system_config()["notification"]
+    if not end_user_env or end_user_env not in config[DeviceType.ios]:
+        if end_user_env:
+            logger.debug('end_user_env not set')
+        end_user_env = 'default'
+
+    if end_user_env not in push_clients[device_type]:
+        if device_type == DeviceType.android:
+            cred = credentials.Certificate(config[DeviceType.android][end_user_env]['fire_base_config'])
+            push_clients[device_type][end_user_env] = firebase_admin.initialize_app(cred, name=end_user_env)
+        elif device_type == DeviceType.ios:
+            ios_config = config[DeviceType.ios][end_user_env]
+            push_clients[device_type][end_user_env] = {
+                "alert": APNsClient(
+                    ios_config["certificates_apns"], 
+                    use_sandbox=ios_config["use_sandbox"],
+                    use_alternative_port=False
+                ),
+                "voip": APNsClient(
+                    ios_config["certificates_voip"], 
+                    use_sandbox=ios_config["use_sandbox"],
+                    use_alternative_port=False
+                ),
+            }
+    return push_clients[device_type][end_user_env]

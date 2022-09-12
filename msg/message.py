@@ -5,6 +5,7 @@ class Message:
     UNAUTHENTICATED = 1000
     AUTHENTICATION_FAILED = 1079
     INVALID_ACCESS_TOKEN = 1077
+    INVALID_REFRESH_TOKEN = 1081
     AUTH_USER_NOT_FOUND = 1001
     REGISTER_USER_ALREADY_EXISTS = 1002
     REGISTER_USER_FAILED = 1003
@@ -30,6 +31,7 @@ class Message:
     SEARCH_GROUP_CHAT_FAILED = 1019
     CLIENT_QUEUE_NOT_FOUND = 1020
     GET_MESSAGE_IN_GROUP_FAILED = 1078
+    DELETE_ACCOUNT_FAILED = 1029
 
     # notify
     GET_CLIENT_NOTIFIES_FAILED = 1021
@@ -54,6 +56,11 @@ class Message:
     # facebook login
     FACEBOOK_ACCESS_TOKEN_INVALID = 1034
     FACEBOOK_AUTH_FAILED = 1035
+    INVALID_SOCIAL_AUTH_SOURCE = 1036
+    INVALID_ACCOUNT_AUTH_SOURCE = 1037
+
+    #apple_login
+    APPLE_ID_TOKEN_INVALID = 1038
 
     #upload file
     UPLOAD_FILE_DATA_LOSS = 1040
@@ -107,10 +114,13 @@ class Message:
     # Workspace info
     GET_WORKSPACE_INFO_FAILED = 1066
 
+    FIND_USER_BY_EMAIL_FAILED = 1080
+
     msg_dict = {
         UNAUTHENTICATED: "Authentication required",
         AUTHENTICATION_FAILED: "Fail to authenticate",
         INVALID_ACCESS_TOKEN: "Invalid access token or token is expired. Please try to login again",
+        INVALID_REFRESH_TOKEN: "Invalid refresh token",
         AUTH_USER_NOT_FOUND: "Login information is not correct. Please try again",
         REGISTER_USER_ALREADY_EXISTS: "This email address is already being used",
         REGISTER_USER_FAILED: "Register account failed. Please try again",
@@ -139,6 +149,7 @@ class Message:
         VERIFY_PINCODE_FAILED: "Can not verify pincode. Please try again",
         NOT_SOCIAL_ACCOUNT: "This user do not have pincode",
         GET_MESSAGE_IN_GROUP_FAILED: "Get message in this group failed. Please try again",
+        DELETE_ACCOUNT_FAILED: "Delete account failed. Please try again",
 
         GET_CLIENT_NOTIFIES_FAILED: "Get client notify failed. Please try again",
         CLIENT_READ_NOTIFY_FAILED: "Client read notify failed. Please try again",
@@ -152,6 +163,9 @@ class Message:
         OFFICE_AUTH_FAILED: "Login Office 365 failed. Please try again",
         FACEBOOK_ACCESS_TOKEN_INVALID: "Login Facebook failed. Please try again",
         FACEBOOK_AUTH_FAILED: "Login Facebook failed. Please try again",
+        INVALID_SOCIAL_AUTH_SOURCE: "An account with your email already exists. Please log-in with that email and your password.",
+        INVALID_ACCOUNT_AUTH_SOURCE: "An account with your email already exists. Please log-in with your social network account.",
+        APPLE_ID_TOKEN_INVALID: "Login Apple failed. Please try again",
 
         UPLOAD_FILE_DATA_LOSS: "Upload file failed. Data is corrupted",
         UPLOAD_FILE_FAILED: "Upload file failed. Please try again",
@@ -198,7 +212,9 @@ class Message:
 
         GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again",
 
-        GET_SERVER_INFO_FAILED: "Get server info failed."
+        GET_SERVER_INFO_FAILED: "Get server info failed.",
+
+        FIND_USER_BY_EMAIL_FAILED: "Find user by email failed"
     }
 
     @staticmethod

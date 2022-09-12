@@ -1,14 +1,17 @@
 from datetime import datetime
 import secrets
+import json
 from src.models.base import Database
 from src.models.message import Message
 from src.models.signal_group_key import GroupClientKey
 from src.models.signal_peer_key import PeerClientKey
 from sqlalchemy.orm import joinedload
+from sqlalchemy import or_
 from src.models.message_user_read import MessageUserRead
 from utils.logger import *
 
-
+import logging
+logger = logging.getLogger(__name__)
 class GroupChat(Database.get().Model):
     __tablename__ = 'group_chat'
     id = Database.get().Column(Database.get().Integer, primary_key=True)
@@ -35,7 +38,7 @@ class GroupChat(Database.get().Model):
             return self
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def get(self, group_id):
         group = Database.get_session().query(GroupChat, Message) \
@@ -79,15 +82,13 @@ class GroupChat(Database.get().Model):
         Database.get().session.remove()
         return result
 
-
     def get_joined_group_type(self, client_id, group_type):
-        result = Database.get_session().query(GroupChat, GroupClientKey.id, GroupChat.group_clients) \
+        query = Database.get_session().query(GroupChat, GroupClientKey.id, GroupChat.group_clients) \
             .join(GroupClientKey, GroupChat.id == GroupClientKey.group_id) \
-            .filter(GroupClientKey.client_id == client_id) \
-            .filter(GroupChat.group_type == group_type) \
-            .all()
-        Database.get().session.remove()
-        return result
+            .filter(GroupClientKey.client_id == client_id)
+        if group_type:
+            query = query.filter(GroupChat.group_type == group_type)
+        return query.all()
 
     def get_by_group_owner(self, owner_group_id):
         result = Database.get_session().query(GroupChat) \
@@ -110,7 +111,16 @@ class GroupChat(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
+
+    def bulk_update(self, groups):
+        try:
+            for group in groups:
+                Database.get_session().merge(group)
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            raise
 
     def delete(self):
         try:
@@ -118,7 +128,7 @@ class GroupChat(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def get_group_rtc_token(self, group_id):
         result = Database.get_session().query(GroupChat.group_rtc_token) \
@@ -127,5 +137,65 @@ class GroupChat(Database.get().Model):
         Database.get().session.remove()
         return result
 
+    def get_groups(self, group_ids, owner_group_ids):
+        groups = Database.get_session().query(GroupChat) \
+            .filter(or_(GroupChat.id.in_(group_ids), GroupChat.owner_group_id.in_(owner_group_ids))) \
+            .all()
+        Database.get().session.remove()
+        return groups
+
+    def is_owner_group(self):
+        return not self.owner_group_id
+
+    def delete_group_client_key_by_client_id(self, client_id):
+        try:
+            Database.get_session().query(GroupClientKey) \
+                .filter(GroupClientKey.group_id == GroupChat.id) \
+                .filter(GroupClientKey.client_id == client_id) \
+                .filter(GroupChat.group_type == 'group') \
+                .delete(synchronize_session=False)
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            raise
+    
+    def delete_group_messages_by_client_id(self, client_id, group_id):
+        try:
+            Database.get_session().query(Message) \
+                .filter(Message.group_id == group_id) \
+                .filter(Message.from_client_id == client_id) \
+                .delete()
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            raise
+
+    def reset_group_client_key_by_client_id(self, client_id):
+        try:
+            Database.get_session().query(GroupClientKey) \
+                .filter(GroupClientKey.group_id == GroupChat.id) \
+                .filter(GroupClientKey.client_id == client_id) \
+                .filter(GroupChat.group_type == 'group') \
+                .update({
+                    GroupClientKey.client_key: None,
+                    GroupClientKey.client_private_key: None,
+                    GroupClientKey.client_public_key: None,
+                    GroupClientKey.client_sender_key: None,
+                    GroupClientKey.client_sender_key_id: None,
+                }, synchronize_session=False)
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            raise
+
+    def remove_client(self, client_id):
+        clients = json.loads(self.group_clients)
+        for client in clients:
+            if client['id'] == client_id:
+                clients.remove(client)
+        self.group_clients = json.dumps(clients)
+        self.total_member = len(clients)
+        self.update()
+
     def __repr__(self):
-        return '<Item(id=%s, group_name=%s, owner_group_id=%s)>' % (self.id, self.group_name, self.owner_group_id)
+        return '<GroupChat(id=%s, group_name=%s, owner_group_id=%s)>' % (self.id, self.group_name, self.owner_group_id)

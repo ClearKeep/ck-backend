@@ -8,7 +8,8 @@ from client.client_signal import *
 from utils.config import get_owner_workspace_domain
 
 
-
+import logging
+logger = logging.getLogger(__name__)
 class SignalController(BaseController):
     def __init__(self, *kwargs):
         self.service = SignalService()
@@ -23,7 +24,7 @@ class SignalController(BaseController):
             self.service.peer_register_client_key(user_id, request)
             return signal_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             else:
@@ -43,7 +44,7 @@ class SignalController(BaseController):
                 self.service.client_update_peer_key(user_id, request)
             return signal_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             else:
@@ -76,7 +77,7 @@ class SignalController(BaseController):
 
             raise Exception(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
             else:
@@ -98,7 +99,7 @@ class SignalController(BaseController):
             owner_workspace_domain = get_owner_workspace_domain()
             if client_workspace_domain and client_workspace_domain != owner_workspace_domain:
                 # get key from other server
-                obj_resp = ClientSignal(client_workspace_domain).workspace_get_user_signal_key(client_id, client_workspace_domain)
+                obj_resp = await ClientSignal(client_workspace_domain).workspace_get_user_signal_key(client_id, client_workspace_domain)
                 return obj_resp
             else:
                 obj_resp = self.service.peer_get_client_key(client_id)
@@ -120,7 +121,7 @@ class SignalController(BaseController):
 
                 raise Exception(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_SIGNAL_KEY_NOT_FOUND)]
             else:
@@ -139,7 +140,7 @@ class SignalController(BaseController):
             self.service.group_register_client_key(user_id, request)
             return signal_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_GROUP_KEY_FAILED)]
             else:
@@ -158,7 +159,7 @@ class SignalController(BaseController):
             self.service.group_bulk_update_client_key(user_id, request.listGroupClientKey)
             return signal_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_GROUP_KEY_FAILED)]
             else:
@@ -168,6 +169,7 @@ class SignalController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def GroupGetClientKey(self, request, context):
         try:
             group_id = request.groupId
@@ -189,13 +191,13 @@ class SignalController(BaseController):
                     )
                     return response
                 else:
-                    obj_resp = ClientSignal(group.owner_workspace_domain).group_get_client_key(group.owner_group_id, client_id)
+                    obj_resp = await ClientSignal(group.owner_workspace_domain).group_get_client_key(group.owner_group_id, client_id)
                     return obj_resp
             else:
                 obj_resp = self.service.group_get_client_key(group_id, client_id)
                 if obj_resp is not None:
                     if obj_resp.client_workspace_domain and obj_resp.client_workspace_domain != owner_workspace_domain:
-                        obj_resp = ClientSignal(obj_resp.client_workspace_domain).workspace_group_get_client_key(obj_resp.client_workspace_group_id, obj_resp.client_id)
+                        obj_resp = await ClientSignal(obj_resp.client_workspace_domain).workspace_group_get_client_key(obj_resp.client_workspace_group_id, obj_resp.client_id)
                         return obj_resp
                     else:
                         response = signal_pb2.GroupGetClientKeyResponse(

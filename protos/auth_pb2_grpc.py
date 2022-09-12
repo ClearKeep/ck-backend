@@ -49,6 +49,11 @@ class AuthStub(object):
                 request_serializer=protos_dot_auth__pb2.FacebookLoginReq.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.SocialLoginRes.FromString,
                 )
+        self.login_apple = channel.unary_unary(
+                '/auth.Auth/login_apple',
+                request_serializer=protos_dot_auth__pb2.AppleLoginReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.SocialLoginRes.FromString,
+                )
         self.login_social_challange = channel.unary_unary(
                 '/auth.Auth/login_social_challange',
                 request_serializer=protos_dot_auth__pb2.AuthSocialChallengeReq.SerializeToString,
@@ -58,6 +63,11 @@ class AuthStub(object):
                 '/auth.Auth/login_authenticate',
                 request_serializer=protos_dot_auth__pb2.AuthenticateReq.SerializeToString,
                 response_deserializer=protos_dot_auth__pb2.AuthRes.FromString,
+                )
+        self.refresh_token = channel.unary_unary(
+                '/auth.Auth/refresh_token',
+                request_serializer=protos_dot_auth__pb2.RefreshTokenReq.SerializeToString,
+                response_deserializer=protos_dot_auth__pb2.RefreshTokenRes.FromString,
                 )
         self.logout = channel.unary_unary(
                 '/auth.Auth/logout',
@@ -140,6 +150,12 @@ class AuthServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def login_apple(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def login_social_challange(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -149,6 +165,12 @@ class AuthServicer(object):
     def login_authenticate(self, request, context):
         """authenticated challange
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def refresh_token(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -231,6 +253,11 @@ def add_AuthServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_auth__pb2.FacebookLoginReq.FromString,
                     response_serializer=protos_dot_auth__pb2.SocialLoginRes.SerializeToString,
             ),
+            'login_apple': grpc.unary_unary_rpc_method_handler(
+                    servicer.login_apple,
+                    request_deserializer=protos_dot_auth__pb2.AppleLoginReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.SocialLoginRes.SerializeToString,
+            ),
             'login_social_challange': grpc.unary_unary_rpc_method_handler(
                     servicer.login_social_challange,
                     request_deserializer=protos_dot_auth__pb2.AuthSocialChallengeReq.FromString,
@@ -240,6 +267,11 @@ def add_AuthServicer_to_server(servicer, server):
                     servicer.login_authenticate,
                     request_deserializer=protos_dot_auth__pb2.AuthenticateReq.FromString,
                     response_serializer=protos_dot_auth__pb2.AuthRes.SerializeToString,
+            ),
+            'refresh_token': grpc.unary_unary_rpc_method_handler(
+                    servicer.refresh_token,
+                    request_deserializer=protos_dot_auth__pb2.RefreshTokenReq.FromString,
+                    response_serializer=protos_dot_auth__pb2.RefreshTokenRes.SerializeToString,
             ),
             'logout': grpc.unary_unary_rpc_method_handler(
                     servicer.logout,
@@ -401,6 +433,23 @@ class Auth(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def login_apple(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_apple',
+            protos_dot_auth__pb2.AppleLoginReq.SerializeToString,
+            protos_dot_auth__pb2.SocialLoginRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def login_social_challange(request,
             target,
             options=(),
@@ -431,6 +480,23 @@ class Auth(object):
         return grpc.experimental.unary_unary(request, target, '/auth.Auth/login_authenticate',
             protos_dot_auth__pb2.AuthenticateReq.SerializeToString,
             protos_dot_auth__pb2.AuthRes.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def refresh_token(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.Auth/refresh_token',
+            protos_dot_auth__pb2.RefreshTokenReq.SerializeToString,
+            protos_dot_auth__pb2.RefreshTokenRes.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

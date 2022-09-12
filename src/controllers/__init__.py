@@ -1,8 +1,11 @@
+from crypt import methods
+import os
+from re import template
 import sys
 from pathlib import Path
 current_file_path = Path(__file__).resolve()
 sys.path.append(str(current_file_path.parent.parent.parent))
-from flask import Flask
+from flask import Flask, render_template
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 
@@ -35,7 +38,8 @@ db_connection = 'postgresql://{user}:{pw}@{host}:{port}/{db}'.format(
     db=db_config['name']
 )
 
-app = Flask(__name__)
+template_dir = os.path.join(os.path.dirname(os.path.abspath(os.path.dirname(__file__))), 'templates')
+app = Flask(__name__, template_folder=template_dir)
 csrf = CSRFProtect(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_connection
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -62,6 +66,12 @@ def thread_server():
         "total": threading.activeCount()
     }
     return response
+
+
+@app.route('/deeplink', methods=['GET'])
+def deeplink():
+    forgot_password_deeplink = f"{get_system_config()['deeplink_scheme']}://"
+    return render_template('deeplink.html', forgot_password_deeplink=forgot_password_deeplink)
 
 
 @app.after_request

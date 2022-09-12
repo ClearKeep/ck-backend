@@ -1,11 +1,14 @@
+import email.header
+import email.utils
+import logging
 import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 from utils.config import get_system_config
 
-import email.header
-import email.utils
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
+logger = logging.getLogger(__name__)
+
 
 def format_addresses(addresses, header_name=None, charset='iso-8859-1'):
     """This is an extension of email.utils.formataddr.
@@ -58,7 +61,12 @@ class MailerServer(object):
     user_name = get_system_config()["smtp_server"]['SMTP_USERNAME']
     password = get_system_config()["smtp_server"]['SMTP_PASSWORD']
     query_string_form = "pre_access_token={}&user_name={}&server_domain={}"
-    app_link = "http://www.clearkeep.com/resetpassword"
+    server_domain =  get_system_config()["server_domain"]
+    http_port =  get_system_config()["http_port"]
+
+    deep_link = f"http://{server_domain}:{http_port}/deeplink"
+    # app_link = "http://www.clearkeep.com/resetpassword"
+
     text_form = """Your administrator has just requested that you update your Keycloak account by performing the following action(s): Reset Password. Click on the link below to start this process.\n
     {}\n
     This link will expire within 30 days.
@@ -66,7 +74,8 @@ class MailerServer(object):
     """
     html_form = """
     <p>Your administrator has just requested that you update your Keycloak account by performing the following action(s): Reset Password. Click on the link below to start this process.\n</p>
-    <p><a clicktracking=off href="{}">Link to account update</a></p>
+    <p>Link to account update</p>
+    <p><a href="{}">Update password</a></p>
     <p>This link will expire within 30 days.</p>
     <p>If you are unaware that your administrator has requested this, just ignore this message and nothing will be changed.</p>
     """
@@ -74,18 +83,22 @@ class MailerServer(object):
     @staticmethod
     def send_reset_password_mail(receiver_mail, user_name, pre_access_token, server_domain):
         # Email configuration
-        deep_link = MailerServer.app_link + '?' + MailerServer.query_string_form.format(pre_access_token, user_name, server_domain)
+        reset_password_link = MailerServer.deep_link + '?' + MailerServer.query_string_form.format(pre_access_token, user_name,
+                                                                                        server_domain)
         msg = MIMEMultipart('alternative')
         msg['Subject'] = 'Reset Password'
         msg['From'] = format_addresses([(MailerServer.sender_display_name, MailerServer.sender)], header_name='from')
         msg['To'] = receiver_mail
-        text = MailerServer.text_form.format(deep_link)
-        html = MailerServer.html_form.format(deep_link)
+        text = MailerServer.text_form.format(reset_password_link)
+        html = MailerServer.html_form.format(reset_password_link)
         part1 = MIMEText(text, 'plain')
         part2 = MIMEText(html, 'html')
         msg.attach(part1)
         msg.attach(part2)
-        server = smtplib.SMTP_SSL(MailerServer.host, MailerServer.port)
+        if get_system_config()["smtp_server"]['SSL']:
+            server = smtplib.SMTP_SSL(MailerServer.host, MailerServer.port)
+        else:
+            server = smtplib.SMTP(MailerServer.host, MailerServer.port)
         server.ehlo()
         server.login(MailerServer.user_name, MailerServer.password)
         server.sendmail(

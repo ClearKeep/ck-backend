@@ -4,7 +4,8 @@ from src.services.server_info import ServerInfoService
 from protos import server_info_pb2
 import threading
 
-
+import logging
+logger = logging.getLogger(__name__)
 class ServerInfoController(BaseController):
     def __init__(self, *kwargs):
         self.service = ServerInfoService()
@@ -17,7 +18,7 @@ class ServerInfoController(BaseController):
             self.service.update_server_info(stun, turn)
             return server_info_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_SERVER_INFO_FAILED)]
             else:
@@ -32,4 +33,4 @@ class ServerInfoController(BaseController):
                 total=threading.activeCount()
             )
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)

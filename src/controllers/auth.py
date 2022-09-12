@@ -1,17 +1,21 @@
-import protos.auth_pb2 as auth_messages
-from src.controllers.base import BaseController
-from src.services.auth import AuthService
-from src.services.user import UserService
-from src.services.message import MessageService
-from src.services.signal import SignalService
-from src.services.notify_inapp import NotifyInAppService
-from src.services.group import GroupService
-from utils.encrypt import EncryptUtils
-from middlewares.permission import *
-from middlewares.request_logged import *
-from utils.config import *
 import srp
 
+import protos.auth_pb2 as auth_messages
+from middlewares.permission import *
+from middlewares.request_logged import *
+from src.controllers.base import BaseController
+from src.services.auth import AuthService
+from src.services.group import GroupService
+from src.services.message import MessageService
+from src.services.notify_inapp import NotifyInAppService
+from src.services.signal import SignalService
+from src.services.user import UserService
+from src.models.user import AuthSource, InvalidAuthSourceException
+from utils.config import *
+
+import logging
+import asyncio
+logger = logging.getLogger(__name__)
 class AuthController(BaseController):
     def __init__(self, *kwargs):
         self.service = AuthService()
@@ -44,7 +48,7 @@ class AuthController(BaseController):
             return auth_challenge_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTHENTICATION_FAILED)]
             else:
@@ -126,7 +130,7 @@ class AuthController(BaseController):
                     )
                 return auth_message
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -139,7 +143,6 @@ class AuthController(BaseController):
     async def login_google(self, request, context):
         try:
             user_name, user_id, is_registered_pincode = self.service.google_login(request.id_token)
-            user_info = self.user_service.get_user_by_id(user_id)
             require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
             if require_action_mess == "verify_pincode":
                 reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
@@ -152,7 +155,7 @@ class AuthController(BaseController):
                                 )
             return auth_challenge_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -179,7 +182,7 @@ class AuthController(BaseController):
             return auth_challenge_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -205,7 +208,32 @@ class AuthController(BaseController):
                                 )
             return auth_challenge_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
+            if not e.args or e.args[0] not in Message.msg_dict:
+                errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
+            else:
+                errors = [Message.get_error_object(e.args[0])]
+            context.set_details(json.dumps(
+                errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def login_apple(self, request, context):
+        try:
+            user_name, user_id, is_registered_pincode = self.service.apple_login(request.id_token, request.end_user_env)
+            require_action_mess = "verify_pincode" if not is_registered_pincode else "register_pincode"
+            if require_action_mess == "verify_pincode":
+                reset_pincode_token = self.service.hash_pre_access_token(user_name, "reset_pincode")
+            else:
+                reset_pincode_token = ""
+            auth_challenge_res = auth_messages.SocialLoginRes(
+                                    user_name=user_name,
+                                    require_action=require_action_mess,
+                                    reset_pincode_token=reset_pincode_token
+                                )
+            return auth_challenge_res
+        except Exception as e:
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -242,7 +270,7 @@ class AuthController(BaseController):
             return auth_challenge_res
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTHENTICATION_FAILED)]
             else:
@@ -263,6 +291,11 @@ class AuthController(BaseController):
 
             exists_user = self.service.get_user_by_email(email)
             if exists_user:
+                user_info = UserService().get_user_by_id(exists_user["id"])
+                try:
+                    user_info.check_auth_source(AuthSource.ACCOUNT)
+                except InvalidAuthSourceException as e:
+                    raise Exception(Message.INVALID_ACCOUNT_AUTH_SOURCE)
                 raise Exception(Message.REGISTER_USER_ALREADY_EXISTS)
 
             # register new user
@@ -270,7 +303,7 @@ class AuthController(BaseController):
 
             if new_user_id:
                 # create new user in database
-                UserService().create_new_user_srp(new_user_id, email, password_verifier, salt, iv_parameter, display_name, 'account')
+                UserService().create_new_user_srp(new_user_id, email, password_verifier, salt, iv_parameter, display_name, AuthSource.ACCOUNT)
             else:
                 self.service.delete_user(new_user_id)
                 raise Exception(Message.REGISTER_USER_FAILED)
@@ -284,7 +317,7 @@ class AuthController(BaseController):
             return auth_messages.RegisterSRPRes()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_USER_FAILED)]
             else:
@@ -300,7 +333,7 @@ class AuthController(BaseController):
             return auth_messages.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -315,13 +348,16 @@ class AuthController(BaseController):
             logger.info("from email {}".format(request.email))
             user_info = self.user_service.get_user_by_auth_source(request.email, "account")
             old_user_id = user_info.id
-            self.service.verify_hash_pre_access_token(old_user_id, request.pre_access_token, "forgot_password")
-            new_user_id = self.service.forgot_user(request.email, request.password_verifier, user_info.display_name)
+            success_status = self.service.verify_hash_pre_access_token(old_user_id, request.pre_access_token, "forgot_password")
+            if not success_status:
+                raise Exception(Message.CHANGE_PASSWORD_FAILED)
+            new_user_id = await self.service.forgot_user(request.email, request.password_verifier, user_info.display_name)
             try:
                 await GroupService().forgot_peer_groups_for_client(user_info)
             except Exception as e:
                 logger.error("cannot send notify to other group")
-                logger.error(e)
+                logger.error(e, exc_info=True)
+            await GroupService().member_forgot_password_in_group(user_info)
             SignalService().delete_client_peer_key(old_user_id)
             if new_user_id:
                 # create new user in database
@@ -372,7 +408,7 @@ class AuthController(BaseController):
             return auth_message
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CHANGE_PASSWORD_FAILED)]
             else:
@@ -397,7 +433,7 @@ class AuthController(BaseController):
             return auth_messages.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -448,7 +484,7 @@ class AuthController(BaseController):
             )
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
@@ -466,7 +502,7 @@ class AuthController(BaseController):
                             )
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_MFA_STATE_FALED)]
             else:
@@ -490,11 +526,11 @@ class AuthController(BaseController):
             try:
                 SignalService().peer_register_client_key(exists_user['id'], request.client_key_peer)
             except Exception as e:
-                logger.error(e)
+                logger.error(e, exc_info=True)
             try:
                 UserService().update_hash_pin(exists_user['id'], request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:
-                logger.error(e)
+                logger.error(e, exc_info=True)
                 ## TODO: revert change_password
                 SignalService().delete_client_peer_key(exists_user['id'])
                 raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
@@ -531,7 +567,7 @@ class AuthController(BaseController):
                 iv_parameter=request.iv_parameter
             )
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             else:
@@ -540,21 +576,24 @@ class AuthController(BaseController):
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
 
+    @request_logged
     async def reset_pincode(self, request, context):
         try:
-            success_status = self.service.verify_hash_pre_access_token(request.user_name, request.reset_pincode_token, "verify_pincode")
+            success_status = self.service.verify_hash_pre_access_token(request.user_name, request.reset_pincode_token, "reset_pincode")
             exists_user = self.service.get_user_by_email(request.user_name)
             if not exists_user:
                 raise Exception(Message.USER_NOT_FOUND)
             if not success_status:
                 raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             self.user_service.change_password(request, None, request.hash_pincode, exists_user["id"])
+            await self.service.notify_myself_reset_pincode(exists_user["id"])
             old_client_key_peer = SignalService().peer_get_client_key(exists_user["id"])
             SignalService().client_update_peer_key(exists_user["id"], request.client_key_peer)
+            await GroupService().member_reset_pincode_in_group(exists_user["id"])
             try:
                 salt, iv_parameter = UserService().update_hash_pin(exists_user["id"], request.hash_pincode, request.salt, request.iv_parameter)
             except Exception as e:
-                logger.error(e)
+                logger.error(e, exc_info=True)
                 SignalService().client_update_peer_key(exists_user["id"], old_client_key_peer)
                 raise Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
             client_key_obj = request.client_key_peer
@@ -592,7 +631,7 @@ class AuthController(BaseController):
                 iv_parameter=iv_parameter
             )
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             else:
@@ -660,7 +699,7 @@ class AuthController(BaseController):
                 iv_parameter=user_info.iv_parameter
             )
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.VERIFY_PINCODE_FAILED)]
             else:
@@ -668,3 +707,32 @@ class AuthController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def refresh_token(self, request, context):
+        def call_refresh_token():
+            return self.service.refresh_token(request.refresh_token)
+
+        loop = asyncio.get_running_loop()
+        try:
+            token = await loop.run_in_executor(None, call_refresh_token)
+
+            return auth_messages.RefreshTokenRes(
+                access_token=token['access_token'],
+                expires_in=token['expires_in'],
+                refresh_expires_in=token['refresh_expires_in'],
+                refresh_token=token['refresh_token'],
+                token_type=token['token_type'],
+                session_state=token['session_state'],
+                scope=token['scope']
+            )
+        except Exception as e:
+            if not e.args or e.args[0] not in Message.msg_dict:
+                logger.warning(e,exc_info=True)
+                raise
+            else:
+                logger.info(e)
+                errors = [Message.get_error_object(e.args[0])]
+                context.set_details(json.dumps(
+                    errors, default=lambda x: x.__dict__))
+                context.set_code(grpc.StatusCode.INTERNAL)

@@ -7,7 +7,8 @@ from sqlalchemy import desc
 from utils.logger import *
 from src.models.base import Database
 
-
+import logging
+logger = logging.getLogger(__name__)
 class NotifyToken(Database.get().Model):
     __tablename__ = 'notify_token'
     id = Database.get().Column(Database.get().String(36), primary_key=True)
@@ -18,6 +19,7 @@ class NotifyToken(Database.get().Model):
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_at = Database.get().Column(Database.get().DateTime, onupdate=datetime.now)
     user = relationship('User', back_populates='tokens')
+    end_user_env = Database.get().Column(Database.get().String(16))
 
     def add(self):
         client_device = self.get(self.client_id, self.device_id)
@@ -31,7 +33,7 @@ class NotifyToken(Database.get().Model):
                 Database.get_session().commit()
             except Exception as e:
                 Database.get_session().rollback()
-                logger.error(e)
+                logger.error(e, exc_info=True)
         return self
 
     def get(self, client_id, device_id):
@@ -71,7 +73,7 @@ class NotifyToken(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def delete(self):
         try:
@@ -79,4 +81,4 @@ class NotifyToken(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)

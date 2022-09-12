@@ -1,7 +1,23 @@
 from datetime import datetime
 from sqlalchemy.orm import relationship
+from enum import Enum
+
 from src.models.base import Database
 from utils.logger import *
+import logging
+logger = logging.getLogger(__name__)
+
+
+class InvalidAuthSourceException(Exception):
+    pass
+
+
+class AuthSource(Enum):
+    GOOGLE = 'google'
+    FACEBOOK = 'facebook'
+    OFFICE = 'office'
+    ACCOUNT = 'account'
+    APPLE = 'apple'
 
 
 class User(Database.get().Model):
@@ -42,7 +58,7 @@ class User(Database.get().Model):
             return self
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def get(self, client_id):
         user = Database.get_session().query(User) \
@@ -85,6 +101,15 @@ class User(Database.get().Model):
         Database.get().session.remove()
         return user
 
+    def get_all_users(self):
+        """
+        Experimenting, TODO: delete this
+        """
+        user = Database.get_session().query(User) \
+            .all()
+        Database.get().session.remove()
+        return user
+
     def get_client_id_with_push_token(self, id):
         result = Database.get_session().query(User.id, User) \
             .filter(User.id == id) \
@@ -92,13 +117,24 @@ class User(Database.get().Model):
         Database.get().session.remove()
         return result
 
+    def get_by_email(self, email):
+        return Database.get_session().query(User) \
+            .filter(User.email == email) \
+            .first()
+
     def delete(self):
         try:
             Database.get_session().delete(self)
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
+
+
+    def check_auth_source(self, auth_source):
+        if self.auth_source != auth_source.value:
+            raise InvalidAuthSourceException('auth source not match')
+
 
     def __repr__(self):
-        return '<Item(id=%s, display_name=%s, email=%s)>' % (self.id, self.display_name, self.email)
+        return '<User(id=%s, display_name=%s, email=%s)>' % (self.id, self.display_name, self.email)

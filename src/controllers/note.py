@@ -1,11 +1,15 @@
+import json
+
+import grpc
+
 from src.controllers.base import BaseController
 from src.services.note import NoteService
 from utils.keycloak import KeyCloakUtils
 import protos.note_pb2 as note_pb2
-from utils.logger import logger
 from msg.message import Message
 
-
+import logging
+logger = logging.getLogger(__name__)
 class NoteController(BaseController):
 
     def __init__(self, *args):
@@ -33,7 +37,7 @@ class NoteController(BaseController):
             )
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -59,7 +63,7 @@ class NoteController(BaseController):
             return note_pb2.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -76,7 +80,7 @@ class NoteController(BaseController):
             return note_pb2.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -105,7 +109,7 @@ class NoteController(BaseController):
             )
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:

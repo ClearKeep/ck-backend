@@ -54,6 +54,11 @@ class UserStub(object):
                 request_serializer=protos_dot_user__pb2.GetClientsStatusRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.GetClientsStatusResponse.FromString,
                 )
+        self.delete_account = channel.unary_unary(
+                '/user.User/delete_account',
+                request_serializer=protos_dot_user__pb2.Empty.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
+                )
         self.get_user_info = channel.unary_unary(
                 '/user.User/get_user_info',
                 request_serializer=protos_dot_user__pb2.GetUserRequest.SerializeToString,
@@ -68,6 +73,11 @@ class UserStub(object):
                 '/user.User/get_users',
                 request_serializer=protos_dot_user__pb2.Empty.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.GetUsersResponse.FromString,
+                )
+        self.find_user_by_email = channel.unary_unary(
+                '/user.User/find_user_by_email',
+                request_serializer=protos_dot_user__pb2.FindUserByEmailRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.FindUserByEmailResponse.FromString,
                 )
         self.get_mfa_state = channel.unary_unary(
                 '/user.User/get_mfa_state',
@@ -103,6 +113,16 @@ class UserStub(object):
                 '/user.User/mfa_resend_otp',
                 request_serializer=protos_dot_user__pb2.MfaResendOtpRequest.SerializeToString,
                 response_deserializer=protos_dot_user__pb2.MfaBaseResponse.FromString,
+                )
+        self.workspace_update_display_name = channel.unary_unary(
+                '/user.User/workspace_update_display_name',
+                request_serializer=protos_dot_user__pb2.WorkspaceUpdateDisplayNameRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.BaseResponse.FromString,
+                )
+        self.workspace_find_user_by_email = channel.unary_unary(
+                '/user.User/workspace_find_user_by_email',
+                request_serializer=protos_dot_user__pb2.FindUserByEmailRequest.SerializeToString,
+                response_deserializer=protos_dot_user__pb2.FindUserByEmailResponse.FromString,
                 )
 
 
@@ -159,6 +179,12 @@ class UserServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def delete_account(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def get_user_info(self, request, context):
         """----- FROM OTHER ACCOUNT -----
         """
@@ -173,6 +199,12 @@ class UserServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def get_users(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def find_user_by_email(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -221,6 +253,18 @@ class UserServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def workspace_update_display_name(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def workspace_find_user_by_email(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_UserServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -264,6 +308,11 @@ def add_UserServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_user__pb2.GetClientsStatusRequest.FromString,
                     response_serializer=protos_dot_user__pb2.GetClientsStatusResponse.SerializeToString,
             ),
+            'delete_account': grpc.unary_unary_rpc_method_handler(
+                    servicer.delete_account,
+                    request_deserializer=protos_dot_user__pb2.Empty.FromString,
+                    response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
+            ),
             'get_user_info': grpc.unary_unary_rpc_method_handler(
                     servicer.get_user_info,
                     request_deserializer=protos_dot_user__pb2.GetUserRequest.FromString,
@@ -278,6 +327,11 @@ def add_UserServicer_to_server(servicer, server):
                     servicer.get_users,
                     request_deserializer=protos_dot_user__pb2.Empty.FromString,
                     response_serializer=protos_dot_user__pb2.GetUsersResponse.SerializeToString,
+            ),
+            'find_user_by_email': grpc.unary_unary_rpc_method_handler(
+                    servicer.find_user_by_email,
+                    request_deserializer=protos_dot_user__pb2.FindUserByEmailRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.FindUserByEmailResponse.SerializeToString,
             ),
             'get_mfa_state': grpc.unary_unary_rpc_method_handler(
                     servicer.get_mfa_state,
@@ -313,6 +367,16 @@ def add_UserServicer_to_server(servicer, server):
                     servicer.mfa_resend_otp,
                     request_deserializer=protos_dot_user__pb2.MfaResendOtpRequest.FromString,
                     response_serializer=protos_dot_user__pb2.MfaBaseResponse.SerializeToString,
+            ),
+            'workspace_update_display_name': grpc.unary_unary_rpc_method_handler(
+                    servicer.workspace_update_display_name,
+                    request_deserializer=protos_dot_user__pb2.WorkspaceUpdateDisplayNameRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.BaseResponse.SerializeToString,
+            ),
+            'workspace_find_user_by_email': grpc.unary_unary_rpc_method_handler(
+                    servicer.workspace_find_user_by_email,
+                    request_deserializer=protos_dot_user__pb2.FindUserByEmailRequest.FromString,
+                    response_serializer=protos_dot_user__pb2.FindUserByEmailResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -461,6 +525,23 @@ class User(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def delete_account(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/delete_account',
+            protos_dot_user__pb2.Empty.SerializeToString,
+            protos_dot_user__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def get_user_info(request,
             target,
             options=(),
@@ -508,6 +589,23 @@ class User(object):
         return grpc.experimental.unary_unary(request, target, '/user.User/get_users',
             protos_dot_user__pb2.Empty.SerializeToString,
             protos_dot_user__pb2.GetUsersResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def find_user_by_email(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/find_user_by_email',
+            protos_dot_user__pb2.FindUserByEmailRequest.SerializeToString,
+            protos_dot_user__pb2.FindUserByEmailResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -627,5 +725,39 @@ class User(object):
         return grpc.experimental.unary_unary(request, target, '/user.User/mfa_resend_otp',
             protos_dot_user__pb2.MfaResendOtpRequest.SerializeToString,
             protos_dot_user__pb2.MfaBaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def workspace_update_display_name(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/workspace_update_display_name',
+            protos_dot_user__pb2.WorkspaceUpdateDisplayNameRequest.SerializeToString,
+            protos_dot_user__pb2.BaseResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def workspace_find_user_by_email(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/user.User/workspace_find_user_by_email',
+            protos_dot_user__pb2.FindUserByEmailRequest.SerializeToString,
+            protos_dot_user__pb2.FindUserByEmailResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

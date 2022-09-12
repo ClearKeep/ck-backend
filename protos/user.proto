@@ -54,6 +54,7 @@ message UserInfoResponse {
     string id = 1;
     string display_name = 2;
     string workspace_domain = 3;
+    string avatar = 4;
 }
 
 //Request: get other user info
@@ -69,6 +70,14 @@ message SearchUserRequest {
 }
 // Response
 message SearchUserResponse {
+    repeated UserInfoResponse lst_user = 1;
+}
+
+message FindUserByEmailRequest {
+    string email = 1;
+}
+
+message FindUserByEmailResponse {
     repeated UserInfoResponse lst_user = 1;
 }
 
@@ -168,6 +177,11 @@ message MfaValidateOtpRequest {
 message MfaResendOtpRequest {}
 // Response: MfaBaseResponse
 
+message WorkspaceUpdateDisplayNameRequest {
+    string user_id = 1;
+    string display_name = 2;
+}
+
 service User {
     //----- FROM MY ACCOUNT -----
     // => profile api
@@ -180,12 +194,14 @@ service User {
     rpc update_status(SetUserStatusRequest) returns (BaseResponse) {};
     rpc ping_request(PingRequest) returns (BaseResponse) {};
     rpc get_clients_status(GetClientsStatusRequest) returns (GetClientsStatusResponse) {};
+    rpc delete_account(Empty) returns (BaseResponse) {};
 
 
     //----- FROM OTHER ACCOUNT -----
     rpc get_user_info(GetUserRequest) returns (UserInfoResponse) {};
     rpc search_user(SearchUserRequest) returns (SearchUserResponse) {};
     rpc get_users(Empty) returns (GetUsersResponse) {};
+    rpc find_user_by_email(FindUserByEmailRequest) returns (FindUserByEmailResponse) {};
 
     //----- MFA ENABLE FLOW -----
     rpc get_mfa_state(MfaGetStateRequest) returns (MfaStateResponse) {};
@@ -195,4 +211,7 @@ service User {
     rpc mfa_validate_password(MfaValidatePasswordRequest) returns (MfaBaseResponse) {};
     rpc mfa_validate_otp(MfaValidateOtpRequest) returns (MfaBaseResponse) {};
     rpc mfa_resend_otp(MfaResendOtpRequest) returns (MfaBaseResponse) {};
+
+    rpc workspace_update_display_name(WorkspaceUpdateDisplayNameRequest) returns (BaseResponse) {};
+    rpc workspace_find_user_by_email(FindUserByEmailRequest) returns (FindUserByEmailResponse);
 }

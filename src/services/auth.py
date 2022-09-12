@@ -1,19 +1,22 @@
 import time
 import datetime
 import requests
+import jwt
+from jwt.algorithms import RSAAlgorithm
 from msg.message import Message
 from utils.keycloak import KeyCloakUtils
 from utils.logger import *
-from src.services.notify_push import NotifyPushService
+from src.services.notify_push import NotifyPushService, PushType
 import json
 from src.services.user import UserService
 from src.models.base import Database
-from src.models.user import User
+from src.models.user import User, AuthSource, InvalidAuthSourceException
 from src.models.authen_setting import AuthenSetting
 from utils.otp import OTPServer
 from utils.smtp import MailerServer
 from utils.config import get_system_config, get_owner_workspace_domain
-
+import logging
+logger = logging.getLogger(__name__)
 
 class AuthService:
     """
@@ -55,10 +58,23 @@ class AuthService:
             logger.info(e)
             raise Exception(Message.UNAUTHENTICATED)
 
-    def forgot_user(self, email, password_verifier, display_name):
+    async def forgot_user(self, email, password_verifier, display_name):
         try:
             # delete user, then re create new user with activate status is True
             old_user_id = self.get_user_by_email(email)["id"]
+            push_service = NotifyPushService()
+            data = {
+                    'client_id': old_user_id,
+                    'deactive_account_id': old_user_id
+                }
+            await push_service.push_text_to_client(
+                to_client_id=old_user_id,
+                title="Deactivate Member",
+                body="A user has been deactived",
+                from_client_id=old_user_id,
+                notify_type=PushType.DEACTIVE_ACCOUNT.value,
+                data=json.dumps(data)
+            )
             self.delete_user(old_user_id)
             new_user_id = KeyCloakUtils.create_user(email, email, password_verifier, "", display_name)
             if new_user_id:
@@ -76,7 +92,7 @@ class AuthService:
                 a = KeyCloakUtils.send_verify_email(user_id)
                 return user_id
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.REGISTER_USER_FAILED)
 
     def delete_user(self, userid):
@@ -141,19 +157,23 @@ class AuthService:
                 if not user["emailVerified"]:
                     KeyCloakUtils.active_user(user["id"])
                 user_info = UserService().get_user_by_id(user["id"])
+                user_info.check_auth_source(AuthSource.GOOGLE)
                 return google_email, user["id"], user_info.password_verifier is None or user_info.password_verifier == ""
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(google_email, google_email, "", google_token_info["name"])
                 new_user = UserService().create_user_social(id=new_user_id, email=google_email,
                                                           display_name=google_token_info["name"],
-                                                          auth_source='google')
+                                                          auth_source=AuthSource.GOOGLE)
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
                 return google_email, new_user_id, True
+        except InvalidAuthSourceException as e:
+            logger.info(e, exc_info=True)
+            raise Exception(Message.INVALID_SOCIAL_AUTH_SOURCE)
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.GOOGLE_AUTH_FAILED)
 
     # login office
@@ -177,6 +197,7 @@ class AuthService:
             user = self.get_user_by_email(office_id)
             if user:
                 user_info = UserService().get_user_by_id(user["id"])
+                user_info.check_auth_source(AuthSource.OFFICE)
                 return office_id, user["id"], user_info.password_verifier is None or user_info.password_verifier == ""
             else:
                 display_name = office_token_info["displayName"]
@@ -191,13 +212,16 @@ class AuthService:
                 new_user_id = KeyCloakUtils.create_user_without_password(email, office_id, "", display_name)
                 new_user = UserService().create_user_social(id=new_user_id, email=office_token_info["mail"],
                                                           display_name=display_name,
-                                                          auth_source='office')
+                                                          auth_source=AuthSource.OFFICE)
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
                 return office_id, new_user_id, True
+        except InvalidAuthSourceException as e:
+            logger.info(e, exc_info=True)
+            raise Exception(Message.INVALID_SOCIAL_AUTH_SOURCE)
         except Exception as e:
-            logger.info(e)
+            logger.info(e, exc_info=True)
             raise Exception(Message.OFFICE_AUTH_FAILED)
 
     # login facebook
@@ -233,20 +257,54 @@ class AuthService:
             user = self.get_user_by_email(facebook_id)
             if user:
                 user_info = UserService().get_user_by_id(user["id"])
+                user_info.check_auth_source(AuthSource.FACEBOOK)
                 return facebook_id, user["id"], user_info.password_verifier is None or user_info.password_verifier == ""
             else:
                 # create new user
                 new_user_id = KeyCloakUtils.create_user_without_password(facebook_email, facebook_id, "", facebook_name)
                 new_user = UserService().create_user_social(id=new_user_id, email=facebook_email,
                                                           display_name=facebook_name,
-                                                          auth_source='facebook')
+                                                          auth_source=AuthSource.FACEBOOK)
                 if new_user is None:
                     self.delete_user(new_user_id)
                     raise Exception(Message.REGISTER_USER_FAILED)
                 return facebook_id, new_user_id, True
+        except InvalidAuthSourceException as e:
+            logger.info(e, exc_info=True)
+            raise Exception(Message.INVALID_SOCIAL_AUTH_SOURCE)
         except Exception as e:
             logger.info(e)
             raise Exception(Message.FACEBOOK_AUTH_FAILED)
+
+    def apple_login(self, id_token, end_user_env):
+        apple_authen = get_system_config()['apple_authen']
+        if not end_user_env or end_user_env not in apple_authen:
+            audience = apple_authen['default']['audience']
+        else:
+            audience = apple_authen[end_user_env]['audience']
+        public_keys = requests.get(url='https://appleid.apple.com/auth/keys').json()['keys']
+        for key in public_keys:
+            try:
+                public_key = RSAAlgorithm.from_jwk(json.dumps(key))
+                decoded = jwt.decode(id_token, public_key, algorithms=["RS256"], audience=audience)
+            except jwt.exceptions.InvalidSignatureError:
+                continue
+        if not decoded:
+            raise Exception(Message.APPLE_ID_TOKEN_INVALID)
+        user = self.get_user_by_email(decoded['sub'])
+        if user:
+            user_info = UserService().get_user_by_id(user["id"])
+            user_info.check_auth_source(AuthSource.APPLE)
+            return decoded['sub'], user["id"], user_info.password_verifier is None or user_info.password_verifier == ""
+        else:
+            new_user_id = KeyCloakUtils.create_user_without_password(decoded['email'], decoded['sub'], "", decoded['email'])
+            new_user = UserService().create_user_social(id=new_user_id, email=decoded['email'],
+                display_name=decoded['email'],
+                auth_source=AuthSource.APPLE)
+            if new_user is None:
+                self.delete_user(new_user_id)
+                raise Exception(Message.REGISTER_USER_FAILED)
+            return decoded['sub'], new_user_id, True
 
     def create_otp_service(self, client_id):
         # start opt service for client if mfa is enabled, raising FROZEN_STATE_OTP_SERVICE if mfa is enabled and in frozen state (request resend otp too many times)
@@ -358,5 +416,24 @@ class AuthService:
                 return False
             return True
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             return False
+
+    async def notify_myself_reset_pincode(self, user_id):
+        push_service = NotifyPushService()
+        data = {
+                'user_id': user_id,
+                'reset_pincode_user_id': user_id
+            }
+        await push_service.push_text_to_client(
+            to_client_id=user_id,
+            title="Reset pincode",
+            body="A user has been reset pincode",
+            from_client_id=user_id,
+            notify_type=PushType.RESET_PINCODE.value,
+            data=json.dumps(data)
+        )
+
+    def refresh_token(self, refresh_token):
+        token = KeyCloakUtils.refresh_token(refresh_token)
+        return token

@@ -1,7 +1,8 @@
 from datetime import datetime
 from src.models.base import Database
 from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 
 class Notify(Database.get().Model):
     __tablename__ = 'notify'
@@ -27,7 +28,7 @@ class Notify(Database.get().Model):
             return self.get(self.id)
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def get(self, notify_id):
         notify = Database.get_session().query(Notify) \
@@ -46,5 +47,5 @@ class Notify(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 

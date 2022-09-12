@@ -3,6 +3,7 @@
 # source: protos/notify_push.proto
 """Generated protocol buffer code."""
 from google.protobuf import descriptor as _descriptor
+from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
@@ -13,200 +14,14 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor.FileDescriptor(
-  name='protos/notify_push.proto',
-  package='notify_push',
-  syntax='proto3',
-  serialized_options=None,
-  create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x18protos/notify_push.proto\x12\x0bnotify_push\"M\n\x14RegisterTokenRequest\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x02 \x01(\t\x12\r\n\x05token\x18\x03 \x01(\t\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"n\n\x0fPushTextRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0c\n\x04\x62ody\x18\x02 \x01(\t\x12\x13\n\x0bnotify_type\x18\x03 \x01(\t\x12\x13\n\x0b\x63ustom_data\x18\x04 \x01(\t\x12\x14\n\x0cto_client_id\x18\x05 \x01(\t\"8\n\x0fPushVoipRequest\x12\x14\n\x0cto_client_id\x18\x01 \x01(\t\x12\x0f\n\x07payload\x18\x02 \x01(\t2\xe8\x01\n\nNotifyPush\x12N\n\x0eregister_token\x12!.notify_push.RegisterTokenRequest\x1a\x19.notify_push.BaseResponse\x12\x44\n\tpush_text\x12\x1c.notify_push.PushTextRequest\x1a\x19.notify_push.BaseResponse\x12\x44\n\tpush_voip\x12\x1c.notify_push.PushVoipRequest\x1a\x19.notify_push.BaseResponseb\x06proto3'
-)
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x18protos/notify_push.proto\x12\x0bnotify_push\"c\n\x14RegisterTokenRequest\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x02 \x01(\t\x12\r\n\x05token\x18\x03 \x01(\t\x12\x14\n\x0c\x65nd_user_env\x18\x04 \x01(\t\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"n\n\x0fPushTextRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0c\n\x04\x62ody\x18\x02 \x01(\t\x12\x13\n\x0bnotify_type\x18\x03 \x01(\t\x12\x13\n\x0b\x63ustom_data\x18\x04 \x01(\t\x12\x14\n\x0cto_client_id\x18\x05 \x01(\t\"8\n\x0fPushVoipRequest\x12\x14\n\x0cto_client_id\x18\x01 \x01(\t\x12\x0f\n\x07payload\x18\x02 \x01(\t2\xe8\x01\n\nNotifyPush\x12N\n\x0eregister_token\x12!.notify_push.RegisterTokenRequest\x1a\x19.notify_push.BaseResponse\x12\x44\n\tpush_text\x12\x1c.notify_push.PushTextRequest\x1a\x19.notify_push.BaseResponse\x12\x44\n\tpush_voip\x12\x1c.notify_push.PushVoipRequest\x1a\x19.notify_push.BaseResponseb\x06proto3')
 
 
 
-
-_REGISTERTOKENREQUEST = _descriptor.Descriptor(
-  name='RegisterTokenRequest',
-  full_name='notify_push.RegisterTokenRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='device_id', full_name='notify_push.RegisterTokenRequest.device_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='device_type', full_name='notify_push.RegisterTokenRequest.device_type', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='token', full_name='notify_push.RegisterTokenRequest.token', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=41,
-  serialized_end=118,
-)
-
-
-_BASERESPONSE = _descriptor.Descriptor(
-  name='BaseResponse',
-  full_name='notify_push.BaseResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='error', full_name='notify_push.BaseResponse.error', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=120,
-  serialized_end=149,
-)
-
-
-_PUSHTEXTREQUEST = _descriptor.Descriptor(
-  name='PushTextRequest',
-  full_name='notify_push.PushTextRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='title', full_name='notify_push.PushTextRequest.title', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='body', full_name='notify_push.PushTextRequest.body', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='notify_type', full_name='notify_push.PushTextRequest.notify_type', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='custom_data', full_name='notify_push.PushTextRequest.custom_data', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='to_client_id', full_name='notify_push.PushTextRequest.to_client_id', index=4,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=151,
-  serialized_end=261,
-)
-
-
-_PUSHVOIPREQUEST = _descriptor.Descriptor(
-  name='PushVoipRequest',
-  full_name='notify_push.PushVoipRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='to_client_id', full_name='notify_push.PushVoipRequest.to_client_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='payload', full_name='notify_push.PushVoipRequest.payload', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=263,
-  serialized_end=319,
-)
-
-DESCRIPTOR.message_types_by_name['RegisterTokenRequest'] = _REGISTERTOKENREQUEST
-DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
-DESCRIPTOR.message_types_by_name['PushTextRequest'] = _PUSHTEXTREQUEST
-DESCRIPTOR.message_types_by_name['PushVoipRequest'] = _PUSHVOIPREQUEST
-_sym_db.RegisterFileDescriptor(DESCRIPTOR)
-
+_REGISTERTOKENREQUEST = DESCRIPTOR.message_types_by_name['RegisterTokenRequest']
+_BASERESPONSE = DESCRIPTOR.message_types_by_name['BaseResponse']
+_PUSHTEXTREQUEST = DESCRIPTOR.message_types_by_name['PushTextRequest']
+_PUSHVOIPREQUEST = DESCRIPTOR.message_types_by_name['PushVoipRequest']
 RegisterTokenRequest = _reflection.GeneratedProtocolMessageType('RegisterTokenRequest', (_message.Message,), {
   'DESCRIPTOR' : _REGISTERTOKENREQUEST,
   '__module__' : 'protos.notify_push_pb2'
@@ -235,51 +50,18 @@ PushVoipRequest = _reflection.GeneratedProtocolMessageType('PushVoipRequest', (_
   })
 _sym_db.RegisterMessage(PushVoipRequest)
 
+_NOTIFYPUSH = DESCRIPTOR.services_by_name['NotifyPush']
+if _descriptor._USE_C_DESCRIPTORS == False:
 
-
-_NOTIFYPUSH = _descriptor.ServiceDescriptor(
-  name='NotifyPush',
-  full_name='notify_push.NotifyPush',
-  file=DESCRIPTOR,
-  index=0,
-  serialized_options=None,
-  create_key=_descriptor._internal_create_key,
-  serialized_start=322,
-  serialized_end=554,
-  methods=[
-  _descriptor.MethodDescriptor(
-    name='register_token',
-    full_name='notify_push.NotifyPush.register_token',
-    index=0,
-    containing_service=None,
-    input_type=_REGISTERTOKENREQUEST,
-    output_type=_BASERESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='push_text',
-    full_name='notify_push.NotifyPush.push_text',
-    index=1,
-    containing_service=None,
-    input_type=_PUSHTEXTREQUEST,
-    output_type=_BASERESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='push_voip',
-    full_name='notify_push.NotifyPush.push_voip',
-    index=2,
-    containing_service=None,
-    input_type=_PUSHVOIPREQUEST,
-    output_type=_BASERESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-])
-_sym_db.RegisterServiceDescriptor(_NOTIFYPUSH)
-
-DESCRIPTOR.services_by_name['NotifyPush'] = _NOTIFYPUSH
-
+  DESCRIPTOR._options = None
+  _REGISTERTOKENREQUEST._serialized_start=41
+  _REGISTERTOKENREQUEST._serialized_end=140
+  _BASERESPONSE._serialized_start=142
+  _BASERESPONSE._serialized_end=171
+  _PUSHTEXTREQUEST._serialized_start=173
+  _PUSHTEXTREQUEST._serialized_end=283
+  _PUSHVOIPREQUEST._serialized_start=285
+  _PUSHVOIPREQUEST._serialized_end=341
+  _NOTIFYPUSH._serialized_start=344
+  _NOTIFYPUSH._serialized_end=576
 # @@protoc_insertion_point(module_scope)

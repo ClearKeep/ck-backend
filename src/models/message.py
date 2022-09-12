@@ -4,7 +4,8 @@ from src.models.base import Database
 from src.models.message_user_read import MessageUserRead
 from sqlalchemy.orm import relationship, joinedload
 from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 
 class Message(Database.get().Model):
     __tablename__ = 'message'
@@ -14,8 +15,8 @@ class Message(Database.get().Model):
     from_client_workspace_domain = Database.get().Column(Database.get().String(100), unique=False, nullable=True)
     client_id = Database.get().Column(Database.get().String(36), nullable=True)
     client_workspace_domain = Database.get().Column(Database.get().String(100), unique=False, nullable=True)
-    message = Database.get().Column(Database.get().Binary)
-    sender_message = Database.get().Column(Database.get().Binary)
+    message = Database.get().Column(Database.get().LargeBinary)
+    sender_message = Database.get().Column(Database.get().LargeBinary)
     message_type = Database.get().Column(
         Database.get().String(128),
         default='text',
@@ -59,4 +60,4 @@ class Message(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)

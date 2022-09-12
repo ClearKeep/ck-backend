@@ -1,7 +1,9 @@
 # ref https://pypi.org/project/python-keycloak/
 from keycloak import KeycloakOpenID, KeycloakAdmin
-from keycloak import raise_error_from_response
+from keycloak.keycloak_admin import raise_error_from_response
 from keycloak import KeycloakGetError
+import keycloak
+from msg.message import Message
 from utils.config import get_system_config
 import json
 
@@ -44,7 +46,10 @@ class KeyCloakUtils:
 
     @staticmethod
     def refresh_token(refresh_token):
-        return keycloak_openid.refresh_token(refresh_token)
+        try:
+            return keycloak_openid.refresh_token(refresh_token)
+        except keycloak.exceptions.KeycloakGetError:
+            raise Exception(Message.INVALID_REFRESH_TOKEN)
 
     @staticmethod
     def logout(refresh_token):

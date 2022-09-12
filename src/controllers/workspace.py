@@ -10,6 +10,9 @@ from src.models.user import User
 import json
 from client.client_workspace import ClientWorkspace
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class WorkspaceController(BaseController):
     def __init__(self, *kwargs):
@@ -22,13 +25,13 @@ class WorkspaceController(BaseController):
             if request.workspace_domain == owner_workspace_domain:
                 return workspace_pb2.WorkspaceInfoResponse()
             else:
-                response = ClientWorkspace(request.workspace_domain).get_workspace_info(request.workspace_domain)
+                response = await ClientWorkspace(request.workspace_domain).get_workspace_info(request.workspace_domain)
                 if response:
                     return response
                 else:
                     raise Exception(Message.GET_WORKSPACE_INFO_FAILED)
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_WORKSPACE_INFO_FAILED)]
             else:
@@ -71,7 +74,7 @@ class WorkspaceController(BaseController):
             return workspace_pb2.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.LEAVE_WORKSPACE_FAILED)]
             else:

@@ -2,7 +2,8 @@ from src.models.base import Database
 from datetime import datetime
 from utils.logger import *
 
-
+import logging
+logger = logging.getLogger(__name__)
 class ServerInfo(Database.get().Model):
     __tablename__ = 'server_info'
     id = Database.get().Column(Database.get().Integer, primary_key=True)
@@ -18,7 +19,7 @@ class ServerInfo(Database.get().Model):
             return self
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def get(self):
         server_info = Database.get_session().query(ServerInfo) \
@@ -36,7 +37,7 @@ class ServerInfo(Database.get().Model):
                 Database.get_session().commit()
             except Exception as e:
                 Database.get_session().rollback()
-                logger.error(e)
+                logger.error(e, exc_info=True)
         else:
             self.add()
         return True

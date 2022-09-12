@@ -5,6 +5,8 @@ from middlewares.permission import *
 from middlewares.request_logged import *
 from src.services.notify_inapp import NotifyInAppService, client_notify_queue
 
+import logging
+logger = logging.getLogger(__name__)
 
 class NotifyInAppController(BaseController):
     def __init__(self, *kwargs):
@@ -21,7 +23,7 @@ class NotifyInAppController(BaseController):
             lst_notify = self.service.get_unread_notifies(client_id)
             return lst_notify
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_CLIENT_NOTIFIES_FAILED)]
             context.set_details(json.dumps(
@@ -73,7 +75,7 @@ class NotifyInAppController(BaseController):
             await self.service.subscribe(user_id, request.device_id)
             return notify_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
             context.set_details(json.dumps(
@@ -92,7 +94,7 @@ class NotifyInAppController(BaseController):
             self.service.un_subscribe(user_id, request.device_id)
             return notify_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
             context.set_details(json.dumps(
@@ -106,7 +108,7 @@ class NotifyInAppController(BaseController):
             self.service.read_notify(notify_id)
             return notify_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_READ_NOTIFY_FAILED)]
             context.set_details(json.dumps(

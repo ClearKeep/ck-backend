@@ -2,9 +2,9 @@ from datetime import datetime, timedelta
 
 from sqlalchemy.orm import relationship
 from src.models.base import Database
-from utils.logger import *
 
-
+import logging
+logger = logging.getLogger(__name__)
 class AuthenSetting(Database.get().Model):
     __tablename__ = 'authen_setting'
     #kid
@@ -33,7 +33,7 @@ class AuthenSetting(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def get(self, client_id):
         mfa_setting = Database.get_session().query(AuthenSetting) \

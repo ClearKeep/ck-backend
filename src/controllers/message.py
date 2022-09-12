@@ -15,6 +15,8 @@ from copy import deepcopy
 from utils.config import *
 from protos import message_pb2
 
+import logging
+logger = logging.getLogger(__name__)
 
 class MessageController(BaseController):
     def __init__(self, *kwargs):
@@ -42,7 +44,7 @@ class MessageController(BaseController):
                     off_set = request.off_set,
                     last_message_at = request.last_message_at
                 )
-                obj_res = ClientMessage(group.owner_workspace_domain).workspace_get_messages_in_group(workspace_request)
+                obj_res = await ClientMessage(group.owner_workspace_domain).workspace_get_messages_in_group(workspace_request)
                 if obj_res and obj_res.lst_message:
                     for obj in obj_res.lst_message:
                         obj.group_id = group_id
@@ -54,7 +56,7 @@ class MessageController(BaseController):
                 obj_res = self.service.get_message_in_group(client_id, group_id, off_set, last_message_at)
                 return obj_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 # TODO: change message when got error
                 errors = [Message.get_error_object(Message.GET_MESSAGE_IN_GROUP_FAILED)]
@@ -76,7 +78,7 @@ class MessageController(BaseController):
                 raise Exception(Message.GET_MESSAGE_IN_GROUP_FAILED)
             return obj_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_MESSAGE_IN_GROUP_FAILED)]
             else:
@@ -86,6 +88,7 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def Publish(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -102,7 +105,7 @@ class MessageController(BaseController):
                 res_obj = await self.publish_to_group_owner(request, user_id, group)
                 return res_obj
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_PUBLISH_MESSAGE_FAILED)]
             else:
@@ -130,6 +133,8 @@ class MessageController(BaseController):
                     message=request.message,
                     sender_message=request.sender_message
                 )
+            else:
+                MessageService().update_group_last_message(group_id=request.group_id, created_at=datetime.now(), message_id=request.message_id)
 
             new_message = message_pb2.MessageObjectResponse(
                 id=request.message_id,
@@ -191,14 +196,14 @@ class MessageController(BaseController):
                     else:
                         # call to other server
                         request.group_id = client.GroupClientKey.client_workspace_group_id
-                        res_object = ClientMessage(
+                        res_object = await ClientMessage(
                             client.GroupClientKey.client_workspace_domain).workspace_publish_message(request)
                         if res_object is None:
                             logger.error("Workspace Publish Message to client failed")
             return new_message
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_PUBLISH_MESSAGE_FAILED)]
             else:
@@ -286,7 +291,7 @@ class MessageController(BaseController):
                     from_client_device_id=request.from_client_device_id,
                     sender_message=request.sender_message
                 )
-                message_res_object2 = ClientMessage(
+                message_res_object2 = await ClientMessage(
                     client.GroupClientKey.client_workspace_domain).workspace_publish_message(request2)
                 if message_res_object2 is None:
                     logger.error("send message to client failed")
@@ -299,6 +304,8 @@ class MessageController(BaseController):
         owner_workspace_domain = get_owner_workspace_domain()
         message_id = str(uuid.uuid4())
         created_at = datetime.now()
+
+        MessageService().update_group_last_message(group_id=group.id, created_at=created_at, message_id=message_id)
 
         message_res_object = message_pb2.MessageObjectResponse(
             id=message_id,
@@ -371,7 +378,7 @@ class MessageController(BaseController):
             sender_message=request.sender_message,
             from_client_device_id=request.from_client_device_id,
         )
-        res_object = ClientMessage(group.owner_workspace_domain).workspace_publish_message(request1)
+        res_object = await ClientMessage(group.owner_workspace_domain).workspace_publish_message(request1)
         if res_object is None:
             logger.error("send message to client failed")
         return message_res_object
@@ -398,7 +405,7 @@ class MessageController(BaseController):
                     client_message_queue[message_channel] = None
                     del client_message_queue[message_channel]
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.AUTH_USER_NOT_FOUND)]
             else:
@@ -418,7 +425,7 @@ class MessageController(BaseController):
             await self.service.subscribe(user_id, request.device_id)
             return message_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
             else:
@@ -438,7 +445,7 @@ class MessageController(BaseController):
             self.service.un_subscribe(user_id, request.device_id)
             return message_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_SUBCRIBE_FAILED)]
             else:
@@ -448,6 +455,7 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def read_messages(self, request, context):
         try:
             client_id = request.client_id
@@ -456,7 +464,7 @@ class MessageController(BaseController):
 
             return message_pb2.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.MESSAGE_READ_FAILED)]
             else:
@@ -466,6 +474,7 @@ class MessageController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def edit_message(self, request, context):
         try:
             group_id = request.groupId
@@ -520,7 +529,7 @@ class MessageController(BaseController):
             return new_message
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_EDIT_MESSAGE_FAILED)]
             else:

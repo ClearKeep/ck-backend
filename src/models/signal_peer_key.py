@@ -1,20 +1,20 @@
 from datetime import datetime
 from sqlalchemy import ForeignKey
 from src.models.base import Database
-from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 class PeerClientKey(Database.get().Model):
     __tablename__ = 'peer_client_key'
     id = Database.get().Column(Database.get().Integer, primary_key=True)
     client_id = Database.get().Column(Database.get().String(36), nullable=True)
     device_id = Database.get().Column(Database.get().Integer, unique=False, nullable=False)
     registration_id = Database.get().Column(Database.get().Integer, unique=False, nullable=False)
-    identity_key_public = Database.get().Column(Database.get().Binary)
+    identity_key_public = Database.get().Column(Database.get().LargeBinary)
     prekey_id = Database.get().Column(Database.get().Integer, unique=False, nullable=False)
-    prekey = Database.get().Column(Database.get().Binary)
+    prekey = Database.get().Column(Database.get().LargeBinary)
     signed_prekey_id = Database.get().Column(Database.get().Integer, unique=False, nullable=False)
-    signed_prekey = Database.get().Column(Database.get().Binary)
-    signed_prekey_signature = Database.get().Column(Database.get().Binary)
+    signed_prekey = Database.get().Column(Database.get().LargeBinary)
+    signed_prekey_signature = Database.get().Column(Database.get().LargeBinary)
     identity_key_encrypted = Database.get().Column(Database.get().String(255), unique=False)
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
     updated_at = Database.get().Column(Database.get().DateTime, default=datetime.now, onupdate=datetime.now)
@@ -51,7 +51,7 @@ class PeerClientKey(Database.get().Model):
                 return True
             except Exception as e:
                 Database.get_session().rollback()
-                logger.error(e)
+                logger.error(e, exc_info=True)
 
     def get_by_client_id(self, client_id):
         client = Database.get_session().query(PeerClientKey) \
@@ -66,7 +66,7 @@ class PeerClientKey(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def delete(self):
         try:
@@ -74,4 +74,4 @@ class PeerClientKey(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)

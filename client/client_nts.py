@@ -1,11 +1,16 @@
 # Retrieve a Network Traversal Service Token
-from twilio.rest import Client
 import json
-from protos import server_info_pb2, server_info_pb2_grpc
-import grpc
-from utils.logger import *
-from utils.config import get_system_config
+import logging
 from datetime import datetime
+
+import grpc
+from twilio.rest import Client
+
+from protos import server_info_pb2, server_info_pb2_grpc
+from utils.config import get_system_config
+from utils.const import GRPC_TIMEOUT
+
+logger = logging.getLogger(__name__)
 
 
 def generate_stun_turn_credential(data):
@@ -51,27 +56,27 @@ def update_stun_turn_credential():
         channel = grpc.insecure_channel(host + ':' + str(port))
         stub = server_info_pb2_grpc.ServerInfoStub(channel)
         request = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
-        stub.update_nts(request)
+        stub.update_nts(request, timeout=GRPC_TIMEOUT)
     except Exception as e:
-        logger.error(e)
+        logger.error(e, exc_info=True)
 
     try:
         #update for stagging branch
         channel2 = grpc.insecure_channel(host + ':1' + str(port))
         stub2 = server_info_pb2_grpc.ServerInfoStub(channel2)
         request2 = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
-        stub2.update_nts(request2)
+        stub2.update_nts(request2, timeout=GRPC_TIMEOUT)
     except Exception as e:
-        logger.error(e)
+        logger.error(e, exc_info=True)
 
     try:
         # update for dev branch
         channel3 = grpc.insecure_channel(host + ':2' + str(port))
         stub3 = server_info_pb2_grpc.ServerInfoStub(channel3)
         request3 = server_info_pb2.UpdateNTSReq(stun=stun, turn=turn)
-        stub3.update_nts(request3)
+        stub3.update_nts(request3, timeout=GRPC_TIMEOUT)
     except Exception as e:
-        logger.error(e)
+        logger.error(e, exc_info=True)
 
     print('Set cronjob succesful')
 

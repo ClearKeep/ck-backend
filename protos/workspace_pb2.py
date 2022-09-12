@@ -3,6 +3,7 @@
 # source: protos/workspace.proto
 """Generated protocol buffer code."""
 from google.protobuf import descriptor as _descriptor
+from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
@@ -13,144 +14,14 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor.FileDescriptor(
-  name='protos/workspace.proto',
-  package='workspace',
-  syntax='proto3',
-  serialized_options=None,
-  create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x16protos/workspace.proto\x12\tworkspace\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x02 \x01(\t\"0\n\x14WorkspaceInfoRequest\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\"&\n\x15WorkspaceInfoResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\x17\n\x15LeaveWorkspaceRequest2\xb2\x01\n\tWorkspace\x12U\n\x0eworkspace_info\x12\x1f.workspace.WorkspaceInfoRequest\x1a .workspace.WorkspaceInfoResponse\"\x00\x12N\n\x0fleave_workspace\x12 .workspace.LeaveWorkspaceRequest\x1a\x17.workspace.BaseResponse\"\x00\x62\x06proto3'
-)
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16protos/workspace.proto\x12\tworkspace\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x02 \x01(\t\"0\n\x14WorkspaceInfoRequest\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\"&\n\x15WorkspaceInfoResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\x17\n\x15LeaveWorkspaceRequest2\xb2\x01\n\tWorkspace\x12U\n\x0eworkspace_info\x12\x1f.workspace.WorkspaceInfoRequest\x1a .workspace.WorkspaceInfoResponse\"\x00\x12N\n\x0fleave_workspace\x12 .workspace.LeaveWorkspaceRequest\x1a\x17.workspace.BaseResponse\"\x00\x62\x06proto3')
 
 
 
-
-_BASERESPONSE = _descriptor.Descriptor(
-  name='BaseResponse',
-  full_name='workspace.BaseResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='error', full_name='workspace.BaseResponse.error', index=0,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=37,
-  serialized_end=66,
-)
-
-
-_WORKSPACEINFOREQUEST = _descriptor.Descriptor(
-  name='WorkspaceInfoRequest',
-  full_name='workspace.WorkspaceInfoRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='workspace_domain', full_name='workspace.WorkspaceInfoRequest.workspace_domain', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=68,
-  serialized_end=116,
-)
-
-
-_WORKSPACEINFORESPONSE = _descriptor.Descriptor(
-  name='WorkspaceInfoResponse',
-  full_name='workspace.WorkspaceInfoResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='error', full_name='workspace.WorkspaceInfoResponse.error', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=118,
-  serialized_end=156,
-)
-
-
-_LEAVEWORKSPACEREQUEST = _descriptor.Descriptor(
-  name='LeaveWorkspaceRequest',
-  full_name='workspace.LeaveWorkspaceRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=158,
-  serialized_end=181,
-)
-
-DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
-DESCRIPTOR.message_types_by_name['WorkspaceInfoRequest'] = _WORKSPACEINFOREQUEST
-DESCRIPTOR.message_types_by_name['WorkspaceInfoResponse'] = _WORKSPACEINFORESPONSE
-DESCRIPTOR.message_types_by_name['LeaveWorkspaceRequest'] = _LEAVEWORKSPACEREQUEST
-_sym_db.RegisterFileDescriptor(DESCRIPTOR)
-
+_BASERESPONSE = DESCRIPTOR.message_types_by_name['BaseResponse']
+_WORKSPACEINFOREQUEST = DESCRIPTOR.message_types_by_name['WorkspaceInfoRequest']
+_WORKSPACEINFORESPONSE = DESCRIPTOR.message_types_by_name['WorkspaceInfoResponse']
+_LEAVEWORKSPACEREQUEST = DESCRIPTOR.message_types_by_name['LeaveWorkspaceRequest']
 BaseResponse = _reflection.GeneratedProtocolMessageType('BaseResponse', (_message.Message,), {
   'DESCRIPTOR' : _BASERESPONSE,
   '__module__' : 'protos.workspace_pb2'
@@ -179,41 +50,18 @@ LeaveWorkspaceRequest = _reflection.GeneratedProtocolMessageType('LeaveWorkspace
   })
 _sym_db.RegisterMessage(LeaveWorkspaceRequest)
 
+_WORKSPACE = DESCRIPTOR.services_by_name['Workspace']
+if _descriptor._USE_C_DESCRIPTORS == False:
 
-
-_WORKSPACE = _descriptor.ServiceDescriptor(
-  name='Workspace',
-  full_name='workspace.Workspace',
-  file=DESCRIPTOR,
-  index=0,
-  serialized_options=None,
-  create_key=_descriptor._internal_create_key,
-  serialized_start=184,
-  serialized_end=362,
-  methods=[
-  _descriptor.MethodDescriptor(
-    name='workspace_info',
-    full_name='workspace.Workspace.workspace_info',
-    index=0,
-    containing_service=None,
-    input_type=_WORKSPACEINFOREQUEST,
-    output_type=_WORKSPACEINFORESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='leave_workspace',
-    full_name='workspace.Workspace.leave_workspace',
-    index=1,
-    containing_service=None,
-    input_type=_LEAVEWORKSPACEREQUEST,
-    output_type=_BASERESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-])
-_sym_db.RegisterServiceDescriptor(_WORKSPACE)
-
-DESCRIPTOR.services_by_name['Workspace'] = _WORKSPACE
-
+  DESCRIPTOR._options = None
+  _BASERESPONSE._serialized_start=37
+  _BASERESPONSE._serialized_end=66
+  _WORKSPACEINFOREQUEST._serialized_start=68
+  _WORKSPACEINFOREQUEST._serialized_end=116
+  _WORKSPACEINFORESPONSE._serialized_start=118
+  _WORKSPACEINFORESPONSE._serialized_end=156
+  _LEAVEWORKSPACEREQUEST._serialized_start=158
+  _LEAVEWORKSPACEREQUEST._serialized_end=181
+  _WORKSPACE._serialized_start=184
+  _WORKSPACE._serialized_end=362
 # @@protoc_insertion_point(module_scope)

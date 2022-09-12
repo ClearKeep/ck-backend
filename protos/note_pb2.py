@@ -3,6 +3,7 @@
 # source: protos/note.proto
 """Generated protocol buffer code."""
 from google.protobuf import descriptor as _descriptor
+from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
@@ -13,340 +14,18 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor.FileDescriptor(
-  name='protos/note.proto',
-  package='note',
-  syntax='proto3',
-  serialized_options=None,
-  create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x11protos/note.proto\x12\x04note\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"F\n\x11\x43reateNoteRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\x0c\x12\x11\n\tnote_type\x18\x03 \x01(\t\"U\n\x0f\x45\x64itNoteRequest\x12\x0f\n\x07note_id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\x0c\x12\x11\n\tnote_type\x18\x04 \x01(\t\"$\n\x11\x44\x65leteNoteRequest\x12\x0f\n\x07note_id\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\"e\n\x10UserNoteResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\x0c\x12\x11\n\tnote_type\x18\x04 \x01(\t\x12\x12\n\ncreated_at\x18\x05 \x01(\x03\"\x15\n\x13GetUserNotesRequest\"Q\n\x14GetUserNotesResponse\x12*\n\nuser_notes\x18\x01 \x03(\x0b\x32\x16.note.UserNoteResponse\x12\r\n\x05\x65rror\x18\x02 \x01(\t2\x83\x02\n\x04Note\x12>\n\x0b\x63reate_note\x12\x17.note.CreateNoteRequest\x1a\x16.note.UserNoteResponse\x12\x36\n\tedit_note\x12\x15.note.EditNoteRequest\x1a\x12.note.BaseResponse\x12:\n\x0b\x64\x65lete_note\x12\x17.note.DeleteNoteRequest\x1a\x12.note.BaseResponse\x12G\n\x0eget_user_notes\x12\x19.note.GetUserNotesRequest\x1a\x1a.note.GetUserNotesResponseb\x06proto3'
-)
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11protos/note.proto\x12\x04note\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"F\n\x11\x43reateNoteRequest\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\x0c\x12\x11\n\tnote_type\x18\x03 \x01(\t\"U\n\x0f\x45\x64itNoteRequest\x12\x0f\n\x07note_id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\x0c\x12\x11\n\tnote_type\x18\x04 \x01(\t\"$\n\x11\x44\x65leteNoteRequest\x12\x0f\n\x07note_id\x18\x01 \x01(\t\"\x07\n\x05\x45mpty\"e\n\x10UserNoteResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\x0c\x12\x11\n\tnote_type\x18\x04 \x01(\t\x12\x12\n\ncreated_at\x18\x05 \x01(\x03\"\x15\n\x13GetUserNotesRequest\"Q\n\x14GetUserNotesResponse\x12*\n\nuser_notes\x18\x01 \x03(\x0b\x32\x16.note.UserNoteResponse\x12\r\n\x05\x65rror\x18\x02 \x01(\t2\x83\x02\n\x04Note\x12>\n\x0b\x63reate_note\x12\x17.note.CreateNoteRequest\x1a\x16.note.UserNoteResponse\x12\x36\n\tedit_note\x12\x15.note.EditNoteRequest\x1a\x12.note.BaseResponse\x12:\n\x0b\x64\x65lete_note\x12\x17.note.DeleteNoteRequest\x1a\x12.note.BaseResponse\x12G\n\x0eget_user_notes\x12\x19.note.GetUserNotesRequest\x1a\x1a.note.GetUserNotesResponseb\x06proto3')
 
 
 
-
-_BASERESPONSE = _descriptor.Descriptor(
-  name='BaseResponse',
-  full_name='note.BaseResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='error', full_name='note.BaseResponse.error', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=27,
-  serialized_end=56,
-)
-
-
-_CREATENOTEREQUEST = _descriptor.Descriptor(
-  name='CreateNoteRequest',
-  full_name='note.CreateNoteRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='title', full_name='note.CreateNoteRequest.title', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='content', full_name='note.CreateNoteRequest.content', index=1,
-      number=2, type=12, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"",
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='note_type', full_name='note.CreateNoteRequest.note_type', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=58,
-  serialized_end=128,
-)
-
-
-_EDITNOTEREQUEST = _descriptor.Descriptor(
-  name='EditNoteRequest',
-  full_name='note.EditNoteRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='note_id', full_name='note.EditNoteRequest.note_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='title', full_name='note.EditNoteRequest.title', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='content', full_name='note.EditNoteRequest.content', index=2,
-      number=3, type=12, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"",
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='note_type', full_name='note.EditNoteRequest.note_type', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=130,
-  serialized_end=215,
-)
-
-
-_DELETENOTEREQUEST = _descriptor.Descriptor(
-  name='DeleteNoteRequest',
-  full_name='note.DeleteNoteRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='note_id', full_name='note.DeleteNoteRequest.note_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=217,
-  serialized_end=253,
-)
-
-
-_EMPTY = _descriptor.Descriptor(
-  name='Empty',
-  full_name='note.Empty',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=255,
-  serialized_end=262,
-)
-
-
-_USERNOTERESPONSE = _descriptor.Descriptor(
-  name='UserNoteResponse',
-  full_name='note.UserNoteResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='id', full_name='note.UserNoteResponse.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='title', full_name='note.UserNoteResponse.title', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='content', full_name='note.UserNoteResponse.content', index=2,
-      number=3, type=12, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"",
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='note_type', full_name='note.UserNoteResponse.note_type', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='created_at', full_name='note.UserNoteResponse.created_at', index=4,
-      number=5, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=264,
-  serialized_end=365,
-)
-
-
-_GETUSERNOTESREQUEST = _descriptor.Descriptor(
-  name='GetUserNotesRequest',
-  full_name='note.GetUserNotesRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=367,
-  serialized_end=388,
-)
-
-
-_GETUSERNOTESRESPONSE = _descriptor.Descriptor(
-  name='GetUserNotesResponse',
-  full_name='note.GetUserNotesResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='user_notes', full_name='note.GetUserNotesResponse.user_notes', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='error', full_name='note.GetUserNotesResponse.error', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=390,
-  serialized_end=471,
-)
-
-_GETUSERNOTESRESPONSE.fields_by_name['user_notes'].message_type = _USERNOTERESPONSE
-DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
-DESCRIPTOR.message_types_by_name['CreateNoteRequest'] = _CREATENOTEREQUEST
-DESCRIPTOR.message_types_by_name['EditNoteRequest'] = _EDITNOTEREQUEST
-DESCRIPTOR.message_types_by_name['DeleteNoteRequest'] = _DELETENOTEREQUEST
-DESCRIPTOR.message_types_by_name['Empty'] = _EMPTY
-DESCRIPTOR.message_types_by_name['UserNoteResponse'] = _USERNOTERESPONSE
-DESCRIPTOR.message_types_by_name['GetUserNotesRequest'] = _GETUSERNOTESREQUEST
-DESCRIPTOR.message_types_by_name['GetUserNotesResponse'] = _GETUSERNOTESRESPONSE
-_sym_db.RegisterFileDescriptor(DESCRIPTOR)
-
+_BASERESPONSE = DESCRIPTOR.message_types_by_name['BaseResponse']
+_CREATENOTEREQUEST = DESCRIPTOR.message_types_by_name['CreateNoteRequest']
+_EDITNOTEREQUEST = DESCRIPTOR.message_types_by_name['EditNoteRequest']
+_DELETENOTEREQUEST = DESCRIPTOR.message_types_by_name['DeleteNoteRequest']
+_EMPTY = DESCRIPTOR.message_types_by_name['Empty']
+_USERNOTERESPONSE = DESCRIPTOR.message_types_by_name['UserNoteResponse']
+_GETUSERNOTESREQUEST = DESCRIPTOR.message_types_by_name['GetUserNotesRequest']
+_GETUSERNOTESRESPONSE = DESCRIPTOR.message_types_by_name['GetUserNotesResponse']
 BaseResponse = _reflection.GeneratedProtocolMessageType('BaseResponse', (_message.Message,), {
   'DESCRIPTOR' : _BASERESPONSE,
   '__module__' : 'protos.note_pb2'
@@ -403,61 +82,26 @@ GetUserNotesResponse = _reflection.GeneratedProtocolMessageType('GetUserNotesRes
   })
 _sym_db.RegisterMessage(GetUserNotesResponse)
 
+_NOTE = DESCRIPTOR.services_by_name['Note']
+if _descriptor._USE_C_DESCRIPTORS == False:
 
-
-_NOTE = _descriptor.ServiceDescriptor(
-  name='Note',
-  full_name='note.Note',
-  file=DESCRIPTOR,
-  index=0,
-  serialized_options=None,
-  create_key=_descriptor._internal_create_key,
-  serialized_start=474,
-  serialized_end=733,
-  methods=[
-  _descriptor.MethodDescriptor(
-    name='create_note',
-    full_name='note.Note.create_note',
-    index=0,
-    containing_service=None,
-    input_type=_CREATENOTEREQUEST,
-    output_type=_USERNOTERESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='edit_note',
-    full_name='note.Note.edit_note',
-    index=1,
-    containing_service=None,
-    input_type=_EDITNOTEREQUEST,
-    output_type=_BASERESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='delete_note',
-    full_name='note.Note.delete_note',
-    index=2,
-    containing_service=None,
-    input_type=_DELETENOTEREQUEST,
-    output_type=_BASERESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='get_user_notes',
-    full_name='note.Note.get_user_notes',
-    index=3,
-    containing_service=None,
-    input_type=_GETUSERNOTESREQUEST,
-    output_type=_GETUSERNOTESRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-])
-_sym_db.RegisterServiceDescriptor(_NOTE)
-
-DESCRIPTOR.services_by_name['Note'] = _NOTE
-
+  DESCRIPTOR._options = None
+  _BASERESPONSE._serialized_start=27
+  _BASERESPONSE._serialized_end=56
+  _CREATENOTEREQUEST._serialized_start=58
+  _CREATENOTEREQUEST._serialized_end=128
+  _EDITNOTEREQUEST._serialized_start=130
+  _EDITNOTEREQUEST._serialized_end=215
+  _DELETENOTEREQUEST._serialized_start=217
+  _DELETENOTEREQUEST._serialized_end=253
+  _EMPTY._serialized_start=255
+  _EMPTY._serialized_end=262
+  _USERNOTERESPONSE._serialized_start=264
+  _USERNOTERESPONSE._serialized_end=365
+  _GETUSERNOTESREQUEST._serialized_start=367
+  _GETUSERNOTESREQUEST._serialized_end=388
+  _GETUSERNOTESRESPONSE._serialized_start=390
+  _GETUSERNOTESRESPONSE._serialized_end=471
+  _NOTE._serialized_start=474
+  _NOTE._serialized_end=733
 # @@protoc_insertion_point(module_scope)

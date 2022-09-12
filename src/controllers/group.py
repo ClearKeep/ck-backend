@@ -1,3 +1,5 @@
+from cerberus import Validator
+
 from src.controllers.base import *
 from middlewares.permission import *
 from middlewares.request_logged import *
@@ -9,23 +11,26 @@ from src.models.group import GroupChat
 from utils.keycloak import KeyCloakUtils
 from google.protobuf.json_format import MessageToDict
 import datetime
+from cerberus import Validator
 
+import logging
+logger = logging.getLogger(__name__)
 
 class GroupController(BaseController):
     def __init__(self, *kwargs):
         self.service = GroupService()
 
     @request_logged
+    @auth_required
     async def create_group(self, request, context):
         try:
             group_name = request.group_name
             group_type = request.group_type
             lst_client = request.lst_client
-            obj_res = self.service.add_group(group_name, group_type, lst_client, request.created_by_client_id)
+            return await self.service.add_group(group_name, group_type, lst_client, request.created_by_client_id)
 
-            return obj_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
             else:
@@ -49,7 +54,7 @@ class GroupController(BaseController):
 
             return obj_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CREATE_GROUP_CHAT_FAILED)]
             else:
@@ -59,6 +64,7 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def get_group(self, request, context):
         try:
             header_data = dict(context.invocation_metadata())
@@ -72,7 +78,7 @@ class GroupController(BaseController):
             else:
                 raise Exception(Message.GROUP_CHAT_NOT_FOUND)
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.GET_GROUP_CHAT_FAILED)]
             else:
@@ -82,13 +88,14 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def search_groups(self, request, context):
         try:
             keyword = request.keyword
             obj_res = self.service.search_group(keyword)
             return obj_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.SEARCH_GROUP_CHAT_FAILED)]
             else:
@@ -107,7 +114,7 @@ class GroupController(BaseController):
             obj_res = self.service.get_joined_group(client_id)
             return obj_res
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             else:
@@ -117,12 +124,13 @@ class GroupController(BaseController):
             context.set_code(grpc.StatusCode.INTERNAL)
 
     @request_logged
+    @auth_required
     async def join_group(self, request, context):
         try:
             # TODO: implement this function
             pass
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)]
             else:
@@ -133,8 +141,10 @@ class GroupController(BaseController):
 
 
     @request_logged
+    @auth_required
     async def add_member(self, request, context):
         try:
+            self._validate_add_member_request(request)
             group = GroupService().get_group_info(request.group_id)
             group_clients = json.loads(group.group_clients)
             added_member_info = request.added_member_info
@@ -200,7 +210,7 @@ class GroupController(BaseController):
 
             return group_messages.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
             else:
@@ -208,6 +218,65 @@ class GroupController(BaseController):
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
             context.set_code(grpc.StatusCode.INTERNAL)
+
+    def _validate_add_member_request(self, request):
+        schema = {
+            'added_member_info': {
+                'type': 'dict',
+                'required': True,
+                'schema': {
+                    'id': {
+                        'type':'string',
+                        'required': True
+                    },
+                    'display_name': {
+                        'type': 'string'
+                    },
+                    'workspace_domain': {
+                        'type': 'string',
+                        'required': True
+                    },
+                    'status': {
+                        'type': 'string'
+                    },
+                    'ref_group_id': {
+                        'type': 'string'
+                    },
+                }
+            },
+            'adding_member_info': {
+                'type': 'dict',
+                'required': True,
+                'schema': {
+                    'id': {
+                        'type':'string',
+                        'required': True
+                    },
+                    'display_name': {
+                        'type': 'string'
+                    },
+                    'workspace_domain': {
+                        'type': 'string',
+                        'required': True
+                    },
+                    'status': {
+                        'type': 'string'
+                    },
+                    'ref_group_id': {
+                        'type': 'string'
+                    },
+                }
+            },
+            'group_id': {
+                'type': 'string',
+                'required': True
+            }
+        }
+        validator = Validator(schema)
+        if not validator.validate(MessageToDict(request, preserving_proto_field_name=True)):
+            logger.info('invalid_add_member_request')
+            logger.debug(validator.errors)
+            raise Exception('invalid_add_member_request')
 
     @request_logged
     async def workspace_add_member(self, request, context):
@@ -223,7 +292,7 @@ class GroupController(BaseController):
             )
             return response
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
             else:
@@ -282,7 +351,7 @@ class GroupController(BaseController):
 
             return group_messages.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.LEAVE_GROUP_FAILED)]
             else:
@@ -306,7 +375,7 @@ class GroupController(BaseController):
             )
             return group_messages.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.ADD_MEMBER_FAILED)]
             else:
@@ -324,11 +393,33 @@ class GroupController(BaseController):
             )
             return group_messages.BaseResponse()
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.LEAVE_GROUP_FAILED)]
             else:
                 errors = [Message.get_error_object(e.args[0])]
             context.set_details(json.dumps(
                 errors, default=lambda x: x.__dict__))
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def workspace_member_forgot_password_in_group(self, request, context):
+        try:
+            await self.service.workspace_member_forgot_password_in_group(
+                user_id=request.user_id
+            )
+            return group_messages.BaseResponse()
+        except Exception as e:
+            logger.error(e, exc_info=True)
+            context.set_code(grpc.StatusCode.INTERNAL)
+
+    @request_logged
+    async def workspace_member_reset_pincode_in_group(self, request, context):
+        try:
+            await self.service.workspace_member_reset_pincode_in_group(
+                user_id=request.user_id
+            )
+            return group_messages.BaseResponse()
+        except Exception as e:
+            logger.error(e, exc_info=True)
             context.set_code(grpc.StatusCode.INTERNAL)

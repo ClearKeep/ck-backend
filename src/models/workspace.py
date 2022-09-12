@@ -1,7 +1,8 @@
 from datetime import datetime
 from src.models.base import Database
 from utils.logger import *
-
+import logging
+logger = logging.getLogger(__name__)
 
 class Workspace(Database.get().Model):
     __tablename__ = 'workspace'
@@ -33,4 +34,4 @@ class Workspace(Database.get().Model):
             # Database.get().session.remove()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)

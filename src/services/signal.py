@@ -6,10 +6,11 @@ from src.services.notify_inapp import NotifyInAppService
 from src.models.group import GroupChat
 from msg.message import Message
 from utils.logger import *
-import ast
+import json
 from msg.message import Message
 
-
+import logging
+logger = logging.getLogger(__name__)
 client_queue = {}
 
 
@@ -34,7 +35,7 @@ class SignalService(BaseService):
             # Check chatting available and push notify inapp for refreshing key, this should be unneeded as client_id now must register peer key when create account
             self.client_update_key_notify(client_id)
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             raise Exception(Message.REGISTER_CLIENT_SIGNAL_KEY_FAILED)
 
     def client_update_peer_key(self, client_id, request):
@@ -86,11 +87,32 @@ class SignalService(BaseService):
         if new_group_key is None:
             raise Exception(Message.REGISTER_CLIENT_GROUP_FAILED_AVAILABLE)
 
-    def group_bulk_update_client_key(self, client_id, list_group_client_key):
+    def group_bulk_update_client_key(self, client_id, group_client_keys):
         # update client_id's multi group keys
-        is_updated = GroupClientKey().update_bulk_client_key(client_id, list_group_client_key)
-        if not is_updated:
-            raise Exception(Message.UPDATE_CLIENT_KEY_GROUPS_FAILED)
+        group_ids = [
+            key.groupId
+            for key in group_client_keys
+        ]
+        keys = self.group_client_key_model.list_by_user_id_group_ids(client_id, group_ids)
+
+        field_mapping = {
+            'groupId': 'group_id',
+            'deviceId': 'device_id',
+            'clientKeyDistribution': 'client_key',
+            'senderKeyId': 'client_sender_key_id',
+            'senderKey': 'client_sender_key',
+            'publicKey': 'client_public_key',
+            'privateKey': 'client_private_key'
+
+        }
+        for key in keys:
+            for _key in group_client_keys:
+                if key.group_id != _key.groupId:
+                    continue
+                for name in field_mapping.keys():
+                    if getattr(_key, name):
+                        setattr(key, field_mapping[name], getattr(_key, name))
+        self.group_client_key_model.bulk_update(keys)
 
     def group_get_client_key(self, group_id, client_id):
         # get client_id's group key in group_id
@@ -117,12 +139,12 @@ class SignalService(BaseService):
             notify_inapp_service = NotifyInAppService()
             for group_peer in lst_group_peer:
                 if group_peer.group_clients:
-                    lst_client_id = ast.literal_eval(group_peer.group_clients)
+                    lst_client_id = json.loads(group_peer.group_clients)
                     for client_peer_id in lst_client_id:
-                        if client_peer_id != client_id:
-                            notify_inapp_service.notify_client_update_peer_key(client_peer_id, client_id, group_peer.id)
+                        if client_peer_id['id'] != client_id:
+                            notify_inapp_service.notify_client_update_peer_key(client_peer_id['id'], client_id, group_peer.id)
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
 
     def delete_client_peer_key(self, client_id):
         # delete a client peer key

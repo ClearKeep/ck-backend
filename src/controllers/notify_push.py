@@ -4,7 +4,8 @@ from middlewares.permission import *
 from middlewares.request_logged import *
 from src.services.notify_push import NotifyPushService
 
-
+import logging
+logger = logging.getLogger(__name__)
 class NotifyPushController(BaseController):
     def __init__(self, *kwargs):
         self.service = NotifyPushService()
@@ -20,11 +21,11 @@ class NotifyPushController(BaseController):
             token = request.token
             device_type = request.device_type
 
-            self.service.register_token(client_id, device_id, device_type, token)
+            self.service.register_token(client_id, device_id, device_type, token, end_user_env=request.end_user_env)
             return notify_push_pb2.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_REGISTER_NOTIFY_TOKEN_FAILED)]
             else:
@@ -46,7 +47,7 @@ class NotifyPushController(BaseController):
             return notify_push_pb2.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_REGISTER_NOTIFY_TOKEN_FAILED)]
             else:
@@ -66,7 +67,7 @@ class NotifyPushController(BaseController):
             return notify_push_pb2.BaseResponse()
 
         except Exception as e:
-            logger.error(e)
+            logger.error(e, exc_info=True)
             if not e.args or e.args[0] not in Message.msg_dict:
                 errors = [Message.get_error_object(Message.CLIENT_REGISTER_NOTIFY_TOKEN_FAILED)]
             else:

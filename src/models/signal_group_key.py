@@ -6,7 +6,8 @@ from src.models.user import User
 from src.models.notify_token import NotifyToken
 from utils.logger import *
 
-
+import logging
+logger = logging.getLogger(__name__)
 class GroupClientKey(Database.get().Model):
     __tablename__ = 'group_client_key'
     id = Database.get().Column(Database.get().Integer, primary_key=True)
@@ -16,10 +17,10 @@ class GroupClientKey(Database.get().Model):
     client_workspace_group_id = Database.get().Column(Database.get().Integer, nullable=True)
     device_id = Database.get().Column(Database.get().Integer, unique=False, nullable=True)
     # client key for group
-    client_key = Database.get().Column(Database.get().Binary, nullable=True)
+    client_key = Database.get().Column(Database.get().LargeBinary, nullable=True)
     client_sender_key_id = Database.get().Column(Database.get().Integer, unique=False, nullable=True)
-    client_sender_key = Database.get().Column(Database.get().Binary)
-    client_public_key = Database.get().Column(Database.get().Binary)
+    client_sender_key = Database.get().Column(Database.get().LargeBinary)
+    client_public_key = Database.get().Column(Database.get().LargeBinary)
     client_private_key = Database.get().Column(Database.get().String(1024), nullable=True)
     # end client key for group
     created_at = Database.get().Column(Database.get().DateTime, default=datetime.now)
@@ -61,7 +62,7 @@ class GroupClientKey(Database.get().Model):
                 return self
             except Exception as e:
                 Database.get_session().rollback()
-                logger.error(e)
+                logger.error(e, exc_info=True)
 
     def get(self, group_id, client_id):
         client = Database.get_session().query(GroupClientKey) \
@@ -105,40 +106,7 @@ class GroupClientKey(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
-
-    def update_bulk_client_key(self, client_id, list_group_client_key):
-        try:
-            for group_client_key in list_group_client_key:
-                sql_update = 'UPDATE group_client_key SET ' \
-                    'device_id=:device_id, ' \
-                    'client_key=:client_key, ' \
-                    'client_sender_key_id=:client_sender_key_id, ' \
-                    'client_sender_key=:client_sender_key, ' \
-                    'client_public_key=:client_public_key, ' \
-                    'client_private_key=:client_private_key, ' \
-                    'updated_at=NOW() ' \
-                    'WHERE group_id=:group_id ' \
-                    'AND client_id=:client_id'
-                Database.get_session().execute(
-                    sql_update,
-                    {
-                        'device_id': group_client_key.deviceId,
-                        'client_key': group_client_key.clientKeyDistribution,
-                        'client_sender_key_id': group_client_key.senderKeyId,
-                        'client_sender_key': group_client_key.senderKey,
-                        'client_public_key': group_client_key.publicKey,
-                        'client_private_key': group_client_key.privateKey,
-                        'group_id': group_client_key.groupId,
-                        'client_id': client_id
-                    }
-                )
-            Database.get_session().commit()
-            return True
-        except Exception as e:
-            logger.error(e)
-            Database.get_session().rollback()
-            return False
+            logger.error(e, exc_info=True)
 
     def delete(self):
         try:
@@ -146,4 +114,20 @@ class GroupClientKey(Database.get().Model):
             Database.get_session().commit()
         except Exception as e:
             Database.get_session().rollback()
-            logger.error(e)
+            logger.error(e, exc_info=True)
+
+    def list_by_user_id_group_ids(self, client_id, group_ids):
+        return Database.get_session().query(GroupClientKey) \
+            .filter(GroupClientKey.client_id == client_id) \
+            .filter(GroupClientKey.group_id.in_(group_ids)) \
+            .all()
+
+    def bulk_update(self, keys):
+        try:
+            for key in keys:
+                Database.get_session().merge(key)
+            Database.get_session().commit()
+        except Exception as e:
+            Database.get_session().rollback()
+            logger.error(e, exc_info=True)
+            raise
