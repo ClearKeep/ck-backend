@@ -132,5 +132,4 @@ dmypy.json
 .vscode
 .idea
 logs
-#configs folder
 configs

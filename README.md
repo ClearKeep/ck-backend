@@ -40,6 +40,7 @@ For client **admin-cli**:
 - In `Service Account Roles`:
   - Assign role `manage-users` to `Client Roles` `realm-management`
 
+Need fill to the configuration file in project:
 
     "keycloak_admin": {  
           "server_url": "keycloak-server-url",  
@@ -48,7 +49,7 @@ For client **admin-cli**:
           "password": "admin-password",  
           "realm_name": "realm-name-1",  
           "client_secret_key": ""  
-      }
+    }
 
 For client **account**:
 - In `Settings`:
@@ -57,6 +58,7 @@ For client **account**:
   - In section `OpenID Connect Compatibility Modes`:
     - Enable `Use Refresh Tokens For Client Credentials Grant`
 
+Need fill to the configuration file in project:
 
     "keycloak_account": {  
       "server_url": "keycloak-server-url",  
