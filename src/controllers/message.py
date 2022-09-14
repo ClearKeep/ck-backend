@@ -244,7 +244,7 @@ class MessageController(BaseController):
                 for notify_token in client.User.tokens:
                     device_id = notify_token.device_id
                     logger.info('device_id in real loop in handle {}'.format(device_id))
-                    if client.GroupClientKey.client_id == from_client_id and device_id == request.from_client_device_id:
+                    if client.GroupClientKey.client_id == from_client_id:
                         continue
                     message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
                     if message_channel in client_message_queue:
@@ -329,7 +329,7 @@ class MessageController(BaseController):
                     continue
                 device_id = notify_token.device_id
                 logger.info('device_id in real loop in handle {}'.format(device_id))
-                if client.GroupClientKey.client_id == from_client_id and device_id == request.from_client_device_id:
+                if client.GroupClientKey.client_id == from_client_id:
                     continue
                 message_channel = "message/{}/{}".format(client.GroupClientKey.client_id, device_id)
 
