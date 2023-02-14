@@ -77,12 +77,12 @@ class KeyCloakUtils:
     @staticmethod
     def get_user_by_email(email, get_user_id=False):
         try:
-            user_id = keycloak_admin.get_user_id(email)
-            user = keycloak_admin.get_user(user_id)
+            user_info = keycloak_admin.get_users({"email": email})[0]
             if get_user_id:
-                return user_id, user
-            else:
-                return user
+                return user_info.get("id"), user_info
+            return user_info
+        except IndexError as e:
+            return None
         except Exception as e:
             if get_user_id:
                 return None, None
