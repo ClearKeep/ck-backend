@@ -78,8 +78,8 @@ message AuthRes {
     string salt = 14;
     PeerGetClientKeyResponse client_key_peer = 15;
     string iv_parameter = 16;
-    string avatar = 17;
-    string error = 18;
+    string error = 17;
+    string avatar = 18;
 }
 
 //Register message struct

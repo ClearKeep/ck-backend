@@ -3,7 +3,6 @@
 # source: protos/auth.proto
 """Generated protocol buffer code."""
 from google.protobuf import descriptor as _descriptor
-from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
@@ -14,39 +13,1647 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x11protos/auth.proto\x12\x04\x61uth\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\xf0\x01\n\x1cPeerRegisterClientKeyRequest\x12\x16\n\x0eregistrationId\x18\x01 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x02 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x03 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x04 \x01(\x05\x12\x0e\n\x06preKey\x18\x05 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x06 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\x07 \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\x08 \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\t \x01(\t\"\x98\x02\n\x18PeerGetClientKeyResponse\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x16\n\x0eregistrationId\x18\x03 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x04 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x05 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x06 \x01(\x05\x12\x0e\n\x06preKey\x18\x07 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x08 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\t \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\n \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\x0b \x01(\t\"\\\n\x07\x41uthReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x15\n\rhash_password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"5\n\tLogoutReq\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x15\n\rrefresh_token\x18\x02 \x01(\t\"\"\n\x11\x46orgotPasswordReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"\xbe\x01\n\x17\x46orgotPasswordUpdateReq\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x19\n\x11password_verifier\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x06 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\"\x8f\x03\n\x07\x41uthRes\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x16\n\x0eworkspace_name\x18\x02 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x03 \x01(\t\x12\x12\n\nexpires_in\x18\x04 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x05 \x01(\x03\x12\x15\n\rrefresh_token\x18\x06 \x01(\t\x12\x12\n\ntoken_type\x18\x07 \x01(\t\x12\x15\n\rsession_state\x18\x08 \x01(\t\x12\r\n\x05scope\x18\t \x01(\t\x12\x10\n\x08hash_key\x18\n \x01(\t\x12\x0b\n\x03sub\x18\x0b \x01(\t\x12\x18\n\x10pre_access_token\x18\x0c \x01(\t\x12\x16\n\x0erequire_action\x18\r \x01(\t\x12\x0c\n\x04salt\x18\x0e \x01(\t\x12\x37\n\x0f\x63lient_key_peer\x18\x0f \x01(\x0b\x32\x1e.auth.PeerGetClientKeyResponse\x12\x14\n\x0civ_parameter\x18\x10 \x01(\t\x12\r\n\x05\x65rror\x18\x11 \x01(\t\"\xfe\x01\n\x0bRegisterReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x15\n\rhash_password\x18\x04 \x01(\t\x12\x11\n\tauth_type\x18\x05 \x01(\x03\x12\x12\n\nfirst_name\x18\x06 \x01(\t\x12\x11\n\tlast_name\x18\x07 \x01(\t\x12\x0c\n\x04salt\x18\x08 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\t \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\n \x01(\t\"\x1c\n\x0bRegisterRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"<\n\x0eGoogleLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08id_token\x18\x02 \x01(\t\"@\n\x0eOfficeLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"B\n\x10\x46\x61\x63\x65\x62ookLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"7\n\rAppleLoginReq\x12\x10\n\x08id_token\x18\x01 \x01(\t\x12\x14\n\x0c\x65nd_user_env\x18\x02 \x01(\t\"X\n\x0eSocialLoginRes\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x16\n\x0erequire_action\x18\x02 \x01(\t\x12\x1b\n\x13reset_pincode_token\x18\x03 \x01(\t\"\x9e\x01\n\x12RegisterPinCodeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x14\n\x0chash_pincode\x18\x02 \x01(\t\x12\x0c\n\x04salt\x18\x03 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x04 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\"^\n\x10VerifyPinCodeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\"\xb8\x01\n\x0fResetPinCodeReq\x12\x1b\n\x13reset_pincode_token\x18\x01 \x01(\t\x12\x11\n\tuser_name\x18\x02 \x01(\t\x12\x14\n\x0chash_pincode\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x06 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\"T\n\x15MfaValidateOtpRequest\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\x10\n\x08otp_code\x18\x02 \x01(\t\x12\x0f\n\x07user_id\x18\x03 \x01(\t\"<\n\x0fMfaResendOtpReq\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x18\n\x10pre_access_token\x18\x02 \x01(\t\"K\n\x0fMfaResendOtpRes\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\r\n\x05\x65rror\x18\x03 \x01(\t\"8\n\x10\x41uthChallengeReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\"B\n\x16\x41uthSocialChallengeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\"<\n\x10\x41uthChallengeRes\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"]\n\x0f\x41uthenticateReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\"\x85\x02\n\x0eRegisterSRPReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x19\n\x11password_verifier\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x05 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\x06 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x07 \x01(\t\x12\x11\n\tauth_type\x18\x08 \x01(\x03\x12\x12\n\nfirst_name\x18\t \x01(\t\x12\x11\n\tlast_name\x18\n \x01(\t\"\x1f\n\x0eRegisterSRPRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"(\n\x0fRefreshTokenReq\x12\x15\n\rrefresh_token\x18\x01 \x01(\t\"\xa8\x01\n\x0fRefreshTokenRes\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x01 \x01(\t\x12\x12\n\nexpires_in\x18\x02 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x03 \x01(\x03\x12\x15\n\rrefresh_token\x18\x04 \x01(\t\x12\x12\n\ntoken_type\x18\x05 \x01(\t\x12\x15\n\rsession_state\x18\x06 \x01(\t\x12\r\n\x05scope\x18\x07 \x01(\t2\xc0\x08\n\x04\x41uth\x12<\n\x0cregister_srp\x12\x14.auth.RegisterSRPReq\x1a\x14.auth.RegisterSRPRes\"\x00\x12@\n\x0f\x66orgot_password\x12\x17.auth.ForgotPasswordReq\x1a\x12.auth.BaseResponse\"\x00\x12\x43\n\x0flogin_challenge\x12\x16.auth.AuthChallengeReq\x1a\x16.auth.AuthChallengeRes\"\x00\x12H\n\x16\x66orgot_password_update\x12\x1d.auth.ForgotPasswordUpdateReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0clogin_google\x12\x14.auth.GoogleLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12<\n\x0clogin_office\x12\x14.auth.OfficeLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12@\n\x0elogin_facebook\x12\x16.auth.FacebookLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12:\n\x0blogin_apple\x12\x13.auth.AppleLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12P\n\x16login_social_challange\x12\x1c.auth.AuthSocialChallengeReq\x1a\x16.auth.AuthChallengeRes\"\x00\x12<\n\x12login_authenticate\x12\x15.auth.AuthenticateReq\x1a\r.auth.AuthRes\"\x00\x12?\n\rrefresh_token\x12\x15.auth.RefreshTokenReq\x1a\x15.auth.RefreshTokenRes\"\x00\x12/\n\x06logout\x12\x0f.auth.LogoutReq\x1a\x12.auth.BaseResponse\"\x00\x12=\n\x10register_pincode\x12\x18.auth.RegisterPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x39\n\x0everify_pincode\x12\x16.auth.VerifyPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x37\n\rreset_pincode\x12\x15.auth.ResetPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0cvalidate_otp\x12\x1b.auth.MfaValidateOtpRequest\x1a\r.auth.AuthRes\"\x00\x12<\n\nresend_otp\x12\x15.auth.MfaResendOtpReq\x1a\x15.auth.MfaResendOtpRes\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor.FileDescriptor(
+  name='protos/auth.proto',
+  package='auth',
+  syntax='proto3',
+  serialized_options=None,
+  create_key=_descriptor._internal_create_key,
+  serialized_pb=b'\n\x11protos/auth.proto\x12\x04\x61uth\"\x1d\n\x0c\x42\x61seResponse\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"\xf0\x01\n\x1cPeerRegisterClientKeyRequest\x12\x16\n\x0eregistrationId\x18\x01 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x02 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x03 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x04 \x01(\x05\x12\x0e\n\x06preKey\x18\x05 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x06 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\x07 \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\x08 \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\t \x01(\t\"\x98\x02\n\x18PeerGetClientKeyResponse\x12\x10\n\x08\x63lientId\x18\x01 \x01(\t\x12\x18\n\x10workspace_domain\x18\x02 \x01(\t\x12\x16\n\x0eregistrationId\x18\x03 \x01(\x05\x12\x10\n\x08\x64\x65viceId\x18\x04 \x01(\x05\x12\x19\n\x11identityKeyPublic\x18\x05 \x01(\x0c\x12\x10\n\x08preKeyId\x18\x06 \x01(\x05\x12\x0e\n\x06preKey\x18\x07 \x01(\x0c\x12\x16\n\x0esignedPreKeyId\x18\x08 \x01(\x05\x12\x14\n\x0csignedPreKey\x18\t \x01(\x0c\x12\x1d\n\x15signedPreKeySignature\x18\n \x01(\x0c\x12\x1c\n\x14identityKeyEncrypted\x18\x0b \x01(\t\"\\\n\x07\x41uthReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x15\n\rhash_password\x18\x03 \x01(\t\x12\x11\n\tauth_type\x18\x04 \x01(\x03\"5\n\tLogoutReq\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12\x15\n\rrefresh_token\x18\x02 \x01(\t\"\"\n\x11\x46orgotPasswordReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"\xbe\x01\n\x17\x46orgotPasswordUpdateReq\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x19\n\x11password_verifier\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x06 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\"\x9f\x03\n\x07\x41uthRes\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x16\n\x0eworkspace_name\x18\x02 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x03 \x01(\t\x12\x12\n\nexpires_in\x18\x04 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x05 \x01(\x03\x12\x15\n\rrefresh_token\x18\x06 \x01(\t\x12\x12\n\ntoken_type\x18\x07 \x01(\t\x12\x15\n\rsession_state\x18\x08 \x01(\t\x12\r\n\x05scope\x18\t \x01(\t\x12\x10\n\x08hash_key\x18\n \x01(\t\x12\x0b\n\x03sub\x18\x0b \x01(\t\x12\x18\n\x10pre_access_token\x18\x0c \x01(\t\x12\x16\n\x0erequire_action\x18\r \x01(\t\x12\x0c\n\x04salt\x18\x0e \x01(\t\x12\x37\n\x0f\x63lient_key_peer\x18\x0f \x01(\x0b\x32\x1e.auth.PeerGetClientKeyResponse\x12\x14\n\x0civ_parameter\x18\x10 \x01(\t\x12\r\n\x05\x65rror\x18\x11 \x01(\t\x12\x0e\n\x06\x61vatar\x18\x12 \x01(\t\"\xfe\x01\n\x0bRegisterReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x03 \x01(\t\x12\x15\n\rhash_password\x18\x04 \x01(\t\x12\x11\n\tauth_type\x18\x05 \x01(\x03\x12\x12\n\nfirst_name\x18\x06 \x01(\t\x12\x11\n\tlast_name\x18\x07 \x01(\t\x12\x0c\n\x04salt\x18\x08 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\t \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\n \x01(\t\"\x1c\n\x0bRegisterRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"<\n\x0eGoogleLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x10\n\x08id_token\x18\x02 \x01(\t\"@\n\x0eOfficeLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"B\n\x10\x46\x61\x63\x65\x62ookLoginReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x02 \x01(\t\"7\n\rAppleLoginReq\x12\x10\n\x08id_token\x18\x01 \x01(\t\x12\x14\n\x0c\x65nd_user_env\x18\x02 \x01(\t\"X\n\x0eSocialLoginRes\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x16\n\x0erequire_action\x18\x02 \x01(\t\x12\x1b\n\x13reset_pincode_token\x18\x03 \x01(\t\"\x9e\x01\n\x12RegisterPinCodeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x14\n\x0chash_pincode\x18\x02 \x01(\t\x12\x0c\n\x04salt\x18\x03 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x04 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\"^\n\x10VerifyPinCodeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\"\xb8\x01\n\x0fResetPinCodeReq\x12\x1b\n\x13reset_pincode_token\x18\x01 \x01(\t\x12\x11\n\tuser_name\x18\x02 \x01(\t\x12\x14\n\x0chash_pincode\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12\x14\n\x0civ_parameter\x18\x05 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x06 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\"T\n\x15MfaValidateOtpRequest\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\x10\n\x08otp_code\x18\x02 \x01(\t\x12\x0f\n\x07user_id\x18\x03 \x01(\t\"<\n\x0fMfaResendOtpReq\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x18\n\x10pre_access_token\x18\x02 \x01(\t\"K\n\x0fMfaResendOtpRes\x12\x18\n\x10pre_access_token\x18\x01 \x01(\t\x12\x0f\n\x07success\x18\x02 \x01(\x08\x12\r\n\x05\x65rror\x18\x03 \x01(\t\"8\n\x10\x41uthChallengeReq\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\"B\n\x16\x41uthSocialChallengeReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\"<\n\x10\x41uthChallengeRes\x12\x0c\n\x04salt\x18\x01 \x01(\t\x12\x1a\n\x12public_challenge_b\x18\x02 \x01(\t\"]\n\x0f\x41uthenticateReq\x12\x11\n\tuser_name\x18\x01 \x01(\t\x12\x15\n\rclient_public\x18\x02 \x01(\t\x12 \n\x18\x63lient_session_key_proof\x18\x03 \x01(\t\"\x85\x02\n\x0eRegisterSRPReq\x12\x18\n\x10workspace_domain\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x19\n\x11password_verifier\x18\x03 \x01(\t\x12\x0c\n\x04salt\x18\x04 \x01(\t\x12;\n\x0f\x63lient_key_peer\x18\x05 \x01(\x0b\x32\".auth.PeerRegisterClientKeyRequest\x12\x14\n\x0civ_parameter\x18\x06 \x01(\t\x12\x14\n\x0c\x64isplay_name\x18\x07 \x01(\t\x12\x11\n\tauth_type\x18\x08 \x01(\x03\x12\x12\n\nfirst_name\x18\t \x01(\t\x12\x11\n\tlast_name\x18\n \x01(\t\"\x1f\n\x0eRegisterSRPRes\x12\r\n\x05\x65rror\x18\x01 \x01(\t\"(\n\x0fRefreshTokenReq\x12\x15\n\rrefresh_token\x18\x01 \x01(\t\"\xa8\x01\n\x0fRefreshTokenRes\x12\x14\n\x0c\x61\x63\x63\x65ss_token\x18\x01 \x01(\t\x12\x12\n\nexpires_in\x18\x02 \x01(\x03\x12\x1a\n\x12refresh_expires_in\x18\x03 \x01(\x03\x12\x15\n\rrefresh_token\x18\x04 \x01(\t\x12\x12\n\ntoken_type\x18\x05 \x01(\t\x12\x15\n\rsession_state\x18\x06 \x01(\t\x12\r\n\x05scope\x18\x07 \x01(\t2\xc0\x08\n\x04\x41uth\x12<\n\x0cregister_srp\x12\x14.auth.RegisterSRPReq\x1a\x14.auth.RegisterSRPRes\"\x00\x12@\n\x0f\x66orgot_password\x12\x17.auth.ForgotPasswordReq\x1a\x12.auth.BaseResponse\"\x00\x12\x43\n\x0flogin_challenge\x12\x16.auth.AuthChallengeReq\x1a\x16.auth.AuthChallengeRes\"\x00\x12H\n\x16\x66orgot_password_update\x12\x1d.auth.ForgotPasswordUpdateReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0clogin_google\x12\x14.auth.GoogleLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12<\n\x0clogin_office\x12\x14.auth.OfficeLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12@\n\x0elogin_facebook\x12\x16.auth.FacebookLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12:\n\x0blogin_apple\x12\x13.auth.AppleLoginReq\x1a\x14.auth.SocialLoginRes\"\x00\x12P\n\x16login_social_challange\x12\x1c.auth.AuthSocialChallengeReq\x1a\x16.auth.AuthChallengeRes\"\x00\x12<\n\x12login_authenticate\x12\x15.auth.AuthenticateReq\x1a\r.auth.AuthRes\"\x00\x12?\n\rrefresh_token\x12\x15.auth.RefreshTokenReq\x1a\x15.auth.RefreshTokenRes\"\x00\x12/\n\x06logout\x12\x0f.auth.LogoutReq\x1a\x12.auth.BaseResponse\"\x00\x12=\n\x10register_pincode\x12\x18.auth.RegisterPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x39\n\x0everify_pincode\x12\x16.auth.VerifyPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12\x37\n\rreset_pincode\x12\x15.auth.ResetPinCodeReq\x1a\r.auth.AuthRes\"\x00\x12<\n\x0cvalidate_otp\x12\x1b.auth.MfaValidateOtpRequest\x1a\r.auth.AuthRes\"\x00\x12<\n\nresend_otp\x12\x15.auth.MfaResendOtpReq\x1a\x15.auth.MfaResendOtpRes\"\x00\x62\x06proto3'
+)
 
 
 
-_BASERESPONSE = DESCRIPTOR.message_types_by_name['BaseResponse']
-_PEERREGISTERCLIENTKEYREQUEST = DESCRIPTOR.message_types_by_name['PeerRegisterClientKeyRequest']
-_PEERGETCLIENTKEYRESPONSE = DESCRIPTOR.message_types_by_name['PeerGetClientKeyResponse']
-_AUTHREQ = DESCRIPTOR.message_types_by_name['AuthReq']
-_LOGOUTREQ = DESCRIPTOR.message_types_by_name['LogoutReq']
-_FORGOTPASSWORDREQ = DESCRIPTOR.message_types_by_name['ForgotPasswordReq']
-_FORGOTPASSWORDUPDATEREQ = DESCRIPTOR.message_types_by_name['ForgotPasswordUpdateReq']
-_AUTHRES = DESCRIPTOR.message_types_by_name['AuthRes']
-_REGISTERREQ = DESCRIPTOR.message_types_by_name['RegisterReq']
-_REGISTERRES = DESCRIPTOR.message_types_by_name['RegisterRes']
-_GOOGLELOGINREQ = DESCRIPTOR.message_types_by_name['GoogleLoginReq']
-_OFFICELOGINREQ = DESCRIPTOR.message_types_by_name['OfficeLoginReq']
-_FACEBOOKLOGINREQ = DESCRIPTOR.message_types_by_name['FacebookLoginReq']
-_APPLELOGINREQ = DESCRIPTOR.message_types_by_name['AppleLoginReq']
-_SOCIALLOGINRES = DESCRIPTOR.message_types_by_name['SocialLoginRes']
-_REGISTERPINCODEREQ = DESCRIPTOR.message_types_by_name['RegisterPinCodeReq']
-_VERIFYPINCODEREQ = DESCRIPTOR.message_types_by_name['VerifyPinCodeReq']
-_RESETPINCODEREQ = DESCRIPTOR.message_types_by_name['ResetPinCodeReq']
-_MFAVALIDATEOTPREQUEST = DESCRIPTOR.message_types_by_name['MfaValidateOtpRequest']
-_MFARESENDOTPREQ = DESCRIPTOR.message_types_by_name['MfaResendOtpReq']
-_MFARESENDOTPRES = DESCRIPTOR.message_types_by_name['MfaResendOtpRes']
-_AUTHCHALLENGEREQ = DESCRIPTOR.message_types_by_name['AuthChallengeReq']
-_AUTHSOCIALCHALLENGEREQ = DESCRIPTOR.message_types_by_name['AuthSocialChallengeReq']
-_AUTHCHALLENGERES = DESCRIPTOR.message_types_by_name['AuthChallengeRes']
-_AUTHENTICATEREQ = DESCRIPTOR.message_types_by_name['AuthenticateReq']
-_REGISTERSRPREQ = DESCRIPTOR.message_types_by_name['RegisterSRPReq']
-_REGISTERSRPRES = DESCRIPTOR.message_types_by_name['RegisterSRPRes']
-_REFRESHTOKENREQ = DESCRIPTOR.message_types_by_name['RefreshTokenReq']
-_REFRESHTOKENRES = DESCRIPTOR.message_types_by_name['RefreshTokenRes']
+
+_BASERESPONSE = _descriptor.Descriptor(
+  name='BaseResponse',
+  full_name='auth.BaseResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='error', full_name='auth.BaseResponse.error', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=27,
+  serialized_end=56,
+)
+
+
+_PEERREGISTERCLIENTKEYREQUEST = _descriptor.Descriptor(
+  name='PeerRegisterClientKeyRequest',
+  full_name='auth.PeerRegisterClientKeyRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='registrationId', full_name='auth.PeerRegisterClientKeyRequest.registrationId', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='deviceId', full_name='auth.PeerRegisterClientKeyRequest.deviceId', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='identityKeyPublic', full_name='auth.PeerRegisterClientKeyRequest.identityKeyPublic', index=2,
+      number=3, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='preKeyId', full_name='auth.PeerRegisterClientKeyRequest.preKeyId', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='preKey', full_name='auth.PeerRegisterClientKeyRequest.preKey', index=4,
+      number=5, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='signedPreKeyId', full_name='auth.PeerRegisterClientKeyRequest.signedPreKeyId', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='signedPreKey', full_name='auth.PeerRegisterClientKeyRequest.signedPreKey', index=6,
+      number=7, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='signedPreKeySignature', full_name='auth.PeerRegisterClientKeyRequest.signedPreKeySignature', index=7,
+      number=8, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='identityKeyEncrypted', full_name='auth.PeerRegisterClientKeyRequest.identityKeyEncrypted', index=8,
+      number=9, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=59,
+  serialized_end=299,
+)
+
+
+_PEERGETCLIENTKEYRESPONSE = _descriptor.Descriptor(
+  name='PeerGetClientKeyResponse',
+  full_name='auth.PeerGetClientKeyResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='clientId', full_name='auth.PeerGetClientKeyResponse.clientId', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='workspace_domain', full_name='auth.PeerGetClientKeyResponse.workspace_domain', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='registrationId', full_name='auth.PeerGetClientKeyResponse.registrationId', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='deviceId', full_name='auth.PeerGetClientKeyResponse.deviceId', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='identityKeyPublic', full_name='auth.PeerGetClientKeyResponse.identityKeyPublic', index=4,
+      number=5, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='preKeyId', full_name='auth.PeerGetClientKeyResponse.preKeyId', index=5,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='preKey', full_name='auth.PeerGetClientKeyResponse.preKey', index=6,
+      number=7, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='signedPreKeyId', full_name='auth.PeerGetClientKeyResponse.signedPreKeyId', index=7,
+      number=8, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='signedPreKey', full_name='auth.PeerGetClientKeyResponse.signedPreKey', index=8,
+      number=9, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='signedPreKeySignature', full_name='auth.PeerGetClientKeyResponse.signedPreKeySignature', index=9,
+      number=10, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='identityKeyEncrypted', full_name='auth.PeerGetClientKeyResponse.identityKeyEncrypted', index=10,
+      number=11, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=302,
+  serialized_end=582,
+)
+
+
+_AUTHREQ = _descriptor.Descriptor(
+  name='AuthReq',
+  full_name='auth.AuthReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='workspace_domain', full_name='auth.AuthReq.workspace_domain', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='email', full_name='auth.AuthReq.email', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='hash_password', full_name='auth.AuthReq.hash_password', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='auth_type', full_name='auth.AuthReq.auth_type', index=3,
+      number=4, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=584,
+  serialized_end=676,
+)
+
+
+_LOGOUTREQ = _descriptor.Descriptor(
+  name='LogoutReq',
+  full_name='auth.LogoutReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='device_id', full_name='auth.LogoutReq.device_id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='refresh_token', full_name='auth.LogoutReq.refresh_token', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=678,
+  serialized_end=731,
+)
+
+
+_FORGOTPASSWORDREQ = _descriptor.Descriptor(
+  name='ForgotPasswordReq',
+  full_name='auth.ForgotPasswordReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='email', full_name='auth.ForgotPasswordReq.email', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=733,
+  serialized_end=767,
+)
+
+
+_FORGOTPASSWORDUPDATEREQ = _descriptor.Descriptor(
+  name='ForgotPasswordUpdateReq',
+  full_name='auth.ForgotPasswordUpdateReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='pre_access_token', full_name='auth.ForgotPasswordUpdateReq.pre_access_token', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='email', full_name='auth.ForgotPasswordUpdateReq.email', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='password_verifier', full_name='auth.ForgotPasswordUpdateReq.password_verifier', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='salt', full_name='auth.ForgotPasswordUpdateReq.salt', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='iv_parameter', full_name='auth.ForgotPasswordUpdateReq.iv_parameter', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_key_peer', full_name='auth.ForgotPasswordUpdateReq.client_key_peer', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=770,
+  serialized_end=960,
+)
+
+
+_AUTHRES = _descriptor.Descriptor(
+  name='AuthRes',
+  full_name='auth.AuthRes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='workspace_domain', full_name='auth.AuthRes.workspace_domain', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='workspace_name', full_name='auth.AuthRes.workspace_name', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='access_token', full_name='auth.AuthRes.access_token', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='expires_in', full_name='auth.AuthRes.expires_in', index=3,
+      number=4, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='refresh_expires_in', full_name='auth.AuthRes.refresh_expires_in', index=4,
+      number=5, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='refresh_token', full_name='auth.AuthRes.refresh_token', index=5,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='token_type', full_name='auth.AuthRes.token_type', index=6,
+      number=7, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='session_state', full_name='auth.AuthRes.session_state', index=7,
+      number=8, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='scope', full_name='auth.AuthRes.scope', index=8,
+      number=9, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='hash_key', full_name='auth.AuthRes.hash_key', index=9,
+      number=10, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='sub', full_name='auth.AuthRes.sub', index=10,
+      number=11, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='pre_access_token', full_name='auth.AuthRes.pre_access_token', index=11,
+      number=12, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='require_action', full_name='auth.AuthRes.require_action', index=12,
+      number=13, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='salt', full_name='auth.AuthRes.salt', index=13,
+      number=14, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_key_peer', full_name='auth.AuthRes.client_key_peer', index=14,
+      number=15, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='iv_parameter', full_name='auth.AuthRes.iv_parameter', index=15,
+      number=16, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='error', full_name='auth.AuthRes.error', index=16,
+      number=17, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='avatar', full_name='auth.AuthRes.avatar', index=17,
+      number=18, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=963,
+  serialized_end=1378,
+)
+
+
+_REGISTERREQ = _descriptor.Descriptor(
+  name='RegisterReq',
+  full_name='auth.RegisterReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='workspace_domain', full_name='auth.RegisterReq.workspace_domain', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='email', full_name='auth.RegisterReq.email', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='display_name', full_name='auth.RegisterReq.display_name', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='hash_password', full_name='auth.RegisterReq.hash_password', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='auth_type', full_name='auth.RegisterReq.auth_type', index=4,
+      number=5, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='first_name', full_name='auth.RegisterReq.first_name', index=5,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='last_name', full_name='auth.RegisterReq.last_name', index=6,
+      number=7, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='salt', full_name='auth.RegisterReq.salt', index=7,
+      number=8, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_key_peer', full_name='auth.RegisterReq.client_key_peer', index=8,
+      number=9, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='iv_parameter', full_name='auth.RegisterReq.iv_parameter', index=9,
+      number=10, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1381,
+  serialized_end=1635,
+)
+
+
+_REGISTERRES = _descriptor.Descriptor(
+  name='RegisterRes',
+  full_name='auth.RegisterRes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='error', full_name='auth.RegisterRes.error', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1637,
+  serialized_end=1665,
+)
+
+
+_GOOGLELOGINREQ = _descriptor.Descriptor(
+  name='GoogleLoginReq',
+  full_name='auth.GoogleLoginReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='workspace_domain', full_name='auth.GoogleLoginReq.workspace_domain', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='id_token', full_name='auth.GoogleLoginReq.id_token', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1667,
+  serialized_end=1727,
+)
+
+
+_OFFICELOGINREQ = _descriptor.Descriptor(
+  name='OfficeLoginReq',
+  full_name='auth.OfficeLoginReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='workspace_domain', full_name='auth.OfficeLoginReq.workspace_domain', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='access_token', full_name='auth.OfficeLoginReq.access_token', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1729,
+  serialized_end=1793,
+)
+
+
+_FACEBOOKLOGINREQ = _descriptor.Descriptor(
+  name='FacebookLoginReq',
+  full_name='auth.FacebookLoginReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='workspace_domain', full_name='auth.FacebookLoginReq.workspace_domain', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='access_token', full_name='auth.FacebookLoginReq.access_token', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1795,
+  serialized_end=1861,
+)
+
+
+_APPLELOGINREQ = _descriptor.Descriptor(
+  name='AppleLoginReq',
+  full_name='auth.AppleLoginReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id_token', full_name='auth.AppleLoginReq.id_token', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='end_user_env', full_name='auth.AppleLoginReq.end_user_env', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1863,
+  serialized_end=1918,
+)
+
+
+_SOCIALLOGINRES = _descriptor.Descriptor(
+  name='SocialLoginRes',
+  full_name='auth.SocialLoginRes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='user_name', full_name='auth.SocialLoginRes.user_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='require_action', full_name='auth.SocialLoginRes.require_action', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='reset_pincode_token', full_name='auth.SocialLoginRes.reset_pincode_token', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1920,
+  serialized_end=2008,
+)
+
+
+_REGISTERPINCODEREQ = _descriptor.Descriptor(
+  name='RegisterPinCodeReq',
+  full_name='auth.RegisterPinCodeReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='user_name', full_name='auth.RegisterPinCodeReq.user_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='hash_pincode', full_name='auth.RegisterPinCodeReq.hash_pincode', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='salt', full_name='auth.RegisterPinCodeReq.salt', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_key_peer', full_name='auth.RegisterPinCodeReq.client_key_peer', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='iv_parameter', full_name='auth.RegisterPinCodeReq.iv_parameter', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2011,
+  serialized_end=2169,
+)
+
+
+_VERIFYPINCODEREQ = _descriptor.Descriptor(
+  name='VerifyPinCodeReq',
+  full_name='auth.VerifyPinCodeReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='user_name', full_name='auth.VerifyPinCodeReq.user_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_public', full_name='auth.VerifyPinCodeReq.client_public', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_session_key_proof', full_name='auth.VerifyPinCodeReq.client_session_key_proof', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2171,
+  serialized_end=2265,
+)
+
+
+_RESETPINCODEREQ = _descriptor.Descriptor(
+  name='ResetPinCodeReq',
+  full_name='auth.ResetPinCodeReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='reset_pincode_token', full_name='auth.ResetPinCodeReq.reset_pincode_token', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='user_name', full_name='auth.ResetPinCodeReq.user_name', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='hash_pincode', full_name='auth.ResetPinCodeReq.hash_pincode', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='salt', full_name='auth.ResetPinCodeReq.salt', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='iv_parameter', full_name='auth.ResetPinCodeReq.iv_parameter', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_key_peer', full_name='auth.ResetPinCodeReq.client_key_peer', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2268,
+  serialized_end=2452,
+)
+
+
+_MFAVALIDATEOTPREQUEST = _descriptor.Descriptor(
+  name='MfaValidateOtpRequest',
+  full_name='auth.MfaValidateOtpRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='pre_access_token', full_name='auth.MfaValidateOtpRequest.pre_access_token', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='otp_code', full_name='auth.MfaValidateOtpRequest.otp_code', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='user_id', full_name='auth.MfaValidateOtpRequest.user_id', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2454,
+  serialized_end=2538,
+)
+
+
+_MFARESENDOTPREQ = _descriptor.Descriptor(
+  name='MfaResendOtpReq',
+  full_name='auth.MfaResendOtpReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='user_id', full_name='auth.MfaResendOtpReq.user_id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='pre_access_token', full_name='auth.MfaResendOtpReq.pre_access_token', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2540,
+  serialized_end=2600,
+)
+
+
+_MFARESENDOTPRES = _descriptor.Descriptor(
+  name='MfaResendOtpRes',
+  full_name='auth.MfaResendOtpRes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='pre_access_token', full_name='auth.MfaResendOtpRes.pre_access_token', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='success', full_name='auth.MfaResendOtpRes.success', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='error', full_name='auth.MfaResendOtpRes.error', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2602,
+  serialized_end=2677,
+)
+
+
+_AUTHCHALLENGEREQ = _descriptor.Descriptor(
+  name='AuthChallengeReq',
+  full_name='auth.AuthChallengeReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='email', full_name='auth.AuthChallengeReq.email', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_public', full_name='auth.AuthChallengeReq.client_public', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2679,
+  serialized_end=2735,
+)
+
+
+_AUTHSOCIALCHALLENGEREQ = _descriptor.Descriptor(
+  name='AuthSocialChallengeReq',
+  full_name='auth.AuthSocialChallengeReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='user_name', full_name='auth.AuthSocialChallengeReq.user_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_public', full_name='auth.AuthSocialChallengeReq.client_public', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2737,
+  serialized_end=2803,
+)
+
+
+_AUTHCHALLENGERES = _descriptor.Descriptor(
+  name='AuthChallengeRes',
+  full_name='auth.AuthChallengeRes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='salt', full_name='auth.AuthChallengeRes.salt', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='public_challenge_b', full_name='auth.AuthChallengeRes.public_challenge_b', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2805,
+  serialized_end=2865,
+)
+
+
+_AUTHENTICATEREQ = _descriptor.Descriptor(
+  name='AuthenticateReq',
+  full_name='auth.AuthenticateReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='user_name', full_name='auth.AuthenticateReq.user_name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_public', full_name='auth.AuthenticateReq.client_public', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_session_key_proof', full_name='auth.AuthenticateReq.client_session_key_proof', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2867,
+  serialized_end=2960,
+)
+
+
+_REGISTERSRPREQ = _descriptor.Descriptor(
+  name='RegisterSRPReq',
+  full_name='auth.RegisterSRPReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='workspace_domain', full_name='auth.RegisterSRPReq.workspace_domain', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='email', full_name='auth.RegisterSRPReq.email', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='password_verifier', full_name='auth.RegisterSRPReq.password_verifier', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='salt', full_name='auth.RegisterSRPReq.salt', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='client_key_peer', full_name='auth.RegisterSRPReq.client_key_peer', index=4,
+      number=5, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='iv_parameter', full_name='auth.RegisterSRPReq.iv_parameter', index=5,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='display_name', full_name='auth.RegisterSRPReq.display_name', index=6,
+      number=7, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='auth_type', full_name='auth.RegisterSRPReq.auth_type', index=7,
+      number=8, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='first_name', full_name='auth.RegisterSRPReq.first_name', index=8,
+      number=9, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='last_name', full_name='auth.RegisterSRPReq.last_name', index=9,
+      number=10, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2963,
+  serialized_end=3224,
+)
+
+
+_REGISTERSRPRES = _descriptor.Descriptor(
+  name='RegisterSRPRes',
+  full_name='auth.RegisterSRPRes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='error', full_name='auth.RegisterSRPRes.error', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3226,
+  serialized_end=3257,
+)
+
+
+_REFRESHTOKENREQ = _descriptor.Descriptor(
+  name='RefreshTokenReq',
+  full_name='auth.RefreshTokenReq',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='refresh_token', full_name='auth.RefreshTokenReq.refresh_token', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3259,
+  serialized_end=3299,
+)
+
+
+_REFRESHTOKENRES = _descriptor.Descriptor(
+  name='RefreshTokenRes',
+  full_name='auth.RefreshTokenRes',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='access_token', full_name='auth.RefreshTokenRes.access_token', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='expires_in', full_name='auth.RefreshTokenRes.expires_in', index=1,
+      number=2, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='refresh_expires_in', full_name='auth.RefreshTokenRes.refresh_expires_in', index=2,
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='refresh_token', full_name='auth.RefreshTokenRes.refresh_token', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='token_type', full_name='auth.RefreshTokenRes.token_type', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='session_state', full_name='auth.RefreshTokenRes.session_state', index=5,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='scope', full_name='auth.RefreshTokenRes.scope', index=6,
+      number=7, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3302,
+  serialized_end=3470,
+)
+
+_FORGOTPASSWORDUPDATEREQ.fields_by_name['client_key_peer'].message_type = _PEERREGISTERCLIENTKEYREQUEST
+_AUTHRES.fields_by_name['client_key_peer'].message_type = _PEERGETCLIENTKEYRESPONSE
+_REGISTERREQ.fields_by_name['client_key_peer'].message_type = _PEERREGISTERCLIENTKEYREQUEST
+_REGISTERPINCODEREQ.fields_by_name['client_key_peer'].message_type = _PEERREGISTERCLIENTKEYREQUEST
+_RESETPINCODEREQ.fields_by_name['client_key_peer'].message_type = _PEERREGISTERCLIENTKEYREQUEST
+_REGISTERSRPREQ.fields_by_name['client_key_peer'].message_type = _PEERREGISTERCLIENTKEYREQUEST
+DESCRIPTOR.message_types_by_name['BaseResponse'] = _BASERESPONSE
+DESCRIPTOR.message_types_by_name['PeerRegisterClientKeyRequest'] = _PEERREGISTERCLIENTKEYREQUEST
+DESCRIPTOR.message_types_by_name['PeerGetClientKeyResponse'] = _PEERGETCLIENTKEYRESPONSE
+DESCRIPTOR.message_types_by_name['AuthReq'] = _AUTHREQ
+DESCRIPTOR.message_types_by_name['LogoutReq'] = _LOGOUTREQ
+DESCRIPTOR.message_types_by_name['ForgotPasswordReq'] = _FORGOTPASSWORDREQ
+DESCRIPTOR.message_types_by_name['ForgotPasswordUpdateReq'] = _FORGOTPASSWORDUPDATEREQ
+DESCRIPTOR.message_types_by_name['AuthRes'] = _AUTHRES
+DESCRIPTOR.message_types_by_name['RegisterReq'] = _REGISTERREQ
+DESCRIPTOR.message_types_by_name['RegisterRes'] = _REGISTERRES
+DESCRIPTOR.message_types_by_name['GoogleLoginReq'] = _GOOGLELOGINREQ
+DESCRIPTOR.message_types_by_name['OfficeLoginReq'] = _OFFICELOGINREQ
+DESCRIPTOR.message_types_by_name['FacebookLoginReq'] = _FACEBOOKLOGINREQ
+DESCRIPTOR.message_types_by_name['AppleLoginReq'] = _APPLELOGINREQ
+DESCRIPTOR.message_types_by_name['SocialLoginRes'] = _SOCIALLOGINRES
+DESCRIPTOR.message_types_by_name['RegisterPinCodeReq'] = _REGISTERPINCODEREQ
+DESCRIPTOR.message_types_by_name['VerifyPinCodeReq'] = _VERIFYPINCODEREQ
+DESCRIPTOR.message_types_by_name['ResetPinCodeReq'] = _RESETPINCODEREQ
+DESCRIPTOR.message_types_by_name['MfaValidateOtpRequest'] = _MFAVALIDATEOTPREQUEST
+DESCRIPTOR.message_types_by_name['MfaResendOtpReq'] = _MFARESENDOTPREQ
+DESCRIPTOR.message_types_by_name['MfaResendOtpRes'] = _MFARESENDOTPRES
+DESCRIPTOR.message_types_by_name['AuthChallengeReq'] = _AUTHCHALLENGEREQ
+DESCRIPTOR.message_types_by_name['AuthSocialChallengeReq'] = _AUTHSOCIALCHALLENGEREQ
+DESCRIPTOR.message_types_by_name['AuthChallengeRes'] = _AUTHCHALLENGERES
+DESCRIPTOR.message_types_by_name['AuthenticateReq'] = _AUTHENTICATEREQ
+DESCRIPTOR.message_types_by_name['RegisterSRPReq'] = _REGISTERSRPREQ
+DESCRIPTOR.message_types_by_name['RegisterSRPRes'] = _REGISTERSRPRES
+DESCRIPTOR.message_types_by_name['RefreshTokenReq'] = _REFRESHTOKENREQ
+DESCRIPTOR.message_types_by_name['RefreshTokenRes'] = _REFRESHTOKENRES
+_sym_db.RegisterFileDescriptor(DESCRIPTOR)
+
 BaseResponse = _reflection.GeneratedProtocolMessageType('BaseResponse', (_message.Message,), {
   'DESCRIPTOR' : _BASERESPONSE,
   '__module__' : 'protos.auth_pb2'
@@ -250,68 +1857,191 @@ RefreshTokenRes = _reflection.GeneratedProtocolMessageType('RefreshTokenRes', (_
   })
 _sym_db.RegisterMessage(RefreshTokenRes)
 
-_AUTH = DESCRIPTOR.services_by_name['Auth']
-if _descriptor._USE_C_DESCRIPTORS == False:
 
-  DESCRIPTOR._options = None
-  _BASERESPONSE._serialized_start=27
-  _BASERESPONSE._serialized_end=56
-  _PEERREGISTERCLIENTKEYREQUEST._serialized_start=59
-  _PEERREGISTERCLIENTKEYREQUEST._serialized_end=299
-  _PEERGETCLIENTKEYRESPONSE._serialized_start=302
-  _PEERGETCLIENTKEYRESPONSE._serialized_end=582
-  _AUTHREQ._serialized_start=584
-  _AUTHREQ._serialized_end=676
-  _LOGOUTREQ._serialized_start=678
-  _LOGOUTREQ._serialized_end=731
-  _FORGOTPASSWORDREQ._serialized_start=733
-  _FORGOTPASSWORDREQ._serialized_end=767
-  _FORGOTPASSWORDUPDATEREQ._serialized_start=770
-  _FORGOTPASSWORDUPDATEREQ._serialized_end=960
-  _AUTHRES._serialized_start=963
-  _AUTHRES._serialized_end=1362
-  _REGISTERREQ._serialized_start=1365
-  _REGISTERREQ._serialized_end=1619
-  _REGISTERRES._serialized_start=1621
-  _REGISTERRES._serialized_end=1649
-  _GOOGLELOGINREQ._serialized_start=1651
-  _GOOGLELOGINREQ._serialized_end=1711
-  _OFFICELOGINREQ._serialized_start=1713
-  _OFFICELOGINREQ._serialized_end=1777
-  _FACEBOOKLOGINREQ._serialized_start=1779
-  _FACEBOOKLOGINREQ._serialized_end=1845
-  _APPLELOGINREQ._serialized_start=1847
-  _APPLELOGINREQ._serialized_end=1902
-  _SOCIALLOGINRES._serialized_start=1904
-  _SOCIALLOGINRES._serialized_end=1992
-  _REGISTERPINCODEREQ._serialized_start=1995
-  _REGISTERPINCODEREQ._serialized_end=2153
-  _VERIFYPINCODEREQ._serialized_start=2155
-  _VERIFYPINCODEREQ._serialized_end=2249
-  _RESETPINCODEREQ._serialized_start=2252
-  _RESETPINCODEREQ._serialized_end=2436
-  _MFAVALIDATEOTPREQUEST._serialized_start=2438
-  _MFAVALIDATEOTPREQUEST._serialized_end=2522
-  _MFARESENDOTPREQ._serialized_start=2524
-  _MFARESENDOTPREQ._serialized_end=2584
-  _MFARESENDOTPRES._serialized_start=2586
-  _MFARESENDOTPRES._serialized_end=2661
-  _AUTHCHALLENGEREQ._serialized_start=2663
-  _AUTHCHALLENGEREQ._serialized_end=2719
-  _AUTHSOCIALCHALLENGEREQ._serialized_start=2721
-  _AUTHSOCIALCHALLENGEREQ._serialized_end=2787
-  _AUTHCHALLENGERES._serialized_start=2789
-  _AUTHCHALLENGERES._serialized_end=2849
-  _AUTHENTICATEREQ._serialized_start=2851
-  _AUTHENTICATEREQ._serialized_end=2944
-  _REGISTERSRPREQ._serialized_start=2947
-  _REGISTERSRPREQ._serialized_end=3208
-  _REGISTERSRPRES._serialized_start=3210
-  _REGISTERSRPRES._serialized_end=3241
-  _REFRESHTOKENREQ._serialized_start=3243
-  _REFRESHTOKENREQ._serialized_end=3283
-  _REFRESHTOKENRES._serialized_start=3286
-  _REFRESHTOKENRES._serialized_end=3454
-  _AUTH._serialized_start=3457
-  _AUTH._serialized_end=4545
+
+_AUTH = _descriptor.ServiceDescriptor(
+  name='Auth',
+  full_name='auth.Auth',
+  file=DESCRIPTOR,
+  index=0,
+  serialized_options=None,
+  create_key=_descriptor._internal_create_key,
+  serialized_start=3473,
+  serialized_end=4561,
+  methods=[
+  _descriptor.MethodDescriptor(
+    name='register_srp',
+    full_name='auth.Auth.register_srp',
+    index=0,
+    containing_service=None,
+    input_type=_REGISTERSRPREQ,
+    output_type=_REGISTERSRPRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='forgot_password',
+    full_name='auth.Auth.forgot_password',
+    index=1,
+    containing_service=None,
+    input_type=_FORGOTPASSWORDREQ,
+    output_type=_BASERESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='login_challenge',
+    full_name='auth.Auth.login_challenge',
+    index=2,
+    containing_service=None,
+    input_type=_AUTHCHALLENGEREQ,
+    output_type=_AUTHCHALLENGERES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='forgot_password_update',
+    full_name='auth.Auth.forgot_password_update',
+    index=3,
+    containing_service=None,
+    input_type=_FORGOTPASSWORDUPDATEREQ,
+    output_type=_AUTHRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='login_google',
+    full_name='auth.Auth.login_google',
+    index=4,
+    containing_service=None,
+    input_type=_GOOGLELOGINREQ,
+    output_type=_SOCIALLOGINRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='login_office',
+    full_name='auth.Auth.login_office',
+    index=5,
+    containing_service=None,
+    input_type=_OFFICELOGINREQ,
+    output_type=_SOCIALLOGINRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='login_facebook',
+    full_name='auth.Auth.login_facebook',
+    index=6,
+    containing_service=None,
+    input_type=_FACEBOOKLOGINREQ,
+    output_type=_SOCIALLOGINRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='login_apple',
+    full_name='auth.Auth.login_apple',
+    index=7,
+    containing_service=None,
+    input_type=_APPLELOGINREQ,
+    output_type=_SOCIALLOGINRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='login_social_challange',
+    full_name='auth.Auth.login_social_challange',
+    index=8,
+    containing_service=None,
+    input_type=_AUTHSOCIALCHALLENGEREQ,
+    output_type=_AUTHCHALLENGERES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='login_authenticate',
+    full_name='auth.Auth.login_authenticate',
+    index=9,
+    containing_service=None,
+    input_type=_AUTHENTICATEREQ,
+    output_type=_AUTHRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='refresh_token',
+    full_name='auth.Auth.refresh_token',
+    index=10,
+    containing_service=None,
+    input_type=_REFRESHTOKENREQ,
+    output_type=_REFRESHTOKENRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='logout',
+    full_name='auth.Auth.logout',
+    index=11,
+    containing_service=None,
+    input_type=_LOGOUTREQ,
+    output_type=_BASERESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='register_pincode',
+    full_name='auth.Auth.register_pincode',
+    index=12,
+    containing_service=None,
+    input_type=_REGISTERPINCODEREQ,
+    output_type=_AUTHRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='verify_pincode',
+    full_name='auth.Auth.verify_pincode',
+    index=13,
+    containing_service=None,
+    input_type=_VERIFYPINCODEREQ,
+    output_type=_AUTHRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='reset_pincode',
+    full_name='auth.Auth.reset_pincode',
+    index=14,
+    containing_service=None,
+    input_type=_RESETPINCODEREQ,
+    output_type=_AUTHRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='validate_otp',
+    full_name='auth.Auth.validate_otp',
+    index=15,
+    containing_service=None,
+    input_type=_MFAVALIDATEOTPREQUEST,
+    output_type=_AUTHRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='resend_otp',
+    full_name='auth.Auth.resend_otp',
+    index=16,
+    containing_service=None,
+    input_type=_MFARESENDOTPREQ,
+    output_type=_MFARESENDOTPRES,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+])
+_sym_db.RegisterServiceDescriptor(_AUTH)
+
+DESCRIPTOR.services_by_name['Auth'] = _AUTH
+
 # @@protoc_insertion_point(module_scope)
