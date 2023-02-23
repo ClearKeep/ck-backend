@@ -116,8 +116,9 @@ class AuthController(BaseController):
                         session_state=token['session_state'],
                         scope=token['scope'],
                         salt=user_info.salt,
-                        client_key_peer = client_key_peer,
-                        iv_parameter=user_info.iv_parameter
+                        client_key_peer=client_key_peer,
+                        iv_parameter=user_info.iv_parameter,
+                        avatar=user_info.avatar,
                     )
                 else:
                     pre_access_token = self.service.create_otp_service(user_id)
