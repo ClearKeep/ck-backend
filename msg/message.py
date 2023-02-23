@@ -1,7 +1,7 @@
 from src.controllers.base import ErrorResponse
 
 
-class Message:
+class Message(object):
     UNAUTHENTICATED = 1000
     AUTHENTICATION_FAILED = 1079
     INVALID_ACCESS_TOKEN = 1077
@@ -93,7 +93,6 @@ class Message:
     # leave workspace
     LEAVE_WORKSPACE_FAILED = 1063
 
-
     # change status
     UPDATE_USER_STATUS_FAILED = 1047
     PING_PONG_SERVER_FAILED = 1048
@@ -136,7 +135,7 @@ class Message:
         GET_CLIENT_SIGNAL_KEY_FAILED: "Get client key failed. Please try again",
         CLIENT_SIGNAL_KEY_NOT_FOUND: "Client key not found.",
         CLIENT_PUBLISH_MESSAGE_FAILED: "Publish message failed. Please try again",
-        CLIENT_SUBCRIBE_FAILED: "Subcribe failed. Please try again",
+        CLIENT_SUBCRIBE_FAILED: "Subscribe failed. Please try again",
         REGISTER_CLIENT_GROUP_KEY_FAILED: "Register group key failed. Please try again",
         REGISTER_CLIENT_GROUP_FAILED_AVAILABLE: "Register group key failed. Group key is available",
         UPDATE_CLIENT_KEY_GROUPS_FAILED:"Update client key for groups failed. Please try again",
@@ -146,8 +145,8 @@ class Message:
         SEARCH_GROUP_CHAT_FAILED: "Search group failed. Please try again",
         CLIENT_QUEUE_NOT_FOUND: "Client queue not found",
         MESSAGE_READ_FAILED: "Can not read the message",
-        VERIFY_PINCODE_FAILED: "Can not verify pincode. Please try again",
-        NOT_SOCIAL_ACCOUNT: "This user do not have pincode",
+        VERIFY_PINCODE_FAILED: "Can not verify pin code. Please try again",
+        NOT_SOCIAL_ACCOUNT: "This user do not have pin code",
         GET_MESSAGE_IN_GROUP_FAILED: "Get message in this group failed. Please try again",
         DELETE_ACCOUNT_FAILED: "Delete account failed. Please try again",
 
@@ -208,9 +207,9 @@ class Message:
         EXCEED_MAXIMUM_TRIED_TIMES_OTP: "OTP code is invalid due to exceed maximum trying. Please request resend otp and try again",
         FROZEN_STATE_OTP_SERVICE: "You have requested your code too many times. Please try again later",
         WRONG_OTP: "Wrong OTP. Please check and try again",
-        OTP_SERVER_NOT_RESPONDING : "OTP server is currently not responding to request. Please contact with admin or try again later",
+        OTP_SERVER_NOT_RESPONDING: "OTP server is currently not responding to request. Please contact with admin or try again later",
 
-        GET_WORKSPACE_INFO_FAILED: "Get workspace info falied. Please try again",
+        GET_WORKSPACE_INFO_FAILED: "Get workspace info failed. Please try again",
 
         GET_SERVER_INFO_FAILED: "Get server info failed.",
 
