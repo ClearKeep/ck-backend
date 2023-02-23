@@ -1,0 +1,6 @@
+FROM instrumentisto/haraka:2.8
+
+RUN apk update
+RUN apk add openssl
+RUN sed -i.bak 's/# tls/tls/g' $HARAKA_HOME/config/plugins
+RUN sed -i 's/# auth\/flat_file/auth\/flat_file/g' $HARAKA_HOME/config/plugins
